@@ -1,7 +1,129 @@
 <?xml version="1.0" encoding="ASCII"?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
   <define>
+    <position name="LArBox_pos" unit="cm" x="0" y="0" z="0"/>
+    <position name="wie_pos_0" unit="cm" x="-600.0" y="400.0" z="0"/>
+    <position name="wie_pos_1" unit="cm" x="-590.0" y="400.0" z="0"/>
+    <position name="wie_pos_2" unit="cm" x="-580.0" y="400.0" z="0"/>
+    <position name="wie_pos_3" unit="cm" x="-570.0" y="400.0" z="0"/>
+    <position name="wie_pos_4" unit="cm" x="-560.0" y="400.0" z="0"/>
+    <position name="wie_pos_5" unit="cm" x="-550.0" y="400.0" z="0"/>
+    <position name="wie_pos_6" unit="cm" x="-540.0" y="400.0" z="0"/>
+    <position name="wie_pos_7" unit="cm" x="-530.0" y="400.0" z="0"/>
+    <position name="wie_pos_8" unit="cm" x="-520.0" y="400.0" z="0"/>
+    <position name="wie_pos_9" unit="cm" x="-510.0" y="400.0" z="0"/>
+    <position name="wie_pos_10" unit="cm" x="-500.0" y="400.0" z="0"/>
+    <position name="wie_pos_11" unit="cm" x="-490.0" y="400.0" z="0"/>
+    <position name="wie_pos_12" unit="cm" x="-480.0" y="400.0" z="0"/>
+    <position name="wie_pos_13" unit="cm" x="-470.0" y="400.0" z="0"/>
+    <position name="wie_pos_14" unit="cm" x="-460.0" y="400.0" z="0"/>
+    <position name="wie_pos_15" unit="cm" x="-450.0" y="400.0" z="0"/>
+    <position name="wie_pos_16" unit="cm" x="-440.0" y="400.0" z="0"/>
+    <position name="wie_pos_17" unit="cm" x="-430.0" y="400.0" z="0"/>
+    <position name="wie_pos_18" unit="cm" x="-420.0" y="400.0" z="0"/>
+    <position name="wie_pos_19" unit="cm" x="-410.0" y="400.0" z="0"/>
+    <position name="wie_pos_20" unit="cm" x="-400.0" y="400.0" z="0"/>
+    <position name="wie_pos_21" unit="cm" x="-390.0" y="400.0" z="0"/>
+    <position name="wie_pos_22" unit="cm" x="-380.0" y="400.0" z="0"/>
+    <position name="wie_pos_23" unit="cm" x="-370.0" y="400.0" z="0"/>
+    <position name="wie_pos_24" unit="cm" x="-360.0" y="400.0" z="0"/>
+    <position name="wie_pos_25" unit="cm" x="-350.0" y="400.0" z="0"/>
+    <position name="wie_pos_26" unit="cm" x="-340.0" y="400.0" z="0"/>
+    <position name="wie_pos_27" unit="cm" x="-330.0" y="400.0" z="0"/>
+    <position name="wie_pos_28" unit="cm" x="-320.0" y="400.0" z="0"/>
+    <position name="wie_pos_29" unit="cm" x="-310.0" y="400.0" z="0"/>
+    <position name="wie_pos_30" unit="cm" x="-300.0" y="400.0" z="0"/>
+    <position name="wie_pos_31" unit="cm" x="-290.0" y="400.0" z="0"/>
+    <position name="wie_pos_32" unit="cm" x="-280.0" y="400.0" z="0"/>
+    <position name="wie_pos_33" unit="cm" x="-270.0" y="400.0" z="0"/>
+    <position name="wie_pos_34" unit="cm" x="-260.0" y="400.0" z="0"/>
+    <position name="wie_pos_35" unit="cm" x="-250.0" y="400.0" z="0"/>
+    <position name="wie_pos_36" unit="cm" x="-240.0" y="400.0" z="0"/>
+    <position name="wie_pos_37" unit="cm" x="-230.0" y="400.0" z="0"/>
+    <position name="wie_pos_38" unit="cm" x="-220.0" y="400.0" z="0"/>
+    <position name="wie_pos_39" unit="cm" x="-210.0" y="400.0" z="0"/>
+    <position name="wie_pos_40" unit="cm" x="-200.0" y="400.0" z="0"/>
+    <position name="wie_pos_41" unit="cm" x="-190.0" y="400.0" z="0"/>
+    <position name="wie_pos_42" unit="cm" x="-180.0" y="400.0" z="0"/>
+    <position name="wie_pos_43" unit="cm" x="-170.0" y="400.0" z="0"/>
+    <position name="wie_pos_44" unit="cm" x="-160.0" y="400.0" z="0"/>
+    <position name="wie_pos_45" unit="cm" x="-150.0" y="400.0" z="0"/>
+    <position name="wie_pos_46" unit="cm" x="-140.0" y="400.0" z="0"/>
+    <position name="wie_pos_47" unit="cm" x="-130.0" y="400.0" z="0"/>
+    <position name="wie_pos_48" unit="cm" x="-120.0" y="400.0" z="0"/>
+    <position name="wie_pos_49" unit="cm" x="-110.0" y="400.0" z="0"/>
+    <position name="wie_pos_50" unit="cm" x="-100.0" y="400.0" z="0"/>
+    <position name="wie_pos_51" unit="cm" x="-90.0" y="400.0" z="0"/>
+    <position name="wie_pos_52" unit="cm" x="-80.0" y="400.0" z="0"/>
+    <position name="wie_pos_53" unit="cm" x="-70.0" y="400.0" z="0"/>
+    <position name="wie_pos_54" unit="cm" x="-60.0" y="400.0" z="0"/>
+    <position name="wie_pos_55" unit="cm" x="-50.0" y="400.0" z="0"/>
+    <position name="wie_pos_56" unit="cm" x="-40.0" y="400.0" z="0"/>
+    <position name="wie_pos_57" unit="cm" x="-30.0" y="400.0" z="0"/>
+    <position name="wie_pos_58" unit="cm" x="-20.0" y="400.0" z="0"/>
+    <position name="wie_pos_59" unit="cm" x="-10.0" y="400.0" z="0"/>
+    <position name="wie_pos_60" unit="cm" x="0.0" y="400.0" z="0"/>
+    <position name="wie_pos_61" unit="cm" x="10.0" y="400.0" z="0"/>
+    <position name="wie_pos_62" unit="cm" x="20.0" y="400.0" z="0"/>
+    <position name="wie_pos_63" unit="cm" x="30.0" y="400.0" z="0"/>
+    <position name="wie_pos_64" unit="cm" x="40.0" y="400.0" z="0"/>
+    <position name="wie_pos_65" unit="cm" x="50.0" y="400.0" z="0"/>
+    <position name="wie_pos_66" unit="cm" x="60.0" y="400.0" z="0"/>
+    <position name="wie_pos_67" unit="cm" x="70.0" y="400.0" z="0"/>
+    <position name="wie_pos_68" unit="cm" x="80.0" y="400.0" z="0"/>
+    <position name="wie_pos_69" unit="cm" x="90.0" y="400.0" z="0"/>
+    <position name="wie_pos_70" unit="cm" x="100.0" y="400.0" z="0"/>
+    <position name="wie_pos_71" unit="cm" x="110.0" y="400.0" z="0"/>
+    <position name="wie_pos_72" unit="cm" x="120.0" y="400.0" z="0"/>
+    <position name="wie_pos_73" unit="cm" x="130.0" y="400.0" z="0"/>
+    <position name="wie_pos_74" unit="cm" x="140.0" y="400.0" z="0"/>
+    <position name="wie_pos_75" unit="cm" x="150.0" y="400.0" z="0"/>
+    <position name="wie_pos_76" unit="cm" x="160.0" y="400.0" z="0"/>
+    <position name="wie_pos_77" unit="cm" x="170.0" y="400.0" z="0"/>
+    <position name="wie_pos_78" unit="cm" x="180.0" y="400.0" z="0"/>
+    <position name="wie_pos_79" unit="cm" x="190.0" y="400.0" z="0"/>
+    <position name="wie_pos_80" unit="cm" x="200.0" y="400.0" z="0"/>
+    <position name="wie_pos_81" unit="cm" x="210.0" y="400.0" z="0"/>
+    <position name="wie_pos_82" unit="cm" x="220.0" y="400.0" z="0"/>
+    <position name="wie_pos_83" unit="cm" x="230.0" y="400.0" z="0"/>
+    <position name="wie_pos_84" unit="cm" x="240.0" y="400.0" z="0"/>
+    <position name="wie_pos_85" unit="cm" x="250.0" y="400.0" z="0"/>
+    <position name="wie_pos_86" unit="cm" x="260.0" y="400.0" z="0"/>
+    <position name="wie_pos_87" unit="cm" x="270.0" y="400.0" z="0"/>
+    <position name="wie_pos_88" unit="cm" x="280.0" y="400.0" z="0"/>
+    <position name="wie_pos_89" unit="cm" x="290.0" y="400.0" z="0"/>
+    <position name="wie_pos_90" unit="cm" x="300.0" y="400.0" z="0"/>
+    <position name="wie_pos_91" unit="cm" x="310.0" y="400.0" z="0"/>
+    <position name="wie_pos_92" unit="cm" x="320.0" y="400.0" z="0"/>
+    <position name="wie_pos_93" unit="cm" x="330.0" y="400.0" z="0"/>
+    <position name="wie_pos_94" unit="cm" x="340.0" y="400.0" z="0"/>
+    <position name="wie_pos_95" unit="cm" x="350.0" y="400.0" z="0"/>
+    <position name="wie_pos_96" unit="cm" x="360.0" y="400.0" z="0"/>
+    <position name="wie_pos_97" unit="cm" x="370.0" y="400.0" z="0"/>
+    <position name="wie_pos_98" unit="cm" x="380.0" y="400.0" z="0"/>
+    <position name="wie_pos_99" unit="cm" x="390.0" y="400.0" z="0"/>
+    <position name="wie_pos_100" unit="cm" x="400.0" y="400.0" z="0"/>
+    <position name="wie_pos_101" unit="cm" x="410.0" y="400.0" z="0"/>
+    <position name="wie_pos_102" unit="cm" x="420.0" y="400.0" z="0"/>
+    <position name="wie_pos_103" unit="cm" x="430.0" y="400.0" z="0"/>
+    <position name="wie_pos_104" unit="cm" x="440.0" y="400.0" z="0"/>
+    <position name="wie_pos_105" unit="cm" x="450.0" y="400.0" z="0"/>
+    <position name="wie_pos_106" unit="cm" x="460.0" y="400.0" z="0"/>
+    <position name="wie_pos_107" unit="cm" x="470.0" y="400.0" z="0"/>
+    <position name="wie_pos_108" unit="cm" x="480.0" y="400.0" z="0"/>
+    <position name="wie_pos_109" unit="cm" x="490.0" y="400.0" z="0"/>
+    <position name="wie_pos_110" unit="cm" x="500.0" y="400.0" z="0"/>
+    <position name="wie_pos_111" unit="cm" x="510.0" y="400.0" z="0"/>
+    <position name="wie_pos_112" unit="cm" x="520.0" y="400.0" z="0"/>
+    <position name="wie_pos_113" unit="cm" x="530.0" y="400.0" z="0"/>
+    <position name="wie_pos_114" unit="cm" x="540.0" y="400.0" z="0"/>
+    <position name="wie_pos_115" unit="cm" x="550.0" y="400.0" z="0"/>
+    <position name="wie_pos_116" unit="cm" x="560.0" y="400.0" z="0"/>
+    <position name="wie_pos_117" unit="cm" x="570.0" y="400.0" z="0"/>
+    <position name="wie_pos_118" unit="cm" x="580.0" y="400.0" z="0"/>
+    <position name="wie_pos_119" unit="cm" x="590.0" y="400.0" z="0"/>
     <position name="Det_in_Enc" unit="cm" x="0.0" y="-568.096" z="-539.61625"/>
+    <position name="Trac_in_Enc" unit="cm" x="1000.0" y="-568.096" z="-539.61625"/>
     <rotation name="r90aboutX" unit="degree" x="90" y="0" z="0"/>
     <rotation name="rminus90aboutX" unit="degree" x="-90" y="0" z="0"/>
     <rotation name="r90aboutY" unit="degree" x="0" y="90" z="0"/>
@@ -294,14 +416,634 @@
     </material>
   </materials>
   <solids>
-    <box lunit="cm" name="Detector" x="800.0" y="800.0" z="800.0"/>
+    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="ShapeVol" rmax="1.0" rmin="0.0" startphi="0.0" z="800.0"/>
+    <box lunit="cm" name="Detector" x="1200.0" y="800.0" z="800.0"/>
+    <box lunit="cm" name="LArShape" x="1200.0" y="800.0" z="800.0"/>
+    <box lunit="cm" name="Tracker" x="400.0" y="800.0" z="800.0"/>
     <box lunit="cm" name="DetEnclosure" x="1798.32" y="1536.192" z="3003.2325"/>
     <box lunit="cm" name="World" x="20000.0" y="20000.0" z="20000.0"/>
   </solids>
   <structure>
-    <volume name="volDetector">
+    <volume name="volLAr">
       <materialref ref="LAr"/>
+      <solidref ref="LArShape"/>
+    </volume>
+    <volume name="volWire">
+      <materialref ref="Steel"/>
+      <solidref ref="ShapeVol"/>
+    </volume>
+    <volume name="volDetector">
+      <materialref ref="Air"/>
       <solidref ref="Detector"/>
+      <physvol>
+        <volumeref ref="volLAr"/>
+        <positionref ref="LArBox_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_2"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_3"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_4"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_5"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_6"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_7"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_8"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_9"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_10"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_11"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_12"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_13"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_14"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_15"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_16"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_17"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_18"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_19"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_20"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_21"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_22"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_23"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_24"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_25"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_26"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_27"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_28"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_29"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_30"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_31"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_32"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_33"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_34"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_35"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_36"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_37"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_38"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_39"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_40"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_41"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_42"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_43"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_44"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_45"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_46"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_47"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_48"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_49"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_50"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_51"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_52"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_53"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_54"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_55"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_56"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_57"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_58"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_59"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_60"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_61"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_62"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_63"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_64"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_65"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_66"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_67"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_68"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_69"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_70"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_71"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_72"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_73"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_74"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_75"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_76"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_77"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_78"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_79"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_80"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_81"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_82"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_83"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_84"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_85"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_86"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_87"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_88"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_89"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_90"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_91"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_92"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_93"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_94"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_95"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_96"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_97"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_98"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_99"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_100"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_101"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_102"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_103"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_104"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_105"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_106"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_107"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_108"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_109"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_110"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_111"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_112"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_113"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_114"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_115"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_116"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_117"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_118"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volWire"/>
+        <positionref ref="wie_pos_119"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+    <volume name="volTracker">
+      <materialref ref="Scintillator"/>
+      <solidref ref="Tracker"/>
     </volume>
     <volume name="volDetEnclosure">
       <materialref ref="Air"/>
@@ -309,6 +1051,11 @@
       <physvol>
         <volumeref ref="volDetector"/>
         <positionref ref="Det_in_Enc"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volTracker"/>
+        <positionref ref="Trac_in_Enc"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>
