@@ -47,9 +47,9 @@ class IDBuilder(gegede.builder.Builder):
 							        
         # Make LArD box
        
-        pLArD_lv = geom.structure.Placement('place_LAr', volume = LArD_lv, pos = LArD_Pos)
+        pLArD_lv = geom.structure.Placement('place_LArD', volume = LArD_lv, pos = LArD_Pos)
 
-        ID_lv.placements.append(pLArBox_lv.name )
+        ID_lv.placements.append(pLArD_lv.name )
 
         print '########################################'
 
