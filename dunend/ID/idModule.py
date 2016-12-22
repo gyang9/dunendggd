@@ -8,7 +8,7 @@ from gegede import Quantity as Q
 ## idModuleBuilder
 #
 # builder for id Module
-class IDBuilder(gegede.builder.Builder):
+class idModuleBuilder(gegede.builder.Builder):
 
     ## The configure
     def configure( self, idModuleDim, idModuleMat, **kwds ):

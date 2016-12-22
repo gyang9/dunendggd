@@ -1,25 +1,25 @@
 #!/usr/bin/env python
-## Subbuilder of idPlaneBuilder
+## Subbuilder of idSubDetBuilder
 #
 
 import gegede.builder
 from gegede import Quantity as Q
 
-## idPlaneBuilder
+## idSubDetBuilder
 #
-# builder for id Plane
-class IDBuilder(gegede.builder.Builder):
+# builder for id SubDet
+class idSubDetBuilder(gegede.builder.Builder):
 
     ## The configure
-    def configure( self, idPlaneDim, idPlaneMat, **kwds ):
-        self.dimension, self.material = ( idPlaneDim, idPlaneMat )
-        self.nelements = idPlaneNElemts
+    def configure( self, idSubDetDim, idSubDetMat, **kwds ):
+        self.dimension, self.material = ( idSubDetDim, idSubDetMat )
+        self.nelements = idSubDetNElemts
         pass
 
     ## The construct
     def construct( self, geom ):
-        idPlaneBox = geom.shapes.Box( self.name, self.dimension[0], self.dimension[1], self.dimension[2] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.material, shape=idPlaneBox )
+        idSubDetBox = geom.shapes.Box( self.name, self.dimension[0], self.dimension[1], self.dimension[2] )
+        main_lv = geom.structure.Volume( self.name+"_lv", material=self.material, shape=idSubDetBox )
         self.add_volume( main_lv )
 
         element_lv = self.builders[0].Volumes[0] #ok?

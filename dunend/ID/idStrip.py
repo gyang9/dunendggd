@@ -8,7 +8,7 @@ from gegede import Quantity as Q
 ## idStripBuilder
 #
 # builder for id Strip
-class IDBuilder(gegede.builder.Builder):
+class idStripBuilder(gegede.builder.Builder):
 
     ## The configure
     def configure( self, idStripDim, idStripMat, **kwds ):
