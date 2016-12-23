@@ -35,7 +35,7 @@ class DetectorBuilder(gegede.builder.Builder):
 
 #        det_Pos = geom.structure.Position('det_pos', '0cm', '0cm', '0cm')
 							        
-        # Make detector box
+        # Make LArD box
         detBox = geom.shapes.Box(self.name, self.detDim[0], self.detDim[1], self.detDim[2])
        
         det_lv = geom.structure.Volume('vol'+self.name, material=self.defMat, shape=detBox)
