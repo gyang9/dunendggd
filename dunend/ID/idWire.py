@@ -11,12 +11,15 @@ from gegede import Quantity as Q
 class idWireBuilder(gegede.builder.Builder):
 
     ## The configure
-    def configure( self, idWireDim, idWireMat, **kwds ):
-        self.dimension, self.material = ( idWireDim, idWireMat )
+    def configure( self, idDimension=None, idMaterial=None, idTranspV=None, idGap=None, **kwds ):
+        self.idDimension, self.idMaterial = ( idDimension, idMaterial)
+        self.idTranspV, self.idGap = ( idTranspV, idGap )
         pass
 
     ## The construct
     def construct( self, geom ):
-        idWireBox = geom.shapes.Box( self.name, self.dimension[0], self.dimension[1], self.dimension[2] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.material, shape=idWireBox )
+        idWireBox = geom.shapes.Box( self.name, dx=self.idDimension[0], dy=self.idDimension[1], dz=self.idDimension[2] )
+        main_lv = geom.structure.Volume( self.name+"_lv", material=self.idMaterial, shape=idWireBox )
+        main_lv.params.append(("Color","blue"))
         self.add_volume( main_lv )
+        return

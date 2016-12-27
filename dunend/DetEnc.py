@@ -1,104 +1,32 @@
 #!/usr/bin/env python
-'''
-Subbuilder of WorldBuilder
-'''
+## Subbuilder of DetEncBuilder
+#
 
 import gegede.builder
 from gegede import Quantity as Q
 
-
+## DetEncBuilder
+#
+# builder for id Plane
 class DetEncBuilder(gegede.builder.Builder):
-    '''
-    Build the Detector Enclosure.
-    '''
 
+    ## The configure
+    def configure(self, detEncDim=None, detEncMat=None, detEncPos=None, **kwds):
+        self.detEncDim, self.detEncMat = (detEncDim, detEncMat)
+        self.detEncPos = detEncPos
+        pass
 
-    #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, 
-                  detEncDim=None, 
-                  encBoundToDet_z=None, 
-                  detDim=None,
-                  blankSite = False,
-                  detEncMat = 'Air', **kwds):
-        if detEncDim is None:
-            raise ValueError("No value given for detEncDim")
-        if encBoundToDet_z is None:
-            raise ValueError("No value given for encBoundToDet_z")
-        if detDim is None:
-            self.configDetDim = False
-        else: 
-            self.configDetDim = True
-            self.detDim       = detDim
-
-
-        self.detEncMat     = detEncMat
-        self.detEncDim     = detEncDim
-        self.blankSite     = blankSite
-
-        # Space from negative face of volDetEnc to closest face of volDet
-        #  This positions the detector in the enclosure
-        self.encBoundToDet_z = encBoundToDet_z
-
-
-        # If not configuring the detector box, get it from the builder
-        if (self.blankSite):
-            if(not self.configDetDim):
-                raise ValueError("Must configure detDim box for blank site")
-        else: 
-            self.IDBldr  = self.get_builder('ID')
-
-        self.ODBldr  = self.get_builder('OD')
-
-
-
-    #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+    ## The construct
     def construct(self, geom):
+        DetEncBox = geom.shapes.Box(self.name, dx=self.detEncDim[0], dy=self.detEncDim[1], dz=self.detEncDim[2])
+        main_lv = geom.structure.Volume(self.name+"_lv", material=self.detEncMat, shape=DetEncBox)
+        self.add_volume(main_lv)
 
-        encBox = geom.shapes.Box( self.name,                 dx=0.5*self.detEncDim[0], 
-                                  dy=0.5*self.detEncDim[1],  dz=0.5*self.detEncDim[2])
-        detEnc_lv = geom.structure.Volume('vol'+self.name, material=self.detEncMat, shape=encBox)
-        self.add_volume(detEnc_lv)
-
-
-        #  Make or Get the box into which the physical detector volumes eventually go
-        if (self.blankSite):
-            IDBox = geom.shapes.Box( 'ID',             dx=0.5*self.detDim[0], 
-                                      dy=0.5*self.detDim[1],  dz=0.5*self.detDim[2])
-            ID_lv = geom.structure.Volume('volID', material=self.detEncMat, shape=IDBox)
-            print "IDBuilder: Detector Enclosure has no ID volumes in it:"
-        else:
-            ID_lv      = self.IDBldr.get_volume('volID')
-
-        # Get dimensions if not configured, print method
-        if (self.configDetDim):
-            print "DetectorBuilder: Detector box configured:"
-        else:
-            self.detDim = list(self.detBldr.detDim)
-            print "DetectorBuilder: Detector box calculated:"
-        print     "                 x="+str(self.detDim[0])+" y="+str(self.detDim[1])+" z="+str(self.detDim[2])
-   
-        
-        self.encBoundToDet = [ 0.5*self.detEncDim[0] - 0.5*self.detDim[0], # x: center it for now
-                               Q('0cm'),                                   # y: sit detector on floor
-                               self.encBoundToDet_z ]                      # z: configure
-        
-        IDPos = [ -0.5*self.detEncDim[0] + self.encBoundToDet[0] + 0.5*self.detDim[0], 
-                   -0.5*self.detEncDim[1] + self.encBoundToDet[1] + 0.5*self.detDim[1], 
-                   -0.5*self.detEncDim[2] + self.encBoundToDet[2] + 0.5*self.detDim[2]  ]
-        ID_in_enc = geom.structure.Position('Det_in_Enc', IDPos[0], IDPos[1], IDPos[2])
-        pID_in_E = geom.structure.Placement('placeDet_in_Enc',
-                                           volume = ID_lv,
-                                           pos = ID_in_enc)
-        detEnc_lv.placements.append(pID_in_E.name)
-
-
-        OD_lv      = self.tracBldr.get_volume('volOD')
-        
-        ODPos = [ '15m','0m','0m' ]
-        OD_in_enc = geom.structure.Position('OD_in_Enc', ODPos[0]+Q('60m'), ODPos[1], ODPos[2])
-        pOD_in_E = geom.structure.Placement('placeOD_in_Enc',
-                                           volume = OD_lv,
-                                           pos = OD_in_enc)
-        detEnc_lv.placements.append(pOD_in_E.name)
-        
-
+        ztemp = Q("0m")
+        for sb in self.get_builders():
+            sb_lv = sb.get_volume()
+            sb_shape = geom.store.shapes.get( sb_lv.shape )
+            sb_pos = geom.structure.Position( sb_lv.name+'_pos', '0m', '0m', ztemp)
+            ztemp += sb_shape.dz
+            sb_pla = geom.structure.Placement(sb_lv.name+'_pla', volume=sb_lv, pos=sb_pos)
+            main_lv.placements.append(sb_pla.name )

@@ -11,24 +11,29 @@ from gegede import Quantity as Q
 class idModuleBuilder(gegede.builder.Builder):
 
     ## The configure
-    def configure( self, idModuleDim, idModuleMat, **kwds ):
-        self.dimension, self.material = ( idModuleDim, idModuleMat )
-        self.nelements = idModuleNElemts
+    def configure( self, idDimension=None, idMaterial=None, idNElements=None, **kwds ):
+        self.idDimension, self.idMaterial = ( idDimension, idMaterial )
+        self.idNElements = idNElements
         pass
 
     ## The construct
     def construct( self, geom ):
-        idModuleBox = geom.shapes.Box( self.name, self.dimension[0], self.dimension[1], self.dimension[2] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.material, shape=idModuleBox )
+        idModuleBox = geom.shapes.Box( self.name, dx=self.idDimension[0], dy=self.idDimension[1], dz=self.idDimension[2] )
+        main_lv = geom.structure.Volume( self.name+"_lv", material=self.idMaterial, shape=idModuleBox )
         self.add_volume( main_lv )
 
-        element_lv = self.builders[0].Volumes[0] #ok?
-        low_end = Q('0cm')
-        dist = Q('5cm')
+        # get sub-builders and its volume
+        el_sb = self.get_builder()
+        el_lv = el_sb.get_volume()
         
-        for element in range(self.nelements):
-            element_pos = geom.structure.Position('element_pos_'+str(j), low_end+element*dist, '4m', '0cm')
-            element_pla  = geom.structure.Placement('element_pla_'+str(j), volume = element_lv, pos = element_pos)
-            main_lv.placements.append(element_pla.name )
-
+        transp_v = el_sb.idTranspV # vector of transportation for the elements
+        sb_dim_v = [a*(b+el_sb.idGap) for a,b in zip(transp_v,el_sb.idDimension)] # half dimension of element according to trans
+        low_end_v  = [-a*b+c for a,b,c in zip(transp_v,self.idDimension,sb_dim_v)] # lower edge
+        
+        for element in range(self.idNElements):
+            temp_v = [a*element for a in sb_dim_v]
+            temp_v = [a+b for a,b in zip(temp_v,low_end_v)]
+            el_pos = geom.structure.Position(self.name+"_el"+str(element)+'_pos', temp_v[0], temp_v[1], temp_v[2])
+            el_pla = geom.structure.Placement(self.name+"_el"+str(element)+'_pla', volume = el_lv, pos = el_pos)
+            main_lv.placements.append(el_pla.name)
         return
