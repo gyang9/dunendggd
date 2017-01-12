@@ -1,1 +1,4 @@
-*pyc
+*.pyc
+dunend.egg-info
+*.gdml
+*.swp
