@@ -20,4 +20,5 @@ class idStripBuilder(gegede.builder.Builder):
     def construct( self, geom ):
         idStripBox = geom.shapes.Box( self.name, dx=self.idDimension[0], dy=self.idDimension[1], dz=self.idDimension[2] )
         main_lv = geom.structure.Volume( self.name+"_lv", material=self.idMaterial, shape=idStripBox )
+        main_lv.params.append(("SensDet","FGD"))
         self.add_volume( main_lv )
