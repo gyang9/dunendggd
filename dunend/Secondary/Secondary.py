@@ -13,9 +13,9 @@ class SecondaryBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, 
-                  SecondaryDim = [Q('10m'), Q('10m'), Q('10m')], SecondaryMat = 'Air', 
+                  SecondaryDim = [Q('20m'), Q('20m'), Q('40m')], SecondaryMat = 'Air', 
                   ECalPos = None,  HCalPos = None, ECalBarrelPos = None, ECalBarrelPos2 = None, ECalBarrelPos3 = None, ECalBarrelPos4 = None, 
-                  MagnetPos = None,                  
+                  MagnetPos = None, MagnetPos2 = None,                  
                   **kwds):
 
         self.SecondaryMat      = SecondaryMat
@@ -27,6 +27,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         self.ECalBarrelPos4    = ECalBarrelPos4
         self.HCalPos    = HCalPos
         self.MagnetPos    = MagnetPos
+        self.MagnetPos2    = MagnetPos2
 
         self.ECalBldr   = self.get_builder('ECal')
         self.ECalBarrelBldr   = self.get_builder('ECalBarrel')
@@ -78,7 +79,7 @@ class SecondaryBuilder(gegede.builder.Builder):
 
 
         ECalBarrel_Pos2 = geom.structure.Position('ECalBarrel_pos2', self.ECalBarrelPos2[0], self.ECalBarrelPos2[1], self.ECalBarrelPos2[2])
-        pECalBarrel_lv2 = geom.structure.Placement('place_ECalECalBarrel2', volume = ECalBarrel_lv, pos = ECalBarrel_Pos2, rot = "r90aboutX")
+        pECalBarrel_lv2 = geom.structure.Placement('place_ECalECalBarrel2', volume = ECalBarrel_lv, pos = ECalBarrel_Pos2, rot = "r90aboutZ")
         Secondary_lv.placements.append(pECalBarrel_lv2.name )
 
         ECalBarrel_Pos3 = geom.structure.Position('ECalBarrel_pos3', self.ECalBarrelPos3[0], self.ECalBarrelPos3[1], self.ECalBarrelPos3[2])
@@ -86,7 +87,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         Secondary_lv.placements.append(pECalBarrel_lv3.name )
 
         ECalBarrel_Pos4 = geom.structure.Position('ECalBarrel_pos4', self.ECalBarrelPos4[0], self.ECalBarrelPos4[1], self.ECalBarrelPos4[2])
-        pECalBarrel_lv4 = geom.structure.Placement('place_ECalECalBarrel4', volume = ECalBarrel_lv, pos = ECalBarrel_Pos4, rot = "r90aboutX")
+        pECalBarrel_lv4 = geom.structure.Placement('place_ECalECalBarrel4', volume = ECalBarrel_lv, pos = ECalBarrel_Pos4, rot = "r90aboutZ")
         Secondary_lv.placements.append(pECalBarrel_lv4.name )
 
         print '########################################'
@@ -122,6 +123,12 @@ class SecondaryBuilder(gegede.builder.Builder):
         pMagnet_lv = geom.structure.Placement('place_Magnet', volume = Magnet_lv, pos = Magnet_Pos)
 
         Secondary_lv.placements.append(pMagnet_lv.name )
+
+
+
+        Magnet_Pos2 = geom.structure.Position('Magnet_pos2', self.MagnetPos2[0], self.MagnetPos2[1], self.MagnetPos2[2])  
+        pMagnet_lv2 = geom.structure.Placement('place_Magnet2', volume = Magnet_lv, pos = Magnet_Pos2)
+        Secondary_lv.placements.append(pMagnet_lv2.name )
 
 
     	return
