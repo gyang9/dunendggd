@@ -36,10 +36,10 @@ class StripBuilder(gegede.builder.Builder):
         self.StripDisa   = self.StripDis
 							        
         # Make detector box
-        StripShape = geom.shapes.Tubs('ShapeVol', '0cm', self.StripWidth, self.StripLeng)
+        secStripShape = geom.shapes.Tubs('ShapeVol', '0cm', self.StripWidth, self.StripLeng)
 
-        Strip_lv = geom.structure.Volume('volStrip', material=self.StripMat, shape=StripShape )
+        secStrip_lv = geom.structure.Volume('volStrip', material=self.StripMat, shape=secStripShape )
 
-        self.add_volume(Strip_lv)
+        self.add_volume(secStrip_lv)
         print '----------------------------------------'
      

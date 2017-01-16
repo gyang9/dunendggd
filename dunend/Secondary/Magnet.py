@@ -32,5 +32,5 @@ class MagnetBuilder(gegede.builder.Builder):
         Magnet_lv = geom.structure.Volume('volMagnet', material=self.MagnetMat , shape=MagnetShape )
 
         self.add_volume(Magnet_lv)
-        print '----------------------------------------'
+        print '----------------------------------------' 
      
