@@ -30,24 +30,24 @@ class ModuleBuilder(gegede.builder.Builder):
 
         ModuleBox = geom.shapes.Box(self.name, self.ModuleDim[0], self.ModuleDim[1], self.ModuleDim[2])
        
-        Module_lv = geom.structure.Volume('vol'+self.name, material=self.ModuleMat , shape=ModuleBox )
+        secModule_lv = geom.structure.Volume('vol'+self.name, material=self.ModuleMat , shape=ModuleBox )
 
-        self.add_volume(Module_lv)
+        self.add_volume(secModule_lv) 
 
         # Get Plane lv
 
-        Plane_lv  = self.PlaneBldr.get_volume('volPlane')
+        secPlane_lv  = self.PlaneBldr.get_volume('volPlane')
  
 
         # Position of the Plane
 
-        Plane_Pos = geom.structure.Position('Plane_pos', self.PlanePos[0], self.PlanePos[1], self.PlanePos[2])
+        secPlane_Pos = geom.structure.Position('Plane_pos', self.PlanePos[0], self.PlanePos[1], self.PlanePos[2])
 							        
         # Make Plane box
        
-        pPlane_lv = geom.structure.Placement('place_Plane', volume = Plane_lv, pos = Plane_Pos)
+        pPlane_lv = geom.structure.Placement('place_Plane', volume = secPlane_lv, pos = secPlane_Pos)
 
-        Module_lv.placements.append(pPlane_lv.name )
+        secModule_lv.placements.append(pPlane_lv.name )
 
 
     	return

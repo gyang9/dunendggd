@@ -36,16 +36,16 @@ class HCalBuilder(gegede.builder.Builder):
 
         # Get Module lv
 
-        Module_lv  = self.ModuleBldr.get_volume('volModule')
+        secModule_lv  = self.ModuleBldr.get_volume('volModule')
  
 
-        # Position of the Module
+        # Position of the Module 
 
         HCalModule_Pos = geom.structure.Position('HCalModule_pos', self.ModulePos[0], self.ModulePos[1], self.ModulePos[2])
 							        
         # Make Module box
        
-        pModule_lv = geom.structure.Placement('place_HCalModule', volume = Module_lv, pos = HCalModule_Pos)
+        pModule_lv = geom.structure.Placement('place_HCalModule', volume = secModule_lv, pos = HCalModule_Pos)
 
         HCal_lv.placements.append(pModule_lv.name )
 

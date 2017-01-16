@@ -30,24 +30,24 @@ class PlaneBuilder(gegede.builder.Builder):
 
         PlaneBox = geom.shapes.Box(self.name, self.PlaneDim[0], self.PlaneDim[1], self.PlaneDim[2])
        
-        Plane_lv = geom.structure.Volume('vol'+self.name, material=self.PlaneMat, shape=PlaneBox )
+        secPlane_lv = geom.structure.Volume('vol'+self.name, material=self.PlaneMat, shape=PlaneBox )
 
-        self.add_volume(Plane_lv)
+        self.add_volume(secPlane_lv)
 
         # Get Strip lv
 
-        Strip_lv  = self.StripBldr.get_volume('volStrip')
+        secStrip_lv  = self.StripBldr.get_volume('volStrip')
  
 
         # Position of the Strip
 
-        Strip_Pos = geom.structure.Position('Strip_pos', self.StripPos[0], self.StripPos[1], self.StripPos[2])
+        secStrip_Pos = geom.structure.Position('Strip_pos', self.StripPos[0], self.StripPos[1], self.StripPos[2])
 							        
         # Make Strip box
        
-        pStrip_lv = geom.structure.Placement('place_Strip', volume = Strip_lv, pos = Strip_Pos)
+        pStrip_lv = geom.structure.Placement('place_Strip', volume = secStrip_lv, pos = secStrip_Pos)
 
-        Plane_lv.placements.append(pStrip_lv.name )
+        secPlane_lv.placements.append(pStrip_lv.name ) 
 
 
     	return
