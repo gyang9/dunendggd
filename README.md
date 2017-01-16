@@ -7,6 +7,6 @@ Evaluating :
 * others
 
 # Structure
- World -> DetEnc -> ID/OD/Magnet -> LArD/Tracker -> Module -> Plane -> Strip/Wire/Pixel
+ World -> DetEnc -> Primary/Secondary/Magnet -> LArD/Tracker -> Module -> Plane -> Strip/Wire/Pixel
 
  `Still under construction status. Main contributors are Jose Palomino and Guang Yang`
