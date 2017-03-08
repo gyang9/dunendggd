@@ -7,7 +7,7 @@ import gegede.builder
 from gegede import Quantity as Q
 import math
 
-class SBPlaneBuilder(gegede.builder.Builder):
+class SBBuilder(gegede.builder.Builder):
  
     # define builder data here
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^

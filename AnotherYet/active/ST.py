@@ -8,7 +8,7 @@ from gegede import Quantity as Q
 import math
 
 
-class STPlaneBuilder(gegede.builder.Builder):
+class STBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, sTube_innerDia=None, sTube_outerDia=None, 
