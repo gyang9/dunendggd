@@ -12,7 +12,7 @@ class STBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, sTube_innerDia=None, sTube_outerDia=None, 
-                  sTube_length=None, sAnodeWire_Dia=None,,
+                  sTube_length=None, sAnodeWire_Dia=None,
                   stPlaneMat=None, strawMat=None, stGas=None, **kwds):
         self.material   = stPlaneMat
         self.strawMat   = strawMat
