@@ -6,7 +6,7 @@ Subbuilder of RPCTray*Builder
 import gegede.builder
 from gegede import Quantity as Q
 
-class RPCModBuilder(gegede.builder.Builder):
+class rpcBuilder(gegede.builder.Builder):
     '''
     Build the RPC modules, the effective unit of the MuID, 
     constituting an X and Y plane of RPC strips 
