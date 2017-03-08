@@ -29,7 +29,7 @@ class SecondaryBuilder(gegede.builder.Builder):
 #        self.sttBldr      = self.get_builder('Tracker')
         self.ecalUpBldr   = self.get_builder('ECALUpstream')
         self.ecalDownBldr = self.get_builder('ECALDownstream')
-        self.ecalBarBldr  = self.get_builder('BarrelECAL')
+        self.ecalBarBldr  = self.get_builder('ECALBarrel')
         self.muidUpBldr   = self.get_builder('MuIDUpstream')
         self.muidDownBldr = self.get_builder('MuIDDownstream')
         self.muidBarBldr  = self.get_builder('MuIDBarrel')

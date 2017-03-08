@@ -21,8 +21,8 @@ class RPCModBuilder(gegede.builder.Builder):
          self.resiplateDim  = resiplateDim
          self.stripxDim      = stripxDim
          self.stripyDim      = stripyDim
-
-        self.rpcBldr   = self.get_builder('rpc')
+         self.rpcBldr   = self.get_builder('RPCPad')
+         return
 
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
