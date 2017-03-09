@@ -17,10 +17,14 @@ class RPCModBuilder(gegede.builder.Builder):
                   resiplateDim = None, 
                   stripxDim    = None,
                   stripyDim    = None,
+                  rpcModDim    = None,
+                  gas_gap      = None,
                    **kwds):
          self.resiplateDim  = resiplateDim
          self.stripxDim      = stripxDim
          self.stripyDim      = stripyDim
+         self.rpcModDim      = rpcModDim
+         self.gas_gap        = gas_gap
          self.rpcBldr   = self.get_builder('RPCPad')
          return
 
@@ -28,7 +32,12 @@ class RPCModBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
-        rpcMod_lv = self.rpcBldr.get_volume('volrpc')
+        rpcMod_lv = self.rpcBldr.get_volume('volRPCPad')
+        self.add_volume(rpcMod_lv)
+
+        rpcStripx_lv = self.rpcBldr.get_volume('volRPCStripx')
+        rpcStripy_lv = self.rpcBldr.get_volume('volRPCStripy')
+        resiplate_lv = self.rpcBldr.get_volume('volResistivePlate')
 
         # total nu of X and Y strips
         nXStrips = int(self.resiplateDim[0]/self.stripxDim[0])

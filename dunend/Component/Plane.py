@@ -11,7 +11,7 @@ class SBPlaneBuilder(gegede.builder.Builder):
  
     # define builder data here
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, ScintBarDim = None,
+    def configure(self, ScintBarDim = [Q('2.5cm'), Q('3.2m'), Q('1cm')],
                         SBPlaneMat  = None,
 			nScintBars  = None,
                         ScintBarMat = None, **kwds):

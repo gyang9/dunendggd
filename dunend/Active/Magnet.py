@@ -31,7 +31,7 @@ class MagnetBuilder(gegede.builder.Builder):
                                   dy=0.5*self.magInDim[1],  dz=0.5*self.magInDim[2]) 
 
         magBox = geom.shapes.Boolean( 'Magnet', type='subtraction', first=magOut, second=magIn ) 
-        Mag_lv = geom.structure.Volume('volMagnet', material=self.magMat, shape=magBox)
+        Mag_lv = geom.structure.Volume('volMagnet', material=self.MagMat, shape=magBox)
         self.add_volume(Mag_lv)
 
 

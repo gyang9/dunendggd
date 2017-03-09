@@ -10,10 +10,12 @@ from gegede import Quantity as Q
 class ECALBarrelBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, sTubeEndsToLead=None, **kwds):
+    def configure(self, sTubeEndsToLead=None, sttDimension=None, **kwds):
         self.defMat    = "Air"
         self.sTubeEndsToLead  = sTubeEndsToLead
         self.ECALBarModBldr = self.get_builder('ECALBarrelMod')
+
+	self.sttDimension = sttDimension
 
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -30,8 +32,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
         ecalModWide = ecalModDim[1]
 
         # Define inner barrel dimensions with stt dim and thickness
-        sttBldr = self.get_builder('STT')
-        sttDim = sttBldr.sttDim
+        sttDim = self.sttDimension
         self.ecalInDim  = [ sttDim[0] + 2*self.sTubeEndsToLead,
                             sttDim[1] + 2*self.sTubeEndsToLead,
                             2*ecalModWide ]

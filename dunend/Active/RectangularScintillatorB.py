@@ -11,8 +11,8 @@ class SBBuilder(gegede.builder.Builder):
  
     # define builder data here
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, ScintBarDim = None,
-                        ScintBarMat = None, **kwds):
+    def configure(self, ScintBarDim= [Q('2.5cm'), Q('3.2m'), Q('1cm')],
+                        ScintBarMat=None, **kwds):
 
         self.ScintBarMat = ScintBarMat
         self.ScintBarDim = ScintBarDim

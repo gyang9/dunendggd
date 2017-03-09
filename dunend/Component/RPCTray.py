@@ -28,7 +28,7 @@ class RPCTrayBuilder(gegede.builder.Builder):
 
 
         # get RPCMod volume and dim
-        rpcMod_lv = self.RPCModBldr.get_volume('volRPCMod')
+        rpcMod_lv = self.RPCModBldr.get_volume('volRPCPad')
         rpcModDim = self.RPCModBldr.rpcModDim
 
 

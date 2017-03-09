@@ -42,23 +42,30 @@ class RPCPadBuilder(gegede.builder.Builder):
                                   dy = 0.5*self.rpcModDim[1],
                                   dz = 0.5*self.rpcModDim[2])
         rpcMod_lv = geom.structure.Volume('vol'+self.name, material=self.rpcModMat, shape=rpcMod)
+
         # define box and volume for RPC strip
         rpcStripx = geom.shapes.Box( 'RPCStripx',
                                     dx = 0.5*self.stripxDim[0],
                                     dy = 0.5*self.stripxDim[1],
                                     dz = 0.5*self.stripxDim[2])
         rpcStripx_lv = geom.structure.Volume('volRPCStripx', material=self.rpcReadoutMat, shape=rpcStripx)
+        self.add_volume(rpcStripx_lv)
+
         rpcStripy = geom.shapes.Box( 'RPCStripy',
                                     dx = 0.5*self.stripyDim[0],
                                     dy = 0.5*self.stripyDim[1],
                                     dz = 0.5*self.stripyDim[2])
         rpcStripy_lv = geom.structure.Volume('volRPCStripy', material=self.rpcReadoutMat, shape=rpcStripy)
+        self.add_volume(rpcStripy_lv)
+
         # define box and volume for resistive plate (maybe the same volume for anode and cathode?)
         resiplate = geom.shapes.Box( 'ResistivePlate',
                                      dx = 0.5*self.resiplateDim[0],
                                      dy = 0.5*self.resiplateDim[1],
                                      dz = 0.5*self.resiplateDim[2])
         resiplate_lv = geom.structure.Volume('volResistivePlate', material=self.resiplateMat, shape=resiplate)
+        self.add_volume(resiplate_lv)
+
         # define box and volume for gas in rpc
         rpcGas = geom.shapes.Box( 'RPCGas',
                                   dx = 0.5*self.resiplateDim[0],

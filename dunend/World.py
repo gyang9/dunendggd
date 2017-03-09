@@ -27,7 +27,8 @@ class WorldBuilder(gegede.builder.Builder):
                   worldMat='Rock', **kwds):
         self.worldDim = worldDim
         self.material   = worldMat
-        self.detEncBldr  = self.get_builder("Secondary")
+        self.detEncBldr  = self.get_builder("DetEnc")
+        self.MaterialBldr = self.get_builder("Material")
 
         self.servBDim            = servBuildingDim
         self.overburden          = overburden
@@ -45,6 +46,18 @@ class WorldBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
+
+
+        ########################### Above is math, below is GGD ###########################
+
+        self.define_materials(geom) 
+        r90aboutX      = geom.structure.Rotation( 'r90aboutX',      '90deg',  '0deg',  '0deg'  )
+        rminus90aboutX = geom.structure.Rotation( 'rminus90aboutX', '-90deg', '0deg',  '0deg'  )
+        r90aboutY      = geom.structure.Rotation( 'r90aboutY',      '0deg',   '90deg', '0deg'  )
+        r180aboutY     = geom.structure.Rotation( 'r180aboutY',     '0deg',   '180deg','0deg'  )
+        rminus90aboutY = geom.structure.Rotation( 'rminus90aboutY', '0deg', '-90deg',  '0deg'  )
+        r90aboutZ      = geom.structure.Rotation( 'r90aboutZ',      '0deg',   '0deg',  '90deg' )
+        r90aboutXZ     = geom.structure.Rotation( 'r90aboutXZ', '90deg',  '0deg', '90deg'  )
 
         # Get relevant dimensions
         detEncDim     = list(self.detEncBldr.detEncDim)
@@ -81,10 +94,15 @@ class WorldBuilder(gegede.builder.Builder):
         self.add_volume(world_lv)
 
         # Get volDetEnclosure and place it
-        detEnc_lv = self.detEncBldr.get_volume("volSecondary")
+        detEnc_lv = self.detEncBldr.get_volume("volDetEnc")
         detEnc_in_world = geom.structure.Position('DetEnc_in_World', detEncPos[0], detEncPos[1], detEncPos[2])
         pD_in_W = geom.structure.Placement('placeDetEnc_in_World',
                                            volume = detEnc_lv,
                                            pos = detEnc_in_world)
         world_lv.placements.append(pD_in_W.name)
+
+
+
+
+
 

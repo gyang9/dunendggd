@@ -8,7 +8,7 @@ import math
 from gegede import Quantity as Q
 
 
-class materialBuilder(gegede.builder.Builder):
+class MaterialBuilder(gegede.builder.Builder):
     '''
     Build a big box world volume.
     N.B. -- Global convention: index 0,1,2 = x,y,z
@@ -21,16 +21,6 @@ class materialBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
-        ########################### Above is math, below is GGD ###########################
-
-        self.define_materials(geom)
-        r90aboutX      = geom.structure.Rotation( 'r90aboutX',      '90deg',  '0deg',  '0deg'  )
-        rminus90aboutX = geom.structure.Rotation( 'rminus90aboutX', '-90deg', '0deg',  '0deg'  )
-        r90aboutY      = geom.structure.Rotation( 'r90aboutY',      '0deg',   '90deg', '0deg'  )
-        r180aboutY     = geom.structure.Rotation( 'r180aboutY',     '0deg',   '180deg','0deg'  )
-        rminus90aboutY = geom.structure.Rotation( 'rminus90aboutY', '0deg', '-90deg',  '0deg'  )
-        r90aboutZ      = geom.structure.Rotation( 'r90aboutZ',      '0deg',   '0deg',  '90deg' )
-        r90aboutXZ     = geom.structure.Rotation( 'r90aboutXZ', '90deg',  '0deg', '90deg'  )
 
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
