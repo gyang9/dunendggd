@@ -11,7 +11,7 @@ from gegede import Quantity as Q
 class ScintillatorTrackerBuilder(gegede.builder.Builder):
 
     ## The configure
-    def configure( self, modDimension=None, modMaterial=None, modNElements=None,  modGapV=None, 
+    def configure( self, modDimension=None, modMaterial=None, modNElements=None,  modGapV=None,
                     modTranspV=None, **kwds ):
         self.modDimension, self.modMaterial = ( modDimension, modMaterial )
         self.modNElements, self.modInsideGap = ( modNElements, modGapV )
@@ -20,7 +20,7 @@ class ScintillatorTrackerBuilder(gegede.builder.Builder):
 
     ## The construct
     def construct( self, geom ):
-        main_shape = geom.shapes.Box( self.name+"_shape", dx = self.modDimension[0], 
+        main_shape = geom.shapes.Box( self.name+"_shape", dx = self.modDimension[0],
                                         dy = self.modDimension[1], dz = self.modDimension[2] )
         main_lv = geom.structure.Volume( self.name+"_lv", material=self.modMaterial, shape=main_shape )
         #main_lv.params.append(("SensDet","LArD"))
@@ -29,13 +29,14 @@ class ScintillatorTrackerBuilder(gegede.builder.Builder):
         # get sub-builders and its volume
         el_sb = self.get_builder()
         el_lv = el_sb.get_volume()
+        print "jose", el_lv.shape()
 
         # calculate half dimension of element plus the gap projected to the transportation vector
-        sb_dim_v = [t*(d+0.5*self.modInsideGap) for t,d in zip(self.modTranspV,el_sb.plaDimension)] 
-        
+        sb_dim_v = [t*(d+0.5*self.modInsideGap) for t,d in zip(self.modTranspV,el_sb.plaDimension)]
+
         # lower edge, the module dimension projected on transportation vector
-        low_end_v  = [-t*d+ed for t,d,ed in zip(self.modTranspV,self.modDimension,sb_dim_v)] 
-        
+        low_end_v  = [-t*d+ed for t,d,ed in zip(self.modTranspV,self.modDimension,sb_dim_v)]
+
         for element in range(self.modNElements):
             # calculate the distance for n elements = i*2*halfdinemsion
             temp_v = [element*2*d for d in sb_dim_v]
