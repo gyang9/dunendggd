@@ -12,9 +12,10 @@ class SecondaryBuilder(gegede.builder.Builder):
     '''
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, defMat = 'Air',
+    def configure(self, defMat = 'Air',  
                   magInDim=None, magThickness=None, 
                   downMuIDtoMagnet = None, upMuIDtoMagnet = None, sttDim = None, sttDimension=None,
+                  ecalUpRot=None, ecalDownRot=None, ecalBarRot=None, muidUpRot=None, muidDownRot=None, muidBarRot=None,
                   vesselAroundSTT = False, vesselThickness=None, **kwds):
         if magInDim is None:
             raise ValueError("No value given for magInDim")
@@ -34,6 +35,13 @@ class SecondaryBuilder(gegede.builder.Builder):
         self.muidDownBldr = self.get_builder('MuIDDownstream')
         self.muidBarBldr  = self.get_builder('MuIDBarrel')
         self.MagnetBldr   = self.get_builder('Magnet')
+
+        self.ecalUpRot  = ecalUpRot;
+        self.ecalDownRot= ecalDownRot;
+        self.ecalBarRot= ecalBarRot;
+        self.muidUpRot= muidUpRot;
+        self.muidDownRot= muidDownRot;
+        self.muidBarRot= muidBarRot;
 
 
         # set the inner and outer magnet dimensions
@@ -286,7 +294,8 @@ class SecondaryBuilder(gegede.builder.Builder):
         ecalDown_in_det = geom.structure.Position('ECALDown_in_MagInner', ecalDownPos[0], ecalDownPos[1], ecalDownPos[2])
         pecalDown_in_MagInner = geom.structure.Placement('placeECALDown_in_MagInner',
                                                   volume = ecalDown_lv,
-                                                  pos = ecalDown_in_det)
+                                                  pos = ecalDown_in_det,
+                                                  rot=self.ecalDownRot)
         #magInner_lv.placements.append(pecalDown_in_MagInner.name)
 
         ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
@@ -294,26 +303,29 @@ class SecondaryBuilder(gegede.builder.Builder):
         pecalUp_in_MagInner = geom.structure.Placement('placeECALUp_in_MagInner',
                                                 volume = ecalUp_lv,
                                                 pos = ecalUp_in_det,
-                                                rot='r180aboutY')
+                                                rot=self.ecalUpRot)
         #magInner_lv.placements.append(pecalUp_in_MagInner.name)
 
         ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')
         ecalBar_in_det = geom.structure.Position('ECALBar_in_MagInner', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2])
         pecalBar_in_MagInner = geom.structure.Placement('placeECALBar_in_MagInner',
                                                  volume = ecalBar_lv,
-                                                 pos = ecalBar_in_det)
+                                                 pos = ecalBar_in_det,
+                                                 rot=self.ecalBarRot)
         #magInner_lv.placements.append(pecalBar_in_MagInner.name)
 
         ecalBar_in_det2 = geom.structure.Position('ECALBar_in_MagInner2', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2]+Q('6m'))
         pecalBar_in_MagInner2 = geom.structure.Placement('placeECALBar_in_MagInner2',
                                                  volume = ecalBar_lv,
-                                                 pos = ecalBar_in_det2)
+                                                 pos = ecalBar_in_det2,
+                                                 rot=self.ecalBarRot)
         #magInner_lv.placements.append(pecalBar_in_MagInner2.name)
 
         ecalBar_in_det3 = geom.structure.Position('ECALBar_in_MagInner3', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2]-Q('10m'))
         pecalBar_in_MagInner3 = geom.structure.Placement('placeECALBar_in_MagInner3',
                                                  volume = ecalBar_lv,
-                                                 pos = ecalBar_in_det3)
+                                                 pos = ecalBar_in_det3,
+                                                 rot=self.ecalBarRot)
         #magInner_lv.placements.append(pecalBar_in_MagInner3.name)
 
 
@@ -325,21 +337,21 @@ class SecondaryBuilder(gegede.builder.Builder):
         pmuidDown_in_D = geom.structure.Placement('placeMuIDDown_in_Det',
                                                   volume = muidDown_lv,
                                                   pos = muidDown_in_det,
-                                                  rot = "r180aboutY")
+                                                  rot =self.muidDownRot)
         det_lv.placements.append(pmuidDown_in_D.name)
 
         muidUp_lv = self.muidUpBldr.get_volume('volMuIDUpstream')
         muidUp_in_det = geom.structure.Position('MuIDUp_in_Det', muidUpPos[0], muidUpPos[1], muidUpPos[2])
         pmuidUp_in_D = geom.structure.Placement('placeMuIDUp_in_Det',
                                                 volume = muidUp_lv,
-                                                pos = muidUp_in_det)
+                                                pos =self.muidUpRot)
         det_lv.placements.append(pmuidUp_in_D.name)
 
         muidBar_lv = self.muidBarBldr.get_volume('volMuIDBarrel')
         muidBar_in_det = geom.structure.Position('MuIDBar_in_Det', muidBarPos[0], muidBarPos[1], muidBarPos[2])
         pmuidBar_in_D = geom.structure.Placement('placeMuIDBar_in_Det',
                                                  volume = muidBar_lv,
-                                                 pos = muidBar_in_det)
+                                                 pos =self.muidBarRot)
         det_lv.placements.append(pmuidBar_in_D.name)
        
 

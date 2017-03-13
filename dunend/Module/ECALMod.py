@@ -19,6 +19,8 @@ class ECALModBuilder(gegede.builder.Builder):
                   leadThickness = None, 
                   nSBPlanes = None,
 		  altPlaneOrient = True,
+                  rotPlaneEven=None,
+                  rotPlaneOdd = None,
                   **kwds):
         if ecalThickness is None:
             raise ValueError("No value given for ecalThickness")
@@ -32,6 +34,8 @@ class ECALModBuilder(gegede.builder.Builder):
         self.leadThickness  = leadThickness
         self.nSBPlanes      = nSBPlanes  
         self.altPlaneOrient = altPlaneOrient
+        self.rotPlaneEven= rotPlaneEven
+        self.rotPlaneOdd = rotPlaneOdd 
         self.SBPlaneBldr = self.get_builder('SBPlane')
 
 
@@ -65,14 +69,14 @@ class ECALModBuilder(gegede.builder.Builder):
             zpos = -0.5*self.ecalModDim[2]+ (i+0.5)*SBPlaneDim[2]+(i+1)*self.leadThickness
 
 	    rotPlane = 'identity'
-	    if(self.altPlaneOrient): rotPlane = 'r90aboutZ'
+	    #if(self.altPlaneOrient): rotPlane = 'r90aboutZ'
 
             if i%2==0:
                rsbp_in_ecalend  = geom.structure.Position('SBPlane-'+str(i)+'_in_'+self.name, 
                                                           '0cm', '0cm', zpos)
                prsbp_in_ecalend = geom.structure.Placement('placeSBPlane-'+str(i)+'_in_'+self.name,
                                                            volume = SBPlane_lv, 
-                                                           pos = rsbp_in_ecalend)
+                                                           pos = rsbp_in_ecalend, rot=self.rotPlaneEven)
                ecalMod_lv.placements.append( prsbp_in_ecalend.name )
                n1=n1+1
             else:
@@ -80,7 +84,7 @@ class ECALModBuilder(gegede.builder.Builder):
                                                            '0cm', '0cm', zpos)
                 prsbp_in_ecalend = geom.structure.Placement('placeSBPlane-'+str(i)+'_in_'+self.name,
                                                             volume = SBPlane_lv, 
-                                                            pos = rsbp_in_ecalend, rot=rotPlane)
+                                                            pos = rsbp_in_ecalend, rot=self.rotPlaneOdd)
                 ecalMod_lv.placements.append( prsbp_in_ecalend.name )
                 n2=n2+1
                 

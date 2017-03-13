@@ -18,6 +18,7 @@ class MuIDEndBuilder(gegede.builder.Builder):
                   steelPlateDim = None, 
                   nTraysPerPlane = None, 
                   nPlanes = None,
+                  muidRot = None, 
                   muidMat = 'Steel', **kwds):
 
         self.muidMat        = muidMat
@@ -25,6 +26,7 @@ class MuIDEndBuilder(gegede.builder.Builder):
         self.steelPlateDim  = steelPlateDim
         self.nTraysPerPlane = nTraysPerPlane
         self.nPlanes        = nPlanes
+        self.muidRot        = muidRot
         
         #print self.builders
         self.RPCTrayBldr = self.get_builder('RPCTray_End')
@@ -64,7 +66,7 @@ class MuIDEndBuilder(gegede.builder.Builder):
                 rpct_in_muid  = geom.structure.Position( 'rpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name,
                                                          xpos,  ypos,  zpos)
                 prpct_in_muid = geom.structure.Placement( 'prpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name,
-                                                          volume = rpcTray_lv, pos = rpct_in_muid )
+                                                          volume = rpcTray_lv, pos = rpct_in_muid, rot=self.muidRot )
 
                 muid_lv.placements.append( prpct_in_muid.name )
         

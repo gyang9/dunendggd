@@ -50,6 +50,7 @@ class WorldBuilder(gegede.builder.Builder):
         ########################### Above is math, below is GGD ###########################
 
         self.define_materials(geom)
+        noRotate       = geom.structure.Rotation( 'noRotate',      '0deg',  '0deg',  '0deg'  )
         r90aboutX      = geom.structure.Rotation( 'r90aboutX',      '90deg',  '0deg',  '0deg'  )
         rminus90aboutX = geom.structure.Rotation( 'rminus90aboutX', '-90deg', '0deg',  '0deg'  )
         r90aboutY      = geom.structure.Rotation( 'r90aboutY',      '0deg',   '90deg', '0deg'  )

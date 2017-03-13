@@ -31,7 +31,8 @@ class SBPlaneBuilder(gegede.builder.Builder):
 
         # define material in World Builder
         # Make the scint bar plane, used for both orientations
-        self.SBPlaneDim = [ self.ScintBarDim[1], self.ScintBarDim[1], self.ScintBarDim[2] ]
+
+        self.SBPlaneDim = [ self.ScintBarDim[0] * self.nScintBars, self.ScintBarDim[1], self.ScintBarDim[2] ]
         SBPlaneBox = geom.shapes.Box( 'SBPlaneBox',              dx=0.5*self.SBPlaneDim[0], 
                                       dy=0.5*self.SBPlaneDim[1], dz=0.5*self.SBPlaneDim[2])
         SBPlane_lv = geom.structure.Volume('volSBPlane', material=self.SBPlaneMat, shape=SBPlaneBox)
