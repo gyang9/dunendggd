@@ -11,7 +11,7 @@ class SBPlaneBuilder(gegede.builder.Builder):
  
     # define builder data here
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, ScintBarDim = [Q('2.5cm'), Q('3.2m'), Q('1cm')],
+    def configure(self, ScintBarDim = None,
                         SBPlaneMat  = None,
 			nScintBars  = None,
                         ScintBarMat = None, **kwds):
@@ -53,3 +53,5 @@ class SBPlaneBuilder(gegede.builder.Builder):
             psb_in_sp     = geom.structure.Placement( 'placeSB-'+str(i)+'_in_'+self.name, 
                                                       volume = ScintBar_lv, pos = sb_in_sp)
             SBPlane_lv.placements.append(psb_in_sp.name)
+
+        return

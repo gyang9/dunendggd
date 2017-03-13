@@ -203,7 +203,6 @@ class SecondaryBuilder(gegede.builder.Builder):
                                   dy=0.5*self.magInDim[1],  dz=0.5*self.magInDim[2]) 
         mag_lv = self.MagnetBldr.get_volume('volMagnet')
         magInner_lv = geom.structure.Volume('volMagnetInner', material=self.defMat, shape=magIn)
-
         self.add_volume(magInner_lv)
         mag_in_det = geom.structure.Position('Mag_in_MagInner', magPos[0], magPos[1], magPos[2])
         pmag_in_D  = geom.structure.Placement('placeMag_in_MagInner',
@@ -212,6 +211,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         pmagInner_in_D  = geom.structure.Placement('placeMagInner_in_MagInner',
                                                    volume = magInner_lv,
                                                    pos = mag_in_det) # same pos as magnet
+
         det_lv.placements.append(pmag_in_D.name)
         det_lv.placements.append(pmagInner_in_D.name)
 
@@ -290,13 +290,14 @@ class SecondaryBuilder(gegede.builder.Builder):
 
 
         # Get volECALDownstream, volECALUpstream, volECALBarrel volumes and place in volDetector
+
         ecalDown_lv = self.ecalDownBldr.get_volume('volECALDownstream')
         ecalDown_in_det = geom.structure.Position('ECALDown_in_MagInner', ecalDownPos[0], ecalDownPos[1], ecalDownPos[2])
         pecalDown_in_MagInner = geom.structure.Placement('placeECALDown_in_MagInner',
                                                   volume = ecalDown_lv,
                                                   pos = ecalDown_in_det,
                                                   rot=self.ecalDownRot)
-        #magInner_lv.placements.append(pecalDown_in_MagInner.name)
+        magInner_lv.placements.append(pecalDown_in_MagInner.name)
 
         ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
         ecalUp_in_det = geom.structure.Position('ECALUp_in_MagInner', ecalUpPos[0], ecalUpPos[1], ecalUpPos[2])
@@ -304,7 +305,7 @@ class SecondaryBuilder(gegede.builder.Builder):
                                                 volume = ecalUp_lv,
                                                 pos = ecalUp_in_det,
                                                 rot=self.ecalUpRot)
-        #magInner_lv.placements.append(pecalUp_in_MagInner.name)
+        magInner_lv.placements.append(pecalUp_in_MagInner.name)
 
         ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')
         ecalBar_in_det = geom.structure.Position('ECALBar_in_MagInner', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2])
@@ -312,7 +313,7 @@ class SecondaryBuilder(gegede.builder.Builder):
                                                  volume = ecalBar_lv,
                                                  pos = ecalBar_in_det,
                                                  rot=self.ecalBarRot)
-        #magInner_lv.placements.append(pecalBar_in_MagInner.name)
+        magInner_lv.placements.append(pecalBar_in_MagInner.name)
 
         ecalBar_in_det2 = geom.structure.Position('ECALBar_in_MagInner2', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2]+Q('6m'))
         pecalBar_in_MagInner2 = geom.structure.Placement('placeECALBar_in_MagInner2',
