@@ -1,12 +1,20 @@
-# GuJo
-This is a geometry construction for the DUNE hybrid ND.
-Evaluating :
-* LAr-Tracker
-* Tracker-LAr
-* TPC-Tracker
-* others
+# Dune-ND-GGD
 
-# Structure
- World -> DetEnc -> Primary/Secondary/Magnet -> LArD/Tracker -> Module -> Plane -> Strip/Wire/Pixel
+This is a tool to build proposal geometries for DUNE near detector.
 
- `Still under construction status. Main contributors are Jose Palomino and Guang Yang`
+dunendggd is based on the sophisticated package called [GeGeDe](https://github.com/brettviren/gegede)
+
+# Setup
+```bash
+python setup.sh develop
+```
+# Example
+```bash
+gegede-cli Config/PRIMggd_test.cfg Config/COMMONggd_test.cfg -w World -o ID.gdml
+```
+
+* **dunendggd:**
+  * Guang Yang `guang.yang.1@stonybrook.edu`
+  * Jose Palomino`jose.palominogallo@stonybrook.edu`
+* **GeGeDe:**
+  * Brett Viren `bviren@bnl.gov`
