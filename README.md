@@ -10,6 +10,7 @@ python setup.sh develop
 ```
 # Example
 ```bash
+cd ndggd
 gegede-cli Config/PRIMggd_test.cfg Config/COMMONggd_test.cfg -w World -o ID.gdml
 ```
 
