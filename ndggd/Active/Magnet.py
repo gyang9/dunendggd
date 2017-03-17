@@ -11,14 +11,14 @@ class MagnetBuilder(gegede.builder.Builder):
  
     # define builder data here
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, magInDim=None,
-                        magThickness=None, MagMat=None, **kwds):
+    def configure(self, actDimension     =None,
+                        actThickness =None, actMaterial =None, **kwds):
 
-        self.magInDim  = magInDim
-        self.magOutDim = list(magInDim)
-        self.magOutDim[1] += 2*magThickness
-        self.magOutDim[2] += 2*magThickness
-        self.MagMat = MagMat 
+        self.magInDim  = actDimension     
+        self.magOutDim = list(actDimension)
+        self.magOutDim[1] += 2*actThickness 
+        self.magOutDim[2] += 2*actThickness 
+        self.MagMat = actMaterial 
      
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^

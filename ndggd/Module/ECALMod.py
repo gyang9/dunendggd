@@ -15,28 +15,29 @@ class ECALModBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, 
-                  ecalThickness = None, 
-                  leadThickness = None,
-                  ecalMat = None, 
-                  nSBPlanes = None,
-		  altPlaneOrient = True,
-                  rotPlaneEven=None,
-                  rotPlaneOdd = None,
+                  modEcalThickness = None, 
+                  modLeadThickness = None,
+                  modEcalMat       = None, 
+                  modScintMat      = None,
+                  modNElements  = None,
+		  modAltPlaneOrient = True,
+                  modRotPlaneEven=None,
+                  modRotPlaneOdd = None,
                   **kwds):
-        if ecalThickness is None:
+        if modEcalThickness is None:
             raise ValueError("No value given for ecalThickness")
-        if leadThickness is None:
+        if modLeadThickness is None:
             raise ValueError("No value given for leadThickness")
-        if nSBPlanes is None:
+        if modNElements  is None:
             raise ValueError("No value given for nSBPlanes")
 
-        self.ecalMat        = 'Lead'
-        self.ecalThickness  = ecalThickness
-        self.leadThickness  = leadThickness
-        self.nSBPlanes      = nSBPlanes  
-        self.altPlaneOrient = altPlaneOrient
-        self.rotPlaneEven= rotPlaneEven
-        self.rotPlaneOdd = rotPlaneOdd 
+        self.ecalMat        = modEcalMat       
+        self.ecalThickness  = modEcalThickness 
+        self.leadThickness  = modLeadThickness 
+        self.nSBPlanes      = modNElements  
+        self.altPlaneOrient = modAltPlaneOrient 
+        self.rotPlaneEven= modRotPlaneEven
+        self.rotPlaneOdd = modRotPlaneOdd 
         self.SBPlaneBldr = self.get_builder('SBPlane')
 
 

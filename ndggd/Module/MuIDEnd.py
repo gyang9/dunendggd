@@ -14,19 +14,19 @@ class MuIDEndBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, 
-                  muidDim = None,
-                  steelPlateDim = None, 
-                  nTraysPerPlane = None, 
-                  nPlanes = None,
-                  muidRot = None, 
-                  muidMat = 'Steel', **kwds):
+                  modMuidDim = None,
+                  modSteelPlateDim = None, 
+                  modNTraysPerPlane = None, 
+                  modNPlanes = None,
+                  modMuidRot = None, 
+                  modMuidMat = 'Steel', **kwds):
 
-        self.muidMat        = muidMat
-        self.muidDim        = muidDim
-        self.steelPlateDim  = steelPlateDim
-        self.nTraysPerPlane = nTraysPerPlane
-        self.nPlanes        = nPlanes
-        self.muidRot        = muidRot
+        self.muidMat        = modMuidMat 
+        self.muidDim        = modMuidDim 
+        self.steelPlateDim  = modSteelPlateDim 
+        self.nTraysPerPlane = modNTraysPerPlane 
+        self.nPlanes        = modNPlanes 
+        self.muidRot        = modMuidRot 
         
         #print self.builders
         self.RPCTrayBldr = self.get_builder('RPCTray_End')

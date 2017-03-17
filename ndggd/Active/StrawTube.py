@@ -11,16 +11,16 @@ import math
 class STBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, sTube_innerDia=None, sTube_outerDia=None, 
-                  sTube_length=None, sAnodeWire_Dia=None,
-                  stPlaneMat=None, strawMat=None, stGas=None, **kwds):
-        self.material   = stPlaneMat
-        self.strawMat   = strawMat
-        self.stGas      = stGas
-        self.sTube_innerDia = sTube_innerDia
-        self.sTube_outerDia = sTube_outerDia
-        self.sTube_length = sTube_length
-        self.sAnodeWire_Dia = sAnodeWire_Dia
+    def configure(self, actSTube_innerDia=None, actSTube_outerDia=None, 
+                  actSTube_length=None, actSAnodeWire_Dia=None,
+                  actStPlaneMat=None, actStrawMat =None, actStGas =None, **kwds):
+        self.material   = actStPlaneMat     
+        self.strawMat   = actStrawMat 
+        self.stGas      = actStGas 
+        self.sTube_innerDia = actSTube_innerDia
+        self.sTube_outerDia = actSTube_outerDia
+        self.sTube_length = actSTube_length
+        self.sAnodeWire_Dia = actSAnodeWire_Dia
 
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^

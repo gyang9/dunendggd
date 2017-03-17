@@ -11,23 +11,23 @@ class SBPlaneBuilder(gegede.builder.Builder):
  
     # define builder data here
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, ScintBarDim = None,
-                        SBPlaneMat  = None,
-			nScintBars  = None,
-                        ScintBarMat = None, **kwds):
-        self.SBPlaneMat  = SBPlaneMat
-        self.ScintBarMat = ScintBarMat
-        self.ScintBarDim = ScintBarDim
-        self.nScintBars  = nScintBars
-
-        self.SBPlaneBldr = self.get_builder('SB')
+    def configure(self, compDimension = None,
+                        compSBPlaneMat = None,
+			compNElements = None,
+                        compScintBarMat = None, compRotation = None, **kwds):
+        self.SBPlaneMat  = compSBPlaneMat         
+        self.ScintBarMat = compScintBarMat        
+        self.ScintBarDim = compDimension        
+        self.nScintBars  = compNElements       
+        self.compRotation  = compRotation         
      
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
         # Call the scint bar shape and volume
-        ScintBar_lv = self.SBPlaneBldr.get_volume('volScintBar')
+        SBPlaneBldr = self.get_builder()
+        ScintBar_lv = SBPlaneBldr.get_volume()
 
         # define material in World Builder
         # Make the scint bar plane, used for both orientations
@@ -51,7 +51,7 @@ class SBPlaneBuilder(gegede.builder.Builder):
             sb_in_sp      = geom.structure.Position( 'SB-'+str(i)+'_in_'+self.name, 
                                                      xpos, '0cm', '0cm')
             psb_in_sp     = geom.structure.Placement( 'placeSB-'+str(i)+'_in_'+self.name, 
-                                                      volume = ScintBar_lv, pos = sb_in_sp)
+                                                      volume = ScintBar_lv, pos = sb_in_sp, rot = self.compRotation)
             SBPlane_lv.placements.append(psb_in_sp.name)
 
         return

@@ -12,10 +12,12 @@ class STPlaneBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, 
-                  nTubesPerPlane = None,
-                  stPlaneMat=None, **kwds):
-        self.material   = stPlaneMat
-        self.nTubesPerPlane = nTubesPerPlane
+                  compNElements = None,
+                  compMaterial=None, compRotation=None, **kwds):
+        self.material   = compMaterial      
+        self.compNElements = nTubesPerPlane
+        self.compRotation = compRotation
+
         self.STPlaneBldr = self.get_builder('ST')
 
 
@@ -66,11 +68,11 @@ class STPlaneBuilder(gegede.builder.Builder):
             pst_in_p     = geom.structure.Placement( 'placeTube-'+str(i)+'_in_'+self.name,
                                                      volume = sTube_lv,
                                                      pos = st_in_p,
-                                                     rot = "r90aboutX")
+                                                     rot = self.compRotation)
             pstnext_in_p = geom.structure.Placement( 'placeTube-'+str(i+self.nTubesPerPlane)+'_in_'+self.name,
                                                      volume = sTube_lv,
                                                      pos = stnext_in_p,
-                                                     rot = "r90aboutX")
+                                                     rot = self.compRotation)
 
 
             stPlane_lv.placements.append( pst_in_p.name     )

@@ -14,22 +14,22 @@ class RPCPadBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, 
-                  rpcModDim    = None, 
-                  resiplateDim = None, 
-                  stripxDim    = None,
-                  stripyDim    = None,
-                  gas_gap      = None,
-                  rpcModMat=None, resiplateMat=None, 
-                  gasMat=None, rpcReadoutMat=None, **kwds):
-         self.rpcModMat     = rpcModMat
-         self.rpcReadoutMat = rpcReadoutMat
-         self.resiplateMat  = resiplateMat
-         self.gasMat        = gasMat
-         self.rpcModDim     = rpcModDim
-         self.resiplateDim  = resiplateDim
-         self.stripxDim      = stripxDim
-         self.stripyDim      = stripyDim
-         self.gas_gap       = gas_gap
+                  actRpcModDim    = None, 
+                  actResiplateDim = None, 
+                  actStripxDim     = None,
+                  actStripyDim     = None,
+                  actGas_gap      = None,
+                  actRpcModMat=None, actResiplateMat=None, 
+                  actGasMat =None, actRpcReadoutMat=None, **kwds):
+         self.rpcModMat     = actRpcModMat
+         self.rpcReadoutMat = actRpcReadoutMat
+         self.resiplateMat  = actResiplateMat
+         self.gasMat        = actGasMat 
+         self.rpcModDim     = actRpcModDim    
+         self.resiplateDim  = actResiplateDim 
+         self.stripxDim      = actStripxDim     
+         self.stripyDim      = actStripyDim     
+         self.gas_gap       = actGas_gap
 
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^

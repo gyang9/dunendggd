@@ -13,17 +13,22 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
     '''
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, muidInDim=None, magInDim=None, magThickness=None, steelPlateThickness=None, gap_tworpctrays=None, air_gap=None, **kwds):
-        if muidInDim is None:
+    def configure(self, modMuidInDim =None, 
+                         modMagInDim   =None, 
+                     modMagThickness =None, 
+              modSteelPlateThickness =None, 
+                  modGap_tworpctrays=None, 
+                          modAir_gap=None, **kwds):
+        if modMuidInDim is None:
             raise ValueError("No value given for muidInDim")
 
         self.defMat = "Steel"
-        self.muidInDim  = muidInDim
-        self.magInDim   = magInDim
-        self.magThickness = magThickness
-        self.steelPlateThickness = steelPlateThickness
-        self.gap_tworpctrays = gap_tworpctrays
-        self.air_gap = air_gap
+        self.muidInDim  = modMuidInDim 
+        self.magInDim   = modMagInDim   
+        self.magThickness = modMagThickness 
+        self.steelPlateThickness = modSteelPlateThickness 
+        self.gap_tworpctrays = modGap_tworpctrays
+        self.air_gap = modAir_gap
 
         # Get RPC tray builders
         self.RPCTraySmallBldr = self.get_builder('RPCTray_BarSmall')

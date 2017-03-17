@@ -14,17 +14,17 @@ class RPCModBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, 
-                  resiplateDim = None, 
-                  stripxDim    = None,
-                  stripyDim    = None,
-                  rpcModDim    = None,
-                  gas_gap      = None,
+                  compResiplateDim = None, 
+                  compStripxDim  = None,
+                  compStripyDim  = None,
+                  compRpcModDim  = None,
+                  compGas_gap    = None,
                    **kwds):
-         self.resiplateDim  = resiplateDim
-         self.stripxDim      = stripxDim
-         self.stripyDim      = stripyDim
-         self.rpcModDim      = rpcModDim
-         self.gas_gap        = gas_gap
+         self.resiplateDim  = compResiplateDim 
+         self.stripxDim      = compStripxDim  
+         self.stripyDim      = compStripyDim  
+         self.rpcModDim      = compRpcModDim  
+         self.gas_gap        = compGas_gap
          self.rpcBldr   = self.get_builder('RPCPad')
          return
 

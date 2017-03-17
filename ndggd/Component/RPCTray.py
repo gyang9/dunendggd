@@ -12,13 +12,14 @@ class RPCTrayBuilder(gegede.builder.Builder):
     '''
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self,  rpcTrayDim = None, rpcTrayMat = 'Air',
-                  nrpcCol = None, nrpcRow = None, **kwds):
+    def configure(self,  compDimension = None, compMaterial = 'Air',
+                  compNrpcCol = None, compNrpcRow = None, compRotation=None, **kwds):
 
-      self.rpcTrayMat = rpcTrayMat
-      self.rpcTrayDim = rpcTrayDim
-      self.nrpcCol = nrpcCol
-      self.nrpcRow = nrpcRow
+      self.rpcTrayMat = compMaterial 
+      self.rpcTrayDim = compDimension 
+      self.nrpcCol = compNrpcCol 
+      self.nrpcRow = compNrpcRow 
+      self.compRotation = compRotation
 
       #print self.builders
       self.RPCModBldr = self.get_builder('RPCMod')
@@ -60,7 +61,7 @@ class RPCTrayBuilder(gegede.builder.Builder):
                 rpcm_in_t  = geom.structure.Position( 'RPCMod-'+str(self.nrpcCol*i+j)+'_in_'+self.name,
                                                       xpos,  ypos,  zpos)
                 prpcm_in_t = geom.structure.Placement( 'placeRPCMod-'+str(self.nrpcCol*i+j)+'_in_'+self.name,
-                                                       volume = rpcMod_lv, pos = rpcm_in_t)
+                                                       volume = rpcMod_lv, pos = rpcm_in_t, rot = self.compRotation)
                 rpcTray_lv.placements.append( prpcm_in_t.name )
                 #print 'rpctray : '+str(i)+' '+str(j)+' RPCTray- xpos: '+str(xpos)+' ypos: '+str(ypos)+' zpos: '+str(zpos)
         

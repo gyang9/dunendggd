@@ -10,13 +10,11 @@ from gegede import Quantity as Q
 class ECALBarrelBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, sTubeEndsToLead=None, sttDimension=None, **kwds):
-        self.defMat    = "Air"
-        self.sTubeEndsToLead  = sTubeEndsToLead
+    def configure(self, modEcalMat=None, modSTubeEndsToLead=None, modInnerDimension=None, **kwds):
+        self.defMat    = modEcalMat          
+        self.sTubeEndsToLead  = modSTubeEndsToLead  
+	self.sttDimension = modInnerDimension
         self.ECALBarModBldr = self.get_builder('ECALBarrelMod')
-
-	self.sttDimension = sttDimension
-
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
