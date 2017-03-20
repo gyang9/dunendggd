@@ -11,7 +11,7 @@
 	//geo->GetVolume("volMagnetInner")->SetLineColor(kRed);
 	geo->GetVolume("volSecondary")->SetVisibility(1);
 	geo->GetVolume("volSecondary")->SetTransparency(20);
-
+/*
 	if ( geo->GetVolume("volMuIDBarrel") != NULL )
 	{
 		geo->GetVolume("volMuIDBarrel")->SetLineColor(kBlue);
@@ -33,7 +33,8 @@
 		geo->GetVolume("volMuIDDownstream")->SetTransparency(70);
 		//geo->GetVolume("volMuIDDownstream")->SetTransparency(10);
 	}
-
+*/
+/*
 	if ( geo->GetVolume("volECALBarrel") != NULL )
 	{
 		geo->GetVolume("volECALBarrel")->SetLineColor(kGreen);
@@ -41,19 +42,22 @@
 		geo->GetVolume("volECALBarrel")->SetTransparency(70);
 		//geo->GetVolume("muidBar_lv")->SetTransparency(10);
 	}
-	if ( geo->GetVolume("ecalBar_lv") != NULL )
+	if ( geo->GetVolume("volECALDownstream") != NULL )
 	{
-		geo->GetVolume("ecalBar_lv")->SetLineColor(kPink);
-		geo->GetVolume("ecalBar_lv")->SetVisibility(1);
-		geo->GetVolume("ecalBar_lv")->SetTransparency(60);
-		//geo->GetVolume("ecalBar_lv")->SetTransparency(10);
+		geo->GetVolume("volECALDownstream")->SetLineColor(kPink);
+		geo->GetVolume("volECALDownstream")->SetVisibility(1);
+		geo->GetVolume("volECALDownstream")->SetTransparency(60);
+		//geo->GetVolume("volECALDownstream")->SetTransparency(10);
 	}
-	if ( geo->GetVolume("mag_lv") != NULL )
+*/
+/*
+	if ( geo->GetVolume("volMagnet") != NULL )
 	{
-		geo->GetVolume("mag_lv")->SetLineColor(kOrange);
-		geo->GetVolume("mag_lv")->SetVisibility(1);
-		geo->GetVolume("mag_lv")->SetTransparency(20);
+		geo->GetVolume("volMagnet")->SetLineColor(kOrange);
+		geo->GetVolume("volMagnet")->SetVisibility(1);
+		geo->GetVolume("volMagnet")->SetTransparency(20);
 	}
+*/
 /*
 	//geo->GetVolume("LArD_lv")->SetLineColor(kBlue);
 	geo->GetVolume("LArD_lv")->SetVisibility(1);

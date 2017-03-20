@@ -36,6 +36,11 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         self.RPCTrayMidSBldr   = self.get_builder('RPCTray_BarMidS')
         self.RPCTrayBigBldr   = self.get_builder('RPCTray_BarBig')
 
+        #self.RPCTraySmallBldr = self.get_builder('RPCTray_End')
+        #self.RPCTrayMidFBldr   = self.get_builder('RPCTray_End')
+        #self.RPCTrayMidSBldr   = self.get_builder('RPCTray_End')
+        #self.RPCTrayBigBldr   = self.get_builder('RPCTray_End')
+
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -46,6 +51,12 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_BarMidF')
         smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_BarMidS')
         bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_BarBig')
+
+        #smallTray_lv = self.RPCTraySmallBldr.get_volume('volRPCTray_End')
+        #fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_End')
+        #smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_End')
+        #bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_End')
+
         rpcTrayDim_small = self.RPCTraySmallBldr.rpcTrayDim
         rpcTrayDim_midf  = self.RPCTrayMidFBldr.rpcTrayDim
         rpcTrayDim_mids  = self.RPCTrayMidSBldr.rpcTrayDim
@@ -75,20 +86,20 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         # Steel Sheets: just leave the default material of volMuID* steel 
         #   and leave spaces instead of placing explicit volumes
         # Placement of rpcTrays in vertical MuIDBarrel
-        for i in range(4):
+        for i in range(2):
 
            xpos      = -0.5*self.muidOutDim[0]+1*self.steelPlateThickness+0.5*rpcTrayDim_big[2]
            xpos_mids = -0.5*self.muidOutDim[0]+3*self.steelPlateThickness+1*self.air_gap+1.5*rpcTrayDim_big[2]
            xpos_midf = -0.5*self.muidOutDim[0]+5*self.steelPlateThickness+2*self.air_gap+2.5*rpcTrayDim_big[2]
-           if (i>1):
+           if (i>0):
                    xpos      = -xpos
                    xpos_mids = -xpos_mids
                    xpos_midf = -xpos_midf
 
-           if (i%2==0):
-                     l=-1
-           else:
-               l=1
+           #if (i%2==0):
+           #          l=-1
+           #else:
+           l=1
            zpos = l*0.5*(self.gap_tworpctrays+rpcTrayDim_big[0])
            #loop over up & down layers
            for j in range(2):
@@ -119,20 +130,20 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
 
 
         # Placement of rpcTrays in Horizontal MuIDBarrel
-        for i in range(4):
+        for i in range(2):
 
             xpos_mids  = -0.5*self.muidOutDim[0]+1*self.steelPlateThickness+1*rpcTrayDim_big[2]+0.5*rpcTrayDim_mids[1]
             xpos_midf  = -0.5*self.muidOutDim[0]+3*self.steelPlateThickness+2*rpcTrayDim_big[2]+1*self.air_gap+0.5*rpcTrayDim_midf[1]
             xpos_small = -0.5*self.muidOutDim[0]+5*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap+0.5*rpcTrayDim_small[1]
-            if (i>1):
+            if (i>0):
                    xpos_mids  = -xpos_mids
                    xpos_midf  = -xpos_midf
                    xpos_small = -xpos_small
 
-            if (i%2==0):
-                    l=-1
-            else:
-                l=1
+            #if (i%2==0):
+            #        l=-1
+            #else:
+            l=1
             zpos = l*0.5*(self.gap_tworpctrays+rpcTrayDim_mids[0])
             #loop over up & down layers
             for j in range(2):
@@ -140,7 +151,7 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
                 ypos_mids  = 0.5*self.muidOutDim[1]-self.steelPlateThickness-0.5*rpcTrayDim_big[2]
                 ypos_midf  = 0.5*self.muidOutDim[1]-3*self.steelPlateThickness-self.air_gap-1.5*rpcTrayDim_big[2]
                 ypos_small = 0.5*self.muidOutDim[1]-5*self.steelPlateThickness-2*self.air_gap-2.5*rpcTrayDim_big[2]
-                if (j==1):
+                if (j==0):
                         ypos_mids  = -ypos_mids
                         ypos_midf  = -ypos_midf
                         ypos_small = -ypos_small
