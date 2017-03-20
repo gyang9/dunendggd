@@ -1,4 +1,5 @@
 *.pyc
 dunend.egg-info
+dunendggd.egg-info
 *.gdml
 *.swp
