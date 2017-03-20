@@ -46,15 +46,15 @@ class RPCTrayBuilder(gegede.builder.Builder):
         
         # position and place RPCMods
         for i in range(self.nrpcRow):
-            if (self.rpcTrayDim[1] < self.nrpcRow*rpcModDim[1]):
-                ypos = (1-i)*(-0.5*self.rpcTrayDim[1]+0.5*rpcModDim[1])
-                if i==1:
-                      zpos = 0.25*self.rpcTrayDim[2]
-                else:                   
-                    zpos = -0.25*self.rpcTrayDim[2]
-            else:
-                 ypos = -0.5*self.rpcTrayDim[1]+(i+0.5)*rpcModDim[1]
-                 zpos = '0cm'
+            #if (self.rpcTrayDim[1] < self.nrpcRow*rpcModDim[1]):
+            #    ypos = (1-i)*(-0.5*self.rpcTrayDim[1]+0.5*rpcModDim[1])
+            #    if i==1:
+            #          zpos = 0.25*self.rpcTrayDim[2]
+            #    else:                   
+            #        zpos = -0.25*self.rpcTrayDim[2]
+            #else:
+            ypos = -0.5*self.rpcTrayDim[1]+(i+0.5)*rpcModDim[1]
+            zpos = '0cm'
             for j in range(self.nrpcCol):
                 xpos = -0.5*self.rpcTrayDim[0]+(j+0.5)*rpcModDim[0]
 

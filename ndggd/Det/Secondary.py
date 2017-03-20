@@ -98,15 +98,15 @@ class SecondaryBuilder(gegede.builder.Builder):
         # Since the MuID is the outermost part of the detector, 
         #  assume Barrel is centered in xy
         muidBarPos  = [ Q('0cm'),Q('0cm'), 
-                        -0.5*self.detDim[2] + muidUpDim[2] + self.upMuIDtoMagnet + 0.5*muidBarDim[2] ]
+                        -0.5*self.detDim[2] + muidUpDim[2] + self.upMuIDtoMagnet + 0.5*muidBarDim[2] + Q('10m')]
 
 
         # Position Magnet, assuming it is concentric with the MuID Barrel
         magPos      = list(muidBarPos) 
-
+        magPos[2]      = muidBarPos[2] - Q('10m') 
 
         # Position MuID Ends around magnet
-        muidDownPos = [ muidBarPos[0], muidBarPos[1], # assume centered in xy
+        muidDownPos = [ muidBarPos[0], muidBarPos[1]-Q('4.5m'), # assume centered in xy
                         magPos[2] + 0.5*self.magOutDim[2] + self.downMuIDtoMagnet + 0.5*muidDownDim[2] ]
         muidUpPos   = [ muidBarPos[0], muidBarPos[1],
                         muidBarPos[2] - 0.5*self.magOutDim[2] - self.upMuIDtoMagnet - 0.5*muidUpDim[2] ]
@@ -126,7 +126,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         # Position volSTT inside the Inner magnet volume
         sttPos = [ Q('0cm'), 
                    Q('0cm'),
-                   - 0.5*ecalBounds[2] + ecalUpDim[2] + sttToEcal + 0.5*sttDim[2] ]
+                   - 0.5*ecalBounds[2] + ecalUpDim[2] + sttToEcal + 0.5*sttDim[2] + Q('10m')]
 
 
         # Position ECAL Barrel
@@ -205,6 +205,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         magInner_lv = geom.structure.Volume('volMagnetInner', material=self.defMat, shape=magIn)
         self.add_volume(magInner_lv)
         mag_in_det = geom.structure.Position('Mag_in_MagInner', magPos[0], magPos[1], magPos[2])
+
         pmag_in_D  = geom.structure.Placement('placeMag_in_MagInner',
                                               volume = mag_lv,
                                               pos = mag_in_det)
@@ -305,7 +306,7 @@ class SecondaryBuilder(gegede.builder.Builder):
                                                 volume = ecalUp_lv,
                                                 pos = ecalUp_in_det,
                                                 rot=self.ecalUpRot)
-        magInner_lv.placements.append(pecalUp_in_MagInner.name)
+        #magInner_lv.placements.append(pecalUp_in_MagInner.name)
 
         ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')
         ecalBar_in_det = geom.structure.Position('ECALBar_in_MagInner', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2])
@@ -315,12 +316,12 @@ class SecondaryBuilder(gegede.builder.Builder):
                                                  rot=self.ecalBarRot)
         magInner_lv.placements.append(pecalBar_in_MagInner.name)
 
-        ecalBar_in_det2 = geom.structure.Position('ECALBar_in_MagInner2', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2]+Q('6m'))
+        ecalBar_in_det2 = geom.structure.Position('ECALBar_in_MagInner2', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2]+Q('12.1m'))
         pecalBar_in_MagInner2 = geom.structure.Placement('placeECALBar_in_MagInner2',
                                                  volume = ecalBar_lv,
                                                  pos = ecalBar_in_det2,
                                                  rot=self.ecalBarRot)
-        #magInner_lv.placements.append(pecalBar_in_MagInner2.name)
+        magInner_lv.placements.append(pecalBar_in_MagInner2.name)
 
         ecalBar_in_det3 = geom.structure.Position('ECALBar_in_MagInner3', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2]-Q('10m'))
         pecalBar_in_MagInner3 = geom.structure.Placement('placeECALBar_in_MagInner3',
@@ -346,7 +347,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         pmuidUp_in_D = geom.structure.Placement('placeMuIDUp_in_Det',
                                                 volume = muidUp_lv,
                                                 pos =self.muidUpRot)
-        det_lv.placements.append(pmuidUp_in_D.name)
+        #det_lv.placements.append(pmuidUp_in_D.name)
 
         muidBar_lv = self.muidBarBldr.get_volume('volMuIDBarrel')
         muidBar_in_det = geom.structure.Position('MuIDBar_in_Det', muidBarPos[0], muidBarPos[1], muidBarPos[2])
