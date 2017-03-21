@@ -15,7 +15,7 @@ class STPlaneBuilder(gegede.builder.Builder):
                   compNElements = None,
                   compMaterial=None, compRotation=None, **kwds):
         self.material   = compMaterial      
-        self.compNElements = nTubesPerPlane
+        self.compNElements = compNElements
         self.compRotation = compRotation
 
         self.STPlaneBldr = self.get_builder('ST')
@@ -38,7 +38,7 @@ class STPlaneBuilder(gegede.builder.Builder):
         # Make the double-layer of straw tubes, used for both orientations
         #   note that it is not perfectly square in xy-- not quite as
         #   wide as the sTubes are long
-        self.stPlaneDim = [ (self.nTubesPerPlane + 0.5)*self.sTube_outerDia, 
+        self.stPlaneDim = [ (self.compNElements + 0.5)*self.sTube_outerDia, 
                             self.sTube_length, 
                             self.sTube_outerDia*( 1 + math.sin( math.radians(60) ) ) ]
         stPlaneBox = geom.shapes.Box( self.name,                 dx=0.5*self.stPlaneDim[0], 

@@ -28,6 +28,7 @@ class STBuilder(gegede.builder.Builder):
 
         # Make the straw tube shape and volume, and add straw into it
         # rmin=0, else material at 0 would be default of STPlane
+        print self.sTube_innerDia, self.sTube_outerDia, self.sTube_length, 'jose', self.strawMat
         sTube      = geom.shapes.Tubs('StrawTube_'+self.name, 
                                       rmin = '0cm',                   
                                       rmax = 0.5*self.sTube_outerDia, 
@@ -49,3 +50,5 @@ class STBuilder(gegede.builder.Builder):
         sTube_lv.placements.append( pS_in_Tube.name )
         sTube_lv.placements.append( pW_in_Tube.name )
         self.add_volume(sTube_lv)
+        self.add_volume(straw_lv)
+        self.add_volume(wire_lv)

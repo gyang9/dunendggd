@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-## Subbuilder of SimplePlaneBuilder
+## Subbuilder of SingleArrangePlaneBuilder
 #
 
 import gegede.builder
 from gegede import Quantity as Q
 
-## SimplePlaneBuilder
+## SingleArrangePlaneBuilder
 #
-# builder for SimplePlane
-class SimplePlaneBuilder(gegede.builder.Builder):
+# builder for SingleArrangePlane
+class SingleArrangePlaneBuilder(gegede.builder.Builder):
 
     ## The configure
     def configure( self, compDimension=None, compMaterial=None,
