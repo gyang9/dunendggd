@@ -49,6 +49,17 @@ class STBuilder(gegede.builder.Builder):
         pW_in_Tube = geom.structure.Placement( 'placeW_in_Tube_'+self.name, volume = wire_lv )
         sTube_lv.placements.append( pS_in_Tube.name )
         sTube_lv.placements.append( pW_in_Tube.name )
+
+        sTube_lv   = self.STPlaneBldr.get_volume('volStrawTube_ST')
+        straw_lv   = self.STPlaneBldr.get_volume('volStraw_ST')
+        wire_lv    = self.STPlaneBldr.get_volume('volWire_ST')
+
+        pS_in_Tube = geom.structure.Placement( 'placeS_in_Tube_'+self.name, volume = straw_lv )
+        pW_in_Tube = geom.structure.Placement( 'placeW_in_Tube_'+self.name, volume = wire_lv )
+        sTube_lv.placements.append( pS_in_Tube.name )
+        sTube_lv.placements.append( pW_in_Tube.name )
         self.add_volume(sTube_lv)
-        self.add_volume(straw_lv)
-        self.add_volume(wire_lv)
+ 
+        self.add_volume(sTube_lv)
+        # self.add_volume(straw_lv)
+        # self.add_volume(wire_lv)

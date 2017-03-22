@@ -18,21 +18,13 @@ class STPlaneBuilder(gegede.builder.Builder):
         self.compNElements = compNElements
         self.compRotation = compRotation
 
-        self.STPlaneBldr = self.get_builder('ST')
-
-
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
+        # Call the scint bar shape and volume
+        STPlaneBldr = self.get_builder()
+        sTube_lv = STPlaneBldr.get_volume()
 
-        sTube_lv   = self.STPlaneBldr.get_volume('volStrawTube_ST')
-        straw_lv   = self.STPlaneBldr.get_volume('volStraw_ST')
-        wire_lv    = self.STPlaneBldr.get_volume('volWire_ST')
-
-        pS_in_Tube = geom.structure.Placement( 'placeS_in_Tube_'+self.name, volume = straw_lv )
-        pW_in_Tube = geom.structure.Placement( 'placeW_in_Tube_'+self.name, volume = wire_lv )
-        sTube_lv.placements.append( pS_in_Tube.name )
-        sTube_lv.placements.append( pW_in_Tube.name )
         self.add_volume(sTube_lv)
 
         # Make the double-layer of straw tubes, used for both orientations
