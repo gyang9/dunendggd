@@ -1,6 +1,5 @@
 from setuptools import setup
 
-
 setup(name = 'dunendggd',
       version = '1.0.0',
       description = 'DUNE Near Detector based on General Geometry Description',
