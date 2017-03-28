@@ -31,15 +31,15 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         self.air_gap = modAir_gap
 
         # Get RPC tray builders
-        self.RPCTraySmallBldr = self.get_builder('RPCTray_BarSmall')
-        self.RPCTrayMidFBldr   = self.get_builder('RPCTray_BarMidF')
-        self.RPCTrayMidSBldr   = self.get_builder('RPCTray_BarMidS')
-        self.RPCTrayBigBldr   = self.get_builder('RPCTray_BarBig')
+        #self.RPCTraySmallBldr = self.get_builder('RPCTray_BarSmall')
+        #self.RPCTrayMidFBldr   = self.get_builder('RPCTray_BarMidF')
+        #self.RPCTrayMidSBldr   = self.get_builder('RPCTray_BarMidS')
+        #self.RPCTrayBigBldr   = self.get_builder('RPCTray_BarBig')
 
-        #self.RPCTraySmallBldr = self.get_builder('RPCTray_End')
-        #self.RPCTrayMidFBldr   = self.get_builder('RPCTray_End')
-        #self.RPCTrayMidSBldr   = self.get_builder('RPCTray_End')
-        #self.RPCTrayBigBldr   = self.get_builder('RPCTray_End')
+        self.RPCTraySmallBldr = self.get_builder('RPCTray_BarBig')
+        self.RPCTrayMidFBldr   = self.get_builder('RPCTray_BarBig')
+        self.RPCTrayMidSBldr   = self.get_builder('RPCTray_BarBig')
+        self.RPCTrayBigBldr   = self.get_builder('RPCTray_BarBig')
 
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -47,15 +47,15 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
 
 
         # Get the RPC tray volumes and dimensions
-        smallTray_lv = self.RPCTraySmallBldr.get_volume('volRPCTray_BarSmall')
-        fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_BarMidF')
-        smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_BarMidS')
-        bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_BarBig')
+        #smallTray_lv = self.RPCTraySmallBldr.get_volume('volRPCTray_BarSmall')
+        #fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_BarMidF')
+        #smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_BarMidS')
+        #bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_BarBig')
 
-        #smallTray_lv = self.RPCTraySmallBldr.get_volume('volRPCTray_End')
-        #fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_End')
-        #smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_End')
-        #bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_End')
+        smallTray_lv = self.RPCTraySmallBldr.get_volume('volRPCTray_BarBig')
+        fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_BarBig')
+        smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_BarBig')
+        bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_BarBig')
 
         rpcTrayDim_small = self.RPCTraySmallBldr.rpcTrayDim
         rpcTrayDim_midf  = self.RPCTrayMidFBldr.rpcTrayDim
@@ -67,8 +67,8 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         #  using other configured parameters: number of planes, thicknesses...
         # For now I'm using the CDR reported dimensions:
         self.muidOutDim = list(self.muidInDim)
-        self.muidOutDim[0] = self.muidInDim[0] + 2*(6*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap)
-        self.muidOutDim[1] = self.muidInDim[1] + 2*(6*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap)
+        self.muidOutDim[0] = self.muidInDim[0] + 6*(6*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap)
+        self.muidOutDim[1] = self.muidInDim[1] + 6*(6*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap)
         self.muidOutDim[2] = self.muidInDim[2]
 
 

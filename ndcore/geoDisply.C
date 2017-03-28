@@ -3,7 +3,7 @@ void geoDisply()
 	//gSystem->Load("libGdml");
 	gSystem->Load("libGeom");
 	TGeoManager *geo = new TGeoManager();
-	geo->Import("./ndcore/test.gdml");
+	geo->Import("./test.gdml");
 	geo->DefaultColors();
 
 

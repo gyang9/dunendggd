@@ -106,7 +106,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         magPos[2]      = muidBarPos[2] - Q('10m') 
 
         # Position MuID Ends around magnet
-        muidDownPos = [ muidBarPos[0], muidBarPos[1]-Q('4.5m'), # assume centered in xy
+        muidDownPos = [ muidBarPos[0]-Q('2m'), muidBarPos[1]+Q('2m'), # assume centered in xy
                         magPos[2] + 0.5*self.magOutDim[2] + self.downMuIDtoMagnet + 0.5*muidDownDim[2] ]
         muidUpPos   = [ muidBarPos[0], muidBarPos[1],
                         muidBarPos[2] - 0.5*self.magOutDim[2] - self.upMuIDtoMagnet - 0.5*muidUpDim[2] ]
@@ -138,8 +138,6 @@ class SecondaryBuilder(gegede.builder.Builder):
                         sttPos[2] + 0.5*sttDim[2] + sttToEcal + 0.5*ecalDownDim[2] ]
         ecalUpPos   = [ ecalBarPos[0], ecalBarPos[1],
                         sttPos[2] - 0.5*sttDim[2] - sttToEcal - 0.5*ecalUpDim[2] ]
-
-
 
 
        #########################################################################
@@ -193,8 +191,14 @@ class SecondaryBuilder(gegede.builder.Builder):
 
 
         # Make detector box
-        detBox = geom.shapes.Box( self.name,              dx=0.5*self.detDim[0], 
+#        detBox = geom.shapes.Box( self.name,              dx=0.5*self.detDim[0], 
+#                                  dy=0.5*self.detDim[1],  dz=0.5*self.detDim[2])
+        detOut = geom.shapes.Box( 'detOut',              dx=0.5*self.detDim[0], 
                                   dy=0.5*self.detDim[1],  dz=0.5*self.detDim[2])
+        detIn = geom.shapes.Box(  'detIn',                  dx=0.5*self.sttDimension[0],
+                                   dy=0.5*self.sttDimension[1],  dz=0.5*self.sttDimension[2])
+        detBox = geom.shapes.Boolean( self.name, type='subtraction', first=detOut, second=detIn )
+
         det_lv = geom.structure.Volume('vol'+self.name, material=self.defMat, shape=detBox)
         self.add_volume(det_lv)
 
@@ -354,7 +358,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         pmuidBar_in_D = geom.structure.Placement('placeMuIDBar_in_Det',
                                                  volume = muidBar_lv,
                                                  pos =self.muidBarRot)
-        det_lv.placements.append(pmuidBar_in_D.name)
+        #det_lv.placements.append(pmuidBar_in_D.name)
        
 
 
