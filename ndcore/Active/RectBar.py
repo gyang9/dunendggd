@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-## Subbuilder of primPlaneBuilder
-#
-
 import gegede.builder
 from gegede import Quantity as Q
 
@@ -10,27 +7,24 @@ from gegede import Quantity as Q
 # builder for prim Strip
 class RectBarBuilder(gegede.builder.Builder):
 
-    ## The configure
-    def configure( self, actDimension=None, actMaterial=None,  actSensitive=None, **kwds ):
+    def configure( self, halfDimension=None, Material=None,  Sensitive=None, **kwds ):
         """
-        :param actDimension: Dimension for the rectangular bar.
-        :type actDimension: list
-        :param actMaterial: Material for the rectangular bar.
-        :type actMaterial: defined on World.py.
-        :param actSensitive: Boolean to define is material is sensitivie for Geant.
-        :type actSensitive: bool
+        :param Dimension: Dimension for the rectangular bar.
+        :type Dimension: list
+        :param Material: Material for the rectangular bar.
+        :type Material: defined on World.py.
+        :param Sensitive: Boolean to define is material is sensitivie for Geant.
+        :type Sensitive: bool
         :returns: None
         """
-        self.actDimension, self.actMaterial, self.actSensitive = ( actDimension, actMaterial, actSensitive )
-        pass
+        self.halfDimension, self.Material, self.Sensitive = ( Dimension, Material, Sensitive )
 
-    ## The construct
     def construct( self, geom ):
         """Construct the geometry for Rectangular Bar.
         :returns: None
         """
-        main_shape = geom.shapes.Box( self.name, dx=self.actDimension[0], dy=self.actDimension[1], dz=self.actDimension[2] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.actMaterial, shape=main_shape )
-        if self.actSensitive == True:
-            main_lv.params.append(("SensDet","FGD"))
+        main_shape = geom.shapes.Box( self.name, dx=self.Dimension[0], dy=self.Dimension[1], dz=self.Dimension[2] )
+        main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
+        if self.Sensitive == True:
+            main_lv.params.append(("SensDet","Active"))
         self.add_volume( main_lv )
