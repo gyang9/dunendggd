@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import gegede.builder
 from gegede import Quantity as Q
-import math
 
 class StrawTubeBuilder(gegede.builder.Builder):
 
@@ -9,15 +8,31 @@ class StrawTubeBuilder(gegede.builder.Builder):
     def configure(self, halfDimension=None, Material=None,
                     halfSTDimension = None, STMaterial=None,
                     halfWireDimension=None, WireMaterial=None, **kwds):
+        """
+        :param halfDimension: halfDimension for the whole Straw Tube.
+        :type halfDimension: dictionary
+        :param Material: Material for the whole Straw Tube.
+        :type Material: defined on World.py.
+        :param halfSTDimension: halfSTDimension for the Straw Tube case.
+        :type halfSTDimension: dictionary
+        :param STMaterial: Material for the Straw Tube case.
+        :type STMaterial: defined on World.py.
+        :param halfWireDimension: halfSTDimension for the wire.
+        :type halfWireDimension: dictionary
+        :param WireMaterial: Material for the wire.
+        :type WireMaterial: defined on World.py.
+        :returns: None
+        """
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.halfSTDimension, self.STMaterial = ( halfSTDimension, STMaterial )
         self.halfWireDimension, self.WireMaterial = ( halfWireDimension, WireMaterial )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
-
-        # Make the straw tube shape and volume, and add straw into it
-        # rmin=0, else material at 0 would be default of STPlane
+        """
+        Construct the geometry for Straw Tube Bar.
+        :returns: None
+        """
         main_shape = geom.shapes.Tubs(self.name, rmin = self.halfDimension["rmin"],
                                       rmax = self.halfDimension["rmax"], dz = self.halfDimension["dz"])
         main_lv   = geom.structure.Volume(self.name+"_lv", material=self.Material, shape=main_shape)
