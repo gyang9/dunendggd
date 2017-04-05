@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import gegede.builder
+from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 class RectBarBuilder(gegede.builder.Builder):
@@ -23,8 +24,9 @@ class RectBarBuilder(gegede.builder.Builder):
         Construct the geometry for Rectangular Bar.
         :returns: None
         """
-        main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'], dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
+        #main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'], dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )
+        #main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
+        main_lv = ltools.main_lv( self, geom, "Box")
         if self.Sensitive == True:
             main_lv.params.append(("SensDet","Active"))
         self.add_volume( main_lv )
