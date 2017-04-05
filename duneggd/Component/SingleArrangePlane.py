@@ -5,7 +5,7 @@ import duneggd.localtools as localtools
 
 class SingleArrangePlaneBuilder(gegede.builder.Builder):
 
-    ## The configure
+    #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None,
                     NElements=None, InsideGap=None, TranspV=None, Rotation=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
@@ -13,7 +13,7 @@ class SingleArrangePlaneBuilder(gegede.builder.Builder):
         self.TranspV, self.Rotation = ( TranspV, Rotation )
         pass
 
-    ## The construct
+    #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
         main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'],
                                         dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )

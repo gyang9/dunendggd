@@ -4,7 +4,7 @@ from gegede import Quantity as Q
 
 class DoubleArrangePlaneBuilder(gegede.builder.Builder):
 
-    ## The configure
+    #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None,
                     NElements1=None, InsideGap1=None,
                     TranspV1=None, Rotation1=None,
@@ -16,7 +16,7 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
         self.TranspV1, self.Rotation1 = ( TranspV1, Rotation1 )
         self.TranspV2 = TranspV2
 
-    ## The construct
+    #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
         main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'],
                                         dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )
