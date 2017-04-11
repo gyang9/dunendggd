@@ -13,10 +13,12 @@ class ScintillatorTrackerBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
-        main_shape = geom.shapes.Box( self.name+"_shape", dx = self.halfDimension[0],
-                                        dy = self.halfDimension[1], dz = self.halfDimension[2] )
+        main_shape = geom.shapes.Box( self.name+"_shape", dx = self.halfDimension['dx'],
+                                        dy = self.halfDimension['dy'], dz = self.halfDimension['dz'] )
         main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
         self.add_volume( main_lv )
+
+        main_hDimension = [main_shape.dx, main_shape.dy, main_shape.dz]
 
         # definition local rotation
         rotation = geom.structure.Rotation( self.name+'_rot', str(self.Rotation[0]),
@@ -34,7 +36,7 @@ class ScintillatorTrackerBuilder(gegede.builder.Builder):
         sb_dim_v = [t*(d+0.5*self.InsideGap) for t,d in zip(self.TranspV,el_dim)]
 
         # lower edge, the ule dimension projected on transportation vector
-        low_end_v  = [-t*d+ed for t,d,ed in zip(self.TranspV,self.Dimension,sb_dim_v)]
+        low_end_v  = [-t*d+ed for t,d,ed in zip(self.TranspV,main_hDimension,sb_dim_v)]
 
         for element in range(self.NElements):
             # calculate the distance for n elements = i*2*halfdinemsion

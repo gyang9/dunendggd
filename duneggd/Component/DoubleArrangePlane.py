@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import gegede.builder
+from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 class DoubleArrangePlaneBuilder(gegede.builder.Builder):
@@ -18,9 +19,7 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
-        main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'],
-                                        dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
+        main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
         self.add_volume( main_lv )
 
         # definition local rotation
@@ -40,8 +39,8 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
         sb_dim_v2 = [t*(d+0.5*self.InsideGap2) for t,d in zip(self.TranspV2,el_dim)]
 
         # lower edge, the ule dimension projected on transportation vector
-        low_end_v1  = [-t*d+ed for t,d,ed in zip(self.TranspV1,self.Dimension,sb_dim_v1)]
-        low_end_v2  = [-t*d+ed for t,d,ed in zip(self.TranspV2,self.Dimension,sb_dim_v2)]
+        low_end_v1  = [-t*d+ed for t,d,ed in zip(self.TranspV1,main_hDim,sb_dim_v1)]
+        low_end_v2  = [-t*d+ed for t,d,ed in zip(self.TranspV2,main_hDim,sb_dim_v2)]
 
         for elem2 in range(self.NElements2):
             for elem1 in range(self.NElements1):

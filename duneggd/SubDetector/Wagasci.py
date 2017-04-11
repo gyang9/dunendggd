@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-
 import gegede.builder
+from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 class WagasciBuilder(gegede.builder.Builder):
@@ -8,15 +8,13 @@ class WagasciBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, NElements=None,  InsideGap=None,
                     TranspV=None, Rotation=None, **kwds ):
-        self.Dimension, self.Material = ( halfDimension, Material )
+        self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements, self.InsideGap = ( NElements, InsideGap )
         self.TranspV, self.Rotation = ( TranspV, Rotation )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
-        main_shape = geom.shapes.Box( self.name+"_shape", dx = self.halfDimension[0],
-                                        dy = self.halfDimension[1], dz = self.halfDimension[2] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
+        main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
         self.add_volume( main_lv )
 
         # definition local rotation
@@ -42,7 +40,7 @@ class WagasciBuilder(gegede.builder.Builder):
             sb_dim = [sb_dim[0]+sb_shape.dx,sb_dim[1]+sb_shape.dy,sb_dim[2]+sb_shape.dz]
             gap = gap+self.InsideGap[i]
             # lower edge, the compute dimension projected on transportation vector
-            low_edge = [-t*(d-sbd-gap) for t,d,sbd in zip(self.TranspV,self.Dimension,sb_dim)]
+            low_edge = [-t*(d-sbd-gap) for t,d,sbd in zip(self.TranspV,main_hDim,sb_dim)]
             for elem in range(self.NElements):
                 # calculate the distance for n elements = i*2*halfdimension+gap
                 temp_v = [elem*(2*d+gap)*t for d,t in zip(sb_dim_step,self.TranspV)]

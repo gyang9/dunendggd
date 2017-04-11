@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import gegede.builder
+from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
-import duneggd.localtools as localtools
+
 
 class SingleArrangePlaneBuilder(gegede.builder.Builder):
 
@@ -15,9 +16,7 @@ class SingleArrangePlaneBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
-        main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'],
-                                        dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )
-        main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
+        main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
         self.add_volume( main_lv )
 
         # definition local rotation
@@ -30,12 +29,13 @@ class SingleArrangePlaneBuilder(gegede.builder.Builder):
 
         # get the sub-builder dimension, using its shape
         el_shape = geom.store.shapes.get(el_lv.shape)
-        el_dim = localtools.getShapeDimensions( el_shape )
+        el_dim = ltools.getShapeDimensions( el_shape )
+
         # calculate half dimension of element plus the gap projected to the transportation vector
         sb_dim_v = [t*(d+0.5*self.InsideGap) for t,d in zip(self.TranspV,el_dim)]
 
         # lower edge, the ule dimension projected on transportation vector
-        low_end_v  = [-t*d+ed for t,d,ed in zip(self.TranspV,self.Dimension,sb_dim_v)]
+        low_end_v  = [-t*d+ed for t,d,ed in zip(self.TranspV,main_hDim,sb_dim_v)]
 
         for element in range(self.NElements):
             # calculate the distance for n elements = i*2*halfdinemsion

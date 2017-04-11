@@ -1,23 +1,14 @@
 #!/usr/bin/env python
-'''
-Top level builder of the Fine-Grained Tracker (FGT)
-'''
-
 import gegede.builder
-import math
+from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
 class WorldBuilder(gegede.builder.Builder):
-    '''
-    Build a big box world volume.
-    N.B. -- Global convention: index 0,1,2 = x,y,z
-    '''
-
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, worldDimension=None, worldMaterial=None, **kwds):
-        self.worldDimension = worldDimension
-        self.worldMaterial = worldMaterial
+    def configure(self, halfDimension=None, Material=None, **kwds):
+        self.halfDimension = halfDimension
+        self.Material = Material
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -33,16 +24,14 @@ class WorldBuilder(gegede.builder.Builder):
         rminus90aboutY = geom.structure.Rotation( 'rminus90aboutY', '0deg', '-90deg',  '0deg'  )
         r90aboutZ      = geom.structure.Rotation( 'r90aboutZ',      '0deg',   '0deg',  '90deg' )
         r90aboutXZ     = geom.structure.Rotation( 'r90aboutXZ', '90deg',  '0deg', '90deg'  )
-        
-        main_shape = geom.shapes.Box( self.name,  dx=self.worldDimension[0], 
-                                        dy=self.worldDimension[1], dz=self.worldDimension[2])
-        main_lv = geom.structure.Volume(self.name+"_lv", material=self.worldMaterial, shape=main_shape)
+
+        main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
         self.add_volume(main_lv)
-        
+
         # get Detector Enclosure and its logic volume
         de_sb = self.get_builder()
         de_lv = de_sb.get_volume()
-        
+
         postemp = [Q('0m'),Q('0m'),Q('0m')]
         detEnc_pos = geom.structure.Position(de_lv.name+'_pos', postemp[0], postemp[1], postemp[2])
         detEnc_pla = geom.structure.Placement(de_lv.name+'_pla', volume=de_lv, pos=detEnc_pos)
@@ -75,7 +64,7 @@ class WorldBuilder(gegede.builder.Builder):
 
 
 
-        # Molecules for Rock and fibrous_glass Mixtures 
+        # Molecules for Rock and fibrous_glass Mixtures
         SiO2  = g.matter.Molecule("SiO2",  density="2.2*g/cc",   elements=(("silicon",1),("oxygen",2)))
         FeO   = g.matter.Molecule("FeO",   density="5.745*g/cc", elements=(("iron",1),("oxygen",1)))
         Al2O3 = g.matter.Molecule("Al2O3", density="3.97*g/cc",  elements=(("aluminum",2),("oxygen",3)))
@@ -83,11 +72,11 @@ class WorldBuilder(gegede.builder.Builder):
         CO2   = g.matter.Molecule("CO2",   density="1.562*g/cc", elements=(("carbon",1),("oxygen",2)))
         CaO   = g.matter.Molecule("CaO",   density="3.35*g/cc",  elements=(("calcium",1),("oxygen",1)))
         Na2O  = g.matter.Molecule("Na2O",  density="2.27*g/cc",  elements=(("sodium",2),("oxygen",1)))
-        P2O5  = g.matter.Molecule("P2O5",  density="1.562*g/cc", elements=(("phosphorus",2),("oxygen",5)))        
+        P2O5  = g.matter.Molecule("P2O5",  density="1.562*g/cc", elements=(("phosphorus",2),("oxygen",5)))
         TiO2  = g.matter.Molecule("TiO2",  density="4.23*g/cc",  elements=(("titanium",1),("oxygen",2)))
         Fe2O3 = g.matter.Molecule("Fe2O3", density="5.24*g/cc",  elements=(("iron",2),("oxygen",3)))
 
-        rock  = g.matter.Mixture( "Rock", density = "2.82*g/cc", 
+        rock  = g.matter.Mixture( "Rock", density = "2.82*g/cc",
                                  components = (
                                      ("SiO2",   0.5267),
                                      ("FeO",    0.1174),
@@ -103,7 +92,7 @@ class WorldBuilder(gegede.builder.Builder):
                                  ))
 
 
-        dirt  = g.matter.Mixture( "Dirt", density = "1.7*g/cc", 
+        dirt  = g.matter.Mixture( "Dirt", density = "1.7*g/cc",
                                  components = (
                                      ("oxygen",    0.438),
                                      ("silicon",   0.257),
@@ -113,15 +102,15 @@ class WorldBuilder(gegede.builder.Builder):
                                      ("potassium", 0.015),
                                  ))
 
-        air   = g.matter.Mixture( "Air", density = "0.001225*g/cc", 
+        air   = g.matter.Mixture( "Air", density = "0.001225*g/cc",
                                  components = (
-                                     ("nitrogen", 0.781154), 
+                                     ("nitrogen", 0.781154),
                                      ("oxygen",   0.209476),
                                      ("argon",    0.00934)
                                  ))
 
 
-        bakelite = g.matter.Mixture( "Bakelite", density = "1.25*g/cc", 
+        bakelite = g.matter.Mixture( "Bakelite", density = "1.25*g/cc",
                                       components = (
                                           ("hydrogen", 0.057441),
                                           ("carbon",   0.774591),
@@ -129,7 +118,7 @@ class WorldBuilder(gegede.builder.Builder):
                                       ))
 
 
-        honeycomb = g.matter.Mixture( "Honeycomb", density = "0.94*g/cc", 
+        honeycomb = g.matter.Mixture( "Honeycomb", density = "0.94*g/cc",
                                       components = (
                                           ("hydrogen", 0.143711),
                                           ("carbon",   0.856289)
@@ -142,7 +131,7 @@ class WorldBuilder(gegede.builder.Builder):
         #densRad = fracC3H6*0.946 + (1-fracC3H6)*0.001225
         #dRad = str(densRad)+"*g/cc"
         dRad = "0.1586875*g/cc"
-        RadBlend = g.matter.Mixture( "RadiatorBlend", density = dRad, 
+        RadBlend = g.matter.Mixture( "RadiatorBlend", density = dRad,
                                      components = (
                                          ("Air",  1-fracC3H6),
                                          ("C3H6", fracC3H6)
@@ -156,11 +145,11 @@ class WorldBuilder(gegede.builder.Builder):
         dArCO2 = str(densArCO2)+"*g/cc"
         dXeCO2 = str(densXeCO2)+"*g/cc"
 
-        stGas_Xe = g.matter.Mixture( "stGas_Xe", density = dXeCO2, 
+        stGas_Xe = g.matter.Mixture( "stGas_Xe", density = dXeCO2,
                                       components = (
                                           ("CO2",    fracCO2),
                                           ("argon",  1-fracCO2)
-                                          #("xenon",  1-fracCO2)   #GENIE XSec spline having trouble with xenon 
+                                          #("xenon",  1-fracCO2)   #GENIE XSec spline having trouble with xenon
                                       ))
 
         # Materials for the targets and st planes following
@@ -169,7 +158,7 @@ class WorldBuilder(gegede.builder.Builder):
         #ArTarget = g.matter.Molecule("ArgonTarget", density="10.2297*g/cc", elements=(("argon",1),))
         Aluminum = g.matter.Molecule("Aluminum",    density="2.70*g/cc",  elements=(("aluminum",1),))
         CarFiber = g.matter.Molecule("CarbonFiber", density="1.6*g/cc",  elements=(("carbon",1),))
-        stGas_Ar = g.matter.Mixture( "stGas_Ar", density = dArCO2, 
+        stGas_Ar = g.matter.Mixture( "stGas_Ar", density = dArCO2,
                                       components = (
                                           ("CO2",    fracCO2),
                                           ("argon",  1-fracCO2)
@@ -183,7 +172,7 @@ class WorldBuilder(gegede.builder.Builder):
         Graphite = g.matter.Molecule("Graphite", density="2.23*g/cc",  elements=(("carbon",1),))
         Calcium  = g.matter.Molecule("Calcium",  density="1.55*g/cc",  elements=(("calcium",1),))
 
-        Steel    = g.matter.Mixture( "Steel", density = "7.9300*g/cc", 
+        Steel    = g.matter.Mixture( "Steel", density = "7.9300*g/cc",
                                      components = (
                                          ("iron",     0.7298),
                                          ("chromium", 0.1792),
@@ -192,7 +181,7 @@ class WorldBuilder(gegede.builder.Builder):
                                      ))
 
 
-        Polycarbonate = g.matter.Molecule("polycarbonate", density="1.6*g/cc",  
+        Polycarbonate = g.matter.Molecule("polycarbonate", density="1.6*g/cc",
                                           elements=(
                                               ("carbon",16),
                                               ("hydrogen",6),
@@ -200,15 +189,15 @@ class WorldBuilder(gegede.builder.Builder):
                                           ))
 
         # make up a dumb but not crazy density for the STT framing just inside of the ECAL
-        sttFrameMix = g.matter.Mixture( "sttFrameMix", density = "0.235*g/cc", 
+        sttFrameMix = g.matter.Mixture( "sttFrameMix", density = "0.235*g/cc",
                                         components = (
                                             ("carbon",        3.9/5.1),
                                             ("polycarbonate", 1.2/5.1)
                                         ))
-        
-        
+
+
         # for the straws -- density??
-        fib_glass = g.matter.Mixture( "fibrous_glass", density = "1.0*g/cc", 
+        fib_glass = g.matter.Mixture( "fibrous_glass", density = "1.0*g/cc",
                                       components = (
                                           ("SiO2",   0.600),
                                           ("CaO",    0.224),
@@ -221,17 +210,17 @@ class WorldBuilder(gegede.builder.Builder):
 
         #   Materials for the RPCs
         # tetraflouroethane:
-        CH2FCF3 = g.matter.Molecule( "CH2FCF3",  density="0.00425*g/cc",   
+        CH2FCF3 = g.matter.Molecule( "CH2FCF3",  density="0.00425*g/cc",
                                      elements=( ("carbon",2), ("hydrogen",2), ("fluorine",4) ))
         # isobutane:
-        C4H10   = g.matter.Molecule( "C4H10",    density="0.00251*g/cc",   
+        C4H10   = g.matter.Molecule( "C4H10",    density="0.00251*g/cc",
                                      elements=( ("carbon",4), ("hydrogen",10) ))
         # sulphurhexaflouride:
-        SF6     = g.matter.Molecule( "SF6",      density="6.17*g/L",   
+        SF6     = g.matter.Molecule( "SF6",      density="6.17*g/L",
                                      elements=( ("sulfur",4), ("fluorine",6)  ))
 
         # use argon density at stp for now. has very little effect.
-        rpcGas   = g.matter.Mixture( "rpcGas", density = "1.784*g/L", 
+        rpcGas   = g.matter.Mixture( "rpcGas", density = "1.784*g/L",
                                      components = (
                                          ("argon",   0.75),
                                          ("CH2FCF3", 0.20),
@@ -243,20 +232,20 @@ class WorldBuilder(gegede.builder.Builder):
         # Materials for the ECAL
         # Epoxy Resin (Glue that will hold the scintillator bars and the lead sheets together):
         # probably won't show up, just the default material of SBPlane
-        epoxy_resin   = g.matter.Molecule("epoxy_resin",   density="1.1250*g/cc",   
+        epoxy_resin   = g.matter.Molecule("epoxy_resin",   density="1.1250*g/cc",
                                           elements=(
-                                              ("carbon",38), 
-                                              ("hydrogen",40), 
-                                              ("oxygen",6) 
-                                              #("bromine",4) GENIE having trouble with Br 
+                                              ("carbon",38),
+                                              ("hydrogen",40),
+                                              ("oxygen",6)
+                                              #("bromine",4) GENIE having trouble with Br
                                               ))
-        
+
         # Scintillator:
-        Scintillator  = g.matter.Mixture("Scintillator",   density="1.05*g/cc",   
+        Scintillator  = g.matter.Mixture("Scintillator",   density="1.05*g/cc",
                                          components = (
-                                             ("carbon",   0.916), 
+                                             ("carbon",   0.916),
                                              ("hydrogen", 0.084)
-                                         ))          
+                                         ))
         # Lead:
         Lead  = g.matter.Molecule("Lead",   density="11.342*g/cc",   elements=(("lead",1),))
 
