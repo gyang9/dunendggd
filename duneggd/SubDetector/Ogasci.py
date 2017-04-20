@@ -3,7 +3,7 @@ import gegede.builder
 from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
-class WagasciBuilder(gegede.builder.Builder):
+class OgasciBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, NElements=None,  InsideGap=None,

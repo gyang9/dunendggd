@@ -27,6 +27,6 @@ class RectBarBuilder(gegede.builder.Builder):
         #main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'], dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )
         #main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
-        if self.Sensitive == True:
-            main_lv.params.append(("SensDet","Active"))
+        if isinstance(self.Sensitive,str):
+            main_lv.params.append(("SensDet",self.Sensitive))
         self.add_volume( main_lv )

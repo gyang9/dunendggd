@@ -6,16 +6,19 @@ class ScintillatorTrackerBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, NElements=None,  InsideGap=None,
-                    TranspV=None, Rotation=None, **kwds ):
+                    TranspV=None, Rotation=None, Sensitive=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements, self.InsideGap = ( NElements, InsideGap )
         self.TranspV, self.Rotation = ( TranspV, Rotation )
+        self.Sensitive = Sensitive
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
         main_shape = geom.shapes.Box( self.name+"_shape", dx = self.halfDimension['dx'],
                                         dy = self.halfDimension['dy'], dz = self.halfDimension['dz'] )
         main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
+        if isinstance(self.Sensitive,str):
+            main_lv.params.append(("SensDet",self.Sensitive))
         self.add_volume( main_lv )
 
         main_hDimension = [main_shape.dx, main_shape.dy, main_shape.dz]

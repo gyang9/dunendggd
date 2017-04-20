@@ -26,6 +26,7 @@ class SingleArrangePlaneBuilder(gegede.builder.Builder):
         # get sub-builders and its logic volume
         el_sb = self.get_builder()
         el_lv = el_sb.get_volume()
+        print " Jose ", el_lv
 
         # get the sub-builder dimension, using its shape
         el_shape = geom.store.shapes.get(el_lv.shape)

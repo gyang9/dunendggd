@@ -246,6 +246,13 @@ class WorldBuilder(gegede.builder.Builder):
                                              ("carbon",   0.916),
                                              ("hydrogen", 0.084)
                                          ))
+        # Oil to be fixed
+        Oil  = g.matter.Mixture("Oil",   density="0.8*g/cc",
+                                         components = (
+                                             ("carbon",   0.916),
+                                             ("hydrogen", 0.084)
+                                         ))
+
         # Lead:
         Lead  = g.matter.Molecule("Lead",   density="11.342*g/cc",   elements=(("lead",1),))
 
