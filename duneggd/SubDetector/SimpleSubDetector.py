@@ -2,7 +2,7 @@
 import gegede.builder
 from gegede import Quantity as Q
 
-class ScintillatorTrackerBuilder(gegede.builder.Builder):
+class SimpleSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, NElements=None,  InsideGap=None,
@@ -19,6 +19,7 @@ class ScintillatorTrackerBuilder(gegede.builder.Builder):
         main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
         if isinstance(self.Sensitive,str):
             main_lv.params.append(("SensDet",self.Sensitive))
+            print main_lv
         self.add_volume( main_lv )
 
         main_hDimension = [main_shape.dx, main_shape.dy, main_shape.dz]
