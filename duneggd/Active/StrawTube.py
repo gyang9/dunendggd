@@ -40,17 +40,17 @@ class StrawTubeBuilder(gegede.builder.Builder):
         main_lv   = geom.structure.Volume(self.name+"_lv", material=self.Material, shape=main_shape)
         if isinstance(self.Sensitive,str):
             main_lv.params.append(("SensDet",self.Sensitive))
+        self.add_volume(main_lv)
 
         straw_shape = geom.shapes.Tubs(self.name+"_straw", rmin = self.halfSTDimension["rmin"],
                                       rmax = self.halfSTDimension["rmax"], dz = self.halfSTDimension["dz"])
         straw_lv   = geom.structure.Volume(self.name+"_straw_lv", material=self.STMaterial, shape=straw_shape)
 
         wire_shape = geom.shapes.Tubs(self.name+"_wire", self.halfWireDimension["rmin"],
-                                              rmax = self.halfSTDimension["rmax"], dz = self.halfSTDimension["dz"])
+                                              rmax = self.halfWireDimension["rmax"], dz = self.halfWireDimension["dz"])
         wire_lv    = geom.structure.Volume(self.name+"_wire_lv", material=self.WireMaterial, shape=wire_shape)
 
-        pS_in_Tube = geom.structure.Placement( 'placeS_in_Tube_'+self.name, volume = straw_lv )
-        pW_in_Tube = geom.structure.Placement( 'placeW_in_Tube_'+self.name, volume = wire_lv )
-        main_lv.placements.append( pS_in_Tube.name )
-        main_lv.placements.append( pW_in_Tube.name )
-        self.add_volume(main_lv)
+        straw_pla = geom.structure.Placement( self.name+"_straw_pla", volume = straw_lv )
+        wire_pla = geom.structure.Placement( self.name+"_wire_pla", volume = wire_lv )
+        main_lv.placements.append( straw_pla.name )
+        main_lv.placements.append( wire_pla.name )
