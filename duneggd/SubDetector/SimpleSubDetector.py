@@ -7,11 +7,11 @@ class SimpleSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, NElements=None,  InsideGap=None,
-                    TranspV=None, Rotation=None, Sensitive=None, **kwds ):
+                    BeginGap=None, TranspV=None, Rotation=None, Sensitive=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements, self.InsideGap = ( NElements, InsideGap )
-        self.TranspV, self.Rotation = ( TranspV, Rotation )
-        self.Sensitive = Sensitive
+        self.BeginGap, self.TranspV = ( BeginGap, TranspV )
+        self.Rotation, self.Sensitive = ( Rotation, Sensitive )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
@@ -25,26 +25,19 @@ class SimpleSubDetectorBuilder(gegede.builder.Builder):
                                                 str(self.Rotation[1]),  str(self.Rotation[2]) )
 
         # get sub-builders and its logic volume
-        el_sb = self.get_builder()
-        el_lv = el_sb.get_volume()
+        sb = self.get_builder()
+        sb_lv = sb.get_volume()
 
-        # get the sub-builder dimension, using its shape
-        el_shape = geom.store.shapes.get(el_lv.shape)
-        el_dim = [el_shape.dx, el_shape.dy, el_shape.dz]
+        # initial position, based on the dimension projected on transportation vector
+        pos = ltools.getInitialPos( self, main_hDim )
 
-        # calculate half dimension of element plus the gap projected to the transportation vector
-        sb_dim_v = [t*(d+0.5*self.InsideGap) for t,d in zip(self.TranspV,el_dim)]
-
-        # lower edge, the ule dimension projected on transportation vector
-        low_end_v  = [-t*d+ed for t,d,ed in zip(self.TranspV,main_hDim,sb_dim_v)]
-
-        for element in range(self.NElements):
-            # calculate the distance for n elements = i*2*halfdinemsion
-            temp_v = [element*2*d for d in sb_dim_v]
-            # define the position for the element based on edge
-            temp_v = [te+l for te,l in zip(temp_v,low_end_v)]
-            # defining position, placement, and finally insert into the ule.
-            el_pos = geom.structure.Position(self.name+"_el"+str(element)+'_pos', temp_v[0], temp_v[1], temp_v[2])
-            el_pla = geom.structure.Placement(self.name+"_el"+str(element)+'_pla', volume=el_lv,
-                                                pos=el_pos, rot =rotation)
-            main_lv.placements.append(el_pla.name)
+        for elem in range(self.NElements):
+            sb_dim = ltools.getShapeDimensions( sb_lv, geom )
+            step = [ t*d for t,d in zip(self.TranspV, sb_dim) ]
+            pos = [ p+s for p,s in zip(pos,step) ]
+            sb_pos = geom.structure.Position(self.name+sb_lv.name+str(elem)+'_pos',
+                                                        pos[0], pos[1], pos[2])
+            sb_pla = geom.structure.Placement(self.name+sb_lv.name+str(elem)+'_pla',
+                                                        volume=sb_lv, pos=sb_pos, rot =rotation)
+            main_lv.placements.append(sb_pla.name)
+            pos = [p+s+t*self.InsideGap for p,s,t in zip(pos,step,self.TranspV)]

@@ -29,8 +29,17 @@ def main_lv( slf, geom, shape ):
     elif "Sphere" == shape:
         main_shape = geom.shapes.Sphere( slf.name, rmin=slf.halfDimension['rmin'], rmax=slf.halfDimension['rmax'] )
         main_hDim = [main_shape.rmax, main_shape.rmax, main_shape.rmax]
-
     return geom.structure.Volume( slf.name+"_lv", material=slf.Material, shape=main_shape ), main_hDim
+
+def getInitialPos( slf, ggd_dim ):
+    """
+    Return the initial postion for the builder based on the TranspV
+    """
+    if slf.BeginGap == None:
+        begingap = Q('0m')
+    else:
+        begingap = slf.BeginGap
+    return [-t*(d-begingap) for t,d in zip(slf.TranspV,ggd_dim)]
 
 def surroundBuilders( main_lv, sb_cent, sb_surr, axis, initial_vec, gap, angles, geom ):
     """
@@ -39,8 +48,6 @@ def surroundBuilders( main_lv, sb_cent, sb_surr, axis, initial_vec, gap, angles,
     sb_cent_dim = getShapeDimensions( sb_cent_lv, geom )
     sb_surr_lv = sb_surr.get_volume()
     sb_surr_dim = getShapeDimensions( sb_surr_lv, geom )
-    print "central", sb_cent_dim
-    print "surround", sb_surr_dim
 
     Pos = [Q("0m"),Q("0m"),Q("0m")]
     sb_cent_pos = geom.structure.Position( sb_cent_lv.name+'_pos', Pos[0], Pos[1], Pos[2] )
@@ -50,7 +57,6 @@ def surroundBuilders( main_lv, sb_cent, sb_surr, axis, initial_vec, gap, angles,
     for i, angle in enumerate(angles):
         f_vec = rotation(axis, angle, initial_vec)
         pos = [a*(b+c+gap) for a,b,c in zip(f_vec,sb_cent_dim,sb_surr_dim)]
-        print pos
         sb_surr_pos = geom.structure.Position( sb_surr_lv.name+str(angle)+'_pos', pos[0], pos[1], pos[2] )
         sb_surr_pla = geom.structure.Placement( sb_surr_lv.name+str(angle)+'_pla', volume=sb_surr_lv, pos=sb_surr_pos )
         main_lv.placements.append( sb_surr_pla.name )
@@ -73,7 +79,6 @@ def rotation_matrix( axis, theta ):
     the given axis by theta degrees. (https://en.wikipedia.org/wiki/Euler-Rodrigues_formula)
     """
     theta_rad = math.radians(theta)
-    print theta, theta_rad
     a = math.cos(theta_rad/2.0)
     b = -1*math.sin(theta_rad/2.0)*axis[0]
     c = -1*math.sin(theta_rad/2.0)*axis[1]

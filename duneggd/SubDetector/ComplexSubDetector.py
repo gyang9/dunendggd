@@ -3,7 +3,7 @@ import gegede.builder
 from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
-class OgasciBuilder(gegede.builder.Builder):
+class ComplexSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, NElements=None,  InsideGap=None,
@@ -22,10 +22,9 @@ class OgasciBuilder(gegede.builder.Builder):
         rotation = geom.structure.Rotation( self.name+'_rot', str(self.Rotation[0]),
                                                 str(self.Rotation[1]),  str(self.Rotation[2]) )
 
-        # lower edge, the compute dimension projected on transportation vector
-        low_edge = [-t*(d-self.BeginGap) for t,d in zip(self.TranspV,main_hDim)]
+        # initial position, based on the dimension projected on transportation vector
+        pos = ltools.getInitialPos( self, main_hDim )
 
-        pos = low_edge
         for elem in range(self.NElements):
             for i,sb in enumerate(self.get_builders()):
                 sb_lv = sb.get_volume()
