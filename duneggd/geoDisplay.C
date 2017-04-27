@@ -1,9 +1,9 @@
-void geoDisply()
+void geoDisplay()
 {
 	//gSystem->Load("libGdml");
 	gSystem->Load("libGeom");
 	TGeoManager *geo = new TGeoManager();
-	geo->Import("./test.gdml");
+	geo->Import("./OD.gdml");
 	geo->DefaultColors();
 
 

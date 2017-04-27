@@ -18,7 +18,7 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
                      modMagThickness =None, 
               modSteelPlateThickness =None, 
                   modGap_tworpctrays=None, 
-                          modAir_gap=None, **kwds):
+                          modAir_gap=None, RPCShift=None, **kwds):
         if modMuidInDim is None:
             raise ValueError("No value given for muidInDim")
 
@@ -29,6 +29,7 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         self.steelPlateThickness = modSteelPlateThickness 
         self.gap_tworpctrays = modGap_tworpctrays
         self.air_gap = modAir_gap
+        self.RPCShift = RPCShift
 
         # Get RPC tray builders
         #self.RPCTraySmallBldr = self.get_builder('RPCTray_BarSmall')
@@ -113,15 +114,15 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
 					    ypos_midf = -ypos_midf
 
                 brpct_in_muid  = geom.structure.Position( 'brpct-'+str(i*2+j)+'_in_'+self.name,
-                                                         xpos,  ypos,  zpos)
+                                                         xpos,  ypos,  zpos-Q("25m"))
                 pbrpct_in_muid = geom.structure.Placement( 'pbrpct-'+str(i*2+j)+'_in_'+self.name,
                                                          volume = bigTray_lv, pos = brpct_in_muid, rot= "r90aboutY" )
                 smrpct_in_muid  = geom.structure.Position( 'smrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                         xpos_mids,  ypos_mids,  zpos)
+                                                         xpos_mids,  ypos_mids,  zpos-Q("25m"))
                 psmrpct_in_muid = geom.structure.Placement( 'psmrpct-'+str(i*2+j)+'_in_'+self.name,
                                                           volume = smidTray_lv, pos = smrpct_in_muid, rot= "r90aboutY" )
                 fmrpct_in_muid  = geom.structure.Position( 'fmrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                         xpos_midf,  ypos_midf,  zpos)
+                                                         xpos_midf,  ypos_midf,  zpos-Q("25m"))
                 pfmrpct_in_muid = geom.structure.Placement( 'pfmrpct-'+str(i*2+j)+'_in_'+self.name,
                                                           volume = fmidTray_lv, pos = fmrpct_in_muid, rot= "r90aboutY" )
                 muidBar_lv.placements.append( pbrpct_in_muid.name )
@@ -157,15 +158,15 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
                         ypos_small = -ypos_small
 
                 smvrpct_in_muid  = geom.structure.Position( 'smvrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          xpos_mids,  ypos_mids,  zpos)
+                                                          xpos_mids,  ypos_mids,  zpos-Q("25m"))
                 psmvrpct_in_muid = geom.structure.Placement( 'psmvrpct-'+str(i*2+j)+'_in_'+self.name,
                                                            volume = smidTray_lv, pos = smvrpct_in_muid, rot= "r90aboutXZ" )
                 fmvrpct_in_muid  = geom.structure.Position( 'fmvrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          xpos_midf,  ypos_midf,  zpos)
+                                                          xpos_midf,  ypos_midf,  zpos-Q("25m"))
                 pfmvrpct_in_muid = geom.structure.Placement( 'pfmvrpct-'+str(i*2+j)+'_in_'+self.name,
                                                            volume = fmidTray_lv, pos = fmvrpct_in_muid, rot= "r90aboutXZ" )
                 svrpct_in_muid  = geom.structure.Position( 'svrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          xpos_small,  ypos_small,  zpos)
+                                                          xpos_small,  ypos_small,  zpos-Q("25m"))
                 psvrpct_in_muid = geom.structure.Placement( 'psvrpct-'+str(i*2+j)+'_in_'+self.name,
                                                            volume = smallTray_lv, pos = svrpct_in_muid, rot= "r90aboutXZ" )
 

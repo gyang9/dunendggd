@@ -204,9 +204,12 @@ class SecondaryBuilder(gegede.builder.Builder):
 
        # Define magnet as boolean, with hole to fit ECAL inside, place it
         magIn = geom.shapes.Box(  'MagInnerShape',               dx=0.5*self.magInDim[0], 
-                                  dy=0.5*self.magInDim[1],  dz=0.5*self.magInDim[2]) 
+                                  dy=0.5*self.magInDim[1],  dz=0.5*self.magInDim[2])
+        magInn = geom.shapes.Boolean( 'MagInnerrShape', type='subtraction', first=magIn, second=detIn ) 
         mag_lv = self.MagnetBldr.get_volume('volMagnet')
-        magInner_lv = geom.structure.Volume('volMagnetInner', material=self.defMat, shape=magIn)
+        magB_lv = self.MagnetBldr.get_volume('volMagnetB')
+
+        magInner_lv = geom.structure.Volume('volMagnetInner', material=self.defMat, shape=magInn)
         self.add_volume(magInner_lv)
         mag_in_det = geom.structure.Position('Mag_in_MagInner', magPos[0], magPos[1], magPos[2])
 
@@ -217,7 +220,12 @@ class SecondaryBuilder(gegede.builder.Builder):
                                                    volume = magInner_lv,
                                                    pos = mag_in_det) # same pos as magnet
 
+        pmagB_in_D  = geom.structure.Placement('placeMagB_in_MagInner',
+                                              volume = magB_lv,
+                                              pos = mag_in_det)
+
         det_lv.placements.append(pmag_in_D.name)
+        det_lv.placements.append(pmagB_in_D.name)
         det_lv.placements.append(pmagInner_in_D.name)
 
 
@@ -358,7 +366,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         pmuidBar_in_D = geom.structure.Placement('placeMuIDBar_in_Det',
                                                  volume = muidBar_lv,
                                                  pos =self.muidBarRot)
-        #det_lv.placements.append(pmuidBar_in_D.name)
+        det_lv.placements.append(pmuidBar_in_D.name)
        
 
 
