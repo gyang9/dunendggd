@@ -20,7 +20,7 @@ class RPCPadBuilder(gegede.builder.Builder):
                   actStripyDim     = None,
                   actGas_gap      = None,
                   actRpcModMat=None, actResiplateMat=None, 
-                  actGasMat =None, actRpcReadoutMat=None, **kwds):
+                  actGasMat =None, actRpcReadoutMat=None, Sensitive=None, **kwds):
          self.rpcModMat     = actRpcModMat
          self.rpcReadoutMat = actRpcReadoutMat
          self.resiplateMat  = actResiplateMat
@@ -30,7 +30,7 @@ class RPCPadBuilder(gegede.builder.Builder):
          self.stripxDim      = actStripxDim     
          self.stripyDim      = actStripyDim     
          self.gas_gap       = actGas_gap
-
+         self.Sensitive = Sensitive
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -78,4 +78,8 @@ class RPCPadBuilder(gegede.builder.Builder):
         pG_in_Module  = geom.structure.Placement( 'placeG_in_'+self.name, volume = rpcGas_lv )
         #rpcMod_lv.placements.append( pRP_in_Module.name )
         rpcMod_lv.placements.append( pG_in_Module.name )
+
+        if isinstance(self.Sensitive,str):
+            rpcMod_lv.params.append(("SensDet",self.Sensitive))
+
         self.add_volume(rpcMod_lv)
