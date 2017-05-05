@@ -31,6 +31,12 @@ To run a full example containing surrounded magnet
 gegede-cli duneggd/Config/PRIMggd_example.cfg duneggd/Config/SECggd_example.cfg duneggd/Config/DETENCLOSURE.cfg duneggd/Config/WORLDggd.cfg -w World -o full_example.gdml
 ```
 
+# Quick Visualization
+To do a quick check or your geometry file you can use ROOT-CERN:
+```bash
+root -l 'geoDisplay.C("example.gdml")'
+```
+
 # Contact
 * **dunendggd:**
   * Guang Yang `guang.yang.1@stonybrook.edu`
