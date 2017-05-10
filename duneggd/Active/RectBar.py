@@ -24,8 +24,6 @@ class RectBarBuilder(gegede.builder.Builder):
         Construct the geometry for Rectangular Bar.
         :returns: None
         """
-        #main_shape = geom.shapes.Box( self.name, dx=self.halfDimension['dx'], dy=self.halfDimension['dy'], dz=self.halfDimension['dz'] )
-        #main_lv = geom.structure.Volume( self.name+"_lv", material=self.Material, shape=main_shape )
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
         if isinstance(self.Sensitive,str):
             main_lv.params.append(("SensDet",self.Sensitive))

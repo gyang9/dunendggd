@@ -1,6 +1,7 @@
 from gegede import Quantity as Q
 import math
 
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def getShapeDimensions( ggd_vol, geom ):
     """
     """
@@ -15,6 +16,7 @@ def getShapeDimensions( ggd_vol, geom ):
         ggd_dim = [ggd_shape.rmax, ggd_shape.rmax, ggd_shape.rmax]
     return ggd_dim
 
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def main_lv( slf, geom, shape ):
     """
     """
@@ -31,36 +33,129 @@ def main_lv( slf, geom, shape ):
         main_hDim = [main_shape.rmax, main_shape.rmax, main_shape.rmax]
     return geom.structure.Volume( slf.name+"_lv", material=slf.Material, shape=main_shape ), main_hDim
 
-def getInitialPos( slf, ggd_dim ):
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def getRotation( slf, geom ):
+    """
+    Return the Rotation, is not defined return 0deg rotation
+    """
+    if slf.Rotation == None:
+        return geom.structure.Rotation( slf.name+'_rot', '0deg', '0deg', '0deg' )
+    else:
+        return geom.structure.Rotation( slf.name+'_rot', str(slf.Rotation[0]),
+                                            str(slf.Rotation[1]),  str(slf.Rotation[2]) )
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def getInsideGap( slf ):
+    """
+    Return the InsideGap, is not defined return 0m
+    """
+    if slf.InsideGap == None:
+        return Q('0m')
+    else:
+        return slf.InsideGap
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def getBeginGap( slf ):
+    """
+    Return the InsideGap, is not defined return 0m
+    """
+    if slf.BeginGap == None:
+        return Q('0m')
+    else:
+        return slf.BeginGap
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def getInitialPos( slf, ggd_dim, transpV ):
     """
     Return the initial postion for the builder based on the TranspV
     """
-    if slf.BeginGap == None:
-        begingap = Q('0m')
-    else:
-        begingap = slf.BeginGap
-    return [-t*(d-begingap) for t,d in zip(slf.TranspV,ggd_dim)]
+    begingap = getBeginGap( slf )
 
-def surroundBuilders( main_lv, sb_cent, sb_surr, axis, initial_vec, gap, angles, geom ):
+    if slf.NElements == 0:
+        return [0,0,0]
+    else:
+        return [-t*(d-begingap) for t,d in zip(transpV,ggd_dim)]
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def placeBuilders( slf, geom, main_lv, TranspV ):
+    """
+    Place sub-builders inside the main_lv
+    """
+    # definition local rotation
+    rotation = getRotation( slf, geom )
+    # check InsideGap
+    InsideGap = getInsideGap( slf )
+    # get the sub-builders and its dimensions
+    sb = slf.get_builder()
+    sb_lv = sb.get_volume()
+    sb_dim = getShapeDimensions( sb_lv, geom )
+    # get the main dimensions
+    main_hDim = getShapeDimensions( main_lv, geom )
+    # placement n elements
+    if slf.NElements > 0:
+        # initial position, based on the dimension projected on transportation vector
+        pos = getInitialPos( slf, main_hDim, TranspV )
+        for elem in range(slf.NElements):
+            step = [ t*d for t,d in zip(TranspV, sb_dim) ]
+            pos = [ p+s for p,s in zip(pos,step) ]
+            sb_pos = geom.structure.Position(slf.name+sb_lv.name+str(elem)+'_pos',
+                                                pos[0], pos[1], pos[2])
+            sb_pla = geom.structure.Placement(slf.name+sb_lv.name+str(elem)+'_pla',
+                                                volume=sb_lv, pos=sb_pos, rot =rotation)
+            main_lv.placements.append(sb_pla.name)
+            pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
+    # placement simple element, component or subdetector
+    elif slf.NElements == 0:
+        pos = [ Q('0m'),Q('0m'),Q('0m') ]
+        sb_pos = geom.structure.Position(slf.name+sb_lv.name+'_pos',
+                                            pos[0], pos[1], pos[2])
+        sb_pla = geom.structure.Placement(slf.name+sb_lv.name+'_pla',
+                                            volume=sb_lv, pos=sb_pos, rot =rotation)
+        main_lv.placements.append(sb_pla.name)
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def surroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
     """
     """
     sb_cent_lv = sb_cent.get_volume()
     sb_cent_dim = getShapeDimensions( sb_cent_lv, geom )
     sb_surr_lv = sb_surr.get_volume()
     sb_surr_dim = getShapeDimensions( sb_surr_lv, geom )
+    rotLeft = geom.structure.Rotation( main_lv.name+'_rotLeft', '0deg', '0deg', '90deg' )
+    rotRight = geom.structure.Rotation( main_lv.name+'_rotRight', '0deg', '0deg', '-90deg' )
 
-    Pos = [Q("0m"),Q("0m"),Q("0m")]
-    sb_cent_pos = geom.structure.Position( sb_cent_lv.name+'_pos', Pos[0], Pos[1], Pos[2] )
+    sb_cent_pos = geom.structure.Position( sb_cent_lv.name+'_pos', Q("0m"), Q("0m"), Q("0m") )
     sb_cent_pla = geom.structure.Placement( sb_cent_lv.name+'_pla', volume=sb_cent_lv, pos=sb_cent_pos )
     main_lv.placements.append( sb_cent_pla.name )
 
-    for i, angle in enumerate(angles):
-        f_vec = rotation(axis, angle, initial_vec)
-        pos = [a*(b+c+gap) for a,b,c in zip(f_vec,sb_cent_dim,sb_surr_dim)]
-        sb_surr_pos = geom.structure.Position( sb_surr_lv.name+str(angle)+'_pos', pos[0], pos[1], pos[2] )
-        sb_surr_pla = geom.structure.Placement( sb_surr_lv.name+str(angle)+'_pla', volume=sb_surr_lv, pos=sb_surr_pos )
-        main_lv.placements.append( sb_surr_pla.name )
+    # Top
+    pos = [ Q('0m'), sb_cent_dim[1] + sb_surr_dim[1] + gap, Q('0m') ]
+    sb_surr_pos = geom.structure.Position( sb_surr_lv.name+'_top_pos', pos[0], pos[1], pos[2] )
+    sb_surr_pla = geom.structure.Placement( sb_surr_lv.name+'_top_pla', volume=sb_surr_lv, pos=sb_surr_pos )
+    main_lv.placements.append( sb_surr_pla.name )
 
+    # Left
+    pos = [ sb_cent_dim[0] + sb_surr_dim[1] + gap, Q('0m'), Q('0m') ]
+    sb_surr_pos = geom.structure.Position( sb_surr_lv.name+'_left_pos', pos[0], pos[1], pos[2] )
+    sb_surr_pla = geom.structure.Placement( sb_surr_lv.name+'_left_pla', volume=sb_surr_lv,
+                                                pos=sb_surr_pos, rot=rotLeft )
+    main_lv.placements.append( sb_surr_pla.name )
+
+    # Bottom
+    pos = [ Q('0m'), -sb_cent_dim[1] - sb_surr_dim[1] - gap, Q('0m') ]
+    sb_surr_pos = geom.structure.Position( sb_surr_lv.name+'_bottom_pos', pos[0], pos[1], pos[2] )
+    sb_surr_pla = geom.structure.Placement( sb_surr_lv.name+'_bottom_pla', volume=sb_surr_lv, pos=sb_surr_pos )
+    main_lv.placements.append( sb_surr_pla.name )
+
+    #Right
+    pos = [ -sb_cent_dim[0] - sb_surr_dim[1] - gap, Q('0m'), Q('0m') ]
+    sb_surr_pos = geom.structure.Position( sb_surr_lv.name+'_right_pos', pos[0], pos[1], pos[2] )
+    sb_surr_pla = geom.structure.Placement( sb_surr_lv.name+'_right_pla', volume=sb_surr_lv,
+                                                pos=sb_surr_pos, rot=rotRight )
+    main_lv.placements.append( sb_surr_pla.name )
+
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def rotation( axis, theta, vec ):
     """
     Return the vector rotated, the rotation matrix is called inside.
@@ -72,7 +167,7 @@ def rotation( axis, theta, vec ):
     rot_vec[2] = Matrix[2][0]*vec[0] + Matrix[2][1]*vec[1] + Matrix[2][2]*vec[2]
     return rot_vec
 
-
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def rotation_matrix( axis, theta ):
     """
     Return the rotation matrix associated with counterclockwise rotation about

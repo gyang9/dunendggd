@@ -27,8 +27,8 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
                                             str(self.Rotation1[1]),  str(self.Rotation1[2]) )
 
         # get sub-builders and its logic volume
-        el_sb = self.get_builder()
-        el_lv = el_sb.get_volume()
+        sb = self.get_builder()
+        el_lv = sb.get_volume()
 
         # get the sub-builder dimension, using its shape
         el_shape = geom.store.shapes.get(el_lv.shape)
