@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name = 'dunendggd',
-      version = '1.0.1',
+      version = '1.0.0',
       description = 'DUNE Near Detector based on General Geometry Description',
       author = 'Jose Palomino and Guang Yang',
       author_email = 'guang.yang.1@stonybrook.edu, jose.palominogallo@stonybrook.edu',
