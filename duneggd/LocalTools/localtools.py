@@ -154,6 +154,45 @@ def surroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
                                                 pos=sb_surr_pos, rot=rotRight )
     main_lv.placements.append( sb_surr_pla.name )
 
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def crossBuilders( main_lv, sb_cent, sb_verti, sb_horiz, gap, geom ):
+    """
+    """
+    sb_cent_lv = sb_cent.get_volume()
+    sb_cent_dim = getShapeDimensions( sb_cent_lv, geom )
+    sb_verti_lv = sb_verti.get_volume()
+    sb_verti_dim = getShapeDimensions( sb_verti_lv, geom )
+    sb_horiz_lv = sb_horiz.get_volume()
+    sb_horiz_dim = getShapeDimensions( sb_horiz_lv, geom )
+
+    sb_cent_pos = geom.structure.Position( sb_cent_lv.name+'_pos', Q("0m"), Q("0m"), Q("0m") )
+    sb_cent_pla = geom.structure.Placement( sb_cent_lv.name+'_pla', volume=sb_cent_lv, pos=sb_cent_pos )
+    main_lv.placements.append( sb_cent_pla.name )
+
+    # Top
+    pos = [ Q('0m'), sb_cent_dim[1] + sb_surr_dim[1] + gap, Q('0m') ]
+    sb_verti_pos = geom.structure.Position( sb_verti_lv.name+'_top_pos', pos[0], pos[1], pos[2] )
+    sb_verti_pla = geom.structure.Placement( sb_verti_lv.name+'_top_pla', volume=sb_verti_lv, pos=sb_surr_pos )
+    main_lv.placements.append( sb_verti_pla.name )
+
+    # Left
+    pos = [ sb_cent_dim[0] + sb_surr_dim[1] + gap, Q('0m'), Q('0m') ]
+    sb_horiz_pos = geom.structure.Position( sb_horiz_lv.name+'_left_pos', pos[0], pos[1], pos[2] )
+    sb_horiz_pla = geom.structure.Placement( sb_horiz_lv.name+'_left_pla', volume=sb_horiz_lv, pos=sb_surr_pos )
+    main_lv.placements.append( sb_horiz_pla.name )
+
+    # Bottom
+    pos = [ Q('0m'), -sb_cent_dim[1] - sb_surr_dim[1] - gap, Q('0m') ]
+    sb_verti_pos = geom.structure.Position( sb_verti_lv.name+'_bottom_pos', pos[0], pos[1], pos[2] )
+    sb_verti_pla = geom.structure.Placement( sb_verti_lv.name+'_bottom_pla', volume=sb_verti_lv, pos=sb_surr_pos )
+    main_lv.placements.append( sb_verti_pla.name )
+
+    #Right
+    pos = [ -sb_cent_dim[0] - sb_surr_dim[1] - gap, Q('0m'), Q('0m') ]
+    sb_horiz_pos = geom.structure.Position( sb_horiz_lv.name+'_right_pos', pos[0], pos[1], pos[2] )
+    sb_horiz_pla = geom.structure.Placement( sb_horiz_lv.name+'_right_pla', volume=sb_horiz_lv, pos=sb_surr_pos )
+    main_lv.placements.append( sb_horiz_pla.name )
+
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def rotation( axis, theta, vec ):
