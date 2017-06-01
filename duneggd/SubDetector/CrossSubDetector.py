@@ -17,6 +17,6 @@ class CrossSubDetectorBuilder(gegede.builder.Builder):
 
         builders = self.get_builders()
         sb_central = builders[0]
-        sb_verti = builders[1]
-        sb_horiz = builders[2]
-        ltools.crossBuilders( main_lv, sb_central, sb_verti, sb_horiz, self.InsideGap, geom )
+        sb_top = builders[1]
+        sb_side = builders[2]
+        ltools.crossBuilders( main_lv, sb_central, sb_top, sb_side, self.InsideGap, geom )
