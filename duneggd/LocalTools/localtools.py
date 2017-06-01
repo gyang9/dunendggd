@@ -114,6 +114,36 @@ def placeBuilders( slf, geom, main_lv, TranspV ):
         main_lv.placements.append(sb_pla.name)
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def placeComplexBuilders( slf, geom, main_lv, TranspV ):
+    """
+    Place sub-builders inside the main_lv
+    """
+    # definition local rotation
+    rotation = getRotation( slf, geom )
+    # check InsideGap
+    InsideGap = getInsideGap( slf )
+    # get the main dimensions
+    main_hDim = getShapeDimensions( main_lv, geom )
+    # initial position, based on the dimension projected on transportation vector
+    pos = getInitialPos( slf, main_hDim, TranspV )
+    # get builders
+    builders = slf.get_builders()
+
+    for elem in range(slf.NElements):
+        for i,sb in enumerate(builders):
+            # get the sub-builders and its dimensions
+            sb_lv = sb.get_volume()
+            sb_dim = getShapeDimensions( sb_lv, geom )
+            step = [ t*d for t,d in zip(TranspV, sb_dim) ]
+            pos = [ p+s for p,s in zip(pos,step) ]
+            sb_pos = geom.structure.Position(slf.name+sb_lv.name+str(elem)+'_pos',
+                                                pos[0], pos[1], pos[2])
+            sb_pla = geom.structure.Placement(slf.name+sb_lv.name+str(elem)+'_pla',
+                                                volume=sb_lv, pos=sb_pos, rot =rotation)
+            main_lv.placements.append(sb_pla.name)
+            pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def surroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
     """
     """
@@ -170,27 +200,27 @@ def crossBuilders( main_lv, sb_cent, sb_verti, sb_horiz, gap, geom ):
     main_lv.placements.append( sb_cent_pla.name )
 
     # Top
-    pos = [ Q('0m'), sb_cent_dim[1] + sb_surr_dim[1] + gap, Q('0m') ]
+    pos = [ Q('0m'), sb_cent_dim[1] + sb_verti_dim[1] + gap, Q('0m') ]
     sb_verti_pos = geom.structure.Position( sb_verti_lv.name+'_top_pos', pos[0], pos[1], pos[2] )
-    sb_verti_pla = geom.structure.Placement( sb_verti_lv.name+'_top_pla', volume=sb_verti_lv, pos=sb_surr_pos )
+    sb_verti_pla = geom.structure.Placement( sb_verti_lv.name+'_top_pla', volume=sb_verti_lv, pos=sb_verti_pos )
     main_lv.placements.append( sb_verti_pla.name )
 
     # Left
-    pos = [ sb_cent_dim[0] + sb_surr_dim[1] + gap, Q('0m'), Q('0m') ]
+    pos = [ sb_cent_dim[0] + sb_horiz_dim[0] + gap, Q('0m'), Q('0m') ]
     sb_horiz_pos = geom.structure.Position( sb_horiz_lv.name+'_left_pos', pos[0], pos[1], pos[2] )
-    sb_horiz_pla = geom.structure.Placement( sb_horiz_lv.name+'_left_pla', volume=sb_horiz_lv, pos=sb_surr_pos )
+    sb_horiz_pla = geom.structure.Placement( sb_horiz_lv.name+'_left_pla', volume=sb_horiz_lv, pos=sb_horiz_pos )
     main_lv.placements.append( sb_horiz_pla.name )
 
     # Bottom
-    pos = [ Q('0m'), -sb_cent_dim[1] - sb_surr_dim[1] - gap, Q('0m') ]
+    pos = [ Q('0m'), -sb_cent_dim[1] - sb_verti_dim[1] - gap, Q('0m') ]
     sb_verti_pos = geom.structure.Position( sb_verti_lv.name+'_bottom_pos', pos[0], pos[1], pos[2] )
-    sb_verti_pla = geom.structure.Placement( sb_verti_lv.name+'_bottom_pla', volume=sb_verti_lv, pos=sb_surr_pos )
+    sb_verti_pla = geom.structure.Placement( sb_verti_lv.name+'_bottom_pla', volume=sb_verti_lv, pos=sb_verti_pos )
     main_lv.placements.append( sb_verti_pla.name )
 
     #Right
-    pos = [ -sb_cent_dim[0] - sb_surr_dim[1] - gap, Q('0m'), Q('0m') ]
+    pos = [ -sb_cent_dim[0] - sb_horiz_dim[0] - gap, Q('0m'), Q('0m') ]
     sb_horiz_pos = geom.structure.Position( sb_horiz_lv.name+'_right_pos', pos[0], pos[1], pos[2] )
-    sb_horiz_pla = geom.structure.Placement( sb_horiz_lv.name+'_right_pla', volume=sb_horiz_lv, pos=sb_surr_pos )
+    sb_horiz_pla = geom.structure.Placement( sb_horiz_lv.name+'_right_pla', volume=sb_horiz_lv, pos=sb_horiz_pos )
     main_lv.placements.append( sb_horiz_pla.name )
 
 

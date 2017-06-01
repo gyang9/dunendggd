@@ -23,4 +23,4 @@ class SingleArrangePlaneBuilder(gegede.builder.Builder):
             TranspV = [1,0,0]
             ltools.placeBuilders( self, geom, main_lv, TranspV )
         else:
-            print "No Elements to place inside ", self.name
+            print "**Warning, no Elements to place inside ", self.name
