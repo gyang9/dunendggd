@@ -194,6 +194,8 @@ def crossBuilders( main_lv, sb_cent, sb_top, sb_side, gap, geom ):
     sb_top_dim = getShapeDimensions( sb_top_lv, geom )
     sb_side_lv = sb_side.get_volume()
     sb_side_dim = getShapeDimensions( sb_side_lv, geom )
+    rotLeft = geom.structure.Rotation( main_lv.name+'_rotLeft', '0deg', '0deg', '90deg' )
+    rotRight = geom.structure.Rotation( main_lv.name+'_rotRight', '0deg', '0deg', '-90deg' )
 
     sb_cent_pos = geom.structure.Position( sb_cent_lv.name+'_pos', Q("0m"), Q("0m"), Q("0m") )
     sb_cent_pla = geom.structure.Placement( sb_cent_lv.name+'_pla', volume=sb_cent_lv, pos=sb_cent_pos )
@@ -206,9 +208,10 @@ def crossBuilders( main_lv, sb_cent, sb_top, sb_side, gap, geom ):
     main_lv.placements.append( sb_top_pla.name )
 
     # Left
-    pos = [ sb_cent_dim[0] + sb_side_dim[0] + gap, Q('0m'), Q('0m') ]
+    pos = [ sb_cent_dim[0] + sb_side_dim[1] + gap, Q('0m'), Q('0m') ]
     sb_side_pos = geom.structure.Position( sb_side_lv.name+'_left_pos', pos[0], pos[1], pos[2] )
-    sb_side_pla = geom.structure.Placement( sb_side_lv.name+'_left_pla', volume=sb_side_lv, pos=sb_side_pos )
+    sb_side_pla = geom.structure.Placement( sb_side_lv.name+'_left_pla', volume=sb_side_lv,
+                                                pos=sb_side_pos, rot=rotLeft )
     main_lv.placements.append( sb_side_pla.name )
 
     # Bottom
@@ -218,9 +221,10 @@ def crossBuilders( main_lv, sb_cent, sb_top, sb_side, gap, geom ):
     main_lv.placements.append( sb_top_pla.name )
 
     #Right
-    pos = [ -sb_cent_dim[0] - sb_side_dim[0] - gap, Q('0m'), Q('0m') ]
+    pos = [ -sb_cent_dim[0] - sb_side_dim[1] - gap, Q('0m'), Q('0m') ]
     sb_side_pos = geom.structure.Position( sb_side_lv.name+'_right_pos', pos[0], pos[1], pos[2] )
-    sb_side_pla = geom.structure.Placement( sb_side_lv.name+'_right_pla', volume=sb_side_lv, pos=sb_side_pos )
+    sb_side_pla = geom.structure.Placement( sb_side_lv.name+'_right_pla', volume=sb_side_lv,
+                                                pos=sb_side_pos, rot=rotRight )
     main_lv.placements.append( sb_side_pla.name )
 
 

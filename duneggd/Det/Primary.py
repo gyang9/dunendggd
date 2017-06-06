@@ -32,9 +32,10 @@ class PrimaryBuilder(gegede.builder.Builder):
             sb_dim = ltools.getShapeDimensions( sb_lv, geom )
             pos[2] = pos[2] + sb_dim[2] + self.InsideGap[i]
             # defining position, placement, and finally insert into main logic volume.
-            sb_pos = geom.structure.Position(self.name+sb_lv.name+'_pos',
+            sb_pos = geom.structure.Position(self.name+sb_lv.name+'_pos_'+str(i),
                                                 pos[0], pos[1], pos[2])
-            sb_pla = geom.structure.Placement(self.name+sb_lv.name+'_pla',
+            sb_pla = geom.structure.Placement(self.name+sb_lv.name+'_pla_'+str(i),
                                                 volume=sb_lv, pos=sb_pos )
             main_lv.placements.append(sb_pla.name)
+            print sb
             pos[2] = pos[2] + sb_dim[2]
