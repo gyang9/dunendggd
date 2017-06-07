@@ -31,7 +31,7 @@ def main_lv( slf, geom, shape ):
     elif "Sphere" == shape:
         main_shape = geom.shapes.Sphere( slf.name, rmin=slf.halfDimension['rmin'], rmax=slf.halfDimension['rmax'] )
         main_hDim = [main_shape.rmax, main_shape.rmax, main_shape.rmax]
-    return geom.structure.Volume( slf.name+"_lv", material=slf.Material, shape=main_shape ), main_hDim
+    return geom.structure.Volume( "vol"+slf.name, material=slf.Material, shape=main_shape ), main_hDim
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def getRotation( slf, geom ):

@@ -37,5 +37,4 @@ class PrimaryBuilder(gegede.builder.Builder):
             sb_pla = geom.structure.Placement(self.name+sb_lv.name+'_pla_'+str(i),
                                                 volume=sb_lv, pos=sb_pos )
             main_lv.placements.append(sb_pla.name)
-            print sb
             pos[2] = pos[2] + sb_dim[2]
