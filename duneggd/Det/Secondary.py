@@ -333,7 +333,7 @@ class SecondaryBuilder(gegede.builder.Builder):
                                                  volume = ecalBar_lv,
                                                  pos = ecalBar_in_det2,
                                                  rot=self.ecalBarRot)
-        magInner_lv.placements.append(pecalBar_in_MagInner2.name)
+        #magInner_lv.placements.append(pecalBar_in_MagInner2.name)
 
         ecalBar_in_det3 = geom.structure.Position('ECALBar_in_MagInner3', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2]-Q('8.5m'))
         pecalBar_in_MagInner3 = geom.structure.Placement('placeECALBar_in_MagInner3',
