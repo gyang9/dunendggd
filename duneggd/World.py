@@ -58,6 +58,7 @@ class WorldBuilder(gegede.builder.Builder):
         cr = g.matter.Element("chromium",   "Cr", 24, "51.9961*g/mole")
         fe = g.matter.Element("iron",       "Fe", 26, "55.8450*g/mole")
         ni = g.matter.Element("nickel",     "Ni", 28, "58.6934*g/mole")
+        ni = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
         br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
         xe = g.matter.Element("xenon",      "Xe", 54, "131.293*g/mole")
         pb = g.matter.Element("lead",       "Pb", 82, "207.20*g/mole" )
@@ -157,6 +158,7 @@ class WorldBuilder(gegede.builder.Builder):
         ArTarget = g.matter.Molecule("ArgonTarget", density="0.2297*g/cc", elements=(("argon",1),))
         #ArTarget = g.matter.Molecule("ArgonTarget", density="10.2297*g/cc", elements=(("argon",1),))
         Aluminum = g.matter.Molecule("Aluminum",    density="2.70*g/cc",  elements=(("aluminum",1),))
+        Copper = g.matter.Molecule("Copper",    density="8.96*g/cc",  elements=(("copper",1),))
         CarFiber = g.matter.Molecule("CarbonFiber", density="1.6*g/cc",  elements=(("carbon",1),))
         stGas_Ar = g.matter.Mixture( "stGas_Ar", density = dArCO2,
                                       components = (
@@ -259,3 +261,10 @@ class WorldBuilder(gegede.builder.Builder):
 
         # for LAr otion using this world:
         LArTarget = g.matter.Molecule("LAr", density="1.4*g/cc", elements=(("argon",1),))
+
+        KLOEECal  = g.matter.Mixture("KLOEEcal",   density="5.3*g/cc",
+                                     components = (
+                                         ("Lead",   0.42),
+                                         ("Scintillator", 0.48),
+                                         ("epoxy_resin",0.10)
+                                    ))
