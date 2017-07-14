@@ -6,14 +6,15 @@ from gegede import Quantity as Q
 class ComplexSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None, NElements=None,
-                    BeginGap=None, InsideGap=None, Rotation=None,
-                    BField=None, EField=None, Sensitive=None, **kwds ):
+    def configure( self, halfDimension=None, Material=None, NElements=None, BeginGap=None, 
+                    InsideGap=None, Rotation=None, BField=None, EField=None, Sensitive=None,
+                    TranspV=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements, self.BeginGap = ( NElements, BeginGap )
         self.InsideGap, self.Rotation  = ( InsideGap, Rotation )
         self.BField, self.EField = ( BField, EField )
         self.Sensitive = Sensitive
+        self.TranspV = TranspV
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
@@ -28,6 +29,8 @@ class ComplexSubDetectorBuilder(gegede.builder.Builder):
 
         if self.NElements != None:
             TranspV = [0,0,1]
+            if  self.TranspV != None:
+                TranspV = self.TranspV
             ltools.placeComplexBuilders( self, geom, main_lv, TranspV )
         else:
             print "**Warning, no Elements to place inside ", self.name
