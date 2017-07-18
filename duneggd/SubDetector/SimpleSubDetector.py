@@ -6,15 +6,15 @@ from gegede import Quantity as Q
 class SimpleSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None, NElements=None, BeginGap=None, 
+    def configure( self, halfDimension=None, Material=None, NElements=None, BeginGap=None,
                     InsideGap=None, Rotation=None, BField=None, EField=None, Sensitive=None,
-                    TranspV=None, **kwds ):
+                    TranspV=None, SubBPos=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements, self.BeginGap = ( NElements, BeginGap )
         self.InsideGap, self.Rotation  = ( InsideGap, Rotation )
         self.BField, self.EField = ( BField, EField )
         self.Sensitive = Sensitive
-        self.TranspV = TranspV
+        self.TranspV, self.SubBPos = ( TranspV, SubBPos )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):

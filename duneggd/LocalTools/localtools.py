@@ -91,10 +91,10 @@ def placeBuilders( slf, geom, main_lv, TranspV ):
     sb_dim = getShapeDimensions( sb_lv, geom )
     # get the main dimensions
     main_hDim = getShapeDimensions( main_lv, geom )
+    # get the initial position of the sub-builders
+    pos = getInitialPos( slf, main_hDim, TranspV )
     # placement n elements
     if slf.NElements > 0:
-        # initial position, based on the dimension projected on transportation vector
-        pos = getInitialPos( slf, main_hDim, TranspV )
         for elem in range(slf.NElements):
             step = [ t*d for t,d in zip(TranspV, sb_dim) ]
             pos = [ p+s for p,s in zip(pos,step) ]
@@ -106,7 +106,6 @@ def placeBuilders( slf, geom, main_lv, TranspV ):
             pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
     # placement simple element, component or subdetector
     elif slf.NElements == 0:
-        pos = [ Q('0m'),Q('0m'),Q('0m') ]
         sb_pos = geom.structure.Position(slf.name+sb_lv.name+'_pos',
                                             pos[0], pos[1], pos[2])
         sb_pla = geom.structure.Placement(slf.name+sb_lv.name+'_pla',

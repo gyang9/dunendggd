@@ -6,9 +6,9 @@ from gegede import Quantity as Q
 class ComplexSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None, NElements=None, BeginGap=None, 
+    def configure( self, halfDimension=None, Material=None, NElements=None, BeginGap=None,
                     InsideGap=None, Rotation=None, BField=None, EField=None, Sensitive=None,
-                    TranspV=None, **kwds ):
+                    TranspV=None **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements, self.BeginGap = ( NElements, BeginGap )
         self.InsideGap, self.Rotation  = ( InsideGap, Rotation )

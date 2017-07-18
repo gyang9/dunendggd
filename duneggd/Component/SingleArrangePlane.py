@@ -7,12 +7,12 @@ from gegede import Quantity as Q
 class SingleArrangePlaneBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None, NElements=None, BeginGap=None, 
-                    InsideGap=None, Rotation=None, TranspV=None, **kwds ):
+    def configure( self, halfDimension=None, Material=None, NElements=None, BeginGap=None,
+                    InsideGap=None, Rotation=None, TranspV=None, SubBPos=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements, self.BeginGap = ( NElements, BeginGap )
         self.InsideGap, self.Rotation  = ( InsideGap, Rotation )
-        self.TranspV = TranspV
+        self.TranspV, self.SubBPos = ( TranspV, SubBPos )
         pass
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
