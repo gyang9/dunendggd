@@ -14,6 +14,12 @@ def getShapeDimensions( ggd_vol, geom ):
         ggd_dim = [ggd_shape.rmax, ggd_shape.rmax, ggd_shape.dz]
     elif "Sphere" in shapename:
         ggd_dim = [ggd_shape.rmax, ggd_shape.rmax, ggd_shape.rmax]
+    elif "Cone" in shapename:
+        ggd_dim = [ggd_shape.rmax1 if ggd_shape.rmax1 >= ggd_shape.rmax2 else ggd_shape.rmax2,
+                    ggd_shape.rmax1 if ggd_shape.rmax1 >= ggd_shape.rmax2 else ggd_shape.rmax2, ggd_shape.dz]
+    elif "Trapezoid" in shapename:
+        ggd_dim = [ggd_shape.dx1 if ggd_shape.dx1 >= ggd_shape.dx2 else ggd_shape.dx2,
+                    ggd_shape.dy1 if ggd_shape.dy1 >= ggd_shape.dy2 else ggd_shape.dx2, ggd_shape.dz]
     return ggd_dim
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -25,12 +31,25 @@ def main_lv( slf, geom, shape ):
                                         dz=slf.halfDimension['dz'] )
         main_hDim = [main_shape.dx, main_shape.dy, main_shape.dz]
     elif "Tubs" == shape:
-        main_shape = geom.shape.Tubs( slf.name, rmin=slf.halfDimension['rmin'], rmax=slf.halfDimension['rmax'],
-                                        dz=slf.halfDimension['dz'] )
+        main_shape = geom.shape.Tubs( slf.name, rmin=slf.halfDimension['rmin'],
+                                        rmax=slf.halfDimension['rmax'], dz=slf.halfDimension['dz'] )
         main_hDim = [main_shape.rmax, main_shape.rmax, main_shape.dz]
     elif "Sphere" == shape:
-        main_shape = geom.shapes.Sphere( slf.name, rmin=slf.halfDimension['rmin'], rmax=slf.halfDimension['rmax'] )
+        main_shape = geom.shapes.Sphere( slf.name, rmin=slf.halfDimension['rmin'],
+                                            rmax=slf.halfDimension['rmax'] )
         main_hDim = [main_shape.rmax, main_shape.rmax, main_shape.rmax]
+    elif "Cone" == shape:
+        main_shape = geom.shapes.Cone( slf.name, rmin1=slf.halfDimension['rmin1'],
+                                        rmax1=slf.halfDimension['rmax1'], rmin2=slf.halfDimension['rmin2'],
+                                        rmax2=slf.halfDimension['rmax2'],dz=slf.halfDimension['dz'] )
+        main_hDim = [main_shape.rmax1 if main_shape.rmax1 >= main_shape.rmax2 else main_shape.rmax2,
+                    main_shape.rmax1 if main_shape.rmax1 >= main_shape.rmax2 else main_shape.rmax2, main_shape.dz]
+    elif "Trapezoid" == shape:
+        main_shape = geom.shapes.Trapezoid( slf.name, dx1=slf.halfDimension['dx1'], dx2=slf.halfDimension['dx2'],
+                                        dy1=slf.halfDimension['dy1'], dy2=slf.halfDimension['dy2'],
+                                        dz=slf.halfDimension['dz'] )
+        main_hDim = [main_shape.dx1 if main_shape.dx1 >= main_shape.dx2 else main_shape.dx2,
+                    main_shape.dy1 if main_shape.dy1 >= main_shape.dy2 else main_shape.dx2, main_shape.dz]
     return geom.structure.Volume( "vol"+slf.name, material=slf.Material, shape=main_shape ), main_hDim
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -72,7 +91,7 @@ def getInitialPos( slf, ggd_dim, transpV ):
     begingap = getBeginGap( slf )
 
     if slf.NElements == 0:
-        return [0,0,0]
+        return [Q('0m'),Q('0m'),Q('0m')]
     else:
         return [-t*(d-begingap) for t,d in zip(transpV,ggd_dim)]
 
@@ -91,10 +110,10 @@ def placeBuilders( slf, geom, main_lv, TranspV ):
     sb_dim = getShapeDimensions( sb_lv, geom )
     # get the main dimensions
     main_hDim = getShapeDimensions( main_lv, geom )
+    # get the initial position of the sub-builders
+    pos = getInitialPos( slf, main_hDim, TranspV )
     # placement n elements
     if slf.NElements > 0:
-        # initial position, based on the dimension projected on transportation vector
-        pos = getInitialPos( slf, main_hDim, TranspV )
         for elem in range(slf.NElements):
             step = [ t*d for t,d in zip(TranspV, sb_dim) ]
             pos = [ p+s for p,s in zip(pos,step) ]
@@ -106,7 +125,6 @@ def placeBuilders( slf, geom, main_lv, TranspV ):
             pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
     # placement simple element, component or subdetector
     elif slf.NElements == 0:
-        pos = [ Q('0m'),Q('0m'),Q('0m') ]
         sb_pos = geom.structure.Position(slf.name+sb_lv.name+'_pos',
                                             pos[0], pos[1], pos[2])
         sb_pla = geom.structure.Placement(slf.name+sb_lv.name+'_pla',
