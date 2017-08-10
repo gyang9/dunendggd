@@ -7,8 +7,9 @@ class KLOEBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, halfDimension=None, Material=None,
-                  BField=None, CentralBField=Q("0.0T"), **kwds):
+                  BField=None, CentralBField=Q("0.0T"), BuildSTT=False, **kwds):
         self.halfDimension, self.Material = ( halfDimension, Material )
+        self.BuildSTT=BuildSTT
         
         # The overall logical volume
         self.LVHalfLength=Q("3.1m")
@@ -62,7 +63,8 @@ class KLOEBuilder(gegede.builder.Builder):
         self.build_ecal(main_lv,geom)
         self.build_tracker(main_lv,geom)
         print "printing main_lv: ", main_lv
-
+            
+            
 #        TranspV = [0,0,1]
 #        begingap = ltools.getBeginGap( self )
 
@@ -367,7 +369,8 @@ class KLOEBuilder(gegede.builder.Builder):
         KLOETrackingRegionRmin=Q("0m")
         KLOETrackingRegionRmax=Q("2.0m")
         KLOETrackingRegionHL=Q("1.69m")
-                
+
+        # build tracking region logical volume        
         shape=geom.shapes.Tubs(name, 
                                rmin=KLOETrackingRegionRmin, 
                                rmax=KLOETrackingRegionRmax,
@@ -380,7 +383,24 @@ class KLOEBuilder(gegede.builder.Builder):
         BField="(0.0 T, 0.0 T, %f T)"%(self.CentralBField/Q("1.0T"))
         print "Setting KLOE Central Tracker Bfield to ",BField
         lv.params.append(("BField",BField))
+        
+        
+        # now build the tracking detector inside
+        stt_builder=self.get_builder("KLOESTT")
+        if stt_builder!=None:
+            rot = [Q("0deg"),Q("90deg"),Q("0deg")]
+            loc = [Q('0m'),Q('0m'),Q('0m')]
+            stt_lv=stt_builder.get_volume()
+            stt_pos=geom.structure.Position(name+"_KLOESTT_pos",
+                                            loc[0],loc[1],loc[2])
+            stt_rot=geom.structure.Rotation(name+"_KLOESTT_rot",
+                                            rot[0],rot[1],rot[2])
+            stt_pla=geom.structure.Placement(name+"_KLOESTT_pla",
+                                             volume=stt_lv,pos=stt_pos,
+                                             rot=stt_rot)
+            lv.placements.append(stt_pla.name)
 
+        # now place the tracking volume
         pos = [Q('0m'),Q('0m'),Q('0m')]
         pos=geom.structure.Position(name+"_pos",
                                     pos[0],pos[1], pos[2])
@@ -388,28 +408,8 @@ class KLOEBuilder(gegede.builder.Builder):
                                      volume=lv,
                                      pos=pos)
         print "appending ",pla.name
+
         main_lv.placements.append(pla.name)
-        gap=Q("10cm")
-        # now for some code to build the tracking detector
-        print "Now we are building the KLOE tracking detector"
 
-        pos = [Q('0m'),Q('0m'),-KLOETrackingRegionHL]
 
-        for i,sb in enumerate(self.get_builders()):
-            sb_lv = sb.get_volume()
-            print "Working on ", i, sb_lv.name
-
-            sb_dim = ltools.getShapeDimensions( sb_lv, geom )
-
-            pos[2] = pos[2] + sb_dim[2] + gap
-            # defining position, placement, and finally insert into main logic volume.
-            pos_name=self.name+sb_lv.name+'_pos_'+str(i)
-            pla_name=self.name+sb_lv.name+'_pla_'+str(i)
-            print "Position name", pos_name
-            print "Placement name", pla_name
-            # we are going to append to the tracker lv
-            # but may need to change to main_lv?
-            sb_pos = geom.structure.Position(pos_name,pos[0], pos[1], pos[2])
-            sb_pla = geom.structure.Placement(pla_name,volume=sb_lv, pos=sb_pos)
-            print "Appending ",sb_pla.name," to lv=",main_lv.name
-            main_lv.placements.append(sb_pla.name)
+            

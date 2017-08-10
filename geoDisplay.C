@@ -1,4 +1,4 @@
-void geoDisplay(TString filename, Int_t VisLevel=3)
+void geoDisplay(TString filename, Int_t VisLevel=5)
 {
 	TGeoManager *geo = new TGeoManager();
 	geo->Import(filename);
@@ -9,6 +9,6 @@ void geoDisplay(TString filename, Int_t VisLevel=3)
  	geo->PrintOverlaps();
 
 	geo->SetVisLevel(VisLevel);
-
+	
 	geo->GetTopVolume()->Draw("ogl");
 }

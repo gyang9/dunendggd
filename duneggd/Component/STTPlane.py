@@ -31,11 +31,11 @@ class STTPlaneBuilder(gegede.builder.Builder):
             sb_lv = sb.get_volume()
             sb_dim = ltools.getShapeDimensions( sb_lv, geom )
 
-            TranspV = [1,0,0]
+#            TranspV = [1,0,0] #MAK: not used
 
             # initial position, particular case
             pos = [-main_hDim[0]+sb_dim[0]*0.5, Q('0m'), Q('0m')]
-
+            print "STTPlane sb_dim[]= ",sb_dim
             for elem in range(self.NElements):
                 pos = [ sb_dim[0]*0.5+pos[0], pos[1]-math.pow(-1,elem+1)*sb_dim[0]*math.sqrt(3)*0.5, pos[2] ]
                 sb_pos = geom.structure.Position(self.name+sb_lv.name+str(elem)+'_pos',

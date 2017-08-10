@@ -25,6 +25,9 @@ class KLOESTTBuilder(gegede.builder.Builder):
         self.add_volume( main_lv )
         
         rot=[Q("90deg"),Q("0deg"),Q("0deg")]
+#        rot=[Q("0deg"),Q("0deg"),Q("0deg")]
+#        rot=[Q("0deg"),Q("90deg"),Q("90deg")]
+#        rot=[Q("90deg"),Q("90deg"),Q("0deg")]
         mod_builder=self.get_builder("STTModule")
         mod_lv=mod_builder.get_volume()
         # build modules starting from -z edge of KLOESTT
