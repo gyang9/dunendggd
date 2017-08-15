@@ -262,6 +262,8 @@ class WorldBuilder(gegede.builder.Builder):
         # for LAr otion using this world:
         LArTarget = g.matter.Molecule("LAr", density="1.4*g/cc", elements=(("argon",1),))
 
+        GArTarget = g.matter.Molecule("GAr", density="1.784*0.001*g/cc", elements=(("argon",1),) )
+
         KLOEECal  = g.matter.Mixture("KLOEEcal",   density="5.3*g/cc",
                                      components = (
                                          ("Lead",   0.42),

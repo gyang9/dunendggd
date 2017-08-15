@@ -91,7 +91,10 @@ def getInitialPos( slf, ggd_dim, transpV ):
     begingap = getBeginGap( slf )
 
     if slf.NElements == 0:
-        return [Q('0m'),Q('0m'),Q('0m')]
+        if slf.SubBPos != None:
+            return slf.SubBPos
+        else:
+            return [Q('0m'),Q('0m'),Q('0m')]
     else:
         return [-t*(d-begingap) for t,d in zip(transpV,ggd_dim)]
 
