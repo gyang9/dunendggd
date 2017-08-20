@@ -3,7 +3,7 @@ void geoDisplay()
 	//gSystem->Load("libGdml");
 	gSystem->Load("libGeom");
 	TGeoManager *geo = new TGeoManager();
-	geo->Import("2017_67_test.gdml");
+	geo->Import("example.gdml");
 	geo->DefaultColors();
 
 
@@ -12,7 +12,7 @@ void geoDisplay()
 
 	//geo->SetMaxVisNodes(70000);
 	//geo->SetVisLevel(3);
-	geo->SetVisLevel(5);
+	geo->SetVisLevel(7);
 	//geo->ViewLeaves(true);
 
        	geo->GetTopVolume()->Draw("ogl");

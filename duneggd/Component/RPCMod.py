@@ -19,12 +19,16 @@ class RPCModBuilder(gegede.builder.Builder):
                   compStripyDim  = None,
                   compRpcModDim  = None,
                   compGas_gap    = None,
+		  compRotPlaneOdd = None,
+		  compRotPlaneEven= None,
                    **kwds):
          self.resiplateDim  = compResiplateDim 
          self.stripxDim      = compStripxDim  
          self.stripyDim      = compStripyDim  
          self.rpcModDim      = compRpcModDim  
          self.gas_gap        = compGas_gap
+         self.rotateOdd      = compRotPlaneOdd
+         self.rotateEven     = compRotPlaneEven
          self.rpcBldr   = self.get_builder('RPCPad')
          return
 
@@ -43,8 +47,8 @@ class RPCModBuilder(gegede.builder.Builder):
         nXStrips = int(self.resiplateDim[0]/self.stripxDim[0])
         nYStrips = int(self.resiplateDim[1]/self.stripyDim[1])
 
-        #print 'RPCModBuilder: '+ str(nXStrips) +' X-Strips per RPC '
-        #print 'RPCModBuilder: '+ str(nYStrips) +' Y-Strips per RPC '
+        print 'RPCModBuilder: '+ str(nXStrips) +' X-Strips per RPC '
+        print 'RPCModBuilder: '+ str(nYStrips) +' Y-Strips per RPC '
 
         # for loop to position and place X strips in RPCMod
         for i in range(nXStrips):
@@ -56,7 +60,7 @@ class RPCModBuilder(gegede.builder.Builder):
             xS_in_m  = geom.structure.Position( 'XStrip-'+str(i)+'_in_'+self.name,
                                                 xpos,  ypos,  zpos)
             pxS_in_m = geom.structure.Placement( 'placeXStrip-'+str(i)+'_in_'+self.name,
-                                                 volume = rpcStripx_lv,pos = xS_in_m)#,rot = "r90aboutX" )
+                                                 volume = rpcStripx_lv,pos = xS_in_m, rot = self.rotateEven) #,rot = "r90aboutX" )
             rpcMod_lv.placements.append( pxS_in_m.name )
             #print str(i)+' x-strip pos: '+str(xpos)+str(ypos)+str(zpos)
 
@@ -70,7 +74,7 @@ class RPCModBuilder(gegede.builder.Builder):
             yS_in_m  = geom.structure.Position( 'YStrip-'+str(j)+'_in_'+self.name,
                                                 xpos,  ypos,  zpos)
             pyS_in_m = geom.structure.Placement( 'placeYStrip-'+str(j)+'_in_'+self.name,
-                                                 volume = rpcStripy_lv,pos = yS_in_m)#,rot = "r90aboutX")
+                                                 volume = rpcStripy_lv,pos = yS_in_m, rot = self.rotateEven )#,rot = "r90aboutX")
             rpcMod_lv.placements.append( pyS_in_m.name )
             #print str(j)+' y-strip pos: '+str(xpos)+str(ypos)+str(zpos)
 
