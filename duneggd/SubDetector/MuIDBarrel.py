@@ -4,174 +4,86 @@ Subbuilder of Detector
 '''
 
 import gegede.builder
+import math
 from gegede import Quantity as Q
 
 
 class MuIDBarrelBuilder(gegede.builder.Builder):
     '''
-    Assemble RPC trays in the magnet yoke 
+    Assemble configured number of RPC trays
     '''
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, modMuidInDim =None, 
-                         modMagInDim   =None, 
-                     modMagThickness =None, 
-              modSteelPlateThickness =None, 
-                  modGap_tworpctrays=None, 
-                          modAir_gap=None, RPCShift=None, **kwds):
-        if modMuidInDim is None:
-            raise ValueError("No value given for muidInDim")
+    def configure(self,
+                  modMuidPos = [Q('0cm'),Q('0cm'),Q('0cm')], 
+                  modMuidDim = None,
+                  modSteelPlateDim = None, 
+                  modNTraysPerPlane = None, 
+                  modNPlanes = None,
+                  modMuidRot = None, nMuTracker = None,
+                  modMuidMat = 'Steel', **kwds):
 
-        self.defMat = "Steel"
-        self.muidInDim  = modMuidInDim 
-        self.magInDim   = modMagInDim   
-        self.magThickness = modMagThickness 
-        self.steelPlateThickness = modSteelPlateThickness 
-        self.gap_tworpctrays = modGap_tworpctrays
-        self.air_gap = modAir_gap
-        self.RPCShift = RPCShift
-
-        # Get RPC tray builders
-        #self.RPCTraySmallBldr = self.get_builder('RPCTray_BarSmall')
-        #self.RPCTrayMidFBldr   = self.get_builder('RPCTray_BarMidF')
-        #self.RPCTrayMidSBldr   = self.get_builder('RPCTray_BarMidS')
-        #self.RPCTrayBigBldr   = self.get_builder('RPCTray_BarBig')
-
-        self.RPCTraySmallBldr = self.get_builder('RPCTray_BarBig')
-        self.RPCTrayMidFBldr   = self.get_builder('RPCTray_BarBig')
-        self.RPCTrayMidSBldr   = self.get_builder('RPCTray_BarBig')
-        self.RPCTrayBigBldr   = self.get_builder('RPCTray_BarBig')
-
+        self.muidAbsPos     = modMuidPos
+        self.muidMat        = modMuidMat 
+        self.muidDim        = modMuidDim 
+        self.steelPlateDim  = modSteelPlateDim 
+        self.nTraysPerPlane = modNTraysPerPlane 
+        self.nPlanes        = modNPlanes 
+        self.muidRot        = modMuidRot 
+	self.nMuTracker     = nMuTracker
+        
+        #print self.builders
+        self.RPCTrayBldr = self.get_builder('RPCTray_End')
+	return
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
-
-        # Get the RPC tray volumes and dimensions
-        #smallTray_lv = self.RPCTraySmallBldr.get_volume('volRPCTray_BarSmall')
-        #fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_BarMidF')
-        #smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_BarMidS')
-        #bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_BarBig')
-
-        smallTray_lv = self.RPCTraySmallBldr.get_volume('volRPCTray_BarBig')
-        fmidTray_lv  = self.RPCTrayMidFBldr.get_volume('volRPCTray_BarBig')
-        smidTray_lv  = self.RPCTrayMidSBldr.get_volume('volRPCTray_BarBig')
-        bigTray_lv   = self.RPCTrayBigBldr.get_volume('volRPCTray_BarBig')
-
-        rpcTrayDim_small = self.RPCTraySmallBldr.rpcTrayDim
-        rpcTrayDim_midf  = self.RPCTrayMidFBldr.rpcTrayDim
-        rpcTrayDim_mids  = self.RPCTrayMidSBldr.rpcTrayDim
-        rpcTrayDim_big   = self.RPCTrayBigBldr.rpcTrayDim
+        # Get the RPC tray volume and position
+        rpcTray_lv = self.RPCTrayBldr.get_volume('volRPCTray_End')
+        rpcTrayDim = self.RPCTrayBldr.rpcTrayDim
+        
+        # Calculate the muidDim[2] (z dim) with other configured parameters: 
+        #   number of planes, thicknesses...
 
 
-        # Just like in the EndBuilder, calculate outer dimensions 
-        #  using other configured parameters: number of planes, thicknesses...
-        # For now I'm using the CDR reported dimensions:
-        self.muidOutDim = list(self.muidInDim)
-        self.muidOutDim[0] = self.muidInDim[0] + 6*(6*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap)
-        self.muidOutDim[1] = self.muidInDim[1] + 6*(6*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap)
-        self.muidOutDim[2] = self.muidInDim[2]
+        # Make volume to be retrieved by DetectorBuilder
+        muidBox = geom.shapes.Box( self.name,
+                                   dx=0.5*self.muidDim[0],
+                                   dy=0.5*self.muidDim[1],
+                                   dz=0.5*self.muidDim[2])
+        muid_lv = geom.structure.Volume('vol'+self.name, material=self.muidMat, shape=muidBox)
+        self.add_volume(muid_lv)
 
-
-        # Define barrel as boolean, with hole to fit magnet inside
-        muidOut = geom.shapes.Box( 'MuIDOut',                 dx=0.5*self.muidOutDim[0], 
-                                   dy=0.5*self.muidOutDim[1], dz=0.5*self.muidOutDim[2]) 
-        muidIn = geom.shapes.Box(  'MuIDIn',                  dx=0.5*self.muidInDim[0], 
-                                   dy=0.5*self.muidInDim[1],  dz=0.5*self.muidInDim[2]) 
-        muidBarBox = geom.shapes.Boolean( self.name, type='subtraction', first=muidOut, second=muidIn )
-        muidBar_lv = geom.structure.Volume('vol'+self.name, material=self.defMat, shape=muidBarBox)
-        self.add_volume(muidBar_lv)
-
-
-        # Place the RPC trays and steel sheets between, being mindful of rotation
+        # Place the RPC trays and steel sheets between in the configured way
         # Steel Sheets: just leave the default material of volMuID* steel 
         #   and leave spaces instead of placing explicit volumes
-        # Placement of rpcTrays in vertical MuIDBarrel
-        for i in range(2):
+	
+        print 'Abs pos for '+ str(self.name) +' along Z: '+ str(self.muidAbsPos[2])
+	print math.cos(math.radians(60))
+        EachAngle = int(360/self.nMuTracker)
 
-           xpos      = -0.5*self.muidOutDim[0]+1*self.steelPlateThickness+0.5*rpcTrayDim_big[2]
-           xpos_mids = -0.5*self.muidOutDim[0]+3*self.steelPlateThickness+1*self.air_gap+1.5*rpcTrayDim_big[2]
-           xpos_midf = -0.5*self.muidOutDim[0]+5*self.steelPlateThickness+2*self.air_gap+2.5*rpcTrayDim_big[2]
-           if (i>0):
-                   xpos      = -xpos
-                   xpos_mids = -xpos_mids
-                   xpos_midf = -xpos_midf
+ 	#EachAngle = 0
+	for ii in range(self.nMuTracker):
+		Zrot         = Q('0deg')+EachAngle*ii*Q('1deg')
+		print 'rotating angle of '+str(ii)+' muon tracker: '+str(Zrot)
+		rAboutXZ     = geom.structure.Rotation( 'rAboutXZ'+str(ii), '0deg',  '0deg', -Zrot+Q('90deg')  )	
+        	for i in range(self.nPlanes):
+			xpos = self.muidDim[1]*math.cos(Zrot)
+			ypos = self.muidDim[1]*math.sin(Zrot)	
+            		zpos = self.muidDim[2] + self.muidAbsPos[2]
+			print 'position of tracker: '+str(xpos)+' '+str(ypos)+' '+str(zpos)
+            		for j in range(self.nTraysPerPlane):
 
-           #if (i%2==0):
-           #          l=-1
-           #else:
-           l=1
-           zpos = l*0.5*(self.gap_tworpctrays+rpcTrayDim_big[0])
-           #loop over up & down layers
-           for j in range(1):
+                		#xpos = -0.5*self.muidDim[0]+self.muidAbsPos[0]
+                		#ypos = -0.5*self.muidDim[1]+self.muidAbsPos[1]
+        
+                		rpct_in_muid  = geom.structure.Position( 'rpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name+'_'+str(ii),
+                        		                                 xpos,  ypos,  zpos)
+                		prpct_in_muid = geom.structure.Placement( 'prpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name+'_'+str(ii),
+                        		                                  volume = rpcTray_lv, pos = rpct_in_muid, rot='rAboutXZ'+str(ii) )
 
-                ypos      = Q('0m') #-0.5*(self.gap_tworpctrays+rpcTrayDim_big[1])
-                ypos_mids = Q('0m') #-0.5*(self.gap_tworpctrays+rpcTrayDim_mids[1])
-                ypos_midf = Q('0m') #-0.5*(self.gap_tworpctrays+rpcTrayDim_midf[1])
-                if (j==1):
-					    ypos = -ypos
-					    ypos_mids = -ypos_mids
-					    ypos_midf = -ypos_midf
-
-                brpct_in_muid  = geom.structure.Position( 'brpct-'+str(i*2+j)+'_in_'+self.name,
-                                                         xpos,  ypos,  zpos)
-                pbrpct_in_muid = geom.structure.Placement( 'pbrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                         volume = bigTray_lv, pos = brpct_in_muid, rot= "r90aboutY" )
-                smrpct_in_muid  = geom.structure.Position( 'smrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                         xpos_mids,  ypos_mids,  zpos)
-                psmrpct_in_muid = geom.structure.Placement( 'psmrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          volume = smidTray_lv, pos = smrpct_in_muid, rot= "r90aboutY" )
-                fmrpct_in_muid  = geom.structure.Position( 'fmrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                         xpos_midf,  ypos_midf,  zpos)
-                pfmrpct_in_muid = geom.structure.Placement( 'pfmrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          volume = fmidTray_lv, pos = fmrpct_in_muid, rot= "r90aboutY" )
-                muidBar_lv.placements.append( pbrpct_in_muid.name )
-                #muidBar_lv.placements.append( psmrpct_in_muid.name )
-                #muidBar_lv.placements.append( pfmrpct_in_muid.name )
-
-
-        # Placement of rpcTrays in Horizontal MuIDBarrel
-        for i in range(1):
-
-            xpos_mids  = -0.5*self.muidInDim[0] #-0.5*self.muidOutDim[0]+1*self.steelPlateThickness+1*rpcTrayDim_big[2]+0.5*rpcTrayDim_mids[1]
-            xpos_midf  = -0.5*self.muidInDim[0] #-0.5*self.muidOutDim[0]+3*self.steelPlateThickness+2*rpcTrayDim_big[2]+1*self.air_gap+0.5*rpcTrayDim_midf[1]
-            xpos_small = -0.5*self.muidInDim[0] #-0.5*self.muidOutDim[0]+5*self.steelPlateThickness+3*rpcTrayDim_big[2]+2*self.air_gap+0.5*rpcTrayDim_small[1]
-            if (i>0):
-                   xpos_mids  = -xpos_mids
-                   xpos_midf  = -xpos_midf
-                   xpos_small = -xpos_small
-
-            #if (i%2==0):
-            #        l=-1
-            #else:
-            l=1
-            zpos = l*0.5*(self.gap_tworpctrays+rpcTrayDim_mids[0])
-            #loop over up & down layers
-            for j in range(2):
-
-                ypos_mids  = 0.5*self.muidOutDim[1]-self.steelPlateThickness-0.5*rpcTrayDim_big[2]
-                ypos_midf  = 0.5*self.muidOutDim[1]-3*self.steelPlateThickness-self.air_gap-1.5*rpcTrayDim_big[2]
-                ypos_small = 0.5*self.muidOutDim[1]-5*self.steelPlateThickness-2*self.air_gap-2.5*rpcTrayDim_big[2]
-                if (j==0):
-                        ypos_mids  = -ypos_mids
-                        ypos_midf  = -ypos_midf
-                        ypos_small = -ypos_small
-
-                smvrpct_in_muid  = geom.structure.Position( 'smvrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          xpos_mids,  ypos_mids,  zpos)
-                psmvrpct_in_muid = geom.structure.Placement( 'psmvrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                           volume = smidTray_lv, pos = smvrpct_in_muid, rot= "r90aboutXZ" )
-                fmvrpct_in_muid  = geom.structure.Position( 'fmvrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          xpos_midf,  ypos_midf,  zpos)
-                pfmvrpct_in_muid = geom.structure.Placement( 'pfmvrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                           volume = fmidTray_lv, pos = fmvrpct_in_muid, rot= "r90aboutXZ" )
-                svrpct_in_muid  = geom.structure.Position( 'svrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                          xpos_small,  ypos_small,  zpos)
-                psvrpct_in_muid = geom.structure.Placement( 'psvrpct-'+str(i*2+j)+'_in_'+self.name,
-                                                           volume = smallTray_lv, pos = svrpct_in_muid, rot= "r90aboutXZ" )
-
-                muidBar_lv.placements.append( psmvrpct_in_muid.name )
-                #muidBar_lv.placements.append( pfmvrpct_in_muid.name )
-                #muidBar_lv.placements.append( psvrpct_in_muid.name )
-
+                		muid_lv.placements.append( prpct_in_muid.name )
+        
+        
         return

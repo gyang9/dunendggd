@@ -13,14 +13,16 @@ class MuIDEndBuilder(gegede.builder.Builder):
     '''
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, 
+    def configure(self,
+                  modMuidPos = [Q('0cm'),Q('0cm'),Q('0cm')], 
                   modMuidDim = None,
                   modSteelPlateDim = None, 
                   modNTraysPerPlane = None, 
                   modNPlanes = None,
-                  modMuidRot = None, 
+                  modMuidRot = None,
                   modMuidMat = 'Steel', **kwds):
 
+        self.muidAbsPos     = modMuidPos
         self.muidMat        = modMuidMat 
         self.muidDim        = modMuidDim 
         self.steelPlateDim  = modSteelPlateDim 
@@ -30,7 +32,7 @@ class MuIDEndBuilder(gegede.builder.Builder):
         
         #print self.builders
         self.RPCTrayBldr = self.get_builder('RPCTray_End')
-
+	return
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -54,14 +56,15 @@ class MuIDEndBuilder(gegede.builder.Builder):
         # Place the RPC trays and steel sheets between in the configured way
         # Steel Sheets: just leave the default material of volMuID* steel 
         #   and leave spaces instead of placing explicit volumes
-
+	
+        print 'Abs pos for '+ str(self.name) +' along Z: '+ str(self.muidAbsPos[2])
         
         for i in range(self.nPlanes):
-            zpos = -0.5*self.muidDim[2]+(i+0.5)*rpcTrayDim[2]+i*self.steelPlateDim[2]
+            zpos = -0.5*self.muidDim[2]+(i+0.5)*rpcTrayDim[2]+i*self.steelPlateDim[2]+self.muidAbsPos[2]
             for j in range(self.nTraysPerPlane):
 
-                xpos = Q('0cm')
-                ypos = -0.5*self.muidDim[1]+(j+0.5)*rpcTrayDim[1]
+                xpos = Q('0cm')+self.muidAbsPos[0]
+                ypos = -0.5*self.muidDim[1]+(j+0.5)*rpcTrayDim[1]+self.muidAbsPos[1]
         
                 rpct_in_muid  = geom.structure.Position( 'rpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name,
                                                          xpos,  ypos,  zpos)
