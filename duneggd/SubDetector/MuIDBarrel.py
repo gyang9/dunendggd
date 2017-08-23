@@ -67,11 +67,15 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
 	for ii in range(self.nMuTracker):
 		Zrot         = Q('0deg')+EachAngle*ii*Q('1deg')
 		print 'rotating angle of '+str(ii)+' muon tracker: '+str(Zrot)
-		rAboutXZ     = geom.structure.Rotation( 'rAboutXZ'+str(ii), '0deg',  '0deg', -Zrot+Q('90deg')  )	
+		#rAboutXZ     = geom.structure.Rotation( 'rAboutXZ'+str(ii), '0deg',  '0deg', -Zrot+Q('90deg')  )	
+		rAboutXZ     = geom.structure.Rotation( 'rAboutXZ'+str(ii),  Zrot-Q('0deg') , '0deg', '0deg'  )
         	for i in range(self.nPlanes):
-			xpos = self.muidDim[1]*math.cos(Zrot)
-			ypos = self.muidDim[1]*math.sin(Zrot)	
-            		zpos = self.muidDim[2] + self.muidAbsPos[2]
+			#xpos = self.muidDim[1]*math.cos(Zrot)
+			#ypos = self.muidDim[1]*math.sin(Zrot)	
+            		#zpos = self.muidDim[2] + self.muidAbsPos[2]
+                        xpos = self.muidDim[0] + self.muidAbsPos[0]
+                        ypos = self.muidDim[1]*math.sin(Zrot) + self.muidAbsPos[1]
+                        zpos = self.muidDim[1]*math.cos(Zrot) + self.muidAbsPos[2]
 			print 'position of tracker: '+str(xpos)+' '+str(ypos)+' '+str(zpos)
             		for j in range(self.nTraysPerPlane):
 
@@ -84,6 +88,5 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
                         		                                  volume = rpcTray_lv, pos = rpct_in_muid, rot='rAboutXZ'+str(ii) )
 
                 		muid_lv.placements.append( prpct_in_muid.name )
-        
-        
+         
         return

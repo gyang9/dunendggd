@@ -3,7 +3,7 @@ void geoDisplay()
 	//gSystem->Load("libGdml");
 	gSystem->Load("libGeom");
 	TGeoManager *geo = new TGeoManager();
-	geo->Import("example.gdml");
+	geo->Import("example0.gdml");
 	geo->DefaultColors();
 
 
