@@ -62,6 +62,7 @@ class KLOEBuilder(gegede.builder.Builder):
         self.build_solenoid(main_lv,geom)
         self.build_ecal(main_lv,geom)
         self.build_tracker(main_lv,geom)
+        self.build_muon_system(main_lv,geom)
         print "printing main_lv: ", main_lv
             
             
@@ -101,7 +102,9 @@ class KLOEBuilder(gegede.builder.Builder):
                                         shape=barrel_shape)
         ## set magnitude of BarrelBField based on conserved B.dA
         BarrelBField=self.CentralBField*self.SolenoidCoilShellRmin**2/(self.BarrelRmax**2 - self.BarrelRmin**2)
-        BField="(0.0 T, 0.0 T, %f T)"%(-BarrelBField/Q("1.0T"))
+        
+#        BField="(0.0 T, 0.0 T, %f T)"%(-BarrelBField/Q("1.0T"))
+        BField="(- %f T, 0.0 T, 0.0 T)"%(-BarrelBField/Q("1.0T"))
         print "Setting KLOE Barrel Bfield to ",BField
         barrel_lv.params.append(("BField",BField))
 
@@ -380,7 +383,8 @@ class KLOEBuilder(gegede.builder.Builder):
                                  shape=shape)
 
 
-        BField="(0.0 T, 0.0 T, %f T)"%(self.CentralBField/Q("1.0T"))
+#        BField="(0.0 T, 0.0 T, %f T)"%(self.CentralBField/Q("1.0T"))
+        BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
         print "Setting KLOE Central Tracker Bfield to ",BField
         lv.params.append(("BField",BField))
         
@@ -413,3 +417,5 @@ class KLOEBuilder(gegede.builder.Builder):
 
 
             
+    def build_muon_system(self,main_lv,geom):
+        pass

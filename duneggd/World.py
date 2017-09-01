@@ -6,9 +6,10 @@ from gegede import Quantity as Q
 
 class WorldBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, halfDimension=None, Material=None, **kwds):
+    def configure(self, halfDimension=None, Material=None, DetEncPosition=None, **kwds):
         self.halfDimension = halfDimension
         self.Material = Material
+        self.DetEncPosition = DetEncPosition
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -36,6 +37,8 @@ class WorldBuilder(gegede.builder.Builder):
         de_lv = de_sb.get_volume()
 
         postemp = [Q('0m'),Q('0m'),Q('0m')]
+        if self.DetEncPosition!=None:
+            postemp=self.DetEncPosition
         detEnc_pos = geom.structure.Position(de_lv.name+'_pos', postemp[0], postemp[1], postemp[2])
         detEnc_pla = geom.structure.Placement(de_lv.name+'_pla', volume=de_lv, pos=detEnc_pos)
         main_lv.placements.append(detEnc_pla.name)
