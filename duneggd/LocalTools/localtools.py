@@ -31,7 +31,7 @@ def main_lv( slf, geom, shape ):
                                         dz=slf.halfDimension['dz'] )
         main_hDim = [main_shape.dx, main_shape.dy, main_shape.dz]
     elif "Tubs" == shape:
-        main_shape = geom.shape.Tubs( slf.name, rmin=slf.halfDimension['rmin'],
+        main_shape = geom.shapes.Tubs( slf.name, rmin=slf.halfDimension['rmin'],
                                         rmax=slf.halfDimension['rmax'], dz=slf.halfDimension['dz'] )
         main_hDim = [main_shape.rmax, main_shape.rmax, main_shape.dz]
     elif "Sphere" == shape:
@@ -58,15 +58,46 @@ def getRotation( slf, geom ):
     Return the Rotation, is not defined return 0deg rotation
     """
     if slf.Rotation == None:
-        return geom.structure.Rotation( slf.name+'_rot', '0deg', '0deg', '0deg' )
+        return geom.structure.Rotation( slf.name+'_rot', '0.0deg', '0.0deg', '0.0deg' )
     else:
         return geom.structure.Rotation( slf.name+'_rot', str(slf.Rotation[0]),
                                             str(slf.Rotation[1]),  str(slf.Rotation[2]) )
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def getCrossRotations( slf, geom ):
+    """
+    Return the Rotations, is not defined return 0deg rotations
+    """
+    if slf.RotTop == None:
+        rotTop = geom.structure.Rotation( slf.name+'_rotTop', '0deg', '0deg', '0deg' )
+    else:
+        rotTop = geom.structure.Rotation( slf.name+'_rotTop', str(slf.RotTop[0]),
+                                                str(slf.RotTop[1]),  str(slf.RotTop[2]) )
+
+    if slf.RotBottom == None:
+        rotBottom = geom.structure.Rotation( slf.name+'_rotBottom', '0deg', '0deg', '0deg' )
+    else:
+        rotBottom = geom.structure.Rotation( slf.name+'_rotBottom', str(slf.RotBottom[0]),
+                                                str(slf.RotBottom[1]),  str(slf.RotBottom[2]) )
+
+    if slf.RotLeft == None:
+        rotLeft = geom.structure.Rotation( slf.name+'_rotLeft', '0deg', '0deg', '0deg' )
+    else:
+        rotLeft = geom.structure.Rotation( slf.name+'_rotLeft', str(slf.RotLeft[0]),
+                                                str(slf.RotLeft[1]),  str(slf.RotLeft[2]) )
+
+    if slf.RotRight == None:
+        rotRight = geom.structure.Rotation( slf.name+'_rotRight', '0deg', '0deg', '0deg' )
+    else:
+        rotRight = geom.structure.Rotation( slf.name+'_rotRight', str(slf.RotRight[0]),
+                                                str(slf.RotRight[1]),  str(slf.RotLRight[2]) )
+
+    return rotTop, rotBottom, rotLeft, rotRight
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def getInsideGap( slf ):
     """
-    Return the InsideGap, is not defined return 0m
+    Return the InsideGap, if it is not defined return 0m
     """
     if slf.InsideGap == None:
         return Q('0m')
@@ -76,12 +107,22 @@ def getInsideGap( slf ):
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def getBeginGap( slf ):
     """
-    Return the InsideGap, is not defined return 0m
+    Return the BeginGap, if it is not defined return 0m
     """
     if slf.BeginGap == None:
         return Q('0m')
     else:
         return slf.BeginGap
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def getTranspP( slf ):
+    """
+    Return the Transportation Plane, useful for CrossSubDetectorBuilder
+    """
+    if  slf.TranspP == None :
+            return {'top':[1,0,0],'side':[0,1,0]}
+    else:
+        return slf.TranspP
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def getInitialPos( slf, ggd_dim, transpV ):
@@ -172,6 +213,7 @@ def surroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
     sb_cent_dim = getShapeDimensions( sb_cent_lv, geom )
     sb_surr_lv = sb_surr.get_volume()
     sb_surr_dim = getShapeDimensions( sb_surr_lv, geom )
+
     rotLeft = geom.structure.Rotation( main_lv.name+'_rotLeft', '0deg', '0deg', '90deg' )
     rotRight = geom.structure.Rotation( main_lv.name+'_rotRight', '0deg', '0deg', '-90deg' )
 
@@ -206,48 +248,56 @@ def surroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
     main_lv.placements.append( sb_surr_pla.name )
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-def crossBuilders( main_lv, sb_cent, sb_top, sb_side, gap, geom ):
+def crossBuilders( main_lv, sb_cent, sb_top, sb_side, slf, geom ):
     """
     """
+    Gap = getInsideGap( slf )
+    TranspP = getTranspP( slf )
     sb_cent_lv = sb_cent.get_volume()
     sb_cent_dim = getShapeDimensions( sb_cent_lv, geom )
     sb_top_lv = sb_top.get_volume()
     sb_top_dim = getShapeDimensions( sb_top_lv, geom )
     sb_side_lv = sb_side.get_volume()
     sb_side_dim = getShapeDimensions( sb_side_lv, geom )
-    rotLeft = geom.structure.Rotation( main_lv.name+'_rotLeft', '0deg', '0deg', '90deg' )
-    rotRight = geom.structure.Rotation( main_lv.name+'_rotRight', '0deg', '0deg', '-90deg' )
 
-    sb_cent_pos = geom.structure.Position( sb_cent_lv.name+'_pos', Q("0m"), Q("0m"), Q("0m") )
-    sb_cent_pla = geom.structure.Placement( sb_cent_lv.name+'_pla', volume=sb_cent_lv, pos=sb_cent_pos )
+    sb_cent_pos = geom.structure.Position( main_lv.name+sb_cent_lv.name+'_pos', Q("0m"), Q("0m"), Q("0m") )
+    sb_cent_pla = geom.structure.Placement( main_lv.name+sb_cent_lv.name+'_pla', volume=sb_cent_lv, pos=sb_cent_pos )
     main_lv.placements.append( sb_cent_pla.name )
 
+    rotTop, rotBottom, rotLeft, rotRight = getCrossRotations( slf, geom )
+
     # Top
-    pos = [ Q('0m'), sb_cent_dim[1] + sb_top_dim[1] + gap, Q('0m') ]
-    sb_top_pos = geom.structure.Position( sb_top_lv.name+'_top_pos', pos[0], pos[1], pos[2] )
-    sb_top_pla = geom.structure.Placement( sb_top_lv.name+'_top_pla', volume=sb_top_lv, pos=sb_top_pos )
+    pzero = [ Q('0m'), Q('0m'), Q('0m') ]
+    pos = [pz+transp*(cen+top+Gap) for pz,transp,cen,top in zip(pzero,TranspP['top'],sb_cent_dim,sb_top_dim)]
+    #pos = [ Q('0m'), sb_cent_dim[1] + sb_top_dim[1] + gap, Q('0m') ]
+    sb_top_pos = geom.structure.Position( main_lv.name+sb_top_lv.name+'_top_pos', pos[0], pos[1], pos[2] )
+    sb_top_pla = geom.structure.Placement( main_lv.name+sb_top_lv.name+'_top_pla', volume=sb_top_lv,
+                                                pos=sb_top_pos, rot=rotTop )
     main_lv.placements.append( sb_top_pla.name )
 
     # Left
-    pos = [ sb_cent_dim[0] + sb_side_dim[1] + gap, Q('0m'), Q('0m') ]
-    sb_side_pos = geom.structure.Position( sb_side_lv.name+'_left_pos', pos[0], pos[1], pos[2] )
-    sb_side_pla = geom.structure.Placement( sb_side_lv.name+'_left_pla', volume=sb_side_lv,
+    pos = [pz+transp*(cen+side+Gap) for pz,transp,cen,side in zip(pzero,TranspP['side'],sb_cent_dim,sb_side_dim)]
+    #pos = [ sb_cent_dim[0] + sb_side_dim[1] + gap, Q('0m'), Q('0m') ]
+    sb_side_pos = geom.structure.Position( main_lv.name+sb_side_lv.name+'_left_pos', pos[0], pos[1], pos[2] )
+    sb_side_pla = geom.structure.Placement( main_lv.name+sb_side_lv.name+'_left_pla', volume=sb_side_lv,
                                                 pos=sb_side_pos, rot=rotLeft )
     main_lv.placements.append( sb_side_pla.name )
 
     # Bottom
-    pos = [ Q('0m'), -sb_cent_dim[1] - sb_top_dim[1] - gap, Q('0m') ]
-    sb_top_pos = geom.structure.Position( sb_top_lv.name+'_bottom_pos', pos[0], pos[1], pos[2] )
-    sb_top_pla = geom.structure.Placement( sb_top_lv.name+'_bottom_pla', volume=sb_top_lv, pos=sb_top_pos )
+    pos = [pz-transp*(cen+top+Gap) for pz,transp,cen,top in zip(pzero,TranspP['top'],sb_cent_dim,sb_top_dim)]
+    #pos = [ Q('0m'), -sb_cent_dim[1] - sb_top_dim[1] - gap, Q('0m') ]
+    sb_top_pos = geom.structure.Position( main_lv.name+sb_top_lv.name+'_bottom_pos', pos[0], pos[1], pos[2] )
+    sb_top_pla = geom.structure.Placement( main_lv.name+sb_top_lv.name+'_bottom_pla', volume=sb_top_lv,
+                                                pos=sb_top_pos, rot=rotBottom )
     main_lv.placements.append( sb_top_pla.name )
 
     #Right
-    pos = [ -sb_cent_dim[0] - sb_side_dim[1] - gap, Q('0m'), Q('0m') ]
-    sb_side_pos = geom.structure.Position( sb_side_lv.name+'_right_pos', pos[0], pos[1], pos[2] )
-    sb_side_pla = geom.structure.Placement( sb_side_lv.name+'_right_pla', volume=sb_side_lv,
+    pos = [pz-transp*(cen+side+Gap) for pz,transp,cen,side in zip(pzero,TranspP['side'],sb_cent_dim,sb_side_dim)]
+    #pos = [ -sb_cent_dim[0] - sb_side_dim[1] - gap, Q('0m'), Q('0m') ]
+    sb_side_pos = geom.structure.Position( main_lv.name+sb_side_lv.name+'_right_pos', pos[0], pos[1], pos[2] )
+    sb_side_pla = geom.structure.Placement( main_lv.name+sb_side_lv.name+'_right_pla', volume=sb_side_lv,
                                                 pos=sb_side_pos, rot=rotRight )
     main_lv.placements.append( sb_side_pla.name )
-
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def rotation( axis, theta, vec ):
