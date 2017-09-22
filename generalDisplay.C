@@ -14,8 +14,8 @@ void generalDisplay(TString filename)
   for ( int i = 0; i < nvolumes; i++ )
   {
     volume = (TGeoVolume*)volumes->At(i);
-    volume->SetVisibility(kTRUE);
-    volume->VisibleDaughters(kTRUE);
+    //volume->SetVisibility(kTRUE);
+    //volume->VisibleDaughters(kTRUE);
     volume->SetVisContainers(kTRUE);
     Int_t daughters = volume->GetNdaughters();
     switch ( daughters )
@@ -32,7 +32,7 @@ void generalDisplay(TString filename)
     }
     if ( TString(volume->GetName()).Contains("DetEnclosure"))
     {
-      cout << volume->GetName() << endl;
+      //cout << volume->GetName() << endl;
       volume->SetVisibility(kFALSE);
     }
   }
