@@ -36,8 +36,6 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
         el_dim = [el_shape.dx, el_shape.dy, el_shape.dz]
 
         # calculate half dimension of element plus the gap projected to the transportation vector
-        #sb_dim_v1 = [t*(d+0.5*self.InsideGap1) for t,d in zip(self.TranspV1,el_dim)]
-        #sb_dim_v2 = [t*(d+0.5*self.InsideGap2) for t,d in zip(self.TranspV2,el_dim)]
         sb_dim_v1 = [t*(d+0.5*self.InsideGap1) for t,d in zip(self.TranspV1,el_dim)]
         sb_dim_v2 = [t*(d+0.5*self.InsideGap2) for t,d in zip(self.TranspV2,el_dim)]
 
@@ -56,5 +54,4 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
                                                     temp_v[0], temp_v[1], temp_v[2])
                 el_pla = geom.structure.Placement(self.name+"_el"+str(elem1)+'_'+str(elem2)+'_pla',
                                                     volume=el_lv, pos=el_pos, rot =rotation1)
-                #print elem1, elem2,  el_pos
                 main_lv.placements.append(el_pla.name)
