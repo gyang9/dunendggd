@@ -23,7 +23,7 @@ def getShapeDimensions( ggd_vol, geom ):
     return ggd_dim
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-def main_lv( slf, geom, shape ):
+def main_lv( slf, geom, shape):
     """
     """
     if "Box" == shape:
@@ -142,7 +142,8 @@ def getInitialPos( slf, ggd_dim, transpV ):
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def placeBuilders( slf, geom, main_lv, TranspV ):
     """
-    Place sub-builders inside the main_lv
+    Place sub-builders inside the main_lv,
+    simple linear arrange of 1 subbuilders
     """
     # definition local rotation
     rotation = getRotation( slf, geom )
@@ -173,6 +174,52 @@ def placeBuilders( slf, geom, main_lv, TranspV ):
                                             pos[0], pos[1], pos[2])
         sb_pla = geom.structure.Placement(slf.name+sb_lv.name+'_pla',
                                             volume=sb_lv, pos=sb_pos, rot =rotation)
+        main_lv.placements.append(sb_pla.name)
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def placeUserPlaceBuilders( slf, geom, main_lv, TranspV ):
+    # check InsideGap
+    InsideGap = getInsideGap( slf )
+    # get the main dimensions
+    main_hDim = getShapeDimensions( main_lv, geom )
+    # get shape of main_lv in case of boolean shapes
+    if slf.Boolean != None:
+        sb_boolean_shape = geom.store.shapes.get(main_lv.shape)
+    # initial position, based on the dimension projected on transportation vector
+    pos = [-t*(d) for t,d in zip(TranspV,main_hDim)]
+    # get builders
+    builders = slf.get_builders()
+    places = slf.UserPlace
+
+    for i,sb in enumerate(builders):
+        sb_lv = sb.get_volume()
+        sb_dim = getShapeDimensions( sb_lv, geom )
+        step = [ t*d for t,d in zip(TranspV, sb_dim) ]
+        pos = [ p+s for p,s in zip(pos,step) ]
+
+        step2 = [ -t*d for t,d in zip(places[i], sb_dim) ]
+        pos2 = [ t*(d)+s for t,d,s in zip(places[i],main_hDim, step2)]
+
+        pos = [p+p2 for p, p2 in zip(pos, pos2)] #+
+        sb_pos = geom.structure.Position(slf.name+sb_lv.name+'_pos', pos[0], pos[1], pos[2])
+
+        if slf.Boolean != None:
+            print i, slf.name, sb_lv.name, " OW"
+            sb_shape = geom.store.shapes.get(sb_lv.shape)
+            sb_boolean_shape = geom.shapes.Boolean( slf.name+'_bool_'+str(i), type=slf.Boolean,
+                                            first=sb_boolean_shape, second=sb_shape, pos=sb_pos)
+            sb_boolean_lv = geom.structure.Volume('vol'+sb_boolean_shape.name, material=slf.Material,
+                                            shape=sb_boolean_shape)
+
+        else:
+            sb_pla = geom.structure.Placement(slf.name+sb_lv.name+'_pla', volume=sb_lv, pos=sb_pos )
+            main_lv.placements.append(sb_pla.name)
+
+        pos = [p-p2 for p, p2 in zip(pos, pos2)] #-
+        pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
+
+    if slf.Boolean != None:
+        sb_pla = geom.structure.Placement(slf.name+'_boolean_pla', volume=sb_boolean_lv)
         main_lv.placements.append(sb_pla.name)
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
