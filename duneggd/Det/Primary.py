@@ -30,11 +30,18 @@ class PrimaryBuilder(gegede.builder.Builder):
         for i,sb in enumerate(self.get_builders()):
             sb_lv = sb.get_volume()
             sb_dim = ltools.getShapeDimensions( sb_lv, geom )
-            pos[2] = pos[2] + sb_dim[2] + self.InsideGap[i]
+            step = [Q('0cm'),Q('0cm'),Q('0cm')]
+            #assert ( sb_dim != None ), " fail"
+            if sb_dim != None:
+                step[2] = sb_dim[2]
+            else:
+                assert( sb.halfDimension != None ), " No volumen defined on %s " % sb
+                step[2] = sb.halfDimension['dz']
+            pos[2] = pos[2] + step[2] + self.InsideGap[i]
             # defining position, placement, and finally insert into main logic volume.
             sb_pos = geom.structure.Position(self.name+sb_lv.name+'_pos_'+str(i),
                                                 pos[0], pos[1], pos[2])
             sb_pla = geom.structure.Placement(self.name+sb_lv.name+'_pla_'+str(i),
                                                 volume=sb_lv, pos=sb_pos )
             main_lv.placements.append(sb_pla.name)
-            pos[2] = pos[2] + sb_dim[2]
+            pos[2] = pos[2] + step[2]

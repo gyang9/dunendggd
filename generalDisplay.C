@@ -36,6 +36,6 @@ void generalDisplay(TString filename)
       volume->SetVisibility(kFALSE);
     }
   }
-	//geo2->Export("geom-test.root");
+	geo2->Export("geom-test.root");
   geo2->GetTopVolume()->Draw("ogl");
 }

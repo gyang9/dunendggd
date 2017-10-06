@@ -20,6 +20,8 @@ def getShapeDimensions( ggd_vol, geom ):
     elif "Trapezoid" in shapename:
         ggd_dim = [ggd_shape.dx1 if ggd_shape.dx1 >= ggd_shape.dx2 else ggd_shape.dx2,
                     ggd_shape.dy1 if ggd_shape.dy1 >= ggd_shape.dy2 else ggd_shape.dx2, ggd_shape.dz]
+    else:
+        ggd_dim = None
     return ggd_dim
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -182,9 +184,6 @@ def placeUserPlaceBuilders( slf, geom, main_lv, TranspV ):
     InsideGap = getInsideGap( slf )
     # get the main dimensions
     main_hDim = getShapeDimensions( main_lv, geom )
-    # get shape of main_lv in case of boolean shapes
-    if slf.Boolean != None:
-        sb_boolean_shape = geom.store.shapes.get(main_lv.shape)
     # initial position, based on the dimension projected on transportation vector
     pos = [-t*(d) for t,d in zip(TranspV,main_hDim)]
     # get builders
@@ -194,6 +193,9 @@ def placeUserPlaceBuilders( slf, geom, main_lv, TranspV ):
     for i,sb in enumerate(builders):
         sb_lv = sb.get_volume()
         sb_dim = getShapeDimensions( sb_lv, geom )
+        if sb_dim == None:
+            assert( sb.halfDimension != None ), " No dimension defined on %s " % sb
+            sb_dim = [sb.halfDimension['dx'],sb.halfDimension['dy'],sb.halfDimension['dz']]
         step = [ t*d for t,d in zip(TranspV, sb_dim) ]
         pos = [ p+s for p,s in zip(pos,step) ]
 
@@ -201,26 +203,13 @@ def placeUserPlaceBuilders( slf, geom, main_lv, TranspV ):
         pos2 = [ t*(d)+s for t,d,s in zip(places[i],main_hDim, step2)]
 
         pos = [p+p2 for p, p2 in zip(pos, pos2)] #+
+
         sb_pos = geom.structure.Position(slf.name+sb_lv.name+'_pos', pos[0], pos[1], pos[2])
-
-        if slf.Boolean != None:
-            print i, slf.name, sb_lv.name, " OW"
-            sb_shape = geom.store.shapes.get(sb_lv.shape)
-            sb_boolean_shape = geom.shapes.Boolean( slf.name+'_bool_'+str(i), type=slf.Boolean,
-                                            first=sb_boolean_shape, second=sb_shape, pos=sb_pos)
-            sb_boolean_lv = geom.structure.Volume('vol'+sb_boolean_shape.name, material=slf.Material,
-                                            shape=sb_boolean_shape)
-
-        else:
-            sb_pla = geom.structure.Placement(slf.name+sb_lv.name+'_pla', volume=sb_lv, pos=sb_pos )
-            main_lv.placements.append(sb_pla.name)
+        sb_pla = geom.structure.Placement(slf.name+sb_lv.name+'_pla', volume=sb_lv, pos=sb_pos )
+        main_lv.placements.append(sb_pla.name)
 
         pos = [p-p2 for p, p2 in zip(pos, pos2)] #-
         pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
-
-    if slf.Boolean != None:
-        sb_pla = geom.structure.Placement(slf.name+'_boolean_pla', volume=sb_boolean_lv)
-        main_lv.placements.append(sb_pla.name)
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def placeComplexBuilders( slf, geom, main_lv, TranspV ):
@@ -345,6 +334,57 @@ def crossBuilders( main_lv, sb_cent, sb_top, sb_side, slf, geom ):
     sb_side_pla = geom.structure.Placement( main_lv.name+sb_side_lv.name+'_right_pla', volume=sb_side_lv,
                                                 pos=sb_side_pos, rot=rotRight )
     main_lv.placements.append( sb_side_pla.name )
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def placeBooleanBuilders( slf, geom, main_lv, TranspV ):
+    # check InsideGap
+    InsideGap = getInsideGap( slf )
+    # get the main dimensions
+    main_hDim = getShapeDimensions( main_lv, geom )
+    # get shape of main_lv in case of boolean shapes
+    sb_boolean_shape = geom.store.shapes.get(main_lv.shape)
+    # initial position, based on the dimension projected on transportation vector
+    pos = [-t*(d) for t,d in zip(TranspV,main_hDim)]
+    # get builders
+    builders = slf.get_builders()
+    places = slf.UserPlace
+
+    for i,sb in enumerate(builders):
+        sb_lv = sb.get_volume()
+        dim_dict = sb.halfDimension
+        sb_dim = [ dim_dict['dx'], dim_dict['dy'], dim_dict['dz'] ]
+        step = [ t*d for t,d in zip(TranspV, sb_dim) ]
+        pos = [ p+s for p,s in zip(pos,step) ]
+
+        step2 = [ -t*d for t,d in zip(places[i], sb_dim) ]
+        pos2 = [ t*(d)+s for t,d,s in zip(places[i],main_hDim, step2)]
+
+        pos = [p+p2 for p, p2 in zip(pos, pos2)] #+
+        sb_pos = geom.structure.Position(slf.name+sb_lv.name+'_pos', pos[0], pos[1], pos[2])
+
+        sb_shape = geom.store.shapes.get(sb_lv.shape)
+        if i == 0 and slf.Boolean == "union":
+            operation = "intersection"
+        else:
+            operation = slf.Boolean
+
+        sb_boolean_shape = geom.shapes.Boolean( slf.name+'_bool_'+str(i), type=operation,
+                                            first=sb_boolean_shape, second=sb_shape, pos=sb_pos)
+
+        pos = [p-p2 for p, p2 in zip(pos, pos2)] #-
+        pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
+
+    sb_boolean_lv = geom.structure.Volume('vol'+sb_boolean_shape.name, material=slf.Material,
+                                        shape=sb_boolean_shape)
+
+    if isinstance(slf.Sensitive,str):
+        sb_boolean_lv.params.append(("SensDet",slf.Sensitive))
+    if isinstance(slf.BField,str):
+        sb_boolean_lv.params.append(("BField",slf.BField))
+    if isinstance(slf.EField,str):
+        sb_boolean_lv.params.append(("EField",slf.EField))
+
+    slf.add_volume( sb_boolean_lv )
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def rotation( axis, theta, vec ):
