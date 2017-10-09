@@ -355,7 +355,7 @@ def placeBooleanBuilders( slf, geom, main_lv, TranspV ):
         sb_dim = [ dim_dict['dx'], dim_dict['dy'], dim_dict['dz'] ]
         step = [ t*d for t,d in zip(TranspV, sb_dim) ]
         pos = [ p+s for p,s in zip(pos,step) ]
-
+        
         step2 = [ -t*d for t,d in zip(places[i], sb_dim) ]
         pos2 = [ t*(d)+s for t,d,s in zip(places[i],main_hDim, step2)]
 
