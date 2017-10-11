@@ -23,6 +23,7 @@ class ECALModBuilder(gegede.builder.Builder):
 		  modAltPlaneOrient = True,
                   modRotPlaneEven=None,
                   modRotPlaneOdd = None,
+		  zXtra            = None,
                   **kwds):
         if modEcalThickness is None:
             raise ValueError("No value given for ecalThickness")
@@ -31,6 +32,7 @@ class ECALModBuilder(gegede.builder.Builder):
         if modNElements  is None:
             raise ValueError("No value given for nSBPlanes")
 
+	self.zXtra          = zXtra
         self.ecalMat        = modEcalMat       
         self.ecalThickness  = modEcalThickness 
         self.leadThickness  = modLeadThickness 
@@ -68,7 +70,7 @@ class ECALModBuilder(gegede.builder.Builder):
         n1 = 0 
         n2 = 0
         for i in range(self.nSBPlanes):
-            zpos = -0.5*self.ecalModDim[2]+ (i+0.5)*SBPlaneDim[2]+(i+1)*self.leadThickness
+            zpos = -0.5*self.ecalModDim[2]+ (i+0.5)*SBPlaneDim[2]+(i+1)*self.leadThickness +self.zXtra
 
 	    rotPlane = 'identity'
 	    #if(self.altPlaneOrient): rotPlane = 'r90aboutZ'
