@@ -20,7 +20,14 @@ def define_materials( g ):
     cr = g.matter.Element("chromium",   "Cr", 24, "51.9961*g/mole")
     fe = g.matter.Element("iron",       "Fe", 26, "55.8450*g/mole")
     ni = g.matter.Element("nickel",     "Ni", 28, "58.6934*g/mole")
-    ni = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
+
+#    cu = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
+    cu63=g.matter.Isotope("copper63", 29, 63, "62.93*g/mole")
+    cu63=g.matter.Isotope("copper65", 29, 65, "64.93*g/mole")        
+    cu=g.matter.Composition("copper",
+                            isotopes=(("copper63",0.6917),
+                                      ("copper65",0.3083)) )
+    zn= g.matter.Element("zinc",     "Zn", 30, "65.38*g/mole")
     br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
     sb = g.matter.Element("antimony",   "Sb", 51, "121.76*g/mole" )
     xe = g.matter.Element("xenon",      "Xe", 54, "131.293*g/mole")
