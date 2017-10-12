@@ -54,8 +54,16 @@ class MagnetBuilder(gegede.builder.Builder):
         magBoxB = geom.shapes.Boolean( 'Yoke', type='subtraction', first=magOutB, second=magInB )
         MagBlock_lv = geom.structure.Volume('volYoke', material=self.MagMatB, shape=magBoxB)
 
+        self.MagnetOutt = [self.magOutDimB[0], self.magOutDimB[1], (self.magOutDimB[2]+self.magBGap)*self.nMag]
+
+	self.MagnetInn = [(self.magInDim[0]+self.magGap)*self.nMag, self.magInDim[1], self.magInDim[2]]
+
+	print self.MagnetOutt[0]
+        print self.MagnetOutt[1]
+        print self.MagnetOutt[2]
+
         magnetOut = geom.shapes.Box( 'MagnetOut',                 dx=0.5*self.magOutDimB[0],
-                                  dy=0.5*self.magOutDimB[1], dz=0.5*self.magOutDim[2])
+                                  dy=0.5*self.magOutDimB[1],  dz=(self.magOutDimB[2]+self.magBGap)*self.nMag)
         magnetIn = geom.shapes.Box(  'MagnetInner',               dx=0.5*(self.magInDim[0]+self.magGap)*self.nMag,
                                   dy=0.5*self.magInDim[1],  dz=0.5*self.magInDim[2])
 
@@ -68,14 +76,14 @@ class MagnetBuilder(gegede.builder.Builder):
 
         for i in range(self.nMag):
         	magPos  = geom.structure.Position( 'magPos-'+str(i)+'_in_'+self.name,
-        	                                    self.location[0]-self.nMag*(self.magGap+self.magInDim[0])/2+(i+0.5)*self.magInDim[0]+i*self.magGap, self.location[1], self.location[2])
+        	                                    self.location[0]-((self.nMag-1) * self.magGap + self.nMag * self.magInDim[0])/2+(i+0.5)*self.magInDim[0]+i*self.magGap, self.location[1], self.location[2])
         	pMag = geom.structure.Placement( 'magPla-'+str(i)+'_in_'+self.name,
         	                                   volume = Mag_lv,pos = magPos)
         	Magnet_lv.placements.append( pMag.name )
 
         for j in range(self.nMagB):
                 magBPos  = geom.structure.Position( 'magBPos-'+str(j)+'_in_'+self.name,
-                                                    self.location[0], self.location[1], self.location[2]-self.nMagB*(self.magBGap+self.magInDimB[2])/2+(j+0.5)*self.magInDimB[2]+j*self.magBGap)
+                                                    self.location[0], self.location[1], self.location[2]-((self.nMagB-1)*self.magBGap+self.magInDimB[2]*self.nMagB)/2+(j+0.5)*self.magInDimB[2]+j*self.magBGap)
                 pMagB = geom.structure.Placement( 'magBPla-'+str(j)+'_in_'+self.name,
                                                    volume = MagBlock_lv,pos = magBPos)
                 Magnet_lv.placements.append( pMagB.name )
