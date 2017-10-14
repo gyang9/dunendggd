@@ -2,7 +2,6 @@
 import gegede.builder
 from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
-import numpy as np
 
 class DoubleArrangePlaneBuilder(gegede.builder.Builder):
 
