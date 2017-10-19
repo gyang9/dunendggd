@@ -12,12 +12,13 @@ from gegede import Quantity as Q
 class GArTPCBuilder(gegede.builder.Builder):
     """ Build the Gas TPC volume. """
 
-    def configure(self,ChamberRadius,ChamberLength,tpcDimension,
-                  halfDimension,Material,bfield=None,drift='x',**kwds):
+    def configure(self,chamberDimension,tpcDimension,
+                  halfDimension,Material,bfield=None,drift='z',**kwargs):
 
         # The vacuum chamber is a G4Tubs for now
-        self.ChamberRadius = ChamberRadius
-        self.ChamberLength = ChamberLength
+        self.ChamberRadius = chamberDimension['r']
+        self.ChamberLength = chamberDimension['dz']
+
         self.EndCapThickness = Q("1cm")
         self.WallThickness = Q("1cm")
         self.ChamberMaterial = "Steel"
@@ -29,22 +30,37 @@ class GArTPCBuilder(gegede.builder.Builder):
         self.BField = bfield
         
         # The gas
-        self.Material = Material
+        if type(Material)=='string':
+            # Set from a pre-defined material
+            self.Material = Material
+            self.GasDensity = None
+            self.Composition = None
+        else:
+            # Set from a dictionary of materials & mass fractions
+            comp = []
+            for k in Material.keys():
+                comp.append( (k,Material[k]) )
+            self.Composition = tuple(comp)
+            self.Material = kwargs['MaterialName']
+            self.GasDensity = kwargs['Density']
+ 
         self.halfDimension = halfDimension
         # The TPCs: Boxes at the center of the vacuum chamber
         self.tpcDimension = tpcDimension
-        self.HalfX = tpcDimension['dx'] 
-        self.HalfY = tpcDimension['dy']
-        self.HalfZ = tpcDimension['dz']
-        self.Drift = 'x'
+        self.HalfX = tpcDimension['dx']/2 
+        self.HalfY = tpcDimension['dy']/2
+        self.HalfZ = tpcDimension['dz']/2
+        self.Drift = drift
 
-    def define_materials(self):
-        pass
+
 
     def construct(self,geom):
 
-        self.define_materials()   
-        main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
+        # If using a custom gas, define here
+        if self.Composition is not None:
+            geom.matter.Mixture(self.Material,density=self.GasDensity,components=self.Composition)
+
+        main_lv, main_hDim = ltools.main_lv(self,geom,'Tubs')
         print('GasTPCBuilder::construct()')
         print('main_lv = ',main_lv.name)
         self.add_volume(main_lv)
@@ -111,7 +127,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         rot2 = []
         rot0 = [Q('0deg'),Q('0deg'),Q('0deg')]
         
-        if self.Drift != 'x':
+        if self.Drift == 'y':
 
             tpc1_pos = geom.structure.Position('TPC1_pos',Q('0mm'),
                                                self.HalfZ+gap,Q('0mm'))
@@ -121,7 +137,7 @@ class GArTPCBuilder(gegede.builder.Builder):
             rot1 = [Q('270deg'),Q('0deg'),Q('0deg')]
             rot2 = [Q('90deg'),Q('0deg'),Q('0deg')]
 
-        else:
+        elif self.Drift == 'x':
             tpc1_pos = geom.structure.Position('TPC1_pos',self.HalfZ+gap,
                                                Q('0mm'),Q('0mm'))
             tpc2_pos = geom.structure.Position('TPC2_pos',-self.HalfZ-gap,
@@ -129,6 +145,12 @@ class GArTPCBuilder(gegede.builder.Builder):
 
             rot1 = [Q('0deg'),Q('90deg'),Q('0deg')]
             rot2 = [Q('0deg'),Q('270deg'),Q('0deg')]
+
+        else:
+            tpc1_pos = geom.structure.Position('TPC1_pos',Q('0mm'),Q('0mm'),-self.HalfZ-gap)
+            tpc2_pos = geom.structure.Position('TPC2_pos',Q('0mm'),Q('0mm'),self.HalfZ+gap)
+            rot1 = [Q('0deg'),Q('0deg'),Q('0deg')]
+            rot2 = [Q('180deg'),Q('0deg'),Q('0deg')]
 
         tpc1_rot = geom.structure.Rotation('TPC1_rot',rot1[0],rot1[1],rot1[2])
         tpc2_rot = geom.structure.Rotation('TPC2_rot',rot2[0],rot2[1],rot2[2])
