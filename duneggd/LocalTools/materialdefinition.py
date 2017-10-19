@@ -263,3 +263,41 @@ def define_materials( g ):
                                     ("Scintillator", 0.48),
                                     ("epoxy_resin",0.10)
                             ))
+
+    # Materials for Gas TPC construction
+
+    # Quench gases not otherwise defined
+    cf4 = g.matter.Molecule('CF4',density='0.00372*g/cc',
+                            elements=(('carbon',1),('fluorine',4)) )
+
+    methane = g.matter.Molecule('Methane',density='0.000676*g/cc',
+                            elements=(('carbon',1),('hydrogen',4)) )
+
+
+    # For Gas TPC field cage & central electrode
+    # Polyvinyl fluoride (Tedlar)
+    pvf = g.matter.Molecule("PVF",density="1.71*g/cc",
+                            elements=(("carbon",2),("hydrogen",3),
+                                      ("fluorine",1)) )
+
+    kevlar = g.matter.Molecule("Kevlar",density="1.45*g/cc",
+                               elements=(("carbon",7),("hydrogen",5),
+                                         ("nitrogen",1),("oxygen",1)) 
+                              )
+
+    nomex_honeycomb = g.matter.Molecule("NomexHoneycomb",
+                                        density="0.029*g/cc",
+                                        elements=(
+                                               ("carbon",7),
+                                               ("hydrogen",5),
+                                               ("nitrogen",1),
+                                               ("oxygen",1)) )
+
+    mylar = g.matter.Molecule('Mylar',density="1.39*g/cc",
+                              elements=(('carbon',10),
+                                        ('hydrogen',8),
+                                        ('oxygen',4)))
+    # 60% kevlar, 40% epoxy resin
+    kevlar_prepreg = g.matter.Mixture("KevlarPrepreg",density="1.37*g/cc",
+                                      components=(("Kevlar",0.6),
+                                                  ("epoxy_resin",0.4)) )
