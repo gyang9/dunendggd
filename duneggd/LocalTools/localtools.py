@@ -34,7 +34,7 @@ def main_lv( slf, geom, shape):
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def addAuxParams( slf, ggd_vol ):
     assert( slf.AuxParams != None ), " No AuxParams defined on %s " % ggd_vol.name
-    for key, value in slf.AuxParamsiteritems():
+    for key, value in slf.AuxParams.iteritems():
         if isinstance(value,str):
             ggd_vol.params.append((key,value))
 
