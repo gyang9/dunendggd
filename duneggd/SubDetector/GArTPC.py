@@ -51,7 +51,8 @@ class GArTPCBuilder(gegede.builder.Builder):
         self.HalfY = tpcDimension['dy']/2
         self.HalfZ = tpcDimension['dz']/2
         self.Drift = drift
-
+        # A bit of space for the central electrode
+        self.TPCGap = Q('2mm') 
 
 
     def construct(self,geom):
@@ -108,63 +109,61 @@ class GArTPCBuilder(gegede.builder.Builder):
         
 
     def construct_tpcs(self,geom,lv):
-        gap = Q('2mm') # A bit of space for the central electrode
 
-        # TPC1
-        tpc1_shape = geom.shapes.Box('TPC1',self.HalfX,self.HalfY,self.HalfZ)
-        tpc1_lv = geom.structure.Volume('TPC1_vol',material = self.Material,
-                                        shape=tpc1_shape)
-        tpc2_shape = geom.shapes.Box('TPC2',self.HalfX,self.HalfY,self.HalfZ)
-        tpc2_lv = geom.structure.Volume('TPC2_vol',material = self.Material,
-                                        shape=tpc2_shape)
 
-        tpc1_lv.params.append(('SensDet','TPC1'))
-        tpc2_lv.params.append(('SensDet','TPC2'))
-
-        tpc1_pos = None 
-        tpc2_pos = None
+        pos1 = []
+        pos2 = []
         rot1 = []
         rot2 = []
-        rot0 = [Q('0deg'),Q('0deg'),Q('0deg')]
         
         if self.Drift == 'y':
 
-            tpc1_pos = geom.structure.Position('TPC1_pos',Q('0mm'),
-                                               self.HalfZ+gap,Q('0mm'))
-            tpc2_pos = geom.structure.Position('TPC2_pos',Q('0mm'),
-                                               -self.HalfZ-gap,Q('0mm'))
-            
+            pos1 = [0,1,0]
+            pos2 = [0,-1,0]
             rot1 = [Q('270deg'),Q('0deg'),Q('0deg')]
             rot2 = [Q('90deg'),Q('0deg'),Q('0deg')]
 
         elif self.Drift == 'x':
-            tpc1_pos = geom.structure.Position('TPC1_pos',self.HalfZ+gap,
-                                               Q('0mm'),Q('0mm'))
-            tpc2_pos = geom.structure.Position('TPC2_pos',-self.HalfZ-gap,
-                                               Q('0mm'),Q('0mm'))
 
+            pos1 = [1,0,0]
+            pos2 = [-1,0,0]
             rot1 = [Q('0deg'),Q('90deg'),Q('0deg')]
             rot2 = [Q('0deg'),Q('270deg'),Q('0deg')]
 
         else:
-            tpc1_pos = geom.structure.Position('TPC1_pos',Q('0mm'),Q('0mm'),-self.HalfZ-gap)
-            tpc2_pos = geom.structure.Position('TPC2_pos',Q('0mm'),Q('0mm'),self.HalfZ+gap)
+            pos1 = [0,0,-1]
+            pos2 = [0,0,1]
             rot1 = [Q('0deg'),Q('0deg'),Q('0deg')]
             rot2 = [Q('180deg'),Q('0deg'),Q('0deg')]
 
-        tpc1_rot = geom.structure.Rotation('TPC1_rot',rot1[0],rot1[1],rot1[2])
-        tpc2_rot = geom.structure.Rotation('TPC2_rot',rot2[0],rot2[1],rot2[2])
 
-        tpc1_pla = geom.structure.Placement('TPC1_pla',
-                                            volume=tpc1_lv,
-                                            pos=tpc1_pos,
-                                            rot=tpc1_rot
+        self.construct_tpc(geom,"TPC1",pos1,rot1,lv)
+        self.construct_tpc(geom,"TPC2",pos2,rot2,lv)
+
+
+    def construct_tpc(self,geom,name,pos_vec,rot,lv):
+
+        # First, set up the main rotation and position to be used for the TPC
+        tpc_rot = geom.structure.Rotation(name+'_rot',rot[0],rot[1],rot[2])
+        pos = [ x*(self.HalfZ + self.TPCGap) for x in pos_vec]
+        tpc_pos = geom.structure.Position(name+'_pos',pos[0],pos[1],pos[2])
+ 
+        # Create the shape and logical volume
+        tpc_shape = geom.shapes.Box(name+'_shape',self.HalfX,self.HalfY,self.HalfZ)
+        tpc_lv = geom.structure.Volume(name+'_vol',material = self.Material,
+                                       shape=tpc_shape)
+
+        # Create a placement
+        tpc_pla = geom.structure.Placement(name+'_pla',
+                                            volume=tpc_lv,
+                                            pos=tpc_pos,
+                                            rot=tpc_rot
                                            )
 
-        tpc2_pla = geom.structure.Placement('TPC2_pla',
-                                            volume=tpc2_lv,
-                                            pos=tpc2_pos,
-                                            rot=tpc2_rot
-                                           )
-        lv.placements.append(tpc1_pla.name)
-        lv.placements.append(tpc2_pla.name)
+        # The gas volumes are sensitive detectors
+        tpc_lv.params.append(('SensDet',name))
+
+        # Place in the main gas volume
+        lv.placements.append(tpc_pla.name)
+
+       
