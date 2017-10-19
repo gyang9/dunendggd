@@ -2,29 +2,6 @@ from gegede import Quantity as Q
 import math
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-def getShapeDimensions( ggd_vol, geom ):
-    """
-    """
-    ggd_shape = geom.store.shapes.get(ggd_vol.shape)
-    shapename = type(ggd_shape).__name__
-    ggd_dim = []
-    if "Box" in shapename:
-        ggd_dim = [ggd_shape.dx, ggd_shape.dy, ggd_shape.dz]
-    elif "Tubs" in shapename:
-        ggd_dim = [ggd_shape.rmax, ggd_shape.rmax, ggd_shape.dz]
-    elif "Sphere" in shapename:
-        ggd_dim = [ggd_shape.rmax, ggd_shape.rmax, ggd_shape.rmax]
-    elif "Cone" in shapename:
-        ggd_dim = [ggd_shape.rmax1 if ggd_shape.rmax1 >= ggd_shape.rmax2 else ggd_shape.rmax2,
-                    ggd_shape.rmax1 if ggd_shape.rmax1 >= ggd_shape.rmax2 else ggd_shape.rmax2, ggd_shape.dz]
-    elif "Trapezoid" in shapename:
-        ggd_dim = [ggd_shape.dx1 if ggd_shape.dx1 >= ggd_shape.dx2 else ggd_shape.dx2,
-                    ggd_shape.dy1 if ggd_shape.dy1 >= ggd_shape.dy2 else ggd_shape.dx2, ggd_shape.dz]
-    else:
-        ggd_dim = None
-    return ggd_dim
-
-#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def main_lv( slf, geom, shape):
     """
     """
@@ -53,6 +30,36 @@ def main_lv( slf, geom, shape):
         main_hDim = [main_shape.dx1 if main_shape.dx1 >= main_shape.dx2 else main_shape.dx2,
                     main_shape.dy1 if main_shape.dy1 >= main_shape.dy2 else main_shape.dx2, main_shape.dz]
     return geom.structure.Volume( "vol"+slf.name, material=slf.Material, shape=main_shape ), main_hDim
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def addAuxParams( slf, ggd_vol ):
+    assert( slf.AuxParams != None ), " No AuxParams defined on %s " % ggd_vol.name
+    for key, value in slf.AuxParamsiteritems():
+        if isinstance(value,str):
+            ggd_vol.params.append((key,value))
+
+#^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+def getShapeDimensions( ggd_vol, geom ):
+    """
+    """
+    ggd_shape = geom.store.shapes.get(ggd_vol.shape)
+    shapename = type(ggd_shape).__name__
+    ggd_dim = []
+    if "Box" in shapename:
+        ggd_dim = [ggd_shape.dx, ggd_shape.dy, ggd_shape.dz]
+    elif "Tubs" in shapename:
+        ggd_dim = [ggd_shape.rmax, ggd_shape.rmax, ggd_shape.dz]
+    elif "Sphere" in shapename:
+        ggd_dim = [ggd_shape.rmax, ggd_shape.rmax, ggd_shape.rmax]
+    elif "Cone" in shapename:
+        ggd_dim = [ggd_shape.rmax1 if ggd_shape.rmax1 >= ggd_shape.rmax2 else ggd_shape.rmax2,
+                    ggd_shape.rmax1 if ggd_shape.rmax1 >= ggd_shape.rmax2 else ggd_shape.rmax2, ggd_shape.dz]
+    elif "Trapezoid" in shapename:
+        ggd_dim = [ggd_shape.dx1 if ggd_shape.dx1 >= ggd_shape.dx2 else ggd_shape.dx2,
+                    ggd_shape.dy1 if ggd_shape.dy1 >= ggd_shape.dy2 else ggd_shape.dx2, ggd_shape.dz]
+    else:
+        ggd_dim = None
+    return ggd_dim
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def getRotation( slf, geom ):
@@ -179,7 +186,7 @@ def placeBuilders( slf, geom, main_lv, TranspV ):
         main_lv.placements.append(sb_pla.name)
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-def placeUserPlaceBuilders( slf, geom, main_lv, TranspV ):
+def placeUserLocationBuilders( slf, geom, main_lv, TranspV ):
     # check InsideGap
     InsideGap = getInsideGap( slf )
     # get the main dimensions
@@ -242,7 +249,7 @@ def placeComplexBuilders( slf, geom, main_lv, TranspV ):
             pos = [p+s+t*InsideGap for p,s,t in zip(pos,step,TranspV)]
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-def surroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
+def placeSurroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
     """
     """
     sb_cent_lv = sb_cent.get_volume()
@@ -284,7 +291,7 @@ def surroundBuilders( main_lv, sb_cent, sb_surr, gap, geom ):
     main_lv.placements.append( sb_surr_pla.name )
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-def crossBuilders( main_lv, sb_cent, sb_top, sb_side, slf, geom ):
+def placeCrossBuilders( main_lv, sb_cent, sb_top, sb_side, slf, geom ):
     """
     """
     Gap = getInsideGap( slf )
@@ -355,7 +362,7 @@ def placeBooleanBuilders( slf, geom, main_lv, TranspV ):
         sb_dim = [ dim_dict['dx'], dim_dict['dy'], dim_dict['dz'] ]
         step = [ t*d for t,d in zip(TranspV, sb_dim) ]
         pos = [ p+s for p,s in zip(pos,step) ]
-        
+
         step2 = [ -t*d for t,d in zip(places[i], sb_dim) ]
         pos2 = [ t*(d)+s for t,d,s in zip(places[i],main_hDim, step2)]
 
@@ -377,12 +384,8 @@ def placeBooleanBuilders( slf, geom, main_lv, TranspV ):
     sb_boolean_lv = geom.structure.Volume('vol'+sb_boolean_shape.name, material=slf.Material,
                                         shape=sb_boolean_shape)
 
-    if isinstance(slf.Sensitive,str):
-        sb_boolean_lv.params.append(("SensDet",slf.Sensitive))
-    if isinstance(slf.BField,str):
-        sb_boolean_lv.params.append(("BField",slf.BField))
-    if isinstance(slf.EField,str):
-        sb_boolean_lv.params.append(("EField",slf.EField))
+    if slf.AuxParams != None:
+        addAuxParams( slf, sb_boolean_lv )
 
     slf.add_volume( sb_boolean_lv )
 

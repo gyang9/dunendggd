@@ -7,12 +7,9 @@ class SimpleBooleanBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, InsideGap=None,
-                    BField=None, EField=None, Sensitive=None,
-                    SubBPos=None, Boolean=None, **kwds ):
+                    AuxParams=None, SubBPos=None, Boolean=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
-        self.InsideGap = InsideGap
-        self.BField, self.EField = ( BField, EField )
-        self.Sensitive = Sensitive
+        self.InsideGap, self.AuxParams = ( InsideGap, AuxParams )
         self.SubBPos, self.Boolean = (SubBPos, Boolean)
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -34,11 +31,7 @@ class SimpleBooleanBuilder(gegede.builder.Builder):
         sb_boolean_lv = geom.structure.Volume('vol'+sb_boolean_shape.name, material=self.Material,
                                                 shape=sb_boolean_shape)
 
-        if isinstance(self.Sensitive,str):
-            sb_boolean_lv.params.append(("SensDet",self.Sensitive))
-        if isinstance(self.BField,str):
-            sb_boolean_lv.params.append(("BField",self.BField))
-        if isinstance(self.EField,str):
-            sb_boolean_lv.params.append(("EField",self.EField))
+        if self.AuxParams != None:
+            ltools.addAuxParams( self, sb_boolean_lv )
 
         self.add_volume( sb_boolean_lv )

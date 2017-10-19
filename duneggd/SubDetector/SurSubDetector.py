@@ -18,4 +18,4 @@ class SurSubDetectorBuilder(gegede.builder.Builder):
         builders = self.get_builders()
         sb_central = builders[0]
         sb_surr = builders[1]
-        ltools.surroundBuilders( main_lv, sb_central, sb_surr, self.InsideGap, geom )
+        ltools.placeSurroundBuilders( main_lv, sb_central, sb_surr, self.InsideGap, geom )
