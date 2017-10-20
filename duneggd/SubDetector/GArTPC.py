@@ -68,7 +68,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                 tpcDimension: Dimensions of each TPC.
                     Dict with keys 'dx','dy','dz'
                 halfDimension: Half-dimensions of bounding volume.
-                    Dict with keys 'r' and 'dz' (dz=half of length)
+                    Dict with keys 'rmin', 'rmax' and 'dz' (dz=half of length)
                 Material: Gas material. String if using a standard
                     material, dict in the form {material:mass_fraction,...}
                 bfield: Magnetic field (3D array-like). Don't use if a
@@ -105,7 +105,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         self.BField = bfield
         
         # The gas
-        if type(Material)=='string':
+        if type(Material)==str:
             # Set from a pre-defined material
             self.Material = Material
             self.GasDensity = None
@@ -450,7 +450,7 @@ class GArTPCBuilder(gegede.builder.Builder):
 
         """
         # Outer Tedlar layers
-        fc_dx = Q('31.3mm')
+        fc_dx = Q('21.3mm')
         fc_out_x = self.HalfX + fc_dx + self.SmallGap
         fc_out_y = self.HalfY + fc_dx + self.SmallGap
         fc_in_x = self.HalfX + self.SmallGap
