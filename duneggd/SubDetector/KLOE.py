@@ -56,14 +56,14 @@ class KLOEBuilder(gegede.builder.Builder):
     def construct(self, geom):
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
         print( "KLOEBuilder::construct()")
-        print( "main_lv = ", main_lv.name)
+        print( "main_lv = "+ main_lv.name)
         self.add_volume( main_lv )
         self.build_yoke(main_lv,geom)
         self.build_solenoid(main_lv,geom)
         self.build_ecal(main_lv,geom)
         self.build_tracker(main_lv,geom)
         self.build_muon_system(main_lv,geom)
-        print( "printing main_lv: ", main_lv)
+        print( "printing main_lv: "+ str(main_lv))
             
             
 #        TranspV = [0,0,1]
@@ -105,7 +105,7 @@ class KLOEBuilder(gegede.builder.Builder):
         
 #        BField="(0.0 T, 0.0 T, %f T)"%(-BarrelBField/Q("1.0T"))
         BField="(- %f T, 0.0 T, 0.0 T)"%(-BarrelBField/Q("1.0T"))
-        print( "Setting KLOE Barrel Bfield to ",BField)
+        print( "Setting KLOE Barrel Bfield to "+str(BField))
         barrel_lv.params.append(("BField",BField))
 
 
@@ -115,7 +115,7 @@ class KLOEBuilder(gegede.builder.Builder):
         barrel_pla=geom.structure.Placement("KLOEYokeBarrel_pla",
                                             volume=barrel_lv,
                                             pos=barrel_pos)
-        print( "appending ",barrel_pla.name)
+        print( "appending "+barrel_pla.name)
         main_lv.placements.append(barrel_pla.name)
         
         # build endcap
@@ -146,7 +146,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 ec_pla=geom.structure.Placement(name+"_pla",
                                                 volume=ec_lv,
                                                 pos=ec_pos)
-                print( "appending ",ec_pla.name)
+                print( "appending "+ec_pla.name)
                 main_lv.placements.append(ec_pla.name)
 
         
@@ -194,7 +194,7 @@ class KLOEBuilder(gegede.builder.Builder):
             ec_pla=geom.structure.Placement(name+"_pla",
                                             volume=ec_lv,
                                             pos=ec_pos)        
-            print( "appending ",ec_pla.name)
+            print( "appending "+ec_pla.name)
             main_lv.placements.append(ec_pla.name)
 
         # cryostat inner and outer walls
@@ -225,7 +225,7 @@ class KLOEBuilder(gegede.builder.Builder):
             pla=geom.structure.Placement(name+"_pla",
                                             volume=lv,
                                             pos=pos)        
-            print( "appending ",pla.name)
+            print( "appending "+pla.name)
             main_lv.placements.append(pla.name)
             
 
@@ -253,7 +253,7 @@ class KLOEBuilder(gegede.builder.Builder):
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
                                      pos=pos)        
-        print( "appending ",pla.name)
+        print( "appending "+pla.name)
         main_lv.placements.append(pla.name)
         
         
@@ -281,7 +281,7 @@ class KLOEBuilder(gegede.builder.Builder):
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
                                      pos=pos)        
-        print( "appending ",pla.name)
+        print( "appending "+pla.name)
         main_lv.placements.append(pla.name)
 
     def build_ecal(self,main_lv,geom):
@@ -327,7 +327,7 @@ class KLOEBuilder(gegede.builder.Builder):
             pla=geom.structure.Placement(name+"_pla",
                                          volume=lv,
                                          pos=pos)
-            print( "appending ",pla.name)
+            print( "appending "+pla.name)
             main_lv.placements.append(pla.name)
 
 
@@ -357,13 +357,13 @@ class KLOEBuilder(gegede.builder.Builder):
             pos[2]=KLOEEndcapECALStartZ+KLOEEndcapECALDepth/2.0
             if side=='L':
                 pos[2]=-pos[2]
-            print( "pos[2]=",pos[2])
+            print( "pos[2]="+str(pos[2]))
             pos=geom.structure.Position(name+"_pos",
                                         pos[0],pos[1], pos[2])
             pla=geom.structure.Placement(name+"_pla",
                                          volume=lv,
                                          pos=pos)
-            print( "appending ",pla.name)
+            print( "appending "+pla.name)
             main_lv.placements.append(pla.name)
 
     def build_tracker(self,main_lv,geom):
@@ -385,7 +385,7 @@ class KLOEBuilder(gegede.builder.Builder):
 
 #        BField="(0.0 T, 0.0 T, %f T)"%(self.CentralBField/Q("1.0T"))
         BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
-        print( "Setting KLOE Central Tracker Bfield to ",BField)
+        print( "Setting KLOE Central Tracker Bfield to "+str(BField))
         lv.params.append(("BField",BField))
         
         
@@ -411,7 +411,7 @@ class KLOEBuilder(gegede.builder.Builder):
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
                                      pos=pos)
-        print( "appending ",pla.name)
+        print( "appending "+pla.name)
 
         main_lv.placements.append(pla.name)
 
