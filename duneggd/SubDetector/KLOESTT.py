@@ -20,8 +20,8 @@ class KLOESTTBuilder(gegede.builder.Builder):
     def construct( self, geom ):
         # main volume
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
-        print "KLOESTT::construct()"
-        print "  main_lv = ", main_lv.name
+        print( "KLOESTT::construct()")
+        print( "  main_lv = "+ main_lv.name)
         self.add_volume( main_lv )
         
         rot=[Q("90deg"),Q("0deg"),Q("0deg")]
@@ -36,7 +36,7 @@ class KLOESTTBuilder(gegede.builder.Builder):
         for imod in range(self.nModules):
             loc=[Q("0cm"),Q("0cm"),startz+(self.modWidth+self.gap)*(imod+0.5)]
             basename=self.name+'_'+mod_lv.name+'_'+str(imod)
-            print "Placing STTModule",basename," at ",loc
+            print( "Placing STTModule " + basename+" at "+str(loc))
             mod_pos=geom.structure.Position(basename+'_pos',loc[0],loc[1],loc[2])
             mod_rot=geom.structure.Rotation(basename+'_rot',rot[0],rot[1],rot[2])
             mod_pla=geom.structure.Placement(basename+'_pla',volume=mod_lv,pos=mod_pos,rot=mod_rot)

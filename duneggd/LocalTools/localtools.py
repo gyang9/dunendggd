@@ -1,5 +1,6 @@
 from gegede import Quantity as Q
 import math
+from platform import python_version
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def main_lv( slf, geom, shape):
@@ -33,10 +34,12 @@ def main_lv( slf, geom, shape):
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def addAuxParams( slf, ggd_vol ):
+
     assert( slf.AuxParams != None ), " No AuxParams defined on %s " % ggd_vol.name
-    for key, value in slf.AuxParams.iteritems():
-        if isinstance(value,str):
-            ggd_vol.params.append((key,value))
+
+    for key in slf.AuxParams:
+        if isinstance(slf.AuxParams[key],str):
+            ggd_vol.params.append((key,slf.AuxParams[key]))
 
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def getShapeDimensions( ggd_vol, geom ):
