@@ -37,7 +37,7 @@ def addAuxParams( slf, ggd_vol ):
 
     assert( slf.AuxParams != None ), " No AuxParams defined on %s " % ggd_vol.name
 
-    for key in slf.AuxParams.keys():
+    for key in slf.AuxParams:
         if isinstance(slf.AuxParams[key],str):
             ggd_vol.params.append((key,slf.AuxParams[key]))
 
