@@ -22,7 +22,7 @@ class RPCTrayRotBuilder(gegede.builder.Builder):
       self.compRotation = compRotation
       self.compExtend  = compExtend
 
-      #print self.builders
+      #print( self.builders)
       self.RPCModBldr = self.get_builder('RPCMod')
       return
 
@@ -65,7 +65,7 @@ class RPCTrayRotBuilder(gegede.builder.Builder):
                 prpcm_in_t = geom.structure.Placement( 'placeRPCMod-'+str(self.nrpcCol*i+j)+'_in_'+self.name,
                                                        volume = rpcMod_lv, pos = rpcm_in_t, rot = self.compRotation)
                 rpcTray_lv.placements.append( prpcm_in_t.name )
-                #print 'rpctray : '+str(i)+' '+str(j)+' RPCTray- xpos: '+str(xpos)+' ypos: '+str(ypos)+' zpos: '+str(zpos)
+                #print( 'rpctray : '+str(i)+' '+str(j)+' RPCTray- xpos: '+str(xpos)+' ypos: '+str(ypos)+' zpos: '+str(zpos))
         
         
         return
