@@ -23,7 +23,7 @@ def define_materials( g ):
 
 #    cu = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
     cu63=g.matter.Isotope("copper63", 29, 63, "62.93*g/mole")
-    cu63=g.matter.Isotope("copper65", 29, 65, "64.93*g/mole")        
+    cu63=g.matter.Isotope("copper65", 29, 65, "64.93*g/mole")
     cu=g.matter.Composition("copper",
                             isotopes=(("copper63",0.6917),
                                       ("copper65",0.3083)) )
@@ -208,31 +208,34 @@ def define_materials( g ):
                             ))
     # http://www.engineeringtoolbox.com/engineering-materials-properties-d_1225.html
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
-    # table 6
-    epoxy = g.matter.Mixture("Epoxy", density="1.25*g/cc",
-                            components = (
-                                    ("carbon",0.4616),
-                                    ("hydrogen",0.4616),
-                                    ("oxygen",0.0768)
+    # table 3 - C6 H6 O
+    epoxy = g.matter.Molecule("Epoxy", density="1.25*g/cc",
+                            elements = (
+                                    ("carbon",6),
+                                    ("hydrogen",6),
+                                    ("oxygen",1)
                             ))
-
+    # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
+    # table 6
     glass = g.matter.Mixture("Glass", density="2.70*g/cc",
                             components = (
-                                    ("silicon",0.2138),
-                                    ("boron",0.0336),
-                                    ("aluminum",0.0168),
-                                    ("sodium",0.0426),
-                                    ("potassium",0.0460),
-                                    ("zinc",0.0294),
-                                    ("titanium",0.0133),
-                                    ("antimony",0.0004),
-                                    ("oxygen",0.6041)
+                                    ("silicon",0.2743),
+                                    ("boron",0.0166),
+                                    ("aluminum",0.0207),
+                                    ("sodium",0.0449),
+                                    ("potassium",0.0821),
+                                    ("zinc",0.0882),
+                                    ("titanium",0.0292),
+                                    ("antimony",0.0023),
+                                    ("oxygen",0.4417)
                             ))
 
+    # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
+    # table 6
     fr4 = g.matter.Mixture("FR4", density="1.850*g/cc",
                             components = (
-                                    ("Epoxy",0.44),
-                                    ("Glass",0.56)
+                                    ("Epoxy",0.206),
+                                    ("Glass",0.794)
                             ))
 
         # Scintillator:
@@ -274,7 +277,7 @@ def define_materials( g ):
 
     kevlar = g.matter.Molecule("Kevlar",density="1.45*g/cc",
                                elements=(("carbon",7),("hydrogen",5),
-                                         ("nitrogen",1),("oxygen",1)) 
+                                         ("nitrogen",1),("oxygen",1))
                               )
 
     nomex_honeycomb = g.matter.Molecule("NomexHoneycomb",
@@ -307,7 +310,7 @@ def define_materials( g ):
                                     ('carbon',2),
                                     ('hydrogen',6)))
 
-#    Propane defined as C3H8 
+#    Propane defined as C3H8
 #    propane  = g.matter.Molecule('Propane',
 #                                 density='0.00197*g/cc',
 #                                 elements=(
@@ -330,7 +333,7 @@ def define_materials( g ):
                                     ('carbon',1),
                                     ('fluorine',4)))
 
-    # Difluoromethane 
+    # Difluoromethane
     ch2f2  = g.matter.Molecule('CH2F2',
                                density='0.00232*g/cc',
                                elements=(
@@ -349,10 +352,10 @@ def define_materials( g ):
     n2 = g.matter.Molecule('Nitrogen',
                            density='0.000625*g/cc',
                            elements=(('nitrogen',1),))
-                                    
-  
+
+
     # All at 10 atm
-    # Mixes are 9 atm Ar, 1 atm quencher   
+    # Mixes are 9 atm Ar, 1 atm quencher
     hp_ar    = g.matter.Molecule('HP_Ar',
                                  density='0.01784*g/cc',
                                  elements=(('argon',1),))
@@ -374,4 +377,3 @@ def define_materials( g ):
                                 density='0.01998*g/cc',
                                 components=(('HP_Ar',0.801),
                                 ('CF4',0.199)))
-
