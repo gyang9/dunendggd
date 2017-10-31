@@ -455,34 +455,34 @@ class GArTPCBuilder(gegede.builder.Builder):
         fc_out_y = self.HalfY + fc_dx + self.SmallGap
         fc_in_x = self.HalfX + self.SmallGap
         fc_in_y = self.HalfY + self.SmallGap
-        cvf_dx = Q('0.05mm')
+        pvf_dx = Q('0.05mm')
 
-        fc_cvf_1 = geom.shapes.Box(name+'fc_cvf1_shape',
+        fc_pvf_1 = geom.shapes.Box(name+'fc_pvf1_shape',
                                    fc_out_x,fc_out_y,self.HalfZ)
-        fc_cvf_0 = geom.shapes.Box(name+'fc_cvf0_shape',
+        fc_pvf_0 = geom.shapes.Box(name+'fc_pvf0_shape',
                                    fc_in_x,fc_in_y,self.HalfZ+Q('1mm'))
-        fc_cvf_shape = geom.shapes.Boolean(name+'fc_cvf_shape',
+        fc_pvf_shape = geom.shapes.Boolean(name+'fc_pvf_shape',
                                            type='subtraction',
-                                           first=fc_cvf_1,
-                                           second=fc_cvf_0)
-        fc_cvf_lv = geom.structure.Volume(name+'fc_cvf_vol',
-                                          material='CVF',
-                                          shape=fc_cvf_shape)
-        fc_cvf_pla = geom.structure.Placement(name+'fc_cvf_pla',
-                                             volume=fc_cvf_lv,
+                                           first=fc_pvf_1,
+                                           second=fc_pvf_0)
+        fc_pvf_lv = geom.structure.Volume(name+'fc_pvf_vol',
+                                          material='PVF',
+                                          shape=fc_pvf_shape)
+        fc_pvf_pla = geom.structure.Placement(name+'fc_pvf_pla',
+                                             volume=fc_pvf_lv,
                                              pos=tpc_pos,
                                              rot=tpc_rot)
-        lv.placements.append(fc_cvf_pla.name)
+        lv.placements.append(fc_pvf_pla.name)
 
         # Kevlar Prepreg (Kevlar/epoxy mixture) layers
         kev_dx = Q('0.6mm')
         fc_kev_1 = geom.shapes.Box(name+'fc_kev1_shape',
-                                   fc_out_x-cvf_dx,
-                                   fc_out_y-cvf_dx,
+                                   fc_out_x-pvf_dx,
+                                   fc_out_y-pvf_dx,
                                    self.HalfZ-2*self.SmallGap)
         fc_kev_0 = geom.shapes.Box(name+'fc_kev0_shape',
-                                   fc_in_x+cvf_dx,
-                                   fc_in_y+cvf_dx,
+                                   fc_in_x+pvf_dx,
+                                   fc_in_y+pvf_dx,
                                    self.HalfZ-self.SmallGap)
         fc_kev_shape = geom.shapes.Boolean(name+'fc_kev_shape',
                                            type='subtraction', 
@@ -493,16 +493,16 @@ class GArTPCBuilder(gegede.builder.Builder):
                                           shape=fc_kev_shape)
         fc_kev_pla = geom.structure.Placement(name+'fc_kev_pla',
                                               volume=fc_kev_lv)
-        fc_cvf_lv.placements.append(fc_kev_pla.name)
+        fc_pvf_lv.placements.append(fc_kev_pla.name)
 
         # Nomex Honeycomb layer
         fc_hc_1 = geom.shapes.Box(name+'fc_hc1_shape',
-                                   fc_out_x-cvf_dx-kev_dx,
-                                   fc_out_y-cvf_dx-kev_dx,
+                                   fc_out_x-pvf_dx-kev_dx,
+                                   fc_out_y-pvf_dx-kev_dx,
                                    self.HalfZ-4*self.SmallGap)
         fc_hc_0 = geom.shapes.Box(name+'fc_hc0_shape',
-                                   fc_in_x+cvf_dx+kev_dx,
-                                   fc_in_y+cvf_dx+kev_dx,
+                                   fc_in_x+pvf_dx+kev_dx,
+                                   fc_in_y+pvf_dx+kev_dx,
                                    self.HalfZ-3*self.SmallGap)
         fc_hc_shape = geom.shapes.Boolean(name+'fc_hc_shape',
                                            type='subtraction',
