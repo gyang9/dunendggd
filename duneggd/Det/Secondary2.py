@@ -14,21 +14,25 @@ class Secondary2Builder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, defMat = 'Air',  
                   magInDim=None,  magPos=None, 
-                  ecalInDim=None, ecalDnPos=None, ecalBaPos=None, ecalDownRot=None, ecalBarRot=None, **kwds):
+                  ecalInDim=None, ecalDnPos=None, ecalUpPos=None, ecalBaPos=None, ecalDownRot=None, ecalUpRot=None, ecalBarRot=None,EcalBField=None, **kwds):
 
         self.defMat      = defMat
         self.magPos      = list(magPos)
 
         # Get all of the detector subsystems to position and place
-        self.ecalDownBldr = self.get_builder('ECALDownstream')
+        self.ecalDownBldr = self.get_builder('ECALDownstream')        
+        self.ecalUpBldr = self.get_builder('ECALUpstream')
         self.ecalBarBldr  = self.get_builder('ECALBarrel')
         self.MagnetBldr   = self.get_builder('Magnet')
+        self.EcalBField = EcalBField
 
         self.ecalDownRot  = ecalDownRot
+        self.ecalUpRot  = ecalUpRot
         self.ecalBarRot   = ecalBarRot
-
+        
 	self.magPos       = list(magPos)
         self.ecalDnPos    = list(ecalDnPos)
+        self.ecalUpPos    = list(ecalUpPos)
 	self.ecalBaPos    = list(ecalBaPos)
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -44,6 +48,7 @@ class Secondary2Builder(gegede.builder.Builder):
         magPos      = list(self.magPos) 
 	ecalBarPos  = list(self.ecalBaPos)
         ecalDnPos   = list(self.ecalDnPos)
+        ecalUpPos   = list(self.ecalUpPos)
 
 
         detOut = geom.shapes.Box( 'detOut',              dx=0.5*magBoxOutDim[0], 
@@ -67,6 +72,9 @@ class Secondary2Builder(gegede.builder.Builder):
         # Get volECALDownstream, volECALUpstream, volECALBarrel volumes and place in volDetector
 
         ecalDown_lv = self.ecalDownBldr.get_volume('volECALDownstream')
+        if isinstance(self.EcalBField,str):
+            ecalDown_lv.params.append(("BField",self.EcalBField))
+
         ecalDown_in_det = geom.structure.Position('ECALDown_in_MagInner', ecalDnPos[0], ecalDnPos[1], ecalDnPos[2])
         pecalDown_in_MagInner = geom.structure.Placement('placeECALDown_in_MagInner',
                                                   volume = ecalDown_lv,
@@ -74,7 +82,22 @@ class Secondary2Builder(gegede.builder.Builder):
                                                   rot=self.ecalDownRot)
         det_lv.placements.append(pecalDown_in_MagInner.name)
 
+        ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
+        if isinstance(self.EcalBField,str):
+            ecalUp_lv.params.append(("BField",self.EcalBField))
+
+        ecalUp_in_det = geom.structure.Position('ECALUp_in_MagInner', ecalUpPos[0], ecalUpPos[1], ecalUpPos[2])
+        pecalUp_in_MagInner = geom.structure.Placement('placeECALUp_in_MagInner',
+                                                  volume = ecalUp_lv,
+                                                  pos = ecalUp_in_det,
+                                                  rot=self.ecalUpRot)
+        det_lv.placements.append(pecalUp_in_MagInner.name)
+
+
         ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')
+        if isinstance(self.EcalBField,str):
+            ecalBar_lv.params.append(("BField",self.EcalBField))
+
         ecalBar_in_det = geom.structure.Position('ECALBar_in_MagInner', ecalBarPos[0], ecalBarPos[1], ecalBarPos[2])
         pecalBar_in_MagInner = geom.structure.Placement('placeECALBar_in_MagInner',
                                                  volume = ecalBar_lv,

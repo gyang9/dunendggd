@@ -25,6 +25,7 @@ class SimpleSubDetectorBuilder(gegede.builder.Builder):
             main_lv.params.append(("BField",self.BField))
         if isinstance(self.EField,str):
             main_lv.params.append(("EField",self.EField))
+
         self.add_volume( main_lv )
 
         if self.NElements != None:

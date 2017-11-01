@@ -15,18 +15,18 @@ class MagnetBuilder(gegede.builder.Builder):
                         actThickness =None, actThicknessB=None, Location=None,
 		        actMaterial =None, actMaterialB=None, nMag=None, nMagB=None, **kwds):
 
-        self.magInDim  = actDimension     
-        self.magOutDim = list(actDimension)
-        self.magOutDim[1] += 2*actThickness 
-        self.magOutDim[2] += 2*actThickness
+        self.magInDim  = actDimension     # inner dimensions of the coils
+        self.magOutDim = list(actDimension) #outer dimensions of the coils
+        self.magOutDim[1] += 2*actThickness # add to outer dimension in y
+        self.magOutDim[2] += 2*actThickness # and in z
         self.MagMat = actMaterial 
         self.actThickness = actThickness
 	self.location     = list(Location)
 
-        self.magInDimB  = actDimensionB
-        self.magInDimB = list(actDimensionB)
-        self.magOutDimB = list(actDimensionB)
-        self.magOutDimB[0] += 2*actThicknessB
+        self.magInDimB  = actDimensionB # inner dimension of the yoke
+        self.magInDimB = list(actDimensionB) # why repeated but with list(...)?
+        self.magOutDimB = list(actDimensionB)# outer dimension of the yoke 
+        self.magOutDimB[0] += 2*actThicknessB # add thickness to outer dimensions in x and y
         self.magOutDimB[1] += 2*actThicknessB
         self.MagMatB = actMaterialB
 	self.nMag    = nMag
@@ -38,9 +38,11 @@ class MagnetBuilder(gegede.builder.Builder):
     def construct(self, geom):
 
         # Make the scint bar shape and volume
+        epsilon=Q("0.1mm") # use when subtracting volA - volB to make volB just a tiny bit bigger along x
+        # this gets rid of spurious surfaces in the event display
         magOut = geom.shapes.Box( 'MagOut',                 dx=0.5*self.magOutDim[0], 
                                   dy=0.5*self.magOutDim[1], dz=0.5*self.magOutDim[2]) 
-        magIn = geom.shapes.Box(  'MagInner',               dx=0.5*self.magInDim[0], 
+        magIn = geom.shapes.Box(  'MagInner',               dx=0.5*self.magInDim[0]+epsilon, 
                                   dy=0.5*self.magInDim[1],  dz=0.5*self.magInDim[2]) 
 
         magBox = geom.shapes.Boolean( 'Mag', type='subtraction', first=magOut, second=magIn ) 
@@ -49,7 +51,7 @@ class MagnetBuilder(gegede.builder.Builder):
         magOutB = geom.shapes.Box( 'YokeOut',                 dx=0.5*self.magOutDimB[0],
                                   dy=0.5*self.magOutDimB[1], dz=0.5*self.magOutDimB[2])
         magInB = geom.shapes.Box(  'YokeInner',               dx=0.5*self.magInDimB[0],
-                                  dy=0.5*self.magInDimB[1],  dz=0.5001*self.magOutDimB[2])
+                                   dy=0.5*self.magInDimB[1],  dz=0.5*self.magOutDimB[2]+epsilon)
 
         magBoxB = geom.shapes.Boolean( 'Yoke', type='subtraction', first=magOutB, second=magInB )
         MagBlock_lv = geom.structure.Volume('volYoke', material=self.MagMatB, shape=magBoxB)
