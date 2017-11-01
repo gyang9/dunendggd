@@ -47,8 +47,8 @@ class RPCModBuilder(gegede.builder.Builder):
         nXStrips = int(self.resiplateDim[0]/self.stripxDim[0])
         nYStrips = int(self.resiplateDim[1]/self.stripyDim[1])
 
-        print 'RPCModBuilder: '+ str(nXStrips) +' X-Strips per RPC '
-        print 'RPCModBuilder: '+ str(nYStrips) +' Y-Strips per RPC '
+        print( 'RPCModBuilder: '+ str(nXStrips) +' X-Strips per RPC ')
+        print( 'RPCModBuilder: '+ str(nYStrips) +' Y-Strips per RPC ')
 
         # for loop to position and place X strips in RPCMod
         for i in range(nXStrips):
@@ -62,7 +62,7 @@ class RPCModBuilder(gegede.builder.Builder):
             pxS_in_m = geom.structure.Placement( 'placeXStrip-'+str(i)+'_in_'+self.name,
                                                  volume = rpcStripx_lv,pos = xS_in_m, rot = self.rotateEven) #,rot = "r90aboutX" )
             rpcMod_lv.placements.append( pxS_in_m.name )
-            #print str(i)+' x-strip pos: '+str(xpos)+str(ypos)+str(zpos)
+            #print( str(i)+' x-strip pos: '+str(xpos)+str(ypos)+str(zpos))
 
 
         # for loop to position and place Y strips in RPCMod
@@ -76,7 +76,7 @@ class RPCModBuilder(gegede.builder.Builder):
             pyS_in_m = geom.structure.Placement( 'placeYStrip-'+str(j)+'_in_'+self.name,
                                                  volume = rpcStripy_lv,pos = yS_in_m, rot = self.rotateEven )#,rot = "r90aboutX")
             rpcMod_lv.placements.append( pyS_in_m.name )
-            #print str(j)+' y-strip pos: '+str(xpos)+str(ypos)+str(zpos)
+            #print( str(j)+' y-strip pos: '+str(xpos)+str(ypos)+str(zpos))
 
 
         for k in range(2):

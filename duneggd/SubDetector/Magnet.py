@@ -60,9 +60,9 @@ class MagnetBuilder(gegede.builder.Builder):
 
 	self.MagnetInn = [(self.magInDim[0]+self.magGap)*self.nMag, self.magInDim[1], self.magInDim[2]]
 
-	print self.MagnetOutt[0]
-        print self.MagnetOutt[1]
-        print self.MagnetOutt[2]
+	print( self.MagnetOutt[0])
+        print( self.MagnetOutt[1])
+        print( self.MagnetOutt[2])
 
         magnetOut = geom.shapes.Box( 'MagnetOut',                 dx=0.5*self.magOutDimB[0],
                                   dy=0.5*self.magOutDimB[1],  dz=(self.magOutDimB[2]+self.magBGap)*self.nMag)

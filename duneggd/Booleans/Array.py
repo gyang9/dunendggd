@@ -7,13 +7,11 @@ class ArrayBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, InsideGap=None,
-                    BField=None, EField=None, Sensitive=None, TranspV=None,
-                    UserPlace=None, Boolean=None, **kwds ):
+                    AuxParams=None, TranspV=None, UserPlace=None, Boolean=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
-        self.InsideGap = InsideGap
-        self.BField, self.EField = ( BField, EField )
-        self.Sensitive, self.TranspV = (Sensitive, TranspV)
-        self.UserPlace, self.Boolean = (UserPlace, Boolean)
+        self.InsideGap, self.TranspV = ( InsideGap, TranspV )
+        self.UserPlace, self.Boolean = ( UserPlace, Boolean )
+        self.AuxParams = AuxParams
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):

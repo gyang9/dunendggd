@@ -7,15 +7,19 @@ from gegede import Quantity as Q
 class MainSubDetectorBuilder(gegede.builder.Builder):
 
     ## The configure
-    def configure(self, halfDimension=None, Material=None, Positions=None, Rotations=None, **kwds):
+    def configure(self, halfDimension=None, Material=None, AuxParams=None,
+                    Positions=None, Rotations=None, **kwds):
         self.halfDimension, self.Material = ( halfDimension, Material )
-        self.Positions=Positions
-        self.Rotations=Rotations
-
+        self.Positions, self.Rotations = ( Positions, Rotations )
+        self.AuxParams = AuxParams
 
     ## The construct
     def construct(self, geom):
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
+
+        if self.AuxParams != None:
+            ltools.addAuxParams( self, main_lv )
+
         self.add_volume( main_lv )
 
         for i,sb in enumerate(self.get_builders()):

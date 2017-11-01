@@ -6,17 +6,17 @@ from gegede import Quantity as Q
 class RectBarBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None,  Sensitive=None, **kwds ):
+    def configure( self, halfDimension=None, Material=None,  AuxParams=None, **kwds ):
         """
         :param halfDimension: halfDimension for the rectangular bar.
         :type halfDimension: dictionary
         :param Material: Material for the rectangular bar.
         :type Material: defined on World.py.
-        :param Sensitive: Boolean to define is material is sensitivie for Geant.
-        :type Sensitive: bool
+        :param AuxParams: Dictionary to add aux parameters.
+        :type AuxParams: dictionary
         :returns: None
         """
-        self.halfDimension, self.Material, self.Sensitive = ( halfDimension, Material, Sensitive )
+        self.halfDimension, self.Material, self.AuxParams = ( halfDimension, Material, AuxParams )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
@@ -25,6 +25,8 @@ class RectBarBuilder(gegede.builder.Builder):
         :returns: None
         """
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
-        if isinstance(self.Sensitive,str):
-            main_lv.params.append(("SensDet",self.Sensitive))
+
+        if self.AuxParams != None:
+            ltools.addAuxParams( self, main_lv )
+
         self.add_volume( main_lv )

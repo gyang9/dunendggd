@@ -54,7 +54,7 @@ class ECALModBuilder(gegede.builder.Builder):
         # Calculate ECAL dimensions 
         self.ecalModDim    = list(SBPlaneDim) # get the right x and y dimension
         self.ecalModDim[2] = self.nSBPlanes*(self.leadThickness + SBPlaneDim[2])
-        print 'ECALModBuilder: set ECAL z dimension to '+str(self.ecalModDim[2])+' (configured as '+str(self.ecalThickness)+')'
+        print( 'ECALModBuilder: set ECAL z dimension to '+str(self.ecalModDim[2])+' (configured as '+str(self.ecalThickness)+')')
       
         # Make main shape/volume for this builder
         ecalModBox = geom.shapes.Box( self.name,
@@ -92,6 +92,6 @@ class ECALModBuilder(gegede.builder.Builder):
                 ecalMod_lv.placements.append( prsbp_in_ecalend.name )
                 n2=n2+1
                 
-        print 'ECALModBuilder:',i+1 ,'SBPlanes', 'in '+str(self.name)
-        print n1, 'SBPlanes have scint. bars oriented along X direction and', n2, 'SBPlanes have scint. bars oriented along Y direction for '+str(self.name) 
+        print( 'ECALModBuilder: '+str(i+1) +' SBPlanes in '+str(self.name))
+        print( str(n1)+ ' SBPlanes have scint. bars oriented along X direction and '+ n2+ ' SBPlanes have scint. bars oriented along Y direction for '+str(self.name) )
         return

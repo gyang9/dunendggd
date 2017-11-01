@@ -7,19 +7,20 @@ class PrimaryBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, halfDimension=None, Material=None, BeginGap=None,
-                    InsideGap=None,  BField=None, EField=None, **kwds):
+                    InsideGap=None,  AuxParams=None, **kwds):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.BeginGap, self.InsideGap = ( BeginGap, InsideGap )
-        self.BField, self.EField = ( BField, EField )
+        self.AuxParams = AuxParams
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
-        if isinstance(self.BField,str):
-            main_lv.params.append(("BField",self.BField))
-        if isinstance(self.EField,str):
-            main_lv.params.append(("EField",self.EField))
+
+        if self.AuxParams != None:
+            ltools.addAuxParams( self, main_lv )
+
         self.add_volume( main_lv )
+
 
         TranspV = [0,0,1]
         begingap = ltools.getBeginGap( self )

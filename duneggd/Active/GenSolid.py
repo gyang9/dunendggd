@@ -13,20 +13,22 @@ class GenSolidBuilder(gegede.builder.Builder):
         :type halfDimension: dictionary
         :param Material: Material for the rectangular bar.
         :type Material: defined on World.py.
-        :param Sensitive: Boolean to define is material is sensitivie for Geant.
-        :type Sensitive: bool
+        :param AuxParams: Dictionary to add aux parameters.
+        :type AuxParams: dictionary
         :returns: None
         """
         self.halfDimension, self.Shape = ( halfDimension, Shape )
-        self.Material, self.Sensitive = ( Material, Sensitive )
+        self.Material, self.AuxParams = ( Material, AuxParams )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
         """
-        Construct the geometry for Rectangular Bar.
+        Construct the geometry for Generic Shape.
         :returns: None
         """
         main_lv, main_hDim = ltools.main_lv( self, geom, self.Shape )
-        if isinstance(self.Sensitive,str):
-            main_lv.params.append(("SensDet",self.Sensitive))
+
+        if self.AuxParams != None:
+            ltools.addAuxParams( self, main_lv )
+
         self.add_volume( main_lv )
