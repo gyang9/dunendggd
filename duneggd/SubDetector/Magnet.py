@@ -56,7 +56,7 @@ class MagnetBuilder(gegede.builder.Builder):
         magBoxB = geom.shapes.Boolean( 'Yoke', type='subtraction', first=magOutB, second=magInB )
         MagBlock_lv = geom.structure.Volume('volYoke', material=self.MagMatB, shape=magBoxB)
 
-        self.MagnetOutt = [self.magOutDimB[0], self.magOutDimB[1], (self.magOutDimB[2]+self.magBGap)*self.nMag]
+        self.MagnetOutt = [self.magOutDimB[0], self.magOutDimB[1], (self.magOutDimB[2]+self.magBGap)*self.nMagB]
 
 	self.MagnetInn = [(self.magInDim[0]+self.magGap)*self.nMag, self.magInDim[1], self.magInDim[2]]
 
