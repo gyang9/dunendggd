@@ -8,12 +8,13 @@ from gegede import Quantity as Q
 class KLOESTTBuilder(gegede.builder.Builder):
 
     def configure( self, halfDimension=None, Material=None, nModules=None,
-                   gap=None, startingOffset=None, modWidth=None, **kwds):
+                   gap=None, startingOffset=None, modWidth=None, modRot=None, **kwds):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.nModules=nModules
         self.gap=gap
         self.startingOffset=startingOffset
         self.modWidth=modWidth
+        self.modRot=modRot
         pass
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -23,11 +24,11 @@ class KLOESTTBuilder(gegede.builder.Builder):
         print( "KLOESTT::construct()")
         print( "  main_lv = "+ main_lv.name)
         self.add_volume( main_lv )
-        
-        rot=[Q("90deg"),Q("0deg"),Q("0deg")]
-#        rot=[Q("0deg"),Q("0deg"),Q("0deg")]
-#        rot=[Q("0deg"),Q("90deg"),Q("90deg")]
-#        rot=[Q("90deg"),Q("90deg"),Q("0deg")]
+
+        rot=[Q("0deg"),Q("0deg"),Q("0deg")]
+        if self.modRot!=None:
+            rot=self.modRot
+
         mod_builder=self.get_builder("STTModule")
         mod_lv=mod_builder.get_volume()
         # build modules starting from -z edge of KLOESTT

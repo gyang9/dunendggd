@@ -71,7 +71,7 @@ class ECALModBuilder(gegede.builder.Builder):
         n2 = 0
         for i in range(self.nSBPlanes):
             zpos = -0.5*self.ecalModDim[2]+ (i+0.5)*SBPlaneDim[2]+(i+1)*self.leadThickness +self.zXtra
-
+            print "placing ecal SBPlane %i at zpos=%f cm"%(i,zpos/Q("1cm"))
 	    rotPlane = 'identity'
 	    #if(self.altPlaneOrient): rotPlane = 'r90aboutZ'
 
@@ -91,7 +91,8 @@ class ECALModBuilder(gegede.builder.Builder):
                                                             pos = rsbp_in_ecalend, rot=self.rotPlaneOdd)
                 ecalMod_lv.placements.append( prsbp_in_ecalend.name )
                 n2=n2+1
-                
+         
+	ecalMod_lv.params.append(("SensDet",self.name))       
         print( 'ECALModBuilder: '+str(i+1) +' SBPlanes in '+str(self.name))
-        print( str(n1)+ ' SBPlanes have scint. bars oriented along X direction and '+ n2+ ' SBPlanes have scint. bars oriented along Y direction for '+str(self.name) )
+        #print( str(n1)+ ' SBPlanes have scint. bars oriented along X direction and '+ str(n2)+ ' SBPlanes have scint. bars oriented along Y direction for '+str(self.name) )
         return

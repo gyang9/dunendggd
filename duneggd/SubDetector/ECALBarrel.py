@@ -28,9 +28,16 @@ class ECALBarrelBuilder(gegede.builder.Builder):
         ecalModDim = list(self.ECALBarModBldr.ecalModDim)
         ecalModThick = ecalModDim[2]
         ecalModWide = ecalModDim[1]
-
+        print "ecalModDim = ",ecalModDim
+        print "ecalModThick = ",ecalModThick
+        print "ecalModWide = ",ecalModWide
         # Define inner barrel dimensions with stt dim and thickness
         sttDim = self.sttDimension
+        print "0.5*sttDim[1] = ",0.5*sttDim[1]
+        print "0.5*ecalModThick = ",0.5*ecalModThick
+        print "self.sTubeEndsToLead = ", self.sTubeEndsToLead
+        
+        # MAK: this code is buggy. 
         self.ecalInDim  = [ sttDim[0] + 2*self.sTubeEndsToLead,
                             sttDim[1] + 2*self.sTubeEndsToLead,
                             2*ecalModWide ]
@@ -38,6 +45,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
                             self.ecalInDim[1] + 2*ecalModThick,
                             self.ecalInDim[2] ]
 
+        
 
         # Define barrel as boolean, with hole to fit magnet inside
         ecalOut = geom.shapes.Box( 'ECALOut',                 dx=0.5*self.ecalOutDim[0], 
@@ -48,8 +56,10 @@ class ECALBarrelBuilder(gegede.builder.Builder):
         ecalBar_lv = geom.structure.Volume('vol'+self.name, material=self.defMat, shape=ecalBarBox)
         self.add_volume(ecalBar_lv)
 
-
+        print "ECalTopUp dimensions,"
         # Place the ECAL Modules, being mindful of rotation
+
+        # there was an apparent typo in the line below and others like it "+ 0.5*ecalModThick" should be negative here.  this seems wrong everywhere!
         rtopup_in_ecalbarrel   = geom.structure.Position('ECALTopUp_in_'+self.name, 
                                                          '0m', 
                                                          0.5*sttDim[1] + 0.5*ecalModThick + self.sTubeEndsToLead,
