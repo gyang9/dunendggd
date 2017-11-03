@@ -55,7 +55,7 @@ class GArTPCBuilder(gegede.builder.Builder):
     """
 
     def configure(self,chamberDimension,tpcDimension,
-                  halfDimension,Material,bfield=None,drift='z',**kwargs):
+                  halfDimension,Material,BField=None,drift='z',**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -102,7 +102,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         # Will support dipole and solenoid type fields
         # Really should be set with a magnet builder but here for testing
         # Not currently used
-        self.BField = bfield
+        self.BField = BField
         
         # The gas
         if type(Material)==str:
@@ -208,7 +208,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                              dz=0.5*self.ChamberLength - self.EndCapThickness)
 
         tpc_gas_lv = geom.structure.Volume('TPCGas_vol',
-                                           material='GAr',#self.Material,
+                                           material=self.Material,
                                            shape=tpc_gas_shape)
 
         # Place gas into the chamber
@@ -348,7 +348,7 @@ class GArTPCBuilder(gegede.builder.Builder):
  
         # Create the shape and logical volume
         tpc_shape = geom.shapes.Box(name+'_shape',self.HalfX,self.HalfY,self.HalfZ)
-        tpc_lv = geom.structure.Volume(name+'_vol',material = self.Material,
+        tpc_lv = geom.structure.Volume(name,material = self.Material,
                                        shape=tpc_shape)
 
         # Create a placement
@@ -408,27 +408,27 @@ class GArTPCBuilder(gegede.builder.Builder):
         
  
         # Pad support frame
-        padframepos = [padpos[x] + pos_vec[x]*(self.SmallGap
-                       +self.PadFrameThickness/2) for x in range(3)]
-
-        padframe_pos = geom.structure.Position(name+'padframe_pos',
-                                               padpos[0],
-                                               padpos[1],
-                                               padpos[2])
-
-        padframe_shape = geom.shapes.Box(name+'padframe_shape',
-                                         self.HalfX,
-                                         self.HalfY,
-                                         self.PadFrameThickness/2)
-        padframe_lv = geom.structure.Volume(name+'padframe_vol',
-                                            material=self.PadFrameMaterial,
-                                            shape=padframe_shape)
-        padframe_pla = geom.structure.Placement(name+'padframe_pla',
-                                                volume=padframe_lv,
-                                                pos=padframe_pos,
-                                                rot=tpc_rot)
-
-        lv.placements.append(padframe_pla.name)
+#        padframepos = [padpos[x] + pos_vec[x]*(self.SmallGap
+#                       +self.PadFrameThickness/2) for x in range(3)]
+#
+#        padframe_pos = geom.structure.Position(name+'padframe_pos',
+#                                               padpos[0],
+#                                               padpos[1],
+#                                               padpos[2])
+#
+#        padframe_shape = geom.shapes.Box(name+'padframe_shape',
+#                                         self.HalfX,
+#                                         self.HalfY,
+#                                         self.PadFrameThickness/2)
+#        padframe_lv = geom.structure.Volume(name+'padframe_vol',
+#                                            material=self.PadFrameMaterial,
+#                                            shape=padframe_shape)
+#        padframe_pla = geom.structure.Placement(name+'padframe_pla',
+#                                                volume=padframe_lv,
+#                                                pos=padframe_pos,
+#                                                rot=tpc_rot)
+#
+#        lv.placements.append(padframe_pla.name)
 
     def construct_fieldcage(self,geom,name,tpc_pos,tpc_rot,lv):
         """ Construct the field cage for a TPC.
