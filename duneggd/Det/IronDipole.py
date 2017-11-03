@@ -15,8 +15,9 @@ class IronDipoleBuilder(gegede.builder.Builder):
     def configure(self, defMat = 'Air',  
                   magInDim=None,  magPos=None, 
                   ecalInDim=None, ecalDnPos=None, ecalUpPos=None, ecalBaPos=None, ecalDownRot=None, 
-                  ecalUpRot=None, ecalBarRot=None,innerDetBField=None, STTPos=None, buildSTT=False, **kwds):
-
+                  ecalUpRot=None, ecalBarRot=None,innerDetBField=None, STTPos=None, buildSTT=False, 
+                  A3DSTPos=None, buildA3DST=False, **kwds):
+        
         self.defMat      = defMat
         self.magPos      = list(magPos)
 
@@ -29,20 +30,27 @@ class IronDipoleBuilder(gegede.builder.Builder):
         self.STTBldr   = None 
         if buildSTT:
             self.STTBldr=self.get_builder('STT')
-        
+        # only get a 3DST builder if we want to build the 3DST
+        self.A3DSTBuilder = None
+        if buildA3DST:
+            self.A3DSTBldr=self.get_builder('3DST')
+
         self.innerDetBField = innerDetBField
 
         self.ecalDownRot  = ecalDownRot
         self.ecalUpRot  = ecalUpRot
         self.ecalBarRot   = ecalBarRot
         
-	self.magPos       = list(magPos) #MAK: inherited code... why list(...) here?
+	self.magPos       = list(magPos) #MAK: inherited this code... why list(...) here?
         self.ecalDnPos    = list(ecalDnPos)
         self.ecalUpPos    = list(ecalUpPos)
 	self.ecalBaPos    = list(ecalBaPos)
         
         self.STTPos=STTPos 
         self.buildSTT=buildSTT
+        
+        self.A3DSTPos=A3DSTPos
+        self.buildA3DST=buildA3DST
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -54,8 +62,8 @@ class IronDipoleBuilder(gegede.builder.Builder):
         ecalBarInDim   = list(self.ecalBarBldr.ecalInDim)
         # dimensions of the outside of the magnet yoke
         # includes gaps between yoke segments
-	magBoxOutDim   = list(self.MagnetBldr.MagnetOutt)
-
+	magBoxOutDim   = list(self.MagnetBldr.MagnetSystemOuterDimension)
+        print "IronDipoleBuilder::construct():  magBoxOutDim = ",magBoxOutDim
 
 #	ecalBarPos  = list(self.ecalBaPos)
 
@@ -89,6 +97,9 @@ class IronDipoleBuilder(gegede.builder.Builder):
         if self.buildSTT:
             self.build_stt(innerDet_lv,geom)
 
+        if self.buildA3DST:
+            self.build_a3dst(innerDet_lv,geom)
+
         ######### finally, place the inner detector volume #####
         pos = [Q('0m'),Q('0m'),Q('0m')]
         innerDet_pos=geom.structure.Position("innerDet_pos",
@@ -116,9 +127,6 @@ class IronDipoleBuilder(gegede.builder.Builder):
         # Get volECALDownstream, volECALUpstream, volECALBarrel volumes and place in volDetector
 
         ecalDown_lv = self.ecalDownBldr.get_volume('volECALDownstream')
-#        if isinstance(self.EcalBField,str):
-#            ecalDown_lv.params.append(("BField",self.EcalBField))
-
         ecalDown_in_det = geom.structure.Position('ECALDown_in_MagInner', 
                                                   self.ecalDnPos[0], self.ecalDnPos[1], self.ecalDnPos[2])
         pecalDown_in_MagInner = geom.structure.Placement('placeECALDown_in_MagInner',
@@ -128,9 +136,6 @@ class IronDipoleBuilder(gegede.builder.Builder):
         det_lv.placements.append(pecalDown_in_MagInner.name)
 
         ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
-#        if isinstance(self.EcalBField,str):
-#            ecalUp_lv.params.append(("BField",self.EcalBField))
-
         ecalUp_in_det = geom.structure.Position('ECALUp_in_MagInner', 
                                                 self.ecalUpPos[0], self.ecalUpPos[1], self.ecalUpPos[2])
         pecalUp_in_MagInner = geom.structure.Placement('placeECALUp_in_MagInner',
@@ -141,9 +146,6 @@ class IronDipoleBuilder(gegede.builder.Builder):
 
 
         ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')
-#        if isinstance(self.EcalBField,str):
-#            ecalBar_lv.params.append(("BField",self.EcalBField))
-
         ecalBar_in_det = geom.structure.Position('ECALBar_in_MagInner', 
                                                  self.ecalBaPos[0], self.ecalBaPos[1], self.ecalBaPos[2])
         pecalBar_in_MagInner = geom.structure.Placement('placeECALBar_in_MagInner',
@@ -152,7 +154,7 @@ class IronDipoleBuilder(gegede.builder.Builder):
                                                  rot=self.ecalBarRot)
         det_lv.placements.append(pecalBar_in_MagInner.name)
 
-        return
+
         
     def build_stt(self,det_lv,geom):
         print "IronDipoleBuilder::build_stt(...) called"
@@ -166,4 +168,16 @@ class IronDipoleBuilder(gegede.builder.Builder):
         det_lv.placements.append(stt_pla.name)
 
 
-        pass
+    def build_a3dst(self,det_lv,geom):
+        
+        print "IronDipoleBuilder::build_a3dst(...) called"
+	a3dst_lv = self.A3DSTBldr.get_volume('volA3DST')
+        print "IronDipoleBuilder::build_a3dst(...) A3DST placed at ", self.A3DSTPos
+        a3dst_pos = geom.structure.Position('a3DST_pos', self.A3DSTPos[0], self.A3DSTPos[1], self.A3DSTPos[2])
+        a3dst_pla = geom.structure.Placement('a3DST_pla',
+                                           volume = a3dst_lv,
+                                           pos = a3dst_pos)
+
+        det_lv.placements.append(a3dst_pla.name)
+
+

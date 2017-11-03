@@ -36,7 +36,8 @@ class ECALBarrelBuilder(gegede.builder.Builder):
         print "0.5*sttDim[1] = ",0.5*sttDim[1]
         print "0.5*ecalModThick = ",0.5*ecalModThick
         print "self.sTubeEndsToLead = ", self.sTubeEndsToLead
-
+        
+        # MAK: this code is buggy. 
         self.ecalInDim  = [ sttDim[0] + 2*self.sTubeEndsToLead,
                             sttDim[1] + 2*self.sTubeEndsToLead,
                             2*ecalModWide ]
@@ -44,6 +45,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
                             self.ecalInDim[1] + 2*ecalModThick,
                             self.ecalInDim[2] ]
 
+        
 
         # Define barrel as boolean, with hole to fit magnet inside
         ecalOut = geom.shapes.Box( 'ECALOut',                 dx=0.5*self.ecalOutDim[0], 
@@ -60,7 +62,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
         # there was an apparent typo in the line below and others like it "+ 0.5*ecalModThick" should be negative here.  this seems wrong everywhere!
         rtopup_in_ecalbarrel   = geom.structure.Position('ECALTopUp_in_'+self.name, 
                                                          '0m', 
-                                                         0.5*sttDim[1] - 0.5*ecalModThick + self.sTubeEndsToLead,
+                                                         0.5*sttDim[1] + 0.5*ecalModThick + self.sTubeEndsToLead,
                                                          -0.5*ecalModWide )
         prtopup_in_ecalbarrel  = geom.structure.Placement('placeECALTopUp_in_'+self.name,
                                                           volume = ecalMod_lv, 
@@ -70,7 +72,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
  
         rtopdown_in_ecalbarrel   = geom.structure.Position('ECALTopDown_in_'+self.name, 
                                                            '0m', 
-                                                           0.5*sttDim[1] - 0.5*ecalModThick + self.sTubeEndsToLead, 
+                                                           0.5*sttDim[1] + 0.5*ecalModThick + self.sTubeEndsToLead, 
                                                            0.5*ecalModWide)
         prtopdown_in_ecalbarrel  = geom.structure.Placement('placeECALTopDown_in_'+self.name,
                                                             volume = ecalMod_lv, 
@@ -79,7 +81,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
 
         
         rleftup_in_ecalbarrel   = geom.structure.Position('ECALLeftUp_in_'+self.name, 
-                                                          -0.5*sttDim[0] + 0.5*ecalModThick - self.sTubeEndsToLead, 
+                                                          -0.5*sttDim[0] - 0.5*ecalModThick - self.sTubeEndsToLead, 
                                                           '0m', 
                                                           -0.5*ecalModWide)
         prleftup_in_ecalbarrel  = geom.structure.Placement('placeECALLeftUp_in_'+self.name,
@@ -89,7 +91,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
 
  
         rleftdown_in_ecalbarrel   = geom.structure.Position('ECALLeftDown_in_'+self.name, 
-                                                            -0.5*sttDim[0] + 0.5*ecalModThick - self.sTubeEndsToLead, 
+                                                            -0.5*sttDim[0] - 0.5*ecalModThick - self.sTubeEndsToLead, 
                                                             '0m', 
                                                             0.5*ecalModWide)
         prleftdown_in_ecalbarrel  = geom.structure.Placement('placeECALLeftDown_in_'+self.name,
@@ -100,7 +102,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
         
         rdownup_in_ecalbarrel   = geom.structure.Position('ECALDownUp_in_'+self.name, 
                                                           '0m', 
-                                                          -0.5*sttDim[1] + 0.5*ecalModThick - self.sTubeEndsToLead, 
+                                                          -0.5*sttDim[1] - 0.5*ecalModThick - self.sTubeEndsToLead, 
                                                           -0.5*ecalModWide)
         prdownup_in_ecalbarrel  = geom.structure.Placement('placeECALDownUp_in_'+self.name,
                                                            volume = ecalMod_lv, 
@@ -110,7 +112,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
  
         rdowndown_in_ecalbarrel   = geom.structure.Position('ECALDownDown_in_'+self.name, 
                                                             '0m', 
-                                                            -0.5*sttDim[1] + 0.5*ecalModThick - self.sTubeEndsToLead, 
+                                                            -0.5*sttDim[1] - 0.5*ecalModThick - self.sTubeEndsToLead, 
                                                             0.5*ecalModWide)
         prdowndown_in_ecalbarrel  = geom.structure.Placement('placeECALDownDown_in_'+self.name,
                                                              volume = ecalMod_lv, 
@@ -119,7 +121,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
 
         
         rrightup_in_ecalbarrel   = geom.structure.Position('ECALRightUp_in_'+self.name, 
-                                                           0.5*sttDim[0] - 0.5*ecalModThick + self.sTubeEndsToLead, 
+                                                           0.5*sttDim[0] + 0.5*ecalModThick + self.sTubeEndsToLead, 
                                                            '0m', 
                                                            -0.5*ecalModWide)
         prrightup_in_ecalbarrel  = geom.structure.Placement('placeECALRightUp_in_'+self.name,
@@ -129,7 +131,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
 
  
         rrightdown_in_ecalbarrel   = geom.structure.Position('ECALRightDown_in_'+self.name, 
-                                                             0.5*sttDim[0] - 0.5*ecalModThick + self.sTubeEndsToLead, 
+                                                             0.5*sttDim[0] + 0.5*ecalModThick + self.sTubeEndsToLead, 
                                                              '0m', 
                                                              0.5*ecalModWide)
         prrightdown_in_ecalbarrel  = geom.structure.Placement('placeECALRightDown_in_'+self.name,
