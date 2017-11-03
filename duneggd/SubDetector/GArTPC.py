@@ -314,12 +314,10 @@ class GArTPCBuilder(gegede.builder.Builder):
                                           cent_hc_dx/2)
         cent_hc_lv = geom.structure.Volume('cent_hc_vol',material = 'NomexHoneycomb',
                                        shape=cent_hc_shape)
-
-        elec_rot = geom.structure.Rotation('cent_hc_rot',rot[0],rot[1],rot[2])
-        # Create a placement
+        # note, we do not need to rotate cent_hc because it is placed inside cent_elec_lv
+        # and will rotate with it
         cent_hc_pla = geom.structure.Placement('cent_hc_pla',
-                                            volume=cent_hc_lv,
-                                            rot=elec_rot
+                                            volume=cent_hc_lv
                                            )
 
         cent_elec_lv.placements.append(cent_hc_pla.name)
