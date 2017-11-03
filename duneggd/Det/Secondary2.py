@@ -21,7 +21,7 @@ class Secondary2Builder(gegede.builder.Builder):
 
         # Get all of the detector subsystems to position and place
         self.ecalDownBldr = self.get_builder('ECALDownstream')        
-        self.ecalUpBldr = self.get_builder('ECALUpstream')
+        #self.ecalUpBldr = self.get_builder('ECALUpstream')
         self.ecalBarBldr  = self.get_builder('ECALBarrel')
         self.MagnetBldr   = self.get_builder('Magnet')
         self.EcalBField = EcalBField
@@ -32,7 +32,7 @@ class Secondary2Builder(gegede.builder.Builder):
         
 	self.magPos       = list(magPos)
         self.ecalDnPos    = list(ecalDnPos)
-        self.ecalUpPos    = list(ecalUpPos)
+        #self.ecalUpPos    = list(ecalUpPos)
 	self.ecalBaPos    = list(ecalBaPos)
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -48,7 +48,7 @@ class Secondary2Builder(gegede.builder.Builder):
         magPos      = list(self.magPos) 
 	ecalBarPos  = list(self.ecalBaPos)
         ecalDnPos   = list(self.ecalDnPos)
-        ecalUpPos   = list(self.ecalUpPos)
+        #ecalUpPos   = list(self.ecalUpPos)
 
 
         detOut = geom.shapes.Box( 'detOut',              dx=0.5*magBoxOutDim[0], 
@@ -82,16 +82,16 @@ class Secondary2Builder(gegede.builder.Builder):
                                                   rot=self.ecalDownRot)
         det_lv.placements.append(pecalDown_in_MagInner.name)
 
-        ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
+        #ecalUp_lv = self.ecalUpBldr.get_volume('volECALUpstream')
         if isinstance(self.EcalBField,str):
             ecalUp_lv.params.append(("BField",self.EcalBField))
 
-        ecalUp_in_det = geom.structure.Position('ECALUp_in_MagInner', ecalUpPos[0], ecalUpPos[1], ecalUpPos[2])
-        pecalUp_in_MagInner = geom.structure.Placement('placeECALUp_in_MagInner',
-                                                  volume = ecalUp_lv,
-                                                  pos = ecalUp_in_det,
-                                                  rot=self.ecalUpRot)
-        det_lv.placements.append(pecalUp_in_MagInner.name)
+        #ecalUp_in_det = geom.structure.Position('ECALUp_in_MagInner', ecalUpPos[0], ecalUpPos[1], ecalUpPos[2])
+        #pecalUp_in_MagInner = geom.structure.Placement('placeECALUp_in_MagInner',
+        #                                          volume = ecalUp_lv,
+        #                                          pos = ecalUp_in_det,
+        #                                          rot=self.ecalUpRot)
+        #det_lv.placements.append(pecalUp_in_MagInner.name)
 
 
         ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')

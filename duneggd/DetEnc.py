@@ -19,6 +19,7 @@ class DetEncBuilder(gegede.builder.Builder):
         
         for i,sb in enumerate(self.get_builders()):
             Pos = [Q("0m"),Q("0m"),Q("0m")]
+            Rot = [Q("0deg"),Q("0deg"),Q("0deg")]
             if self.Positions!=None :
                 Pos=self.Positions[i]
             if self.Rotations!=None:
