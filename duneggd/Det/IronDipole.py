@@ -16,7 +16,8 @@ class IronDipoleBuilder(gegede.builder.Builder):
                   magInDim=None,  magPos=None, 
                   ecalInDim=None, ecalDnPos=None, ecalUpPos=None, ecalBaPos=None, ecalDownRot=None, 
                   ecalUpRot=None, ecalBarRot=None,innerDetBField=None, STTPos=None, buildSTT=False, 
-                  A3DSTPos=None, buildA3DST=False, **kwds):
+                  A3DSTPos=None, buildA3DST=False, 
+                  GArTPCPos=None, GArTPCRot=None,buildGArTPC=False,**kwds):
         
         self.defMat      = defMat
         self.magPos      = list(magPos)
@@ -31,9 +32,14 @@ class IronDipoleBuilder(gegede.builder.Builder):
         if buildSTT:
             self.STTBldr=self.get_builder('STT')
         # only get a 3DST builder if we want to build the 3DST
-        self.A3DSTBuilder = None
+        self.A3DSTBldr = None
         if buildA3DST:
             self.A3DSTBldr=self.get_builder('3DST')
+
+        # only get a GArTPC builder if we want to build the 3DST
+        self.GArTPCBldr = None
+        if buildGArTPC:
+            self.GArTPCBldr=self.get_builder('GArTPC')
 
         self.innerDetBField = innerDetBField
 
@@ -51,6 +57,10 @@ class IronDipoleBuilder(gegede.builder.Builder):
         
         self.A3DSTPos=A3DSTPos
         self.buildA3DST=buildA3DST
+
+        self.GArTPCPos=GArTPCPos
+        self.GArTPCRot=GArTPCRot
+        self.buildGArTPC=buildGArTPC
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -99,6 +109,9 @@ class IronDipoleBuilder(gegede.builder.Builder):
 
         if self.buildA3DST:
             self.build_a3dst(innerDet_lv,geom)
+
+        if self.buildGArTPC:
+            self.build_gartpc(innerDet_lv,geom)
 
         ######### finally, place the inner detector volume #####
         pos = [Q('0m'),Q('0m'),Q('0m')]
@@ -160,7 +173,8 @@ class IronDipoleBuilder(gegede.builder.Builder):
         print "IronDipoleBuilder::build_stt(...) called"
 	stt_lv = self.STTBldr.get_volume('volSTT')
         print "IronDipoleBuilder::build_stt(...) STT placed at ", self.STTPos
-        stt_pos = geom.structure.Position('STT_pos', self.STTPos[0], self.STTPos[1], self.STTPos[2])
+        stt_pos = geom.structure.Position('STT_pos', 
+                                          self.STTPos[0], self.STTPos[1], self.STTPos[2])
         stt_pla = geom.structure.Placement('STT_pla',
                                            volume = stt_lv,
                                            pos = stt_pos)
@@ -173,7 +187,8 @@ class IronDipoleBuilder(gegede.builder.Builder):
         print "IronDipoleBuilder::build_a3dst(...) called"
 	a3dst_lv = self.A3DSTBldr.get_volume('volA3DST')
         print "IronDipoleBuilder::build_a3dst(...) A3DST placed at ", self.A3DSTPos
-        a3dst_pos = geom.structure.Position('a3DST_pos', self.A3DSTPos[0], self.A3DSTPos[1], self.A3DSTPos[2])
+        a3dst_pos = geom.structure.Position('a3DST_pos', 
+                                            self.A3DSTPos[0], self.A3DSTPos[1], self.A3DSTPos[2])
         a3dst_pla = geom.structure.Placement('a3DST_pla',
                                            volume = a3dst_lv,
                                            pos = a3dst_pos)
@@ -181,3 +196,17 @@ class IronDipoleBuilder(gegede.builder.Builder):
         det_lv.placements.append(a3dst_pla.name)
 
 
+    def build_gartpc(self,det_lv,geom):
+        print "IronDipoleBuilder::build_gartpc(...) called"
+	gartpc_lv = self.GArTPCBldr.get_volume('volGArTPC')
+        print "IronDipoleBuilder::build_gartpc(...) GArTPC placed at ", self.GArTPCPos
+        gartpc_pos = geom.structure.Position('GArTPC_pos', 
+                                             self.GArTPCPos[0], self.GArTPCPos[1], self.GArTPCPos[2])
+        gartpc_rot = geom.structure.Rotation('GArTPC_rot', 
+                                             self.GArTPCRot[0], self.GArTPCRot[1], self.GArTPCRot[2])
+        gartpc_pla = geom.structure.Placement('GArTPC_pla',
+                                              volume = gartpc_lv,
+                                              pos = gartpc_pos,
+                                              rot = gartpc_rot)
+
+        det_lv.placements.append(gartpc_pla.name)
