@@ -464,7 +464,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                                            first=fc_cvf_1,
                                            second=fc_cvf_0)
         fc_cvf_lv = geom.structure.Volume(name+'fc_cvf_vol',
-                                          material='CVF',
+                                          material='LAr',
                                           shape=fc_cvf_shape)
         fc_cvf_pla = geom.structure.Placement(name+'fc_cvf_pla',
                                              volume=fc_cvf_lv,

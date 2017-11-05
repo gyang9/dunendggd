@@ -27,7 +27,12 @@ def define_materials( g ):
     cu=g.matter.Composition("copper",
                             isotopes=(("copper63",0.6917),
                                       ("copper65",0.3083)) )
-    zn= g.matter.Element("zinc",     "Zn", 30, "65.38*g/mole")
+
+    zn64=g.matter.Isotope("zinc64", 30, 64, "63.93*g/mole")
+
+    zn= g.matter.Composition("zinc",  
+                             isotopes=(("zinc64",1.0),) ) # Note: odd syntax ((a,b),) defines a tuple of tuples with one element
+
     br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
     sb = g.matter.Element("antimony",   "Sb", 51, "121.76*g/mole" )
     xe = g.matter.Element("xenon",      "Xe", 54, "131.293*g/mole")
@@ -226,8 +231,7 @@ def define_materials( g ):
                                     ("potassium",0.0821),
                                     ("zinc",0.0882),
                                     ("titanium",0.0292),
-                                    ("antimony",0.0023),
-                                    ("oxygen",0.4417)
+                                    ("oxygen",0.4440)
                             ))
 
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
