@@ -34,11 +34,13 @@ class GArTPCBuilder(gegede.builder.Builder):
         GasDensity: Density of gas (only used for custom gas mixes).
         Composition: Composition of a custom gas mixture.
         halfDimension: Dimensions of volume holding the TPC geometry.
-        tpcDimension: Dimensions of each rectangular TPC volume.
+        tpcDimension: Dimensions of each TPC volume.
+        TPCisCyl: True for a cylindrical TPC. Set from tpcDimension
+        Radius: Radius for a cylindrical TPC. 
         HalfX: Half length of TPC in x-direction
         HalfY: Half length of TPC in y-direction
         HalfZ: Half of drift distance.
-        Drift: Drift axis
+        Drift: Drift axis (always z for a cylindrical TPC)
         TPCGap: Half of spacing between TPCs. Reset when central 
                 electrode is created.
         SmallGap: A small distance to help prevent overlaps
@@ -122,10 +124,18 @@ class GArTPCBuilder(gegede.builder.Builder):
         self.halfDimension = halfDimension
         # The TPCs: Boxes at the center of the vacuum chamber
         self.tpcDimension = tpcDimension
-        self.HalfX = tpcDimension['dx']/2 
-        self.HalfY = tpcDimension['dy']/2
-        self.HalfZ = tpcDimension['dz']/2
-        self.Drift = drift
+        if 'dx' in tpcDimension:
+            self.HalfX = tpcDimension['dx']/2 
+            self.HalfY = tpcDimension['dy']/2
+            self.HalfZ = tpcDimension['dz']/2
+            self.Drift = drift
+            self.TPCisCyl = False
+        else:
+            self.Radius = tpcDimension['r']
+            self.HalfZ = tpcDimension['dz']/2
+            self.Drift = 'z'
+            self.TPCisCyl = True
+
         # A bit of space for the central electrode
 
         self.TPCGap = Q('2mm') 
@@ -175,7 +185,9 @@ class GArTPCBuilder(gegede.builder.Builder):
 
         # If using a custom gas, define here
         if self.Composition is not None:
-            geom.matter.Mixture(self.Material,density=self.GasDensity,components=self.Composition)
+            geom.matter.Mixture(self.Material, 
+                                density=self.GasDensity,
+                                components=self.Composition)
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Tubs')
         print('GasTPCBuilder::construct()')
@@ -290,30 +302,44 @@ class GArTPCBuilder(gegede.builder.Builder):
         cent_hc_dx = self.CentElectrodeHCThickness
         cent_my_dx = self.CentElectrodeThickness
 
-        cent_elec_shape = geom.shapes.Box('cent_elec_shape',
-                                          self.HalfX,
-                                          self.HalfY,
-                                          cent_hc_dx/2+cent_my_dx)
-        cent_elec_lv = geom.structure.Volume('cent_elec_vol',material = 'Mylar',
-                                       shape=cent_elec_shape)
+        if self.TPCisCyl is False:
+            cent_elec_shape = geom.shapes.Box('cent_elec_shape',
+                                              self.HalfX,
+                                              self.HalfY,
+                                              cent_hc_dx/2+cent_my_dx)
+        else:
+            cent_elec_shape = geom.shapes.Tubs('cent_elec_shape',
+                                               rmax = self.Radius,
+                                               dz = cent_hc_dx/2+cent_my_dx)
 
-        elec_rot = geom.structure.Rotation('cent_elec_rot',rot[0],rot[1],rot[2])
+        cent_elec_lv = geom.structure.Volume('cent_elec_vol',
+                                             material = 'Mylar',
+                                             shape=cent_elec_shape)
+
+        elec_rot = geom.structure.Rotation('cent_elec_rot',
+                                           rot[0],rot[1],rot[2])
         # Create a placement
         cent_elec_pla = geom.structure.Placement('cent_elec_pla',
-                                            volume=cent_elec_lv,
-                                            rot=elec_rot
+                                                 volume=cent_elec_lv,
+                                                 rot=elec_rot
                                            )
 
         lv.placements.append(cent_elec_pla.name)
 
         # The honeycomb structure
+        if self.TPCisCyl is False:
+            cent_hc_shape = geom.shapes.Box('cent_hc_shape',
+                                            self.HalfX-self.SmallGap,
+                                            self.HalfY-self.SmallGap,
+                                            cent_hc_dx/2)
+        else:
+            cent_hc_shape = geom.shapes.Tubs('cent_hc_shape',
+                                             rmax = self.Radius-self.SmallGap,
+                                             dz = cent_hc_dx/2)
 
-        cent_hc_shape = geom.shapes.Box('cent_hc_shape',
-                                          self.HalfX-self.SmallGap,
-                                          self.HalfY-self.SmallGap,
-                                          cent_hc_dx/2)
-        cent_hc_lv = geom.structure.Volume('cent_hc_vol',material = 'NomexHoneycomb',
-                                       shape=cent_hc_shape)
+        cent_hc_lv = geom.structure.Volume('cent_hc_vol',
+                                           material = 'NomexHoneycomb',
+                                           shape=cent_hc_shape)
 
         # note, we do not need to rotate cent_hc because it is placed inside cent_elec_lv
         # and will rotate with it
@@ -346,15 +372,22 @@ class GArTPCBuilder(gegede.builder.Builder):
         tpc_pos = geom.structure.Position(name+'_pos',pos[0],pos[1],pos[2])
  
         # Create the shape and logical volume
-        tpc_shape = geom.shapes.Box(name+'_shape',self.HalfX,self.HalfY,self.HalfZ)
+        if self.TPCisCyl == False:
+            tpc_shape = geom.shapes.Box(name+'_shape',self.HalfX,
+                                        self.HalfY,self.HalfZ)
+        else:
+            tpc_shape = geom.shapes.Tubs(name+'_shape',
+                                         rmax = self.Radius,
+                                         dz = self.HalfZ)
+
         tpc_lv = geom.structure.Volume(name,material = self.Material,
                                        shape=tpc_shape)
 
         # Create a placement
         tpc_pla = geom.structure.Placement(name+'_pla',
-                                            volume=tpc_lv,
-                                            pos=tpc_pos,
-                                            rot=tpc_rot
+                                           volume=tpc_lv,
+                                           pos=tpc_pos,
+                                           rot=tpc_rot
                                            )
 
         # The gas volumes are sensitive detectors
@@ -391,10 +424,17 @@ class GArTPCBuilder(gegede.builder.Builder):
                                           padpos[1],
                                           padpos[2])
 
-        pad_shape = geom.shapes.Box(name+'pad_shape',
-                                    self.HalfX,
-                                    self.HalfY,
-                                    self.PadThickness/2)
+        if self.TPCisCyl is False:
+            pad_shape = geom.shapes.Box(name+'pad_shape',
+                                        self.HalfX,
+                                        self.HalfY,
+                                        self.PadThickness/2)
+
+        else:
+            pad_shape = geom.shapes.Tubs(name+'pad_shape',
+                                         rmax = self.Radius,
+                                         dz = self.PadThickness/2)
+
         pad_lv = geom.structure.Volume(name+'pad_vol',
                                        material=self.PadMaterial,
                                        shape=pad_shape)
@@ -450,43 +490,58 @@ class GArTPCBuilder(gegede.builder.Builder):
         """
         # Outer Tedlar layers
         fc_dx = Q('21.3mm')
-        fc_out_x = self.HalfX + fc_dx + self.SmallGap
-        fc_out_y = self.HalfY + fc_dx + self.SmallGap
-        fc_in_x = self.HalfX + self.SmallGap
-        fc_in_y = self.HalfY + self.SmallGap
         pvf_dx = Q('0.05mm')
 
-        fc_pvf_1 = geom.shapes.Box(name+'fc_pvf1_shape',
-                                   fc_out_x,fc_out_y,self.HalfZ)
-        fc_pvf_0 = geom.shapes.Box(name+'fc_pvf0_shape',
-                                   fc_in_x,fc_in_y,self.HalfZ+Q('1mm'))
-        fc_pvf_shape = geom.shapes.Boolean(name+'fc_pvf_shape',
-                                           type='subtraction',
-                                           first=fc_pvf_1,
-                                           second=fc_pvf_0)
+        if self.TPCisCyl is False:
+            fc_out_x = self.HalfX + fc_dx + self.SmallGap
+            fc_out_y = self.HalfY + fc_dx + self.SmallGap
+            fc_in_x = self.HalfX + self.SmallGap
+            fc_in_y = self.HalfY + self.SmallGap
+            fc_pvf_1 = geom.shapes.Box(name+'fc_pvf1_shape',
+                                       fc_out_x,fc_out_y,self.HalfZ)
+            fc_pvf_0 = geom.shapes.Box(name+'fc_pvf0_shape',
+                                       fc_in_x,fc_in_y,self.HalfZ+Q('1mm'))
+            fc_pvf_shape = geom.shapes.Boolean(name+'fc_pvf_shape',
+                                               type='subtraction',
+                                               first=fc_pvf_1,
+                                               second=fc_pvf_0)
+        else:
+            fc_out_r = self.Radius + fc_dx + self.SmallGap
+            fc_in_r = self.Radius + self.SmallGap  
+            fc_pvf_shape = geom.shapes.Tubs(name+'fc_pvf_shape',
+                                            rmax = fc_out_r,rmin=fc_in_r,
+                                            dz = self.HalfZ)
+
         fc_pvf_lv = geom.structure.Volume(name+'fc_pvf_vol',
                                           material='PVF',
                                           shape=fc_pvf_shape)
         fc_pvf_pla = geom.structure.Placement(name+'fc_pvf_pla',
-                                             volume=fc_pvf_lv,
-                                             pos=tpc_pos,
-                                             rot=tpc_rot)
+                                              volume=fc_pvf_lv,
+                                              pos=tpc_pos,
+                                              rot=tpc_rot)
         lv.placements.append(fc_pvf_pla.name)
 
         # Kevlar Prepreg (Kevlar/epoxy mixture) layers
         kev_dx = Q('0.6mm')
-        fc_kev_1 = geom.shapes.Box(name+'fc_kev1_shape',
-                                   fc_out_x-pvf_dx,
-                                   fc_out_y-pvf_dx,
-                                   self.HalfZ-2*self.SmallGap)
-        fc_kev_0 = geom.shapes.Box(name+'fc_kev0_shape',
-                                   fc_in_x+pvf_dx,
-                                   fc_in_y+pvf_dx,
-                                   self.HalfZ-self.SmallGap)
-        fc_kev_shape = geom.shapes.Boolean(name+'fc_kev_shape',
-                                           type='subtraction', 
-                                           first=fc_kev_1,
-                                           second=fc_kev_0)
+        if self.TPCisCyl is False:
+            fc_kev_1 = geom.shapes.Box(name+'fc_kev1_shape',
+                                       fc_out_x-pvf_dx,
+                                       fc_out_y-pvf_dx,
+                                       self.HalfZ-2*self.SmallGap)
+            fc_kev_0 = geom.shapes.Box(name+'fc_kev0_shape',
+                                       fc_in_x+pvf_dx,
+                                       fc_in_y+pvf_dx,
+                                       self.HalfZ-self.SmallGap)
+            fc_kev_shape = geom.shapes.Boolean(name+'fc_kev_shape',
+                                               type='subtraction', 
+                                               first=fc_kev_1,
+                                               second=fc_kev_0)
+        else:
+            fc_kev_shape = geom.shapes.Tubs(name+'fc_kev_shape',
+                                            rmax = fc_out_r-pvf_dx,
+                                            rmin=fc_in_r+pvf_dx,
+                                            dz = self.HalfZ)
+
         fc_kev_lv = geom.structure.Volume(name+'fc_kev_vol',
                                           material='KevlarPrepreg',
                                           shape=fc_kev_shape)
@@ -495,18 +550,25 @@ class GArTPCBuilder(gegede.builder.Builder):
         fc_pvf_lv.placements.append(fc_kev_pla.name)
 
         # Nomex Honeycomb layer
-        fc_hc_1 = geom.shapes.Box(name+'fc_hc1_shape',
-                                   fc_out_x-pvf_dx-kev_dx,
-                                   fc_out_y-pvf_dx-kev_dx,
-                                   self.HalfZ-4*self.SmallGap)
-        fc_hc_0 = geom.shapes.Box(name+'fc_hc0_shape',
-                                   fc_in_x+pvf_dx+kev_dx,
-                                   fc_in_y+pvf_dx+kev_dx,
-                                   self.HalfZ-3*self.SmallGap)
-        fc_hc_shape = geom.shapes.Boolean(name+'fc_hc_shape',
-                                           type='subtraction',
-                                           first=fc_hc_1,
-                                           second=fc_hc_0)
+        if self.TPCisCyl is False:
+            fc_hc_1 = geom.shapes.Box(name+'fc_hc1_shape',
+                                      fc_out_x-pvf_dx-kev_dx,
+                                      fc_out_y-pvf_dx-kev_dx,
+                                      self.HalfZ-4*self.SmallGap)
+            fc_hc_0 = geom.shapes.Box(name+'fc_hc0_shape',
+                                      fc_in_x+pvf_dx+kev_dx,
+                                      fc_in_y+pvf_dx+kev_dx,
+                                      self.HalfZ-3*self.SmallGap)
+            fc_hc_shape = geom.shapes.Boolean(name+'fc_hc_shape',
+                                              type='subtraction',
+                                              first=fc_hc_1,
+                                              second=fc_hc_0)
+        else:
+            fc_hc_shape = geom.shapes.Tubs(name+'fc_hc_shape',
+                                          rmax = fc_out_r-pvf_dx-kev_dx,
+                                          rmin=fc_in_r+pvf_dx+kev_dx,
+                                          dz = self.HalfZ)
+
         fc_hc_lv = geom.structure.Volume(name+'fc_hc_vol',
                                           material='NomexHoneycomb',
                                           shape=fc_hc_shape)
