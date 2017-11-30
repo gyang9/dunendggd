@@ -52,7 +52,7 @@ class Secondary2Builder(gegede.builder.Builder):
 
 
         detOut = geom.shapes.Box( 'detOut',              dx=0.5*magBoxOutDim[0], 
-                                  dy=0.5*magBoxOutDim[1],  dz=0.5*magBoxOutDim[2])
+                                  dy=0.5*magBoxOutDim[1],  dz=0.5*magBoxOutDim[2]*2)
         detIn = geom.shapes.Box(  'detIn',                  dx=0.5*ecalBarInDim[0],
                                    dy=0.5*ecalBarInDim[1],  dz=0.5*ecalBarInDim[2])
         detBox = geom.shapes.Boolean( self.name, type='subtraction', first=detOut, second=detIn )
