@@ -30,7 +30,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         WallThickness: Thickness of the rounded wall of the vessel.
         ChamberMaterial: Material used to build the vacuum vessel.
         BField: Magnetic field in the volume.
-        Material: Name of gas material.
+        GasType: Name of gas material.
         GasDensity: Density of gas (only used for custom gas mixes).
         Composition: Composition of a custom gas mixture.
         halfDimension: Dimensions of volume holding the TPC geometry.
@@ -57,7 +57,7 @@ class GArTPCBuilder(gegede.builder.Builder):
     """
 
     def configure(self,chamberDimension,tpcDimension,
-                  halfDimension,Material,BField=None,drift='z',**kwargs):
+                  halfDimension,GasType,BField=None,drift='z',**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -71,14 +71,14 @@ class GArTPCBuilder(gegede.builder.Builder):
                     Dict with keys 'dx','dy','dz'
                 halfDimension: Half-dimensions of bounding volume.
                     Dict with keys 'rmin', 'rmax' and 'dz' (dz=half of length)
-                Material: Gas material. String if using a standard
+                GasType: Gas material. String if using a standard
                     material, dict in the form {material:mass_fraction,...}
                 bfield: Magnetic field (3D array-like). Don't use if a
                     magnetic field was set in a parent volume.
                 drift: The drift direction. (x, y, or z)
                 kwargs: Additional keyword arguments. Allowed are:
                     EndCapThickness, WallThickness, 
-                    ChamberMaterial, MaterialName, Density,
+                    ChamberMaterial, GasName, Density,
                     PadThickness, PadMaterial, PadOffset,
                     PadFrameThickness,PadFrameMaterial
                     CentElectrodeHCThickness,        
@@ -105,20 +105,20 @@ class GArTPCBuilder(gegede.builder.Builder):
         # Really should be set with a magnet builder but here for testing
         # Not currently used
         self.BField = BField
-        
+        self.Material = 'Air'
         # The gas
-        if type(Material)==str:
+        if type(GasType)==str:
             # Set from a pre-defined material
-            self.Material = Material
+            self.GasType = GasType
             self.GasDensity = None
             self.Composition = None
         else:
             # Set from a dictionary of materials & mass fractions
             comp = []
-            for k in Material.keys():
-                comp.append( (k,Material[k]) )
+            for k in GasType:
+                comp.append( (k,GasType[k]) )
             self.Composition = tuple(comp)
-            self.Material = kwargs['MaterialName']
+            self.GasType = kwargs['GasName']
             self.GasDensity = kwargs['Density']
  
         self.halfDimension = halfDimension
@@ -185,7 +185,7 @@ class GArTPCBuilder(gegede.builder.Builder):
 
         # If using a custom gas, define here
         if self.Composition is not None:
-            geom.matter.Mixture(self.Material, 
+            geom.matter.Mixture(self.GasType, 
                                 density=self.GasDensity,
                                 components=self.Composition)
 
@@ -220,7 +220,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                              dz=0.5*self.ChamberLength - self.EndCapThickness)
 
         tpc_gas_lv = geom.structure.Volume('TPCGas_vol',
-                                           material=self.Material,
+                                           material=self.GasType,
                                            shape=tpc_gas_shape)
 
         # Place gas into the chamber
@@ -380,7 +380,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                                          rmax = self.Radius,
                                          dz = self.HalfZ)
 
-        tpc_lv = geom.structure.Volume(name,material = self.Material,
+        tpc_lv = geom.structure.Volume(name,material = self.GasType,
                                        shape=tpc_shape)
 
         # Create a placement
