@@ -64,6 +64,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
                                                          '0m', 
                                                          0.5*sttDim[1] + 0.5*ecalModThick + self.sTubeEndsToLead,
                                                          -0.5*ecalModWide )
+
         prtopup_in_ecalbarrel  = geom.structure.Placement('placeECALTopUp_in_'+self.name,
                                                           volume = ecalMod_lv, 
                                                           pos = rtopup_in_ecalbarrel, 

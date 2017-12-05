@@ -16,7 +16,10 @@ class IronDipoleBuilder(gegede.builder.Builder):
                   magInDim=None,  magPos=None, 
                   ecalInDim=None, ecalDnPos=None, ecalUpPos=None, ecalBaPos=None, ecalDownRot=None, 
                   ecalUpRot=None, ecalBarRot=None,innerDetBField=None, STTPos=None, buildSTT=False, 
-                  A3DSTPos=None, buildA3DST=False, **kwds):
+                  ecalTopPos=None,ecalTopRot=None, ecalBotPos=None,ecalBotRot=None,
+                  ecalRightPos=None,ecalRightRot=None, ecalLeftPos=None,ecalLeftRot=None,
+                  A3DSTPos=None, buildA3DST=False, 
+                  GArTPCPos=None, GArTPCRot=None,buildGArTPC=False,**kwds):
         
         self.defMat      = defMat
         self.magPos      = list(magPos)
@@ -24,16 +27,50 @@ class IronDipoleBuilder(gegede.builder.Builder):
         # Get all of the detector subsystems to position and place
         self.ecalDownBldr = self.get_builder('ECALDownstream')        
         self.ecalUpBldr = self.get_builder('ECALUpstream')
-        self.ecalBarBldr  = self.get_builder('ECALBarrel')
+        self.ecalBarBldr=None
+        if(self.builders.has_key('ECALBarrel')):        
+            self.ecalBarBldr  = self.get_builder('ECALBarrel')
+
+        self.ecalTopBldr=None
+        if(self.builders.has_key('ECALTop')):        
+            self.ecalTopBldr  = self.get_builder('ECALTop')
+            self.ecalTopPos=ecalTopPos
+            self.ecalTopRot=ecalTopRot
+
+        self.ecalBotBldr=None
+        if(self.builders.has_key('ECALBot')):        
+            self.ecalBotBldr  = self.get_builder('ECALBot')
+            self.ecalBotPos=ecalBotPos
+            self.ecalBotRot=ecalBotRot
+
+        self.ecalRightBldr=None
+        if(self.builders.has_key('ECALRight')):        
+            self.ecalRightBldr  = self.get_builder('ECALRight')
+            self.ecalRightPos=ecalRightPos
+            self.ecalRightRot=ecalRightRot
+
+        self.ecalLeftBldr=None
+        if(self.builders.has_key('ECALLeft')):        
+            self.ecalLeftBldr  = self.get_builder('ECALLeft')
+            self.ecalLeftPos=ecalLeftPos
+            self.ecalLeftRot=ecalLeftRot
+
+
+
         self.MagnetBldr   = self.get_builder('Magnet')
         # only get an STT builder if we want to build the STT
         self.STTBldr   = None 
         if buildSTT:
             self.STTBldr=self.get_builder('STT')
         # only get a 3DST builder if we want to build the 3DST
-        self.A3DSTBuilder = None
+        self.A3DSTBldr = None
         if buildA3DST:
             self.A3DSTBldr=self.get_builder('3DST')
+
+        # only get a GArTPC builder if we want to build the 3DST
+        self.GArTPCBldr = None
+        if buildGArTPC:
+            self.GArTPCBldr=self.get_builder('GArTPC')
 
         self.innerDetBField = innerDetBField
 
@@ -52,14 +89,16 @@ class IronDipoleBuilder(gegede.builder.Builder):
         self.A3DSTPos=A3DSTPos
         self.buildA3DST=buildA3DST
 
+        self.GArTPCPos=GArTPCPos
+        self.GArTPCRot=GArTPCRot
+        self.buildGArTPC=buildGArTPC
+
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
         
         # Get subsystem dimensions, 
         # one has to go to the builders to see/understand these
         ecalDownDim    = list(self.ecalDownBldr.ecalModDim)
-        ecalBarOutDim  = list(self.ecalBarBldr.ecalOutDim)
-        ecalBarInDim   = list(self.ecalBarBldr.ecalInDim)
         # dimensions of the outside of the magnet yoke
         # includes gaps between yoke segments
 	magBoxOutDim   = list(self.MagnetBldr.MagnetSystemOuterDimension)
@@ -99,6 +138,9 @@ class IronDipoleBuilder(gegede.builder.Builder):
 
         if self.buildA3DST:
             self.build_a3dst(innerDet_lv,geom)
+
+        if self.buildGArTPC:
+            self.build_gartpc(innerDet_lv,geom)
 
         ######### finally, place the inner detector volume #####
         pos = [Q('0m'),Q('0m'),Q('0m')]
@@ -143,24 +185,81 @@ class IronDipoleBuilder(gegede.builder.Builder):
                                                   pos = ecalUp_in_det,
                                                   rot=self.ecalUpRot)
         det_lv.placements.append(pecalUp_in_MagInner.name)
+        
+        # builder the barrel all at once using ECALBarrelBuilder
+        if self.ecalBarBldr!=None:
+            ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')
+            ecalBar_in_det = geom.structure.Position('ECALBar_in_MagInner', 
+                                                     self.ecalBaPos[0], 
+                                                     self.ecalBaPos[1], 
+                                                     self.ecalBaPos[2])
+            pecalBar_in_MagInner = geom.structure.Placement('placeECALBar_in_MagInner',
+                                                            volume = ecalBar_lv,
+                                                            pos = ecalBar_in_det,
+                                                            rot=self.ecalBarRot)
+            det_lv.placements.append(pecalBar_in_MagInner.name)
 
+        # build the top ecal module (instead of using ECALBarrelBuilder)
+        if self.ecalTopBldr!=None:
+            ecalTop_lv = self.ecalTopBldr.get_volume('volECALTop')
+            ecalTop_in_det = geom.structure.Position('ECALTop_in_MagInner', 
+                                                     self.ecalTopPos[0], 
+                                                     self.ecalTopPos[1], 
+                                                     self.ecalTopPos[2])
+            pecalTop_in_MagInner = geom.structure.Placement('placeECALTop_in_MagInner',
+                                                            volume = ecalTop_lv,
+                                                            pos = ecalTop_in_det,
+                                                            rot=self.ecalTopRot)
+            det_lv.placements.append(pecalTop_in_MagInner.name)
 
-        ecalBar_lv = self.ecalBarBldr.get_volume('volECALBarrel')
-        ecalBar_in_det = geom.structure.Position('ECALBar_in_MagInner', 
-                                                 self.ecalBaPos[0], self.ecalBaPos[1], self.ecalBaPos[2])
-        pecalBar_in_MagInner = geom.structure.Placement('placeECALBar_in_MagInner',
-                                                 volume = ecalBar_lv,
-                                                 pos = ecalBar_in_det,
-                                                 rot=self.ecalBarRot)
-        det_lv.placements.append(pecalBar_in_MagInner.name)
+        # build the bottom ecal module (instead of using ECALBarrelBuilder)
+        if self.ecalBotBldr!=None:
+            ecalBot_lv = self.ecalBotBldr.get_volume('volECALBot')
+            ecalBot_in_det = geom.structure.Position('ECALBot_in_MagInner', 
+                                                     self.ecalBotPos[0], 
+                                                     self.ecalBotPos[1], 
+                                                     self.ecalBotPos[2])
+            pecalBot_in_MagInner = geom.structure.Placement('placeECALBot_in_MagInner',
+                                                            volume = ecalBot_lv,
+                                                            pos = ecalBot_in_det,
+                                                            rot=self.ecalBotRot)
+            det_lv.placements.append(pecalBot_in_MagInner.name)
 
+        # build the right hand (from beam's perspective) ecal module 
+        # (instead of using ECALBarrelBuilder)
+        if self.ecalRightBldr!=None:
+            ecalRight_lv = self.ecalRightBldr.get_volume('volECALRight')
+            ecalRight_in_det = geom.structure.Position('ECALRight_in_MagInner', 
+                                                     self.ecalRightPos[0], 
+                                                     self.ecalRightPos[1], 
+                                                     self.ecalRightPos[2])
+            pecalRight_in_MagInner = geom.structure.Placement('placeECALRight_in_MagInner',
+                                                            volume = ecalRight_lv,
+                                                            pos = ecalRight_in_det,
+                                                            rot=self.ecalRightRot)
+            det_lv.placements.append(pecalRight_in_MagInner.name)
 
+        # build the left hand (from beam's perspective) ecal module 
+        # (instead of using ECALBarrelBuilder)
+        if self.ecalLeftBldr!=None:
+            ecalLeft_lv = self.ecalLeftBldr.get_volume('volECALLeft')
+            ecalLeft_in_det = geom.structure.Position('ECALLeft_in_MagInner', 
+                                                     self.ecalLeftPos[0], 
+                                                     self.ecalLeftPos[1], 
+                                                     self.ecalLeftPos[2])
+            pecalLeft_in_MagInner = geom.structure.Placement('placeECALLeft_in_MagInner',
+                                                            volume = ecalLeft_lv,
+                                                            pos = ecalLeft_in_det,
+                                                            rot=self.ecalLeftRot)
+            det_lv.placements.append(pecalLeft_in_MagInner.name)
+            
         
     def build_stt(self,det_lv,geom):
         print "IronDipoleBuilder::build_stt(...) called"
 	stt_lv = self.STTBldr.get_volume('volSTT')
         print "IronDipoleBuilder::build_stt(...) STT placed at ", self.STTPos
-        stt_pos = geom.structure.Position('STT_pos', self.STTPos[0], self.STTPos[1], self.STTPos[2])
+        stt_pos = geom.structure.Position('STT_pos', 
+                                          self.STTPos[0], self.STTPos[1], self.STTPos[2])
         stt_pla = geom.structure.Placement('STT_pla',
                                            volume = stt_lv,
                                            pos = stt_pos)
@@ -173,7 +272,8 @@ class IronDipoleBuilder(gegede.builder.Builder):
         print "IronDipoleBuilder::build_a3dst(...) called"
 	a3dst_lv = self.A3DSTBldr.get_volume('volA3DST')
         print "IronDipoleBuilder::build_a3dst(...) A3DST placed at ", self.A3DSTPos
-        a3dst_pos = geom.structure.Position('a3DST_pos', self.A3DSTPos[0], self.A3DSTPos[1], self.A3DSTPos[2])
+        a3dst_pos = geom.structure.Position('a3DST_pos', 
+                                            self.A3DSTPos[0], self.A3DSTPos[1], self.A3DSTPos[2])
         a3dst_pla = geom.structure.Placement('a3DST_pla',
                                            volume = a3dst_lv,
                                            pos = a3dst_pos)
@@ -181,3 +281,17 @@ class IronDipoleBuilder(gegede.builder.Builder):
         det_lv.placements.append(a3dst_pla.name)
 
 
+    def build_gartpc(self,det_lv,geom):
+        print "IronDipoleBuilder::build_gartpc(...) called"
+	gartpc_lv = self.GArTPCBldr.get_volume('volGArTPC')
+        print "IronDipoleBuilder::build_gartpc(...) GArTPC placed at ", self.GArTPCPos
+        gartpc_pos = geom.structure.Position('GArTPC_pos', 
+                                             self.GArTPCPos[0], self.GArTPCPos[1], self.GArTPCPos[2])
+        gartpc_rot = geom.structure.Rotation('GArTPC_rot', 
+                                             self.GArTPCRot[0], self.GArTPCRot[1], self.GArTPCRot[2])
+        gartpc_pla = geom.structure.Placement('GArTPC_pla',
+                                              volume = gartpc_lv,
+                                              pos = gartpc_pos,
+                                              rot = gartpc_rot)
+
+        det_lv.placements.append(gartpc_pla.name)

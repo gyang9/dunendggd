@@ -112,7 +112,7 @@ class MagnetBuilder(gegede.builder.Builder):
                                                    volume = MagBlock_lv,pos = magBPos)
                 Magnet_lv.placements.append( pMagB.name )
 
-	Magnet_lv.params.append(("SensDet",self.name))
+#	Magnet_lv.params.append(("SensDet",self.name))
 	return
 
 
