@@ -14,13 +14,14 @@ class SBPlaneBuilder(gegede.builder.Builder):
     def configure(self, compDimension = None,
                         compSBPlaneMat = None,
 			compNElements = None,
-                        compScintBarMat = None, compRotation = None, **kwds):
+                        compScintBarMat = None, compRotation = None,
+                  specificName="",**kwds):
         self.SBPlaneMat  = compSBPlaneMat         
         self.ScintBarMat = compScintBarMat        
         self.ScintBarDim = compDimension        
         self.nScintBars  = compNElements       
         self.compRotation  = compRotation         
-     
+        self.specificName = specificName
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -33,9 +34,9 @@ class SBPlaneBuilder(gegede.builder.Builder):
         # Make the scint bar plane, used for both orientations
 
         self.SBPlaneDim = [ self.ScintBarDim[0] * self.nScintBars, self.ScintBarDim[1], self.ScintBarDim[2] ]
-        SBPlaneBox = geom.shapes.Box( 'SBPlaneBox',              dx=0.5*self.SBPlaneDim[0], 
+        SBPlaneBox = geom.shapes.Box( 'SBPlaneBox'+self.specificName,              dx=0.5*self.SBPlaneDim[0], 
                                       dy=0.5*self.SBPlaneDim[1], dz=0.5*self.SBPlaneDim[2])
-        SBPlane_lv = geom.structure.Volume('volSBPlane', material=self.SBPlaneMat, shape=SBPlaneBox)
+        SBPlane_lv = geom.structure.Volume('volSBPlane'+self.specificName, material=self.SBPlaneMat, shape=SBPlaneBox)
         self.add_volume(SBPlane_lv)
         # make default material glue -- search 'epoxy' in gdmlMaterials.py
 	# This volume will be retrieved by ECAL*Builder
