@@ -30,7 +30,7 @@ def define_materials( g ):
 
     zn64=g.matter.Isotope("zinc64", 30, 64, "63.93*g/mole")
 
-    zn= g.matter.Composition("zinc",  
+    zn= g.matter.Composition("zinc",
                              isotopes=(("zinc64",1.0),) ) # Note: odd syntax ((a,b),) defines a tuple of tuples with one element
 
     br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
@@ -240,6 +240,14 @@ def define_materials( g ):
                             components = (
                                     ("Epoxy",0.206),
                                     ("Glass",0.794)
+                            ))
+                            
+    # Radiation Physics and Chemistry 63 (2002) 89 92
+    # http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286?highlight=WyJwb2x5dmlueWx0b2x1ZW5lIl0=
+    pvt = g.matter.Molecule("PVT", density="1.023*g/cc",
+                            elements = (
+                                    ("carbon",9),
+                                    ("hydrogen",10)
                             ))
 
         # Scintillator:
