@@ -131,6 +131,11 @@ def define_materials( g ):
     #ArTarget = g.matter.Molecule("ArgonTarget", density="10.2297*g/cc", elements=(("argon",1),))
     Aluminum = g.matter.Molecule("Aluminum",    density="2.70*g/cc",  elements=(("aluminum",1),))
     Copper = g.matter.Molecule("Copper",    density="8.96*g/cc",  elements=(("copper",1),))
+    MagnetCoilMassFracCopper=0.964
+    MagnetCoil=g.matter.Mixture("MagnetCoil", density="6.94*g/cc",
+                                components=( ("Copper",MagnetCoilMassFracCopper),
+                                            ("Water",1-MagnetCoilMassFracCopper) ) )
+
     CarFiber = g.matter.Molecule("CarbonFiber", density="1.6*g/cc",  elements=(("carbon",1),))
     stGas_Ar = g.matter.Mixture( "stGas_Ar", density = dArCO2,
                             components = (
