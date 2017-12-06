@@ -14,6 +14,7 @@ void materialDisplay(TString filename,Bool_t checkoverlaps=kFALSE,TString label=
   {
     geo2->CheckOverlaps(1e-5,"d");
     geo2->CheckOverlaps(1e-5,"s10000000");
+		geo2->PrintOverlaps();
   }
   geo2->SetVisLevel(20);
   TGeoVolume *volume = NULL;
