@@ -7,9 +7,11 @@ class KLOEBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, halfDimension=None, Material=None,
-                  BField=None, CentralBField=Q("0.0T"), BuildSTT=False, **kwds):
+                  BField=None, CentralBField=Q("0.0T"), 
+                  BuildSTT=False,  BuildGAR=True, **kwds):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.BuildSTT=BuildSTT
+        self.BuildGAR=BuildGAR
         
         # The overall logical volume
         self.LVHalfLength=Q("3.1m")
@@ -389,9 +391,11 @@ class KLOEBuilder(gegede.builder.Builder):
         lv.params.append(("BField",BField))
         
         
-        # now build the tracking detector inside
+        # now build the STT inside
         stt_builder=self.get_builder("KLOESTT")
-        if stt_builder!=None:
+        print "self.BuildSTT==",self.BuildSTT
+        print "stt_builder: ",stt_builder
+        if (stt_builder!=None) and (self.BuildSTT==True):
             rot = [Q("0deg"),Q("90deg"),Q("0deg")]
             loc = [Q('0m'),Q('0m'),Q('0m')]
             stt_lv=stt_builder.get_volume()
@@ -403,6 +407,25 @@ class KLOEBuilder(gegede.builder.Builder):
                                              volume=stt_lv,pos=stt_pos,
                                              rot=stt_rot)
             lv.placements.append(stt_pla.name)
+        
+        # or, build the GArTPC
+        gar_builder=self.get_builder("KLOEGAR")
+        print "self.BuildGAR==",self.BuildGAR
+        print "gar_builder: ",gar_builder
+        if (gar_builder!=None) and (self.BuildGAR==True):
+            rot = [Q("0deg"),Q("0deg"),Q("0deg")]
+            loc = [Q('0m'),Q('0m'),Q('0m')]
+            gar_lv=gar_builder.get_volume()
+            gar_pos=geom.structure.Position(name+"_KLOEGAR_pos",
+                                            loc[0],loc[1],loc[2])
+            gar_rot=geom.structure.Rotation(name+"_KLOEGAR_rot",
+                                            rot[0],rot[1],rot[2])
+            gar_pla=geom.structure.Placement(name+"_KLOEGAR_pla",
+                                             volume=gar_lv,pos=gar_pos,
+                                             rot=gar_rot)
+            lv.placements.append(gar_pla.name)
+        
+
 
         # now place the tracking volume
         pos = [Q('0m'),Q('0m'),Q('0m')]
