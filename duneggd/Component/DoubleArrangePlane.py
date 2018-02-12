@@ -2,6 +2,7 @@
 import gegede.builder
 from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
+import copy
 
 class DoubleArrangePlaneBuilder(gegede.builder.Builder):
 
@@ -10,12 +11,12 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
                     NElements1=None, InsideGap1=None,
                     TranspV1=None, Rotation1=None,
                     NElements2=None, InsideGap2=None,
-                    TranspV2=None, **kwds ):
+                    TranspV2=None, IndependentVolumes=None, **kwds ):
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements1, self.InsideGap1 = ( NElements1, InsideGap1 )
         self.NElements2, self.InsideGap2 = ( NElements2, InsideGap2 )
         self.TranspV1, self.Rotation1 = ( TranspV1, Rotation1 )
-        self.TranspV2 = TranspV2
+        self.TranspV2, self.IndependentVolumes = ( TranspV2, IndependentVolumes )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct( self, geom ):
@@ -33,6 +34,7 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
         # get the sub-builder dimension, using its shape
         el_shape = geom.store.shapes.get(el_lv.shape)
         el_dim = [el_shape.dx, el_shape.dy, el_shape.dz]
+        #el_dim = ltools.getShapeDimensions( el_lv, geom )
 
         # calculate half dimension of element plus the gap projected to the transportation vector
         sb_dim_v1 = [t*(d+0.5*self.InsideGap1) for t,d in zip(self.TranspV1,el_dim)]
@@ -51,6 +53,12 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
                 # defining position, placement, and finally insert into the ule.
                 el_pos = geom.structure.Position(self.name+"_el"+str(elem1)+'_'+str(elem2)+'_pos',
                                                     temp_v[0], temp_v[1], temp_v[2])
+                if  self.IndependentVolumes != None :
+                    el_lv_temp = geom.structure.Volume( el_lv.name+str(elem1)+str(elem2),
+                                        material=el_lv.material, shape=el_lv.shape, placements=el_lv.placements)
+                else:
+                    el_lv_temp = el_lv
+                    
                 el_pla = geom.structure.Placement(self.name+"_el"+str(elem1)+'_'+str(elem2)+'_pla',
-                                                    volume=el_lv, pos=el_pos, rot =rotation1)
+                                                    volume=el_lv_temp, pos=el_pos, rot =rotation1)
                 main_lv.placements.append(el_pla.name)
