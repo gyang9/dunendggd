@@ -158,7 +158,7 @@ def define_materials( g ):
                                 ("carbon",   0.0010)
                             ))
 
-    Polycarbonate = g.matter.Molecule("polycarbonate", density="1.6*g/cc",
+    Polycarbonate = g.matter.Molecule("polycarbonate", density="1.2*g/cc",
                             elements=(
                                 ("carbon",16),
                                 ("hydrogen",6),
