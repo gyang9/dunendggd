@@ -165,6 +165,16 @@ def define_materials( g ):
                                 ("oxygen",3)
                             ))
 
+    # https://pubchem.ncbi.nlm.nih.gov/compound/114729#section=Names-and-Identifiers
+    # C27 H36 N2 O10
+    Polyurethane = g.matter.Molecule("polyurethane", density="0.02*g/cc",
+                            elements=(
+                                ("carbon",27),
+                                ("hydrogen",36),
+                                ("nitrogen",2),
+                                ("oxygen"10)
+                            ))
+
        # make up a dumb but not crazy density for the STT framing just inside of the ECAL
     sttFrameMix = g.matter.Mixture( "sttFrameMix", density = "0.235*g/cc",
                             components = (
@@ -246,7 +256,7 @@ def define_materials( g ):
                                     ("Epoxy",0.206),
                                     ("Glass",0.794)
                             ))
-                            
+
     # Radiation Physics and Chemistry 63 (2002) 89 92
     # http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286?highlight=WyJwb2x5dmlueWx0b2x1ZW5lIl0=
     pvt = g.matter.Molecule("PVT", density="1.023*g/cc",
