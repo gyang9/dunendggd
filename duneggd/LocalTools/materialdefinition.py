@@ -167,12 +167,14 @@ def define_materials( g ):
 
     # https://pubchem.ncbi.nlm.nih.gov/compound/114729#section=Names-and-Identifiers
     # C27 H36 N2 O10
-    Polyurethane = g.matter.Molecule("polyurethane", density="0.02*g/cc",
+    # LBNE 35 ton - Low Pressure Vessel Engineering Note Rev. 2 - Appendix O - 11/21/12
+    # Foam grade C 65kg/m^3
+    Polyurethane = g.matter.Molecule("polyurethane", density="0.065*g/cc",
                             elements=(
                                 ("carbon",27),
                                 ("hydrogen",36),
                                 ("nitrogen",2),
-                                ("oxygen"10)
+                                ("oxygen",10)
                             ))
 
        # make up a dumb but not crazy density for the STT framing just inside of the ECAL
