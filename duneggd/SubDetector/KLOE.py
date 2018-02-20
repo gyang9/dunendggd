@@ -106,7 +106,7 @@ class KLOEBuilder(gegede.builder.Builder):
         BarrelBField=self.CentralBField*self.SolenoidCoilShellRmin**2/(self.BarrelRmax**2 - self.BarrelRmin**2)
         
 #        BField="(0.0 T, 0.0 T, %f T)"%(-BarrelBField/Q("1.0T"))
-        BField="(- %f T, 0.0 T, 0.0 T)"%(-BarrelBField/Q("1.0T"))
+        BField="(%f T, 0.0 T, 0.0 T)"%(-BarrelBField/Q("1.0T"))
         print( "Setting KLOE Barrel Bfield to "+str(BField))
         barrel_lv.params.append(("BField",BField))
 
