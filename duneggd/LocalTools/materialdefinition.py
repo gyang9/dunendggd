@@ -228,9 +228,10 @@ def define_materials( g ):
                                     ("oxygen",6)
                                     #("bromine",4) GENIE having trouble with Br
                             ))
+
     # http://www.engineeringtoolbox.com/engineering-materials-properties-d_1225.html
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
-    # table 3 - C6 H6 O
+    # table 3 - C6 H6 O, jp
     epoxy = g.matter.Molecule("Epoxy", density="1.25*g/cc",
                             elements = (
                                     ("carbon",6),
@@ -238,7 +239,7 @@ def define_materials( g ):
                                     ("oxygen",1)
                             ))
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
-    # table 6
+    # table 6, fractional mass, jp
     glass = g.matter.Mixture("Glass", density="2.70*g/cc",
                             components = (
                                     ("silicon",0.2743),
@@ -252,14 +253,14 @@ def define_materials( g ):
                             ))
 
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
-    # table 6
+    # table 6, fractional mass, jp
     fr4 = g.matter.Mixture("FR4", density="1.850*g/cc",
                             components = (
                                     ("Epoxy",0.206),
                                     ("Glass",0.794)
                             ))
 
-    # Radiation Physics and Chemistry 63 (2002) 89 92
+    # Radiation Physics and Chemistry 63 (2002) 89 92, jp
     # http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286?highlight=WyJwb2x5dmlueWx0b2x1ZW5lIl0=
     pvt = g.matter.Molecule("PVT", density="1.023*g/cc",
                             elements = (
@@ -267,13 +268,13 @@ def define_materials( g ):
                                     ("hydrogen",10)
                             ))
 
-        # Scintillator:
+    # Scintillator:
     Scintillator  = g.matter.Mixture("Scintillator",   density="1.05*g/cc",
                             components = (
                                     ("carbon",   0.916),
                                     ("hydrogen", 0.084)
                             ))
-        # Oil to be fixed
+    # Oil to be fixed
     Oil  = g.matter.Mixture("Oil",   density="0.8*g/cc",
                             components = (
                                     ("carbon",   0.916),
