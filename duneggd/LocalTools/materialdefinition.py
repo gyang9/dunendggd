@@ -406,3 +406,6 @@ def define_materials( g ):
                                 density='0.01998*g/cc',
                                 components=(('HP_Ar',0.801),
                                 ('CF4',0.199)))
+
+    nogas =  g.matter.Mixture('NoGas',
+                              density='1.0E-25*g/cc',components=(('argon',1.0),) )
