@@ -18,7 +18,7 @@ class RectBarBuilder(gegede.builder.Builder):
         :returns: None
         """
         self.Material, self.AuxParams = ( Material, AuxParams )
-        if halfDimension = None:
+        if halfDimension == None:
             halfDimension = {}
             halfDimension['dx'] = dx
             halfDimension['dy'] = dy

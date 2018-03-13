@@ -10,7 +10,7 @@ class ComplexSubDetectorBuilder(gegede.builder.Builder):
                     Material=None, NElements=None, BeginGap=None,
                     InsideGap=None, Rotation=None, AuxParams=None, Sensitive=None,
                     TranspV=None, **kwds ):
-        if halfDimension = None:
+        if halfDimension == None:
             halfDimension = {}
             halfDimension['dx'] = dx
             halfDimension['dy'] = dy

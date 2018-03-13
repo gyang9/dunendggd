@@ -11,7 +11,7 @@ class CrossSubDetectorBuilder(gegede.builder.Builder):
                     AuxParams=None, RotLeft=None, RotRight=None, RotTop=None,
                     RotBottom=None, **kwds ):
 
-        if halfDimension = None:
+        if halfDimension == None:
             halfDimension = {}
             halfDimension['dx'] = dx
             halfDimension['dy'] = dy

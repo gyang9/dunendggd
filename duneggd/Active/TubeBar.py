@@ -17,7 +17,7 @@ class TubeBarBuilder(gegede.builder.Builder):
         :type AuxParams: dictionary
         :returns: None
         """
-        if halfDimension = None:
+        if halfDimension == None:
             halfDimension = {}
             halfDimenion['rmin'] = rmin
             halfDimenion['rmax'] = rmax

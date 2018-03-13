@@ -11,7 +11,7 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
                     Material=None, NElements1=None, InsideGap1=None,
                     TranspV1=None, Rotation1=None, NElements2=None,
                     InsideGap2=None, TranspV2=None, IndependentVolumes=None, **kwds ):
-        if halfDimension = None:
+        if halfDimension == None:
             halfDimension = {}
             halfDimension['dx'] = dx
             halfDimension['dy'] = dy

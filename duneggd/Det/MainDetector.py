@@ -8,7 +8,7 @@ class MainDetectorBuilder(gegede.builder.Builder):
     ## The configure
     def configure(self, halfDimension=None, dx=None, dy=None, dz=None,
                         Material=None, Positions=None, Rotations=None, **kwds):
-        if halfDimension = None:
+        if halfDimension == None:
             halfDimension = {}
             halfDimension['dx'] = dx
             halfDimension['dy'] = dy

@@ -8,7 +8,7 @@ class SurSubDetectorBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, dx=None, dy=None, dz=None,
                         Material=None, InsideGap=None, **kwds ):
-        if halfDimension = None:
+        if halfDimension == None:
             halfDimension = {}
             halfDimension['dx'] = dx
             halfDimension['dy'] = dy
