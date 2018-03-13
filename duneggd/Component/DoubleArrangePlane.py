@@ -7,11 +7,15 @@ import copy
 class DoubleArrangePlaneBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None,
-                    NElements1=None, InsideGap1=None,
-                    TranspV1=None, Rotation1=None,
-                    NElements2=None, InsideGap2=None,
-                    TranspV2=None, IndependentVolumes=None, **kwds ):
+    def configure( self, halfDimension=None, dx=None, dy=None, dz=None,
+                    Material=None, NElements1=None, InsideGap1=None,
+                    TranspV1=None, Rotation1=None, NElements2=None,
+                    InsideGap2=None, TranspV2=None, IndependentVolumes=None, **kwds ):
+        if halfDimension = None:
+            halfDimension = {}
+            halfDimension['dx'] = dx
+            halfDimension['dy'] = dy
+            halfDimension['dz'] = dz
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.NElements1, self.InsideGap1 = ( NElements1, InsideGap1 )
         self.NElements2, self.InsideGap2 = ( NElements2, InsideGap2 )
@@ -58,7 +62,7 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
                                         material=el_lv.material, shape=el_lv.shape, placements=el_lv.placements)
                 else:
                     el_lv_temp = el_lv
-                    
+
                 el_pla = geom.structure.Placement(self.name+"_el"+str(elem1)+'_'+str(elem2)+'_pla',
                                                     volume=el_lv_temp, pos=el_pos, rot =rotation1)
                 main_lv.placements.append(el_pla.name)

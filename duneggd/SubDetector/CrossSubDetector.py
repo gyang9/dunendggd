@@ -6,9 +6,16 @@ from gegede import Quantity as Q
 class CrossSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None, InsideGap=None, TranspP=None,
+    def configure( self, halfDimension=None, dx=None, dy=None, dz=None,
+                    Material=None, InsideGap=None, TranspP=None,
                     AuxParams=None, RotLeft=None, RotRight=None, RotTop=None,
                     RotBottom=None, **kwds ):
+
+        if halfDimension = None:
+            halfDimension = {}
+            halfDimension['dx'] = dx
+            halfDimension['dy'] = dy
+            halfDimension['dz'] = dz
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.InsideGap, self.TranspP = InsideGap, TranspP
         self.RotLeft, self.RotRight = ( RotLeft, RotRight )
