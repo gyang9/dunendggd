@@ -18,6 +18,7 @@ def define_materials( g ):
     ca = g.matter.Element("calcium",    "Ca", 20, "40.078*g/mole" )
     ti = g.matter.Element("titanium",   "Ti", 22, "47.867*g/mole" )
     cr = g.matter.Element("chromium",   "Cr", 24, "51.9961*g/mole")
+    mn = g.matter.Element("manganese",  "Mn", 25, "54.9380*g/mole")
     fe = g.matter.Element("iron",       "Fe", 26, "55.8450*g/mole")
     ni = g.matter.Element("nickel",     "Ni", 28, "58.6934*g/mole")
 
@@ -165,17 +166,7 @@ def define_materials( g ):
                                 ("oxygen",3)
                             ))
 
-    # https://pubchem.ncbi.nlm.nih.gov/compound/114729#section=Names-and-Identifiers
-    # C27 H36 N2 O10
-    # LBNE 35 ton - Low Pressure Vessel Engineering Note Rev. 2 - Appendix O - 11/21/12
-    # Foam grade C 65kg/m^3
-    Polyurethane = g.matter.Molecule("polyurethane", density="0.065*g/cc",
-                            elements=(
-                                ("carbon",27),
-                                ("hydrogen",36),
-                                ("nitrogen",2),
-                                ("oxygen",10)
-                            ))
+
 
        # make up a dumb but not crazy density for the STT framing just inside of the ECAL
     sttFrameMix = g.matter.Mixture( "sttFrameMix", density = "0.235*g/cc",
@@ -229,6 +220,68 @@ def define_materials( g ):
                                     #("bromine",4) GENIE having trouble with Br
                             ))
 
+    # https://www.thebalance.com/type-304-and-304l-stainless-steel-2340261
+    # fractional mass
+    # density based on Table 8 DUNE-doc-6652-v5, jp
+    ssteel304 = g.matter.Mixture("SSteel304'", density="7.9*g/cc",
+                            components = (
+                                    ("carbon",0.0008),
+                                    ("manganese",0.02),
+                                    ("phosphorus",0.00045),
+                                    ("sulfur",0.0003),
+                                    ("silicon",0.0075),
+                                    ("chromium",0.18),
+                                    ("nickel",0.08),
+                                    ("nitrogen",0.0010),
+                                    ("iron",0.70995)
+                            ))
+
+    # https://www.americanelements.com/calcium-silicate-board-10101-39-0
+    # CaO3Si
+    # density based on Table 8 DUNE-doc-6652-v5
+    calciumSilicate = g.matter.Molecule("CalciumSilicate", density="0.6*g/cc",
+                            elements=(
+                                ("calcium",1),
+                                ("oxygen",3),
+                                ("silicon",1)
+                            ))
+
+    # https://www.azom.com/article.aspx?ArticleID=6117
+    # density based on Table 8 DUNE-doc-6652-v5, jp
+    carbonSteel = g.matter.Mixture("CarbonSteel", density="7.9*g/cc",
+                            components = (
+                                ("carbon",0.0030),
+                                ("copper",0.0025),
+                                ("iron",0.98),
+                                ("manganese",0.0103),
+                                ("phosphorus",0.00090),
+                                ("silicon",0.00280),
+                                ("sulfur",0.00050)
+                            ))
+
+    # http://iti.northwestern.edu/cement/monograph/Monograph3_6.html
+    # density based on Table 8 DUNE-doc-6652-v5, jp
+    reifConcrete = g.matter.Mixture("ReifConcrete", density="2.5*g/cc",
+                            components = (
+                                ("CaO",0.6661),
+                                ("SiO2",0.2345),
+                                ("Al2O3",0.0445),
+                                ("Fe2O3",0.0307),
+                                ("MgO",0.0242)
+                            ))
+
+    # https://pubchem.ncbi.nlm.nih.gov/compound/114729#section=Names-and-Identifiers
+    # C27 H36 N2 O10
+    # LBNE 35 ton - Low Pressure Vessel Engineering Note Rev. 2 - Appendix O - 11/21/12
+    # Foam grade C 65kg/m^3, jp
+    polyurethane = g.matter.Molecule("Polyurethane", density="0.065*g/cc",
+                            elements=(
+                                ("carbon",27),
+                                ("hydrogen",36),
+                                ("nitrogen",2),
+                                ("oxygen",10)
+                            ))
+
     # http://www.engineeringtoolbox.com/engineering-materials-properties-d_1225.html
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
     # table 3 - C6 H6 O, jp
@@ -238,6 +291,7 @@ def define_materials( g ):
                                     ("hydrogen",6),
                                     ("oxygen",1)
                             ))
+
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
     # table 6, fractional mass, jp
     glass = g.matter.Mixture("Glass", density="2.70*g/cc",
@@ -254,6 +308,7 @@ def define_materials( g ):
 
     # http://hepwww.rl.ac.uk/atlas-sct/engineering/material_budget/models/Endcap_Module/ATLAS_ECSCT_Materials.pdf
     # table 6, fractional mass, jp
+    # could be also G10
     fr4 = g.matter.Mixture("FR4", density="1.850*g/cc",
                             components = (
                                     ("Epoxy",0.206),
