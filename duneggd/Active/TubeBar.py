@@ -6,7 +6,7 @@ from gegede import Quantity as Q
 class TubeBarBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, rmin=None, rmax=None, dz=None, 
+    def configure( self, halfDimension=None, rmin=None, rmax=None, dz=None,
                     Material=None,  AuxParams=None, **kwds ):
         """
         :param halfDimension: halfDimension for the rectangular bar.
@@ -19,9 +19,9 @@ class TubeBarBuilder(gegede.builder.Builder):
         """
         if halfDimension == None:
             halfDimension = {}
-            halfDimenion['rmin'] = rmin
-            halfDimenion['rmax'] = rmax
-            halfDimenion['dz'] = dz
+            halfDimension['rmin'] = rmin
+            halfDimension['rmax'] = rmax
+            halfDimension['dz'] = dz
 
         self.halfDimension = halfDimension
         self.Material, self.AuxParams = ( Material, AuxParams )

@@ -7,8 +7,13 @@ from gegede import Quantity as Q
 class MainSubDetectorBuilder(gegede.builder.Builder):
 
     ## The configure
-    def configure(self, halfDimension=None, Material=None, AuxParams=None,
-                    Positions=None, Rotations=None, **kwds):
+    def configure(self, halfDimension=None, dx=None, dy=None, dz=None,
+                    Material=None, AuxParams=None, Positions=None, Rotations=None, **kwds):
+        if halfDimension == None:
+            halfDimension = {}
+            halfDimension['dx'] = dx
+            halfDimension['dy'] = dy
+            halfDimension['dz'] = dz
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.Positions, self.Rotations = ( Positions, Rotations )
         self.AuxParams = AuxParams

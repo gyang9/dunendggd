@@ -223,7 +223,7 @@ def define_materials( g ):
     # https://www.thebalance.com/type-304-and-304l-stainless-steel-2340261
     # fractional mass
     # density based on Table 8 DUNE-doc-6652-v5, jp
-    ssteel304 = g.matter.Mixture("SSteel304'", density="7.9*g/cc",
+    ssteel304 = g.matter.Mixture("SSteel304", density="7.9*g/cc",
                             components = (
                                     ("carbon",0.0008),
                                     ("manganese",0.02),
