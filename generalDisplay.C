@@ -111,12 +111,10 @@ void paintingVolumes( TGeoManager *geo )
     {
       PriIndex = PriIndex == sizeof(PriKolor) /sizeof(PriKolor[0]) ? 0 : PriIndex + 1;
       volume->SetLineColor( PriKolor[PriIndex] );
-      cout << " Painting the volume " << volume->GetName() << " " << PriKolor[PriIndex] << endl;
     }
     else
     {
       volume->SetLineColor( materialKolor[volume->GetMaterial()->GetName()] );
-      cout << " Painting the volume " << volume->GetName() << " " << materialKolor[volume->GetMaterial()->GetName()] << endl;
     }
 
     Int_t daughters = volume->GetNdaughters();
@@ -156,7 +154,7 @@ TEveLine *getEveLine()
   double vy=beam_entering_height-global_y0_height;
   cout<<"Beam enters the hall at a height of "<<beam_entering_height<<" cm"<<endl;
   cout<<"That is y= "<<vy<<" in the global coordinate system"<<endl;
-  int npoints=100;
+  int npoints=200;
   double step=hall_length/(1.0*npoints);
   for (int ipoint=0; ipoint<npoints; ipoint++)
   {
@@ -164,6 +162,7 @@ TEveLine *getEveLine()
     double dy=-dz*tan(beam_angle);
     double z=vz+dz;
     double y=vy+dy;
+    cout << y << " " << z << endl;
     line->SetNextPoint(0,y,z);
   }
   return line;
@@ -173,8 +172,17 @@ TEveLine *getEveLine()
 //============================================
 TEvePointSet *getEvePoint(TGeoManager *geo)
 {
-	//gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volLArCryo_0/volArgonCube_0/volArgonCubeActive_0");
-  geo->cd("/volWorld_1/volDetEnclosure_0/volA3DST_0");
+	//geo->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volArgonCubeActive_0");
+  TString pathname = "/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/";
+  pathname += "volReinforcedConcrete_0/volMoistureBarrier_0/volInsulationBoard2_0/";
+  pathname += "volGREBoard2_0/volInsulationBoard1_0/volGREBoard1_0/volFireproofBoard_0/";
+  pathname += "volSSMembrane_0/volArgonCubeService_0/volArgonCube_0/volArgonCubeActive_0";
+	if ( geo->CheckPath(pathname) )
+  {
+    cout << " cd into : " << pathname << endl;
+    geo->cd(pathname);
+  }
+  //geo->cd(pathname);
 	TGeoMatrix *active = gGeoManager->GetCurrentMatrix();
 	double local_active[3]={0,0,0};
 	double master_active[3]={0,0,0};
@@ -197,7 +205,7 @@ TEvePointSet *getEvePoint(TGeoManager *geo)
   marker->SetName("Origin marker");
   marker->SetMarkerColor(6);
   marker->SetMarkerStyle(29);
-  marker->SetMarkerSize(4);
+  marker->SetMarkerSize(2);
   marker->SetPoint(0, master_active[0], master_active[1], master_active[2]);
   return marker;
 }
