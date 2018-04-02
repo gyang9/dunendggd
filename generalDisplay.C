@@ -2,7 +2,8 @@ std::map<TString,Int_t> getMaterialKolor();
 void isThereOverlap( TGeoManager *geo, Int_t checkoverlaps );
 void paintingVolumes( TGeoManager *geo );
 TEveLine *getEveLine();
-TEvePointSet *getEvePoint(TGeoManager *geo);
+TEvePointSet *getEvePointArgonCube(TGeoManager *geo);
+TEvePointSet *getEvePointDipole(TGeoManager *geo);
 
 //============================================
 //============================================
@@ -29,8 +30,11 @@ void generalDisplay( TString filename, Bool_t drawbeam=kTRUE, Int_t checkoverlap
     gEve->AddGlobalElement( eveline );
   }
 
-   TEvePointSet* marker = getEvePoint( geo2 );
-   gEve->AddGlobalElement(marker);
+   TEvePointSet* markerArgonCube = getEvePointArgonCube( geo2 );
+   gEve->AddGlobalElement(markerArgonCube);
+
+   TEvePointSet* markerDipole = getEvePointDipole( geo2 );
+   gEve->AddGlobalElement(markerDipole);
 
 
    gEve->FullRedraw3D(kTRUE);
@@ -168,9 +172,9 @@ TEveLine *getEveLine()
   return line;
 }
 //============================================
-// getEvePoint
+// getEvePointArgonCube
 //============================================
-TEvePointSet *getEvePoint(TGeoManager *geo)
+TEvePointSet *getEvePointArgonCube(TGeoManager *geo)
 {
 	//geo->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volArgonCubeActive_0");
   TString pathname = "/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/";
@@ -202,7 +206,44 @@ TEvePointSet *getEvePoint(TGeoManager *geo)
 	cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
 
   TEvePointSet *marker = new TEvePointSet(1);
-  marker->SetName("Origin marker");
+  marker->SetName("ArgonCube Marker");
+  marker->SetMarkerColor(6);
+  marker->SetMarkerStyle(29);
+  marker->SetMarkerSize(2);
+  marker->SetPoint(0, master_active[0], master_active[1], master_active[2]);
+  return marker;
+}
+
+//============================================
+// getEvePointDipole
+//============================================
+TEvePointSet *getEvePointDipole(TGeoManager *geo)
+{
+  TString pathname = "/volWorld_1/volDetEnclosure_0/volIronDipole_0/innerDet_volume_0/";
+  if ( geo->CheckPath(pathname) )
+  {
+    cout << " cd into : " << pathname << endl;
+    geo->cd(pathname);
+  }
+  //geo->cd(pathname);
+  TGeoMatrix *active = gGeoManager->GetCurrentMatrix();
+  double local_active[3]={0,0,0};
+  double master_active[3]={0,0,0};
+  active->LocalToMaster(local_active,master_active);
+  cout<<"The center of Dipole in the global coordinate system: \n"<<" ( "<<master_active[0]<<", "<<master_active[1]<<", "<<master_active[2]<<" )"<<endl;
+
+  geo->cd("/volWorld_1/volDetEnclosure_0");
+  TGeoMatrix *enclosure = gGeoManager->GetCurrentMatrix();
+  double local_enclosure[3]={0,0,0};
+  double master_enclosure[3]={0,0,0};
+  enclosure->LocalToMaster(local_enclosure,master_enclosure);
+
+  double active_in_enclosure[3]={0,0,0};
+  enclosure->MasterToLocal(master_active,active_in_enclosure);
+  cout<<"The center of Dipole in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
+
+  TEvePointSet *marker = new TEvePointSet(1);
+  marker->SetName("Dipole Marker");
   marker->SetMarkerColor(6);
   marker->SetMarkerStyle(29);
   marker->SetMarkerSize(2);
