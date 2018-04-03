@@ -6,8 +6,14 @@ from gegede import Quantity as Q
 class UserPlaceSubDetectorBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure( self, halfDimension=None, Material=None, InsideGap=None,
+    def configure( self, halfDimension=None, dx=None, dy=None, dz=None,
+                    Material=None, InsideGap=None,
                     AuxParams=None, TranspV=None, UserPlace=None, **kwds ):
+        if halfDimension == None:
+            halfDimension = {}
+            halfDimension['dx'] = dx
+            halfDimension['dy'] = dy
+            halfDimension['dz'] = dz
         self.halfDimension, self.Material = ( halfDimension, Material )
         self.InsideGap, self.AuxParams = ( InsideGap, AuxParams )
         self.TranspV, self.UserPlace = ( AuxParams,  UserPlace )
