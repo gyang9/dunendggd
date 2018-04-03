@@ -49,7 +49,7 @@ void geoDisplay(TString filename, Int_t VisLevel=5)
 	}
 	TPolyLine3D* beam_line= new TPolyLine3D(npoints,linex,liney,linez);
 
-	// gGeoManager->GetListOfVolumes()->ls()
+	gGeoManager->GetListOfVolumes()->ls();
 	// TGeoVolume* active =gGeoManager->GetVolume("volLArActive");
 
 	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volLArCryo_0/volArgonCube_0/volArgonCubeActive_0");
@@ -71,8 +71,46 @@ void geoDisplay(TString filename, Int_t VisLevel=5)
 
 	cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
 	
-	
+
+
 	geo->GetTopVolume()->Draw("ogl");
 	//	geo->DrawTracks("ogl");
+	beam_line->SetLineWidth(2);
+	beam_line->SetLineColor(kRed);
+	beam_line->SetLineStyle(kDashed);
 	beam_line->Draw();
+
+	TGeoVolume* enc=geo->GetVolume("volDetEnclosure");
+	enc->SetVisibility(kFALSE);
+	enc->VisibleDaughters(kTRUE);
+	TGeoVolume* ar3=geo->GetVolume("volArgonCubeDetector");
+	ar3->SetTransparency(50);
+	ar3->SetVisContainers(kTRUE);
+	ar3->VisibleDaughters(kTRUE);
+	TGeoVolume* cryo=geo->GetVolume("volLArCryo");
+	cryo->SetTransparency(50);
+	cryo->SetVisContainers(kTRUE);
+	cryo->VisibleDaughters(kTRUE);
+	for(int iwall=0; iwall<35; iwall++){
+	  TGeoVolume* wall=geo->GetVolume(Form("volLArActiveModWall%02i",iwall));
+	  if(wall) wall->SetTransparency(80);
+	}
+	TGeoVolume* cent_elec=geo->GetVolume("cent_elec_vol");
+	cent_elec->SetTransparency(90);
+	//	cout<<"cent_elec "<<cent_elec<<endl;
+
+
+	TGLSAViewer *glsa = (TGLSAViewer *)gPad->GetViewer3D();
+	TGLClipSet* clip =glsa->GetClipSet();
+	// components - A,B,C,D - of plane eq : Ax+By+CZ+D = 0 
+	// kClipPlane=1
+	Double_t clip_config[6]={-1,0,0,-0.5,0,0};
+	//	clip->SetShowClip(kTRUE);
+	clip->SetAutoUpdate(kTRUE);
+	clip->SetClipState(TGLClip::EType::kClipPlane,clip_config);
+	clip->SetClipType(TGLClip::EType::kClipPlane);
+	glsa->DrawGuides();
+	glsa->UpdateScene();
+
+	//	TGCompositeFrame* frame = glsa->GetFrame();
 }
