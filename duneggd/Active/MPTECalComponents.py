@@ -148,6 +148,7 @@ def symmetric_arrangement(ntiles, tile_width):
     where itile ranges from -ntiles/2 to +ntiles/2 for even ntiles
     and -(ntiles-1)/2 to +(ntiles-1)/2 for odd ntiles
     """
+    # I have notes explaining this
     def feven(w, i):
         return w*(i-0.5)
 
@@ -220,16 +221,15 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         phi_end = self.phi_range[1]-phi_coverage_diff/2.0
         rmin = self.r
         print z_strip, rmin, y_strip,strip_length
+        # figure out outer radius of the mother volume
+        # some geometry here (in my notes)
         rmax2 = ((z_strip+rmin)**2 + (y_strip/2.0)**2)/Q("1mm**2")
         print rmax2
         rmax=sqrt(rmax2)*Q("1mm")
         lname = "MPTECalCylindricalLayer"
-        # start with the Tubs symmetric about phi=zero
-        # this works better with symmetric_arrangement()
-        # we will rotate it later
-        temp_phi_start = -actual_phi_coverage/2
+        # create the mother volume going from phi_start to phi_end
         layer_shape = geom.shapes.Tubs(lname, rmin=rmin, rmax=rmax,
-                                       sphi=temp_phi_start,
+                                       sphi=phi_start,
                                        dphi=actual_phi_coverage,
                                        dz=strip_length/2.0)
 
@@ -238,18 +238,87 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
 
         # now fill the mother volume with strips
         # the approach will be similar to what we did to make strips
-        # we first will center strips on phi=0 and then rotate to get
-        # the correct phi_start and phi_end
-        for i, dloc in symmetric_arrangement(n_strips, dphi):
-            # instead of formally rotating, just modify dloc here?
-            xloc = (self.r+z_strip/2.0)*cos(dloc)
-            yloc = (self.r+z_strip/2.0)*sin(dloc)
+        # out of tiles
+        # we use symmetric_arrangement() to get strip locations
+        # centered on phi=0 and then modify the location
+        # to get the correct phi_start and phi_end
+        temp_phi_start = -actual_phi_coverage/2
+        phi_start_diff = temp_phi_start-phi_start
+        for i, phi_loc in symmetric_arrangement(n_strips, dphi):
+            phi_loc = phi_loc-phi_start_diff # here is the modification
+            xloc = (self.r+z_strip/2.0)*cos(phi_loc)
+            yloc = (self.r+z_strip/2.0)*sin(phi_loc)
             zloc = Q("0mm")
-#            print dloc
+#            print phi_loc
             pos = geom.structure.Position(strip_lv.name+"_%i_pos" % i,
                                           x=xloc, y=yloc, z=zloc)
+            # Mike Kordosky July 20, 2018
+            # ==============================================================
+            # Regarding the rotation below: it's a mess.
+            # 
+            # The rotation x,y,z we provide here is used by the code
+            # that reads the GDML to conduct rotations,
+            # first about X, then about the (new) Y,
+            # then about the (newer) Z. This is an "intrinsic" rotation, as
+            # opposed to an "extrinsic" one in which the axes don't change.
+            # I verified this in some simple cases by rotating the TileStrip
+            # and looking to see what it did in the geometry viewer.
+            # This convention would be useful if we were sitting in an
+            # airplane and rotating it. It's pretty counterintuitive in
+            # the case that we are external to objects and placing and
+            # rotating them in space. <sigh>
+            # 
+            # The code that ultimately does the rotation
+            # is CLHEP::HepRotation. I was able to look at it and reconstruct
+            # the combined rotation matrix R_t after the three rotations.
+            # This matrix has three angles: theta_x, theta_y, theta_z and
+            # it's written out in my notes.
+            #
+            # A scheme of rotations about all three of
+            # X, Y and Z in some order is called a Tait-Bryan rotation:
+            #      https://en.wikipedia.org/wiki/Euler_angles
+            # This differs from Euler rotations in that the latter features
+            # the same axis twice (e.g., ZXZ)
+            #
+            # By comparing my matrix R_t with the matrix on the wiki page
+            # (specifically Tait-Bryan X_1 Y_2 Z_3)
+            # I see they disagree by a transpose and by the
+            # sign of the angles, at least theta_y. The transpose could
+            # be the difference between an active and passive transformation.
+            # The wiki page says the matricies correspond to active
+            # transformations and passive ones can be found as the
+            # transpose. Also, I know my matrix corresponds to an intrinsic
+            # rotation. Together these differences may explain the transpose
+            # and sign issues.
+            #
+            # My method for finding the right rotation is desribed below.
+            # 
+            # The original orientation of the strip can be described by
+            # two vectors:
+            #
+            # The first vector is a=(0,0,1), the vector normal
+            # to the strip, pointing away from the third layer. We eventually
+            # want this to point in the radial direction in cylindrical
+            # coordinates, so the first layer of the strips (copper absorber)
+            # faces inward. That direction is alpha=(cos(phi),sin(phi),0)
+            #
+            # The second vector b=(1,0,0) is taken to point along the strip
+            # as it was originally constructed. After rotation we want
+            # beta=(0,0,1).
+            #
+            # We want
+            #    alpha = R_t a
+            # and
+            #    beta  = R_t b
+            #
+            # The game is to explicitly evaluate the RHS and then
+            # see how to make it match the LHS by picking theta_x,y,z.
+            # After some trial and error I found that solutions that
+            # actually worked came from using the transpose of my R_t,
+            # and -sy -> sy.  I don't really understand this.
+
             rot = geom.structure.Rotation(strip_lv.name+"_%i_rot" % i,
-                                          x='90deg',y=(dloc-pi/2.0),
+                                          x='90deg', y=(phi_loc-pi/2.0),
                                           z='90deg')
             pla = geom.structure.Placement(strip_lv.name+"_%i_pla" % i,
                                            volume=strip_lv, pos=pos, rot=rot)
