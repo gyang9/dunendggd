@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-Subbuilder of DetEncBuilder
+CylindricalMPTBuilder: Builds the multi purpose tracker
 '''
 
 import gegede.builder

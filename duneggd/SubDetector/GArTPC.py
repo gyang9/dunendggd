@@ -3,6 +3,8 @@
 A basic builder for a gas TPC consisting of a cylindrical chamber 
 with two back-to-back rectangular active volmes.
 
+Original Author: J. Lopez, U. Colorado
+
 TO DO:
 
 Start splitting the various volumes into separate builders or 

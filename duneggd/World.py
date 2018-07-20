@@ -7,11 +7,11 @@ from gegede import Quantity as Q
 
 class WorldBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, halfDimension=None, Material=None, DetEncPosition=None, **kwds):
+    def configure(self, halfDimension=None, Material=None, DetEncPosition=None, DetEncRotation=None, **kwds):
         self.halfDimension = halfDimension
         self.Material = Material
         self.DetEncPosition = DetEncPosition
-
+        self.DetEncRotation = DetEncRotation
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
@@ -42,5 +42,9 @@ class WorldBuilder(gegede.builder.Builder):
         if self.DetEncPosition!=None:
             postemp=self.DetEncPosition
         detEnc_pos = geom.structure.Position(de_lv.name+'_pos', postemp[0], postemp[1], postemp[2])
-        detEnc_pla = geom.structure.Placement(de_lv.name+'_pla', volume=de_lv, pos=detEnc_pos)
+        rot=[Q("0deg"),Q("0deg"),Q("0deg")]
+        if self.DetEncRotation!=None:
+            rot=self.DetEncRotation
+        detEnc_rot = geom.structure.Rotation(de_lv.name+'_rot', rot[0], rot[1], rot[2])
+        detEnc_pla = geom.structure.Placement(de_lv.name+'_pla', volume=de_lv, pos=detEnc_pos,rot=detEnc_rot)
         main_lv.placements.append(detEnc_pla.name)
