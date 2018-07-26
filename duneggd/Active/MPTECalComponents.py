@@ -9,18 +9,19 @@ from gegede import Quantity as Q
 from math import floor, atan, sin, cos, sqrt, pi
 
 
-
 class MPTECalTileBuilder(gegede.builder.Builder):
-    """Builds a single pad for the MPT Ecal
+    """Builds a single tile for the MPT Ecal
 
-    The pad is built in the x,y plane with multiple layers.
+    The tile is built in the x,y plane with multiple layers.
 
     Attributes:
-    dx,dy: x and y half-dimensions of the pad
+    dx,dy: x and y half-dimensions of the tile
     dz: a list specifying the depth of each layer
     lspacing: a list specifying the spacing after each layer
     mat: a list specifying the material of each layer
-    filler_mat: the material between and outside of layers
+    filler_mat: the material between and outside of layers (fills in cracks)
+    output_name: the name to give this tile 
+                 (maybe used as a basename by the caller)
     """
     # set a .defaults which gegede will use to make data members
     # when configure is called
@@ -29,7 +30,8 @@ class MPTECalTileBuilder(gegede.builder.Builder):
                     dz=[Q('2mm'), Q('5mm'), Q('1mm')],
                     lspacing=[Q('0.1mm'), Q('0.1mm'), Q('2mm')],
                     mat=['Copper', 'Scintillator', 'FR4'],
-                    filler_mat='Air')
+                    filler_mat='Air',
+                    output_name='MPTECalTile')
 
 #    def configure(self, **kwds):
 #        pass
@@ -45,17 +47,19 @@ class MPTECalTileBuilder(gegede.builder.Builder):
         dzm = self.depth()
         dzm = dzm/2.0  # Box() requires half dimensions
         print "dzm=", dzm
-        name = "MPTECalTile"
-        pad_shape = geom.shapes.Box(name, self.dx, self.dy, dzm)
-        pad_lv = geom.structure.Volume(name+"_vol", material=self.filler_mat,
-                                       shape=pad_shape)
+        # shapes need to have a unique name
+        name=self.output_name
+        tile_shape = geom.shapes.Box(name, self.dx, self.dy, dzm)
+        tile_lv = geom.structure.Volume(name+"_vol",
+                                        material=self.filler_mat,
+                                        shape=tile_shape)
         # now loop to create layers
 
         skip = Q("0mm")  # no skipped space before the first layer
         cntr = 1
         zloc = Q("0mm")
         for dz, lspace, mat in zip(self.dz, self.lspacing, self.mat):
-            lname = (name+"_L%i" % cntr)
+            lname = (self.output_name+"_L%i" % cntr)
             layer_shape = geom.shapes.Box(lname, self.dx, self.dy, dz/2.0)
             zloc = zloc+skip+dz/2.0
             print dz, lspace, mat, zloc
@@ -69,12 +73,12 @@ class MPTECalTileBuilder(gegede.builder.Builder):
             layer_pla = geom.structure.Placement(lname+"_pla",
                                                  volume=layer_lv,
                                                  pos=layer_pos)
-            pad_lv.placements.append(layer_pla.name)
+            tile_lv.placements.append(layer_pla.name)
 
-            skip = dz/2.0+lspace  # set the skipped space before the next layer
+            skip = dz/2.0+lspace# set the skipped space before the next layer
             cntr += 1
 
-        self.add_volume(pad_lv)
+        self.add_volume(tile_lv)
         return
 
 
@@ -84,11 +88,15 @@ class MPTECalStripBuilder(gegede.builder.Builder):
     The strip is built in the x,y plane with its length along x
 
     Attributes:
-    length=the length of the strip,
+    length: the length of the strip,
            will compute the closest number of tiles to fit within this length
-    ntiles=the number of tiles
-    material=the default material of the strip (will fill in any cracks)
-    extra_space=space between tiles
+    ntiles: the number of tiles
+    material: the default material of the strip (will fill in any cracks)
+    extra_space=: space between tiles
+    name: the name of this strip (maybe used as a basename by the caller)
+    The caller can also set the tile locations manually 
+    by assigning a list of (itile, xlocation) tuples to 
+    the attribute input_tile_locations.
     """
     # set a .defaults which gegede will use to make data members
     # when configure is called
@@ -96,12 +104,14 @@ class MPTECalStripBuilder(gegede.builder.Builder):
     defaults = dict(length=Q("1m"),
                     ntiles=0,
                     material='Air',
-                    extra_space=Q("0.1mm")
+                    extra_space=Q("0.1mm"),
+                    output_name='MPTECalStrip'
                     )
-
-#    def configure(self, **kwds):
-#        super(MPTECalStripBuilder, self).configure(**kwds)
-
+    
+    def configure(self, **kwds):
+        super(MPTECalStripBuilder, self).configure(**kwds)
+        self.input_tile_locations = None
+        
     def build_tile(self, geom, mother, lv, xloc, i):
         pos = geom.structure.Position(lv.name+"_%i_pos" % i,
                                       x=xloc, y='0mm', z='0mm')
@@ -124,7 +134,7 @@ class MPTECalStripBuilder(gegede.builder.Builder):
         strip_length = ntiles*tile_width
 
         # make the mother volume
-        name = "MPTECalStrip"
+        name = self.output_name
         print "In strip builder: strip_length=", strip_length
         strip_shape = geom.shapes.Box(name,
                                       dx=strip_length/2.0,
@@ -182,6 +192,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
     x, y= used by the xyplane geometry
     material= material filling the mother volume (fills in any cracks)
     extra_space = space between strips
+    output_name = name of this layer (maybe used as a basename by the caller)
     """
     # set a .defaults which gegede will use to make data members
     # when configure is called
@@ -189,18 +200,25 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
     defaults = dict(geometry='cylinder',
                     r=Q("2.5m"), phi_range=[Q("0deg"), Q("360deg")],
                     material='Air',
-                    extra_space=Q("0.1mm")
+                    extra_space=Q("0.1mm"),
+                    output_name='MPTECalLayer'
                     )
 
 #    def configure(self, **kwds):
-#        super(MPTECalStripBuilder, self).configure(**kwds)
+#        super(MPTECalLayerBuilder, self).configure(**kwds)
+#        self.all_tile_locations=None
+#        if self.geometry=='cplane':
+#            self.all_tile_locations=self.find_cplane_tile_locations(geom)
 
     def construct(self, geom):
         if self.geometry == 'cylinder':
             self.construct_cylinder(geom)
+        elif self.geometry == 'cplane':
+            self.construct_cplane(geom)
         return
 
     def construct_cylinder(self, geom):
+        '''Constructs a cylinder, or partial cylinder, of ECalStrips'''
         strip_builder = self.get_builder("MPTECalStripBuilder")
         strip_lv = strip_builder.get_volume()
         ggd_shape = geom.store.shapes.get(strip_lv.shape)
@@ -220,13 +238,13 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         phi_start = self.phi_range[0]+phi_coverage_diff/2.0
         phi_end = self.phi_range[1]-phi_coverage_diff/2.0
         rmin = self.r
-        print z_strip, rmin, y_strip,strip_length
+        print z_strip, rmin, y_strip, strip_length
         # figure out outer radius of the mother volume
         # some geometry here (in my notes)
         rmax2 = ((z_strip+rmin)**2 + (y_strip/2.0)**2)/Q("1mm**2")
         print rmax2
-        rmax=sqrt(rmax2)*Q("1mm")
-        lname = "MPTECalCylindricalLayer"
+        rmax = sqrt(rmax2)*Q("1mm")
+        lname=self.output_name
         # create the mother volume going from phi_start to phi_end
         layer_shape = geom.shapes.Tubs(lname, rmin=rmin, rmax=rmax,
                                        sphi=phi_start,
@@ -245,7 +263,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         temp_phi_start = -actual_phi_coverage/2
         phi_start_diff = temp_phi_start-phi_start
         for i, phi_loc in symmetric_arrangement(n_strips, dphi):
-            phi_loc = phi_loc-phi_start_diff # here is the modification
+            phi_loc = phi_loc - phi_start_diff  # here is the modification
             xloc = (self.r+z_strip/2.0)*cos(phi_loc)
             yloc = (self.r+z_strip/2.0)*sin(phi_loc)
             zloc = Q("0mm")
@@ -305,6 +323,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
             # The second vector b=(1,0,0) is taken to point along the strip
             # as it was originally constructed. After rotation we want
             # beta=(0,0,1).
+
             #
             # We want
             #    alpha = R_t a
@@ -326,3 +345,162 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
             layer_lv.placements.append(pla.name)
         self.add_volume(layer_lv)
         return
+
+    def construct_cplane(self, geom):
+        '''Construct a plane of EcalTiles by tiling them inside a circle
+        of radius self.r
+
+        Extra space between tiles is controlled in the x direction
+        by the TileStrip's extra space, and in the y direction by 
+        this builder's extra space
+        '''
+        # find all_tile_locations in configure stage
+        # Algorithim is to first find the length of a square that can fit
+        # inside a radius rm<self.R. We will tile that and then try to add
+        # to it along the outside to fill up the circle.
+        tile_builder = self.get_builder("MPTECalTileBuilder")
+        strip_builder = self.get_builder("MPTECalStripBuilder")
+        tile_lv = tile_builder.get_volume()
+        ggd_shape = geom.store.shapes.get(tile_lv.shape)
+        
+        # check that tiles are square
+        tile_width = ggd_shape.dx*2 +strip_builder.extra_space
+        tile_depth = ggd_shape.dz*2
+        tile_widthy = ggd_shape.dy*2 + self.extra_space
+        if tile_width != tile_widthy:
+            raise RuntimeError(
+                '''
+                The ECalTile must be a square for construct_\\
+                cplane()\n The requested tile has dimensions: dx=%f, dy=%f
+                ''' % (ggd_shape.dx, ggd_shape.dy))
+        # done with square chack
+
+        # compute number of tiles on each edge of the inscribed square
+        n_edge_tiles = int(floor(sqrt(2)*self.r/tile_width))
+        # length of one side of the square
+        lsquare = n_edge_tiles*tile_width  
+        # radius of the circle that the square is inscribed in
+        rm = lsquare/sqrt(2)
+        
+        # now get tile locations within the square
+        # this is a list of tuples (itile, location)
+        # because of the symmetry, the location is both the
+        # x and y location
+        tile_locations = symmetric_arrangement(n_edge_tiles, tile_width)
+        # think of the return value as the x location of a row of
+        # tiles at the top of the square, located at y=yrow
+        # use symmetry to figure out what yrow is
+        iys, ys = zip(*tile_locations)
+        yrow = max(ys)
+        starting_iymax = max(iys)
+        # loop over each x tile location and see how many tiles
+        # we can add in the +y direction while remaining inside
+        # the circle of radius self.r
+        new_tile_locations = []
+        for ix, xloc in tile_locations:
+            nadd, newys = self.tiles_to_add(xloc, yrow, tile_width, self.r)
+            for yadd in newys:
+                new_tile_locations.append((xloc, yadd))
+        all_tile_locations = []
+        for x in ys:
+            for y in ys:
+                all_tile_locations.append((x, y))
+        ninscribed = len(all_tile_locations)
+        print "number of tiles in inscribed square = %i" % (ninscribed)
+        for x, y in new_tile_locations:
+            for xx, yy in [(x, y), (x, -y), (y, x), (-y, x)]:
+#                print 'xx, yy = %s , %s' % (xx, yy)
+                all_tile_locations.append((xx, yy))
+        nouter = len(all_tile_locations) - ninscribed
+        print 'number of tiles outside inscribed square = %i' % (nouter)
+
+        all_organized=organize_by_rows(all_tile_locations)
+        # now build the mother volume
+        lname = self.name
+        layer_shape = geom.shapes.Tubs(lname, rmin='0mm', rmax=rm,
+                                       sphi=Q("0deg"), dphi=Q("360deg"),
+                                       dz=tile_depth/2.0)
+
+        layer_lv = geom.structure.Volume(lname+"_vol", shape=layer_shape,
+                                         material=self.material)
+        
+        # now fill the mother volume with tiles
+        tname = tile_builder.name
+        tile_lv = tile_builder.get_volume()
+        for i, yrow in enumerate(all_organized):
+            print 'yposition and nx --> %s and %i '%(yrow[0][1],len(yrow)) 
+            for j, (x,y) in enumerate(yrow):
+#                print 'placing tile %i_%i at (x,y) = (%s,%s)' % (i, j, x, y)
+                pos = geom.structure.Position(tname+"_%i_%i_pos" % (i, j),
+                                              x=x, y=y, z='0mm')
+                pla = geom.structure.Placement(tname+"_%i_%i_pla" % (i, j),
+                                               volume=tile_lv, pos=pos)
+                layer_lv.placements.append(pla.name)
+                
+
+            
+#        for i, (x, y) in enumerate(all_sorted):
+#                pos = geom.structure.Position(tname+"_%i_pos" % i,
+#                                              x=x, y=y, z='0mm')
+#                pla = geom.structure.Placement(tname+"_%i_pla" % i,
+#                                               volume=tile_lv, pos=pos)
+#                layer_lv.placements.append(pla.name)
+
+        self.add_volume(layer_lv)
+
+    def tiles_to_add(self, x, y, w, r):
+        '''Starting with a square tile of width w located at x,y 
+        figure out how many tiles we can add while staying 
+        within a radius r'''
+        nadd = 0
+        newys = []
+        while self.is_tile_inside(x, y+nadd*w, w, self.r):
+            newys.append(y+nadd*w)
+            nadd = nadd+1
+        return nadd, newys
+
+    def is_tile_inside(self, x, y, w, r):
+        '''Is the square tile with width w and centered on x,y 
+        contained inside a circle of radius r?'''
+        # it is sufficient to check that the 4 corners are inside the circle
+        corners = [(x + w, y + w), (x + w, y - w),
+                   (x - w, y + w), (x - w, y - w)]
+        for xx, yy in corners:
+            rc2 = (xx**2 + yy**2)/Q('1mm**2')
+            rc = sqrt(rc2)*Q('1mm')
+            if rc > r:
+                return False
+        return True
+
+
+#        return all_tile_locations, rm, tile_depth
+
+def organize_by_rows(all_tile_locations):
+    ''' take in a list of (x,y) position tuples with all the tile locations
+    and organize them into a list of lists of (x,y) tuples where each list 
+    corresponds to one y row
+    '''
+    # first sort based on the y position
+    all_sorted = sorted(all_tile_locations,
+                        key=lambda entry: entry[1]/Q("1.0mm"))
+    # now make a new structure, all_organized as a list of list of tuples
+    # each list of tuples will correspond to one y row
+    
+    all_organized = []
+
+    # append the first entry to our holding array
+    temp_array = [all_sorted[0]]
+    for x, y in all_sorted[1:]: # loop starting at the second entry
+        if y == temp_array[0][1]:
+            print 'x == temp_array[0][1] --> %s == %s'%(x, temp_array[0][1])
+            print '    appending (%s, %s)' % (x, y)
+            temp_array.append((x, y))
+        else:
+            print 'appending temp_array'
+            all_organized.append(temp_array)
+            temp_array = []
+            print '   then appending (%s, %s)' % (x, y)
+            temp_array.append((x, y))
+    # loop ends without appending the last temp_array so do it here
+    all_organized.append(temp_array)
+    return all_organized
