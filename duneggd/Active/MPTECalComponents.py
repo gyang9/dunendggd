@@ -185,13 +185,16 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
     geometry=
       cylinder: build on a cylinder of radius r with angular coverage over
                 phi_range=[start,end]. cylinder axis along z. phi is the
-                usual angle in the x,y plane.
+                usual angle in the x,y plane. If nlayers>1 below, r will
+                correspond to the inner radius of the innermost layer.
       xyplane: build out a rectangular plane of width x, height y
       cplane: build out a circular plane of radius r
     r, phi_range= used by the cylinder and cplane (just r) geometries
     x, y= used by the xyplane geometry
     material= material filling the mother volume (fills in any cracks)
     extra_space = space between strips
+    layer_gap = gap between layers
+    nlayers = number of layers to build
     output_name = name of this layer (maybe used as a basename by the caller)
     """
     # set a .defaults which gegede will use to make data members
@@ -201,6 +204,8 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
                     r=Q("2.5m"), phi_range=[Q("0deg"), Q("360deg")],
                     material='Air',
                     extra_space=Q("0.1mm"),
+                    layer_gap=Q("2.0mm"),
+                    nlayers=1,
                     output_name='MPTECalLayer'
                     )
 
@@ -212,13 +217,71 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
 
     def construct(self, geom):
         if self.geometry == 'cylinder':
-            self.construct_cylinder(geom)
+            self.construct_cylinder_layers(geom)
         elif self.geometry == 'cplane':
             self.construct_cplane(geom)
         return
 
-    def construct_cylinder(self, geom):
-        '''Constructs a cylinder, or partial cylinder, of ECalStrips'''
+    def construct_cylinder_layers(self, geom):
+        strip_builder = self.get_builder("MPTECalStripBuilder")
+        strip_lv = strip_builder.get_volume()
+        ggd_shape = geom.store.shapes.get(strip_lv.shape)
+        dr_layer = ggd_shape.dz*2.0
+        layer_lvs = []
+        rinner=self.r
+        router=rinner
+        phi_start=Q("360deg")
+        actual_phi_coverage=Q("0deg")
+        strip_length=Q("10cm")
+        radd=Q("0mm")
+        for ilayer in range(self.nlayers):
+#            rlayer = self.r + ilayer*(dr_layer+self.layer_gap)
+            rlayer = rinner + radd
+            lname = self.output_name + "_L%i" % (ilayer)
+            # bubble up layer information so we can set an
+            # overall logical volume
+            layer_lv, temp_phi_start, temp_actual_phi_coverage, strip_length,dr_layer = self.construct_cylinder(geom, rlayer, lname)
+            # add up the additional radial distance needed for
+            # successive layers
+            radd=radd+dr_layer + self.layer_gap
+            # phi start and phi end can vary by layers because
+            # the number of strips that can be fit in depends on the
+            # radius. Here we try to find the largest phi coverage
+            # needed to enclose all of the layers            
+            if temp_phi_start < phi_start:
+                phi_start = temp_phi_start
+            if temp_actual_phi_coverage > actual_phi_coverage:
+                actual_phi_coverage = temp_actual_phi_coverage
+            layer_lvs.append(layer_lv)
+        router = rinner+radd
+        barrel_shape = geom.shapes.Tubs(self.output_name,
+                                        rmin=rinner, rmax=router,
+                                        sphi=phi_start,
+                                        dphi=actual_phi_coverage,
+                                        dz=strip_length/2.0)
+
+        barrel_lv = geom.structure.Volume(self.output_name+"_vol",
+                                          shape=barrel_shape,
+                                          material=self.material)
+        for layer_lv in layer_lvs:
+            pos = geom.structure.Position(layer_lv.name+"_pos",
+                                          x=Q("0mm"), y=Q("0mm"), z=Q("0mm"))
+            rot = geom.structure.Rotation(layer_lv.name+"_rot",
+                                          x=Q("0deg"), y=Q("0deg"),
+                                          z=Q("0deg"))
+
+            pla = geom.structure.Placement(layer_lv.name+"_pla",
+                                           volume=layer_lv, pos=pos, rot=rot)
+
+            barrel_lv.placements.append(pla.name)
+        self.add_volume(barrel_lv)
+        
+    def construct_cylinder(self, geom, rmin, lname):
+        '''Constructs a cylinder, or partial cylinder, of ECalStrips.
+        
+        Cylinder is constructed with the inner surface at rmin and
+        given the name lname
+        '''
         strip_builder = self.get_builder("MPTECalStripBuilder")
         strip_lv = strip_builder.get_volume()
         ggd_shape = geom.store.shapes.get(strip_lv.shape)
@@ -229,22 +292,22 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         # start by building the mother volume
         wanted_phi_coverage = self.phi_range[1]-self.phi_range[0]
         # dphi=angle covered by one strip with inside face at radius r
-        dphi = 2*atan(y_strip/(2*self.r))
+        dphi = 2*atan(y_strip/(2*rmin))
         n_strips = int(floor(wanted_phi_coverage/dphi))
         actual_phi_coverage = n_strips*dphi
         phi_coverage_diff = wanted_phi_coverage-actual_phi_coverage
         # adjust phi start and end points
         # checked that phi_end-phi_start=phi actual
         phi_start = self.phi_range[0]+phi_coverage_diff/2.0
-        phi_end = self.phi_range[1]-phi_coverage_diff/2.0
-        rmin = self.r
+#        phi_end = self.phi_range[1]-phi_coverage_diff/2.0
+#        rmin = self.r
         print z_strip, rmin, y_strip, strip_length
         # figure out outer radius of the mother volume
-        # some geometry here (in my notes)
+        # (some euclidean geometry documented in my notes)
         rmax2 = ((z_strip+rmin)**2 + (y_strip/2.0)**2)/Q("1mm**2")
         print rmax2
         rmax = sqrt(rmax2)*Q("1mm")
-        lname=self.output_name
+#        lname=self.output_name
         # create the mother volume going from phi_start to phi_end
         layer_shape = geom.shapes.Tubs(lname, rmin=rmin, rmax=rmax,
                                        sphi=phi_start,
@@ -264,11 +327,11 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         phi_start_diff = temp_phi_start-phi_start
         for i, phi_loc in symmetric_arrangement(n_strips, dphi):
             phi_loc = phi_loc - phi_start_diff  # here is the modification
-            xloc = (self.r+z_strip/2.0)*cos(phi_loc)
-            yloc = (self.r+z_strip/2.0)*sin(phi_loc)
+            xloc = (rmin+z_strip/2.0)*cos(phi_loc)
+            yloc = (rmin+z_strip/2.0)*sin(phi_loc)
             zloc = Q("0mm")
 #            print phi_loc
-            pos = geom.structure.Position(strip_lv.name+"_%i_pos" % i,
+            pos = geom.structure.Position(lname+"_"+strip_lv.name+"_%i_pos" % i,
                                           x=xloc, y=yloc, z=zloc)
             # Mike Kordosky July 20, 2018
             # ==============================================================
@@ -336,14 +399,16 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
             # actually worked came from using the transpose of my R_t,
             # and -sy -> sy.  I don't really understand this.
 
-            rot = geom.structure.Rotation(strip_lv.name+"_%i_rot" % i,
+            rot = geom.structure.Rotation(lname+"_"+strip_lv.name+"_%i_rot" % i,
                                           x='90deg', y=(phi_loc-pi/2.0),
                                           z='90deg')
-            pla = geom.structure.Placement(strip_lv.name+"_%i_pla" % i,
+            pla = geom.structure.Placement(lname+"_"+strip_lv.name+"_%i_pla" % i,
                                            volume=strip_lv, pos=pos, rot=rot)
 
             layer_lv.placements.append(pla.name)
-        self.add_volume(layer_lv)
+        return layer_lv, phi_start, actual_phi_coverage, strip_length, rmax-rmin
+#        self.add_volume(layer_lv)
+        
         return
 
     def construct_cplane(self, geom):
