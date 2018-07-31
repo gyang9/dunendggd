@@ -187,16 +187,16 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
                 phi_range=[start,end]. cylinder axis along z. phi is the
                 usual angle in the x,y plane. If nlayers>1 below, r will
                 correspond to the inner radius of the innermost layer.
-      xyplane: build out a rectangular plane of width x, height y
       cplane: build out a circular plane of radius r
     r, phi_range= used by the cylinder and cplane (just r) geometries
-    x, y= used by the xyplane geometry
     material= material filling the mother volume (fills in any cracks)
     extra_space = space between strips
     layer_gap = gap between layers
     nlayers = number of layers to build
     output_name = name of this layer (maybe used as a basename by the caller)
     """
+    # xyplane: build out a rectangular plane of width x, height y
+    #    x, y= used by the xyplane geometry
     # set a .defaults which gegede will use to make data members
     # when configure is called
 

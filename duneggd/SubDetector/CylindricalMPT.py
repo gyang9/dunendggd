@@ -9,21 +9,8 @@ from gegede import Quantity as Q
 class CylindricalMPTBuilder(gegede.builder.Builder):
     '''
     Build a cylindrical multipurpose tracker. This class directly
-    builds the magnet yoke and ECAL (for now) but calls a subbuilder 
-    for the GArTPC.
-    '''
-
-    #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, yokeMaterial = 'Iron',
-                  yokeInnerR=Q("3.0m"), yokeInnerZ=Q("3.0m"),
-                  yokeThicknessR=Q("0.5m"),yokeThicknessZ=Q("0.5m"),
-                  yokeBufferToBoundaryR=Q("0.5m"),
-                  yokeBufferToBoundaryZ=Q("0.5m"),
-                  yokePhiCutout=Q("90deg"),
-                  innerBField=None,
-                  GArTPCPos=None, GArTPCRot=None,
-                  buildGArTPC=False,**kwds):
-        '''
+    builds the magnet yoke calls sub-builders for the ECAL (for now) 
+    and for the GArTPC.
         
         Arguments:
         yokeMaterial: what the yoke is made of
@@ -40,31 +27,21 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
         of the magnet and the rectangular mother volume
         
         innerBField: the magnetic field inside of the magnet
-        
         '''
-        # magnet configuration
-        self.yokeMaterial      = yokeMaterial
-        self.yokeInnerR = yokeInnerR
-        self.yokeInnerZ = yokeInnerZ
-        self.yokeThicknessR=yokeThicknessR
-        self.yokeThicknessZ=yokeThicknessZ
-        self.yokeBufferToBoundaryR=yokeBufferToBoundaryR
-        self.yokeBufferToBoundaryZ=yokeBufferToBoundaryZ
-        self.yokePhiCutout=yokePhiCutout
-        self.innerBField = innerBField
-#        self.MagnetBldr   = self.get_builder('Magnet')
+    defaults=dict( yokeMaterial="Iron",
+                   yokeInnerR=Q("3.10m"),
+                   yokeInnerZ=Q("2.8m"),
+                   yokeThicknessR=Q("0.5m"),
+                   yokeThicknessZ=Q("0.5m"),
+                   yokeBufferToBoundaryR=Q("0.5m"),
+                   yokeBufferToBoundaryZ=Q("0.5m"),
+                   yokePhiCutout=Q("90deg"),
+                   innerBField=[Q("0.0T"),Q("0.0T"),Q("0.4T")],
+                   GarTPCPos=[Q("0.0m"),Q("0.0m"),Q("0.0m")],
+                   GarTPCRot=[Q("0deg"),Q("0deg"),Q("0deg")],
+                   buildGarTPC=False
+                   )
 
-        # GArTPC configuration
-        # only get a GArTPC builder if we want to build the GArTPC
-        self.GArTPCBldr = None
-        if buildGArTPC:
-            self.GArTPCBldr=self.get_builder('GArTPC')
-        self.GArTPCPos=GArTPCPos
-        self.GArTPCRot=GArTPCRot
-        self.buildGArTPC=buildGArTPC
-
-        return
-    
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
         
@@ -95,6 +72,10 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
         ######### build the TPC       ##########################
         # use GArTPCBuilder, but "disable" the cyrostat by tweaking
         # EndcapThickness, WallThickness, and ChamberMaterial
+        # do that in the cfg file
+        if self.buildGarTPC:
+            self.build_gartpc(main_lv, geom)
+            
         return
         
 
@@ -145,7 +126,13 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
             main_lv.placements.append(ec_pla.name)
         
         return
-
-
-
+    
+    def build_gartpc(self,main_lv,geom):
+        tpc_builder=self.get_builder('GArTPC')
+        tpc_vol=tpc_builder.get_volume()
+        tpc_rot=geom.structure.Rotation(tpc_builder.name+"_rot",
+                                        y=Q("90deg") )
+        tpc_pla=geom.structure.Placement(tpc_builder.name+"_pla",
+                                         volume=tpc_vol, rot=tpc_rot)
+        main_lv.placements.append(tpc_pla.name)
     
