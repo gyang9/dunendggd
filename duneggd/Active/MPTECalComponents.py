@@ -179,7 +179,7 @@ def symmetric_arrangement(ntiles, tile_width):
 
 
 class MPTECalLayerBuilder(gegede.builder.Builder):
-    """Builds a layer of ECalStrips
+    """Builds a layer of ECalStrips or ECalTiles
 
     Attributes:
     geometry=
@@ -219,7 +219,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         if self.geometry == 'cylinder':
             self.construct_cylinder_layers(geom)
         elif self.geometry == 'cplane':
-            self.construct_cplane(geom)
+            self.construct_cplane_layers(geom)
         return
 
     def construct_cylinder_layers(self, geom):
@@ -411,7 +411,42 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         
         return
 
-    def construct_cplane(self, geom):
+    def construct_cplane_layers(self, geom):
+        ''' construct a set of cplane layers '''
+
+        # get layer thickness
+        tile_builder = self.get_builder("MPTECalTileBuilder")
+        tile_lv = tile_builder.get_volume()
+        ggd_shape = geom.store.shapes.get(tile_lv.shape)
+        dz_layer = ggd_shape.dz*2
+        # get total z depth of all layers
+        total_z=(dz_layer+self.layer_gap)*self.nlayers
+        # make the mother volume first since we can
+        mother_shape = geom.shapes.Tubs(self.output_name,
+                                        rmin=Q('0mm'), rmax=self.r,
+                                        sphi=Q("0deg"), dphi=Q("360deg"),
+                                        dz=total_z/2.0)
+
+        mother_lv = geom.structure.Volume(self.output_name+"_vol",
+                                          shape=mother_shape,
+                                          material=self.material)
+        # now loop over layers and construct and position them
+        zstart = -total_z/2.0  # edge of first layer here
+        zstart = zstart + dz_layer/2.0  # center of first layer here
+        cplane_lv = self.construct_cplane(geom, self.output_name+"_basevol")
+        for ilayer in range(self.nlayers):
+            zlayer = zstart + (dz_layer + self.layer_gap)*ilayer
+            lname = self.output_name + "_L%i" % (ilayer)
+            pos = geom.structure.Position(lname+'_pos',
+                                          x=Q('0mm'), y=Q('0mm'),
+                                          z=zlayer)
+            pla = geom.structure.Placement(lname+'_pla',
+                                           volume=cplane_lv, pos=pos)
+            mother_lv.placements.append(pla.name)
+            
+        self.add_volume(mother_lv)
+    
+    def construct_cplane(self, geom, lname):
         '''Construct a plane of EcalTiles by tiling them inside a circle
         of radius self.r
 
@@ -481,7 +516,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
 
         all_organized=organize_by_rows(all_tile_locations)
         # now build the mother volume
-        lname = self.name
+        # lname = self.name
         layer_shape = geom.shapes.Tubs(lname, rmin='0mm', rmax=rm,
                                        sphi=Q("0deg"), dphi=Q("360deg"),
                                        dz=tile_depth/2.0)
@@ -501,17 +536,9 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
                 pla = geom.structure.Placement(tname+"_%i_%i_pla" % (i, j),
                                                volume=tile_lv, pos=pos)
                 layer_lv.placements.append(pla.name)
-                
 
-            
-#        for i, (x, y) in enumerate(all_sorted):
-#                pos = geom.structure.Position(tname+"_%i_pos" % i,
-#                                              x=x, y=y, z='0mm')
-#                pla = geom.structure.Placement(tname+"_%i_pla" % i,
-#                                               volume=tile_lv, pos=pos)
-#                layer_lv.placements.append(pla.name)
-
-        self.add_volume(layer_lv)
+        return layer_lv
+#        self.add_volume(layer_lv)
 
     def tiles_to_add(self, x, y, w, r):
         '''Starting with a square tile of width w located at x,y 
