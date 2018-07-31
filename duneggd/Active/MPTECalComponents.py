@@ -105,6 +105,7 @@ class MPTECalStripBuilder(gegede.builder.Builder):
                     ntiles=0,
                     material='Air',
                     extra_space=Q("0.1mm"),
+                    tile_builder_name="MPTECalTileBuilder",
                     output_name='MPTECalStrip'
                     )
     
@@ -122,7 +123,7 @@ class MPTECalStripBuilder(gegede.builder.Builder):
         return
 
     def construct(self, geom):
-        tile_builder = self.get_builder("MPTECalTileBuilder")
+        tile_builder = self.get_builder(self.tile_builder_name)
         tile_width = tile_builder.dx*2 + self.extra_space
         # has the number of tiles been specified?
         ntiles = 0
@@ -206,7 +207,9 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
                     extra_space=Q("0.1mm"),
                     layer_gap=Q("2.0mm"),
                     nlayers=1,
-                    output_name='MPTECalLayer'
+                    output_name='MPTECalLayer',
+                    tile_builder_name="MPTECalTileBuilder",
+                    strip_builder_name="MPTECalStripBuilder"
                     )
 
 #    def configure(self, **kwds):
@@ -223,7 +226,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         return
 
     def construct_cylinder_layers(self, geom):
-        strip_builder = self.get_builder("MPTECalStripBuilder")
+        strip_builder = self.get_builder(self.strip_builder_name)
         strip_lv = strip_builder.get_volume()
         ggd_shape = geom.store.shapes.get(strip_lv.shape)
         dr_layer = ggd_shape.dz*2.0
@@ -282,7 +285,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         Cylinder is constructed with the inner surface at rmin and
         given the name lname
         '''
-        strip_builder = self.get_builder("MPTECalStripBuilder")
+        strip_builder = self.get_builder(self.strip_builder_name)
         strip_lv = strip_builder.get_volume()
         ggd_shape = geom.store.shapes.get(strip_lv.shape)
         y_strip = (ggd_shape.dy+self.extra_space)*2
@@ -415,7 +418,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         ''' construct a set of cplane layers '''
 
         # get layer thickness
-        tile_builder = self.get_builder("MPTECalTileBuilder")
+        tile_builder = self.get_builder(self.tile_builder_name)
         tile_lv = tile_builder.get_volume()
         ggd_shape = geom.store.shapes.get(tile_lv.shape)
         dz_layer = ggd_shape.dz*2
@@ -458,8 +461,8 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         # Algorithim is to first find the length of a square that can fit
         # inside a radius rm<self.R. We will tile that and then try to add
         # to it along the outside to fill up the circle.
-        tile_builder = self.get_builder("MPTECalTileBuilder")
-        strip_builder = self.get_builder("MPTECalStripBuilder")
+        tile_builder = self.get_builder(self.tile_builder_name)
+        strip_builder = self.get_builder(self.strip_builder_name)
         tile_lv = tile_builder.get_volume()
         ggd_shape = geom.store.shapes.get(tile_lv.shape)
         

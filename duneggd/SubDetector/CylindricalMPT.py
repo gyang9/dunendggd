@@ -61,14 +61,16 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
 
         ######### magnet yoke ##################################
         ### build the magnet yoke and coils and place inside the main lv
-        self.build_yoke(main_lv,geom)
+        self.build_yoke(main_lv, geom)
 
         ######### build an outer ecal ##########################
 
-        ######### build the cryostat  ##########################
-
+        ######### build the pressure vessel  ###################
+        self.build_pressure_vessel(main_lv, geom)
+        
         ######### build an inner ecal ##########################
-
+        self.build_inner_ecal(main_lv, geom)
+        
         ######### build the TPC       ##########################
         # use GArTPCBuilder, but "disable" the cyrostat by tweaking
         # EndcapThickness, WallThickness, and ChamberMaterial
@@ -127,12 +129,25 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
         
         return
     
-    def build_gartpc(self,main_lv,geom):
-        tpc_builder=self.get_builder('GArTPC')
-        tpc_vol=tpc_builder.get_volume()
-        tpc_rot=geom.structure.Rotation(tpc_builder.name+"_rot",
-                                        y=Q("90deg") )
-        tpc_pla=geom.structure.Placement(tpc_builder.name+"_pla",
-                                         volume=tpc_vol, rot=tpc_rot)
+    def build_gartpc(self, main_lv, geom):
+        tpc_builder = self.get_builder('GArTPC')
+        tpc_vol = tpc_builder.get_volume()
+        tpc_rot = geom.structure.Rotation(tpc_builder.name+"_rot",
+                                          y=Q("90deg"))
+        tpc_pla = geom.structure.Placement(tpc_builder.name+"_pla",
+                                           volume=tpc_vol, rot=tpc_rot)
         main_lv.placements.append(tpc_pla.name)
     
+    def build_inner_ecal(self, main_lv, geom):
+        ibb = self.get_builder('InnerBarrelECalBuilder')
+        if ibb == None:
+            return
+        ib_vol = ibb.get_volume()
+        ib_rot = geom.structure.Rotation(ibb.name+"_rot",
+                                         y=Q("90deg"))
+        ib_pla = geom.structure.Placement(ibb.name+"_pla",
+                                          volume=ib_vol, rot=ib_rot)
+        main_lv.placements.append(ib_pla.name)
+        
+    def build_pressure_vessel(self, main_lv, geom):
+        pass
