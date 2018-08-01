@@ -5,6 +5,7 @@ CylindricalMPTBuilder: Builds the multi purpose tracker
 
 import gegede.builder
 from gegede import Quantity as Q
+from math import asin
 
 class CylindricalMPTBuilder(gegede.builder.Builder):
     '''
@@ -29,17 +30,25 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
         innerBField: the magnetic field inside of the magnet
         '''
     defaults=dict( yokeMaterial="Iron",
-                   yokeInnerR=Q("3.10m"),
-                   yokeInnerZ=Q("2.8m"),
+                   yokeInnerR=Q("3.20m"),
+                   yokeInnerZ=Q("3.9m"),
                    yokeThicknessR=Q("0.5m"),
                    yokeThicknessZ=Q("0.5m"),
                    yokeBufferToBoundaryR=Q("0.5m"),
                    yokeBufferToBoundaryZ=Q("0.5m"),
                    yokePhiCutout=Q("90deg"),
-                   innerBField=[Q("0.0T"),Q("0.0T"),Q("0.4T")],
-                   GarTPCPos=[Q("0.0m"),Q("0.0m"),Q("0.0m")],
-                   GarTPCRot=[Q("0deg"),Q("0deg"),Q("0deg")],
-                   buildGarTPC=False
+                   buildYoke=True,
+                   innerBField="0.4 T, 0.0 T, 0.0 T",                   
+                   buildGarTPC=True,
+                   buildInnerEcal=True,
+                   buildOuterEcal=True,
+                   IBECalXStart=Q("100cm"),
+                   pvInnerRadius=Q("285cm"),
+                   pvThickness=Q("3cm"),
+                   pvHalfLength=Q("285cm"),
+                   pvEndCapBulge=Q("100cm"),
+                   pvMaterial='Steel',
+                   buildPV=True
                    )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -61,15 +70,19 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
 
         ######### magnet yoke ##################################
         ### build the magnet yoke and coils and place inside the main lv
-        self.build_yoke(main_lv, geom)
+        if self.buildYoke:
+            self.build_yoke(main_lv, geom)
 
         ######### build an outer ecal ##########################
-
+        if self.buildOuterEcal:
+            self.build_outer_ecal(main_lv, geom)
         ######### build the pressure vessel  ###################
-        self.build_pressure_vessel(main_lv, geom)
+        if self.buildPV:
+            self.build_pressure_vessel(main_lv, geom)
         
         ######### build an inner ecal ##########################
-        self.build_inner_ecal(main_lv, geom)
+        if self.buildInnerEcal:
+            self.build_inner_ecal(main_lv, geom)
         
         ######### build the TPC       ##########################
         # use GArTPCBuilder, but "disable" the cyrostat by tweaking
@@ -132,6 +145,7 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
     def build_gartpc(self, main_lv, geom):
         tpc_builder = self.get_builder('GArTPC')
         tpc_vol = tpc_builder.get_volume()
+        tpc_vol.params.append(("BField", self.innerBField))
         tpc_rot = geom.structure.Rotation(tpc_builder.name+"_rot",
                                           y=Q("90deg"))
         tpc_pla = geom.structure.Placement(tpc_builder.name+"_pla",
@@ -139,15 +153,90 @@ class CylindricalMPTBuilder(gegede.builder.Builder):
         main_lv.placements.append(tpc_pla.name)
     
     def build_inner_ecal(self, main_lv, geom):
+        # build the barrel 
         ibb = self.get_builder('InnerBarrelECalBuilder')
         if ibb == None:
             return
         ib_vol = ibb.get_volume()
+        ib_vol.params.append(("BField", self.innerBField))
         ib_rot = geom.structure.Rotation(ibb.name+"_rot",
                                          y=Q("90deg"))
         ib_pla = geom.structure.Placement(ibb.name+"_pla",
                                           volume=ib_vol, rot=ib_rot)
         main_lv.placements.append(ib_pla.name)
+
+        iecb = self.get_builder("InnerEndcapECalBuilder")
+        iec_vol = iecb.get_volume()
+        iec_vol.params.append(("BField", self.innerBField))
+        iec_shape = geom.store.shapes.get(iec_vol.shape)
+        iec_thickness = iec_shape.dz*2.0
+        # build the endcaps
+        for side in ["L", "R"]:
+            rot = "-90deg" if "L" else "90deg"
+            xpos = self.IBECalXStart+iec_thickness/2.0
+            if side == "R":
+                xpos = -xpos
+            iec_rot = geom.structure.Rotation(iecb.name+side+"_rot", y=rot)
+            iec_pos = geom.structure.Position(iecb.name+side+"_pos", x=xpos)
+            iec_pla = geom.structure.Placement(iecb.name+side+"_pla",
+                                               volume=iec_vol, rot=iec_rot,
+                                               pos=iec_pos)
+            main_lv.placements.append(iec_pla.name)
         
     def build_pressure_vessel(self, main_lv, geom):
-        pass
+        rmin = self.pvInnerRadius
+        thickness = self.pvThickness
+        # build the pressure vessel barrel
+        pvb_name = "PVBarrel"
+        pvb_shape = geom.shapes.Tubs(pvb_name,
+                                     rmin=rmin,
+                                     rmax=rmin+thickness,
+                                     dz=self.pvHalfLength,
+                                     sphi="0deg", dphi="360deg")
+        pvb_vol = geom.structure.Volume(pvb_name+"_vol", shape=pvb_shape,
+                                        material=self.pvMaterial)
+        pvb_rot = geom.structure.Rotation(pvb_name+"_rot", y='90deg')
+        pvb_pla = geom.structure.Placement(pvb_name+"_pla",
+                                           volume=pvb_vol, rot=pvb_rot)
+        main_lv.placements.append(pvb_pla.name)
+        # build the pressure vessel endcaps
+        # some euclidean geometry documented in my notebook
+        h = self.pvEndCapBulge
+        x = rmin
+        q = ((h/Q("1mm"))**2 + (x/Q("1mm"))**2)
+        R = q/(2*h/Q("1mm"))*Q("1mm")
+        dtheta=asin( 2*(h/Q("1mm"))*(x/Q("1mm"))/q)
+        print "h, x, q, R, dtheta = ", h, x, q, R, dtheta
+        pvec_name = "PVEndcap"
+        pvec_shape = geom.shapes.Sphere(pvec_name, rmin=R, rmax=R+thickness,
+                                        sphi="0deg", dphi="360deg",
+                                        stheta="0deg", dtheta=dtheta)
+        pvec_vol = geom.structure.Volume(pvec_name+"_vol", shape=pvec_shape,
+                                         material=self.pvMaterial)
+        for side in ["L", "R"]:
+            yrot = "-90deg" if side == 'L' else "90deg"
+            # some euclidean geometry documened in my notebook
+            xpos = self.pvHalfLength-(R-h)
+            if side == 'R':
+                xpos = -xpos
+            print "xpos = ", xpos
+            pvec_rot = geom.structure.Rotation(
+                pvec_name+side+"_rot", y=yrot)
+            pvec_pos = geom.structure.Position(
+                pvec_name+side+"_pos", x=xpos)
+            pvec_pla = geom.structure.Placement(
+                pvec_name+side+"_pla", volume=pvec_vol,
+                pos=pvec_pos, rot=pvec_rot)
+            main_lv.placements.append(pvec_pla.name)
+
+    def build_outer_ecal(self, main_lv, geom):
+        # build the barrel 
+        obb = self.get_builder('OuterBarrelECalBuilder')
+        if obb == None:
+            return
+        ob_vol = obb.get_volume()
+        ob_rot = geom.structure.Rotation(obb.name+"_rot",
+                                         y=Q("90deg"))
+        ob_pla = geom.structure.Placement(obb.name+"_pla",
+                                          volume=ob_vol, rot=ob_rot)
+        main_lv.placements.append(ob_pla.name)

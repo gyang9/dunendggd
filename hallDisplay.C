@@ -1,4 +1,4 @@
-void geoDisplay(TString filename, Int_t VisLevel=5)
+void hallDisplay(TString filename, Int_t VisLevel=5)
 {
 	TGeoManager *geo = new TGeoManager();
 	geo->Import(filename);
@@ -53,7 +53,10 @@ void geoDisplay(TString filename, Int_t VisLevel=5)
 	// TGeoVolume* active =gGeoManager->GetVolume("volLArActive");
 	
 	// get argon cube active volume coordinates
-	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volLArCryo_0/volArgonCube_0/volArgonCubeActive_0");
+	//	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volLArCryo_0/volArgonCube_0/volArgonCubeActive_0");
+
+	const char* lar_active_location="/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volMoistureBarrier_0/volInsulationBoard2_0/volGREBoard2_0/volInsulationBoard1_0/volGREBoard1_0/volFireproofBoard_0/volSSMembrane_0/volArgonCubeService_0/volArgonCube_0/volArgonCubeActive_0";
+	gGeoManager->cd(lar_active_location);
 	TGeoMatrix *active = gGeoManager->GetCurrentMatrix();
 	double local_active[3]={0,0,0};
 	double master_active[3]={0,0,0};	
@@ -75,7 +78,7 @@ void geoDisplay(TString filename, Int_t VisLevel=5)
 	cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
 	
 	// print out location of GArTPC
-	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volIronDipole_0/innerDet_volume_0/volGArTPC_0");
+	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volCylindricalMPT_0/volGArTPC_0");
 	TGeoMatrix *gartpc = gGeoManager->GetCurrentMatrix();
 	double local_gartpc[3]={0,0,0};
 	double master_gartpc[3]={0,0,0};	
