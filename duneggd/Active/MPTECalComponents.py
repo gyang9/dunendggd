@@ -19,6 +19,7 @@ class MPTECalTileBuilder(gegede.builder.Builder):
     dz: a list specifying the depth of each layer
     lspacing: a list specifying the spacing after each layer
     mat: a list specifying the material of each layer
+    active: a list of booleans recording if the layer should be marked active
     filler_mat: the material between and outside of layers (fills in cracks)
     output_name: the name to give this tile 
                  (maybe used as a basename by the caller)
@@ -30,6 +31,7 @@ class MPTECalTileBuilder(gegede.builder.Builder):
                     dz=[Q('2mm'), Q('5mm'), Q('1mm')],
                     lspacing=[Q('0.1mm'), Q('0.1mm'), Q('2mm')],
                     mat=['Copper', 'Scintillator', 'FR4'],
+                    active=[False, True, False],
                     filler_mat='Air',
                     output_name='MPTECalTile')
 
@@ -58,13 +60,16 @@ class MPTECalTileBuilder(gegede.builder.Builder):
         skip = Q("0mm")  # no skipped space before the first layer
         cntr = 1
         zloc = Q("0mm")
-        for dz, lspace, mat in zip(self.dz, self.lspacing, self.mat):
+        for dz, lspace, mat, active in zip(self.dz, self.lspacing,
+                                           self.mat, self.active):
             lname = (self.output_name+"_L%i" % cntr)
             layer_shape = geom.shapes.Box(lname, self.dx, self.dy, dz/2.0)
             zloc = zloc+skip+dz/2.0
             print dz, lspace, mat, zloc
             layer_lv = geom.structure.Volume(lname+"_vol", material=mat,
                                              shape=layer_shape)
+            if active:
+                layer_lv.params.append(("SensDet", self.output_name))
             # dzm is the half depth of the mother volume
             # we need to subtract it off to position layers
             # relative to the center of the mother
