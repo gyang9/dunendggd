@@ -189,25 +189,41 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
 
     Attributes:
     geometry=
-      cylinder: build on a cylinder of radius r with angular coverage over
-                phi_range=[start,end]. cylinder axis along z. phi is the
+      cylinder: Build on a cylinder of radius r with angular coverage over
+                phi_range=[start,end] with cylinder axis along z. Phi is the
                 usual angle in the x,y plane. If nlayers>1 below, r will
                 correspond to the inner radius of the innermost layer.
-      cplane: build out a circular plane of radius r
+      cplane:   Build out a circular plane of radius r. This builder will
+                tile the plane symmetrically in x and y to fill out a
+                circle of radius <=r
+      xyplane:  Build out a rectangular plane of width height y. This
+                builder will form strips along the x direction with 
+                as many tiles as needed to achieve a width of x without
+                going over (see the strip builder docstring). The x 
+                dimension is supplied when configuring the 
+                strip sub-builder.
+                Then the builder will then repeat the process for y, 
+                including extra_space in its calculations.
+ 
     r, phi_range= used by the cylinder and cplane (just r) geometries
+
+    x = used by the xyplane geometry
+
     material= material filling the mother volume (fills in any cracks)
+
     extra_space = space between strips
+
     layer_gap = gap between layers
+
     nlayers = number of layers to build
+
     output_name = name of this layer (maybe used as a basename by the caller)
     """
-    # xyplane: build out a rectangular plane of width x, height y
-    #    x, y= used by the xyplane geometry
     # set a .defaults which gegede will use to make data members
     # when configure is called
-
     defaults = dict(geometry='cylinder',
                     r=Q("2.5m"), phi_range=[Q("0deg"), Q("360deg")],
+                    y=Q("1.0m"),
                     material='Air',
                     extra_space=Q("0.1mm"),
                     layer_gap=Q("2.0mm"),
@@ -228,6 +244,8 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
             self.construct_cylinder_layers(geom)
         elif self.geometry == 'cplane':
             self.construct_cplane_layers(geom)
+        elif self.geometry == 'xyplane':
+            self.construct_xyplane(geom)
         return
 
     def construct_cylinder_layers(self, geom):
@@ -548,6 +566,45 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         return layer_lv
 #        self.add_volume(layer_lv)
 
+#    def construct_xyplane(self, geom, rmin, lname):
+    def construct_xyplane(self, geom, lname="XYplane"):
+        '''
+        Constructs an plane of tiles in x,y centered on (0,0,0).
+
+        The y dimension comes from the configuration of this builder.
+        The x dimension comes from the configuration of the strip subbuilder.
+        '''
+        # first just get a strip oriented along x from the strip builder
+        strip_builder = self.get_builder(self.strip_builder_name)
+        strip_lv = strip_builder.get_volume()
+        ggd_shape = geom.store.shapes.get(strip_lv.shape)
+        strip_height = (ggd_shape.dy+self.extra_space)*2
+        strip_depth = ggd_shape.dz*2
+        strip_length = ggd_shape.dx*2
+
+        # now figure out how many strips we can orient along y
+        # and then the total height along y
+        nstrips = int(floor(self.y/strip_height))  # round explicitly
+        total_height = nstrips*strip_height
+        
+        # start by building the mother volume
+        layer_shape = geom.shapes.Box(lname, strip_length/2.0,
+                                      total_height/2.0,
+                                      strip_depth/2.0)
+        
+        layer_lv = geom.structure.Volume(lname+"_vol", shape=layer_shape,
+                                         material=self.material)
+
+        # now figure out the y positions of the strips and place them
+        bname=lname+"_"+strip_lv.name
+        for istrip, yloc in symmetric_arrangement(nstrips, strip_height):
+            pos = geom.structure.Position(bname+"_%i_pos"%istrip,
+                                          y=yloc)
+            pla = geom.structure.Placement(bname+"_%i_pla"%istrip,
+                                           volume=strip_lv, pos=pos)
+            layer_lv.placements.append(pla.name)
+        self.add_volume(layer_lv)
+
     def tiles_to_add(self, x, y, w, r):
         '''Starting with a square tile of width w located at x,y 
         figure out how many tiles we can add while staying 
@@ -604,3 +661,4 @@ def organize_by_rows(all_tile_locations):
     # loop ends without appending the last temp_array so do it here
     all_organized.append(temp_array)
     return all_organized
+
