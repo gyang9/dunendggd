@@ -245,7 +245,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         elif self.geometry == 'cplane':
             self.construct_cplane_layers(geom)
         elif self.geometry == 'xyplane':
-            self.construct_xyplane(geom)
+            self.construct_xyplane_layers(geom)
         return
 
     def construct_cylinder_layers(self, geom):
@@ -438,15 +438,17 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
         return
 
     def construct_cplane_layers(self, geom):
-        ''' construct a set of cplane layers '''
-
+        '''
+        Construct a set of self.nlayers cplanes separated by
+        self.layer_gap
+        '''
         # get layer thickness
         tile_builder = self.get_builder(self.tile_builder_name)
         tile_lv = tile_builder.get_volume()
         ggd_shape = geom.store.shapes.get(tile_lv.shape)
         dz_layer = ggd_shape.dz*2
         # get total z depth of all layers
-        total_z=(dz_layer+self.layer_gap)*self.nlayers
+        total_z = (dz_layer+self.layer_gap)*self.nlayers
         # make the mother volume first since we can
         mother_shape = geom.shapes.Tubs(self.output_name,
                                         rmin=Q('0mm'), rmax=self.r,
@@ -564,9 +566,42 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
                 layer_lv.placements.append(pla.name)
 
         return layer_lv
-#        self.add_volume(layer_lv)
 
-#    def construct_xyplane(self, geom, rmin, lname):
+    def construct_xyplane_layers(self, geom):
+        '''
+        Constructs a series of self.nlayers xyplane layers spaced
+        by self.layer_gap
+        '''
+        # get a layer lv and it's dimensions
+        layer_lv = self.construct_xyplane(geom)
+        ggd_layer_shape = geom.store.shapes.get(layer_lv.shape)
+        layer_depth = ggd_layer_shape.dz*2
+        layer_width = ggd_layer_shape.dx*2
+        layer_height = ggd_layer_shape.dy*2
+        
+        # get total z depth of all layers
+        total_z = (layer_depth+self.layer_gap)*self.nlayers
+        zstart = -total_z/2.0  # edge of first layer here
+        zstart = zstart + layer_depth/2.0  # center of first layer here
+
+        # make the mother volume first
+        mother_shape = geom.shapes.Box(self.output_name, layer_width/2.0,
+                                       layer_height/2.0, total_z/2.0)
+
+        mother_lv = geom.structure.Volume(self.output_name+"_vol",
+                                          shape=mother_shape,
+                                          material=self.material)
+
+        for ilayer in range(self.nlayers):
+            zlayer = zstart + (layer_depth + self.layer_gap)*ilayer
+            lname = self.output_name + "_L%i" % (ilayer)
+            pos = geom.structure.Position(lname+'_pos', z=zlayer)
+            pla = geom.structure.Placement(lname+'_pla',
+                                           volume=layer_lv,
+                                           pos=pos)
+            mother_lv.placements.append(pla.name)
+        self.add_volume(mother_lv)
+        
     def construct_xyplane(self, geom, lname="XYplane"):
         '''
         Constructs an plane of tiles in x,y centered on (0,0,0).
@@ -603,7 +638,7 @@ class MPTECalLayerBuilder(gegede.builder.Builder):
             pla = geom.structure.Placement(bname+"_%i_pla"%istrip,
                                            volume=strip_lv, pos=pos)
             layer_lv.placements.append(pla.name)
-        self.add_volume(layer_lv)
+        return layer_lv
 
     def tiles_to_add(self, x, y, w, r):
         '''Starting with a square tile of width w located at x,y 
