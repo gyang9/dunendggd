@@ -1,13 +1,13 @@
 """ GArTPC.py
 
-A basic builder for a gas TPC consisting of a cylindrical chamber 
+A basic builder for a gas TPC consisting of a cylindrical chamber
 with two back-to-back rectangular active volmes.
 
 Original Author: J. Lopez, U. Colorado
 
 TO DO:
 
-Start splitting the various volumes into separate builders or 
+Start splitting the various volumes into separate builders or
 use equivalent existing builders whenever possible.
 
 Validate that rotations for x and y drift are in the correct
@@ -38,12 +38,12 @@ class GArTPCBuilder(gegede.builder.Builder):
         halfDimension: Dimensions of volume holding the TPC geometry.
         tpcDimension: Dimensions of each TPC volume.
         TPCisCyl: True for a cylindrical TPC. Set from tpcDimension
-        Radius: Radius for a cylindrical TPC. 
+        Radius: Radius for a cylindrical TPC.
         HalfX: Half length of TPC in x-direction
         HalfY: Half length of TPC in y-direction
         HalfZ: Half of drift distance.
         Drift: Drift axis (always z for a cylindrical TPC)
-        TPCGap: Half of spacing between TPCs. Reset when central 
+        TPCGap: Half of spacing between TPCs. Reset when central
                 electrode is created.
         SmallGap: A small distance to help prevent overlaps
         PadThickness: Thickness of PCB holding readout pads
@@ -79,11 +79,11 @@ class GArTPCBuilder(gegede.builder.Builder):
                     magnetic field was set in a parent volume.
                 drift: The drift direction. (x, y, or z)
                 kwargs: Additional keyword arguments. Allowed are:
-                    EndCapThickness, WallThickness, 
+                    EndCapThickness, WallThickness,
                     ChamberMaterial, GasName, Density,
                     PadThickness, PadMaterial, PadOffset,
                     PadFrameThickness,PadFrameMaterial
-                    CentElectrodeHCThickness,        
+                    CentElectrodeHCThickness,
                     CentElectrodeThickness
         """
 
@@ -122,12 +122,12 @@ class GArTPCBuilder(gegede.builder.Builder):
             self.Composition = tuple(comp)
             self.GasType = kwargs['GasName']
             self.GasDensity = kwargs['Density']
- 
+
         self.halfDimension = halfDimension
         # The TPCs: Boxes at the center of the vacuum chamber
         self.tpcDimension = tpcDimension
         if 'dx' in tpcDimension:
-            self.HalfX = tpcDimension['dx']/2 
+            self.HalfX = tpcDimension['dx']/2
             self.HalfY = tpcDimension['dy']/2
             self.HalfZ = tpcDimension['dz']/2
             self.Drift = drift
@@ -140,7 +140,7 @@ class GArTPCBuilder(gegede.builder.Builder):
 
         # A bit of space for the central electrode
 
-        self.TPCGap = Q('2mm') 
+        self.TPCGap = Q('2mm')
         self.SmallGap = Q('0.001mm')
         self.CentElectrodeHCThickness = Q('6mm')
         self.CentElectrodeThickness = Q('0.02mm')
@@ -174,10 +174,10 @@ class GArTPCBuilder(gegede.builder.Builder):
     def construct(self,geom):
         """ Construct the geometry.
 
-        The standard geometry consists of a cylindrical vessel 
+        The standard geometry consists of a cylindrical vessel
         filled with gas. Two TPC sensitive volumes are placed
         within the gas, as is a central electrode.
-        After that, a readout plane and field cage are added 
+        After that, a readout plane and field cage are added
         to each TPC.
 
         args:
@@ -187,7 +187,7 @@ class GArTPCBuilder(gegede.builder.Builder):
 
         # If using a custom gas, define here
         if self.Composition is not None:
-            geom.matter.Mixture(self.GasType, 
+            geom.matter.Mixture(self.GasType,
                                 density=self.GasDensity,
                                 components=self.Composition)
 
@@ -215,7 +215,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                                                    pos=tpc_chamber_pos)
         main_lv.placements.append(tpc_chamber_pla.name)
 
-  
+
         # Add in the gas volume
         tpc_gas_shape = geom.shapes.Tubs('TPCGas',
                              rmax=self.ChamberRadius-self.WallThickness,
@@ -234,13 +234,13 @@ class GArTPCBuilder(gegede.builder.Builder):
                                                pos=tpc_gas_pos)
         tpc_chamber_lv.placements.append(tpc_gas_pla.name)
 
-        
+
         # Construct the TPCs
         self.construct_tpcs(geom,tpc_gas_lv)
-        
+
 
     def construct_tpcs(self,geom,lv):
-        """ Construct the two TPCs along with their 
+        """ Construct the two TPCs along with their
         field cages and readout plaen
 
         args:
@@ -254,7 +254,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         pos2 = []
         rot1 = []
         rot2 = []
-        
+
         if self.Drift == 'y':
 
             pos1 = [0,1,0]
@@ -276,8 +276,8 @@ class GArTPCBuilder(gegede.builder.Builder):
             rot2 = [Q('180deg'),Q('0deg'),Q('0deg')]
 
         self.construct_central_electrode(geom,rot1,lv)
-        self.construct_tpc(geom,"TPC1",pos1,rot1,lv)
-        self.construct_tpc(geom,"TPC2",pos2,rot2,lv)
+        self.construct_tpc(geom,"TPC_Drift1",pos1,rot1,lv)
+        self.construct_tpc(geom,"TPC_Drift2",pos2,rot2,lv)
 
     def construct_central_electrode(self,geom,rot,lv):
         """ Create the central electrode
@@ -297,10 +297,10 @@ class GArTPCBuilder(gegede.builder.Builder):
                 place the electrode.
 
         """
-        
+
 
         # Create the shape and logical volume
-        
+
         cent_hc_dx = self.CentElectrodeHCThickness
         cent_my_dx = self.CentElectrodeThickness
 
@@ -350,7 +350,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                                            )
 
         cent_elec_lv.placements.append(cent_hc_pla.name)
- 
+
         self.TPCGap = cent_hc_dx/2+cent_my_dx+self.SmallGap
 
     def construct_tpc(self,geom,name,pos_vec,rot,lv):
@@ -362,7 +362,7 @@ class GArTPCBuilder(gegede.builder.Builder):
             geom: The geometry.
             name: The name of the TPC. Should be unique.
             pos_vec: A unit vector giving the direction about
-                     which the TPC should be translated. 
+                     which the TPC should be translated.
                      Array-like.
             rot: A rotation vector. Array-like
             lv: The parent volume.
@@ -372,7 +372,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         tpc_rot = geom.structure.Rotation(name+'_rot',rot[0],rot[1],rot[2])
         pos = [ x*(self.HalfZ + self.TPCGap) for x in pos_vec]
         tpc_pos = geom.structure.Position(name+'_pos',pos[0],pos[1],pos[2])
- 
+
         # Create the shape and logical volume
         if self.TPCisCyl == False:
             tpc_shape = geom.shapes.Box(name+'_shape',self.HalfX,
@@ -415,7 +415,7 @@ class GArTPCBuilder(gegede.builder.Builder):
             name: The name of the TPC.
             pos_vec: A unit vector pointing in the direction which this
                      should be moved from the center. Array-like.
-            tpc_rot: The rotation for this TPC. A Rotation object. 
+            tpc_rot: The rotation for this TPC. A Rotation object.
             lv: The parent volume.
 
         """
@@ -446,8 +446,8 @@ class GArTPCBuilder(gegede.builder.Builder):
 
         lv.placements.append(pad_pla.name)
 
-        
- 
+
+
         # Pad support frame
 #        padframepos = [padpos[x] + pos_vec[x]*(self.SmallGap
 #                       +self.PadFrameThickness/2) for x in range(3)]
@@ -474,19 +474,19 @@ class GArTPCBuilder(gegede.builder.Builder):
     def construct_fieldcage(self,geom,name,tpc_pos,tpc_rot,lv):
         """ Construct the field cage for a TPC.
 
-        Currently constructs the support structures for the field 
+        Currently constructs the support structures for the field
         cage. This is based on the ALICE TPC design. The field cage
-        structure consists of a central honeycomb structure 
+        structure consists of a central honeycomb structure
         surrounded on both sides by kevlar and then tedlar.
 
-        Field cage posts and conductive strips are not currently 
+        Field cage posts and conductive strips are not currently
         modeled.
- 
+
         Args:
-            geom: The geometry 
+            geom: The geometry
             name: The name of the TPC
             tpc_pos: The position of the TPC center. A Position object.
-            tpc_rot: The rotation of this TPC. A Rotation object. 
+            tpc_rot: The rotation of this TPC. A Rotation object.
             lv: The parent volume.
 
         """
@@ -509,7 +509,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                                                second=fc_pvf_0)
         else:
             fc_out_r = self.Radius + fc_dx + self.SmallGap
-            fc_in_r = self.Radius + self.SmallGap  
+            fc_in_r = self.Radius + self.SmallGap
             fc_pvf_shape = geom.shapes.Tubs(name+'fc_pvf_shape',
                                             rmax = fc_out_r,rmin=fc_in_r,
                                             dz = self.HalfZ)
@@ -535,7 +535,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                                        fc_in_y+pvf_dx,
                                        self.HalfZ-self.SmallGap)
             fc_kev_shape = geom.shapes.Boolean(name+'fc_kev_shape',
-                                               type='subtraction', 
+                                               type='subtraction',
                                                first=fc_kev_1,
                                                second=fc_kev_0)
         else:
