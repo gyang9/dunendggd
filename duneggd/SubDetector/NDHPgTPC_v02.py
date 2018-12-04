@@ -180,20 +180,28 @@ class NDHPgTPC_v02_Builder(gegede.builder.Builder):
         iecb = self.get_builder("ECALEndcapBuilder")
         iec_vol = iecb.get_volume()
         iec_vol.params.append(("BField", self.innerBField))
-        iec_shape = geom.store.shapes.get(iec_vol.shape)
-        iec_thickness = iec_shape.dz*2.0
-        # build the endcaps
-        for side in ["L", "R"]:
-            rot = "-90deg" if "L" else "90deg"
-            xpos = self.IBECalXStart+iec_thickness/2.0
-            if side == "R":
-                xpos = -xpos
-            iec_rot = geom.structure.Rotation(iecb.name+side+"_rot", y=rot)
-            iec_pos = geom.structure.Position(iecb.name+side+"_pos", x=xpos)
-            iec_pla = geom.structure.Placement(iecb.name+side+"_pla",
-                                               volume=iec_vol, rot=iec_rot,
-                                               pos=iec_pos)
-            main_lv.placements.append(iec_pla.name)
+        # iec_shape = geom.store.shapes.get(iec_vol.shape)
+        # iec_thickness = iec_shape.dz*2.0
+        # # build the endcaps
+        # for side in ["L", "R"]:
+        #     rot = "-90deg" if "L" else "90deg"
+        #     xpos = self.IBECalXStart+iec_thickness/2.0
+        #     if side == "R":
+        #         xpos = -xpos
+        #     iec_rot = geom.structure.Rotation(iecb.name+side+"_rot", y=rot)
+        #     iec_pos = geom.structure.Position(iecb.name+side+"_pos", x=xpos)
+        #     iec_pla = geom.structure.Placement(iecb.name+side+"_pla",
+        #                                        volume=iec_vol, rot=iec_rot,pos=iec_pos)
+        #     main_lv.placements.append(iec_pla.name)
+
+        rot_x = Q("90.0deg")-Q("180.0deg")/8.0
+        print rot_x
+        iec_rot = geom.structure.Rotation(iecb.name+"_rot", x=Q("0deg"), y=Q("0deg"), z=rot_x)
+        iec_pla = geom.structure.Placement(iecb.name+"_pla",
+        volume=iec_vol, rot=iec_rot)
+        main_lv.placements.append(iec_pla.name)
+
+
 
     def build_pressure_vessel(self, main_lv, geom):
         rmin = self.pvInnerRadius
