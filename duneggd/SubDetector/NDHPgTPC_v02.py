@@ -29,15 +29,7 @@ class NDHPgTPC_v02_Builder(gegede.builder.Builder):
 
         innerBField: the magnetic field inside of the magnet
         '''
-    defaults=dict( yokeMaterial="Iron",
-                   yokeInnerR=Q("3.20m"),
-                   yokeInnerZ=Q("3.9m"),
-                   yokeThicknessR=Q("0.5m"),
-                   yokeThicknessZ=Q("0.5m"),
-                   yokeBufferToBoundaryR=Q("0.5m"),
-                   yokeBufferToBoundaryZ=Q("0.5m"),
-                   yokePhiCutout=Q("90deg"),
-                   buildYoke=True,
+    defaults=dict( buildYoke=True,
                    innerBField="0.4 T, 0.0 T, 0.0 T",
                    buildGarTPC=True,
                    buildEcal=True,
@@ -51,9 +43,9 @@ class NDHPgTPC_v02_Builder(gegede.builder.Builder):
         # it's just a box to hold everything else
         # the z axis of a cylinder is the symmetry axis, but definition
         # for this box it corresponds to x
-        dx_main=self.yokeInnerR+self.yokeThicknessR+self.yokeBufferToBoundaryR
-        dy_main=self.yokeInnerR+self.yokeThicknessR+self.yokeBufferToBoundaryR
-        dz_main=self.yokeInnerZ+self.yokeThicknessZ+self.yokeBufferToBoundaryZ
+        dx_main=Q("10m")
+        dy_main=Q("10m")
+        dz_main=Q("10m")
         main_shape = geom.shapes.Box('NDHgTPC',
                                      dx=dx_main, dy=dy_main, dz=dz_main)
 
@@ -104,9 +96,10 @@ class NDHPgTPC_v02_Builder(gegede.builder.Builder):
         yokeec_rot = geom.structure.Rotation(yokeec_builder.name+"_rot", z=rot_z)
         yokeec_pla = geom.structure.Placement(yokeec_builder.name+"_pla", volume=yokeec_vol, rot=yokeec_rot)
         main_lv.placements.append(yokeec_pla.name)
+        return
 
     def build_gartpc(self, main_lv, geom):
-        tpc_builder = self.get_builder('GArTPC')
+        tpc_builder = self.get_builder('GArTPCBuilder')
         tpc_vol = tpc_builder.get_volume()
         tpc_vol.params.append(("BField", self.innerBField))
         # tpc_rot = geom.structure.Rotation(tpc_builder.name+"_rot",

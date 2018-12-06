@@ -212,13 +212,15 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     phi_range=[Q("0deg"), Q("360deg")],
                     Barrel_halfZ=Q("1000mm"),
                     material='Air',
-                    nLayers=1,
+                    nHGLayers=1,
+                    nLGLayers=1,
                     nModules=1,
                     output_name='MPTECalDetElement',
                     HGlayer_builder_name="NDHPgTPCHGLayerBuilder",
                     LGlayer_builder_name="NDHPgTPCLGLayerBuilder",
                     pvMaterial = "Steel",
                     pvThickness = Q("20mm"),
+                    yokeMaterial = "Steel",
                     yokeThickness = Q("500mm"),
                     yokePhiCutout = Q("90deg")
                     )
@@ -261,13 +263,15 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         LGLayer_lv = LGLayer_builder.get_volume()
 
         HGLayer_shape = geom.store.shapes.get(HGLayer_lv.shape)
+        LGLayer_shape = geom.store.shapes.get(LGLayer_lv.shape)
+
+        HG_layer_thickness = HGLayer_shape.dz * 2
+        LG_layer_thickness = LGLayer_shape.dz * 2
 
         # ECAL Barrel
         nsides = self.nsides
-
-        layer_thickness = HGLayer_shape.dz * 2
         safety = Q("1mm")
-        module_thickness = self.nLayers * layer_thickness + safety
+        module_thickness = self.nHGLayers * HG_layer_thickness + self.nLGLayers * LG_layer_thickness + safety
 
         max_dim_x = 2 * tan( pi/nsides ) * self.rInner + module_thickness / sin( 2*pi/nsides ) #large side
         min_dim_x = max_dim_x - 2*module_thickness / tan( 2*pi/nsides ) # small side
@@ -298,11 +302,11 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         zPos = Q("0mm")
         layer_id = 0
-        for ilayer in range(self.nLayers):
+        for ilayer in range(self.nHGLayers):
             layer_id = ilayer + 1
 
             #Configure the layer length based on the zPos in the stave
-            l_dim_x = max_dim_x - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
+            l_dim_x = max_dim_x - 2 * (zPos + HG_layer_thickness) / tan(2.* pi / nsides)
             l_dim_y = Ecal_Barrel_module_dim
             layername = self.output_name + "_stave" + "_module" + "_layer_%i" % (layer_id)
 
@@ -312,12 +316,33 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             layer_lv = HGLayer_builder.get_volume(layername+"_vol")
 
             #Placement layer in stave
-            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - module_thickness/2.0)
+            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + HG_layer_thickness/2.0 - module_thickness/2.0)
             layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
 
             stave_lv.placements.append(layer_pla.name)
 
-            zPos += layer_thickness;
+            zPos += HG_layer_thickness;
+
+        for ilayer in range(self.nLGLayers):
+            layer_id = self.nHGLayers + ilayer + 1
+
+            #Configure the layer length based on the zPos in the stave
+            l_dim_x = max_dim_x - 2 * (zPos + HG_layer_thickness) / tan(2.* pi / nsides)
+            l_dim_y = Ecal_Barrel_module_dim
+            layername = self.output_name + "_stave" + "_module" + "_layer_%i" % (layer_id)
+
+            LGLayer_builder = self.get_builder(self.LGlayer_builder_name)
+            NDHPgTPCLGLayerBuilder.BarrelConfigurationLayer(LGLayer_builder, l_dim_x, l_dim_y, layername, "Box")
+            NDHPgTPCLGLayerBuilder.construct(LGLayer_builder, geom)
+            layer_lv = LGLayer_builder.get_volume(layername+"_vol")
+
+            #Placement layer in stave
+            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + LG_layer_thickness/2.0 - module_thickness/2.0)
+            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+
+            stave_lv.placements.append(layer_pla.name)
+
+            zPos += LG_layer_thickness;
 
         #Placing the staves and modules
         for istave in range(nsides):
@@ -353,17 +378,21 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         LGLayer_lv = LGLayer_builder.get_volume()
 
         HGLayer_shape = geom.store.shapes.get(HGLayer_lv.shape)
+        LGLayer_shape = geom.store.shapes.get(LGLayer_lv.shape)
+
+        HG_layer_thickness = HGLayer_shape.dz * 2
+        LG_layer_thickness = LGLayer_shape.dz * 2
 
         # ECAL Endcap
         nsides = self.nsides
-        layer_thickness = HGLayer_shape.dz * 2
         safety = Q("1mm")
-        module_thickness = self.nLayers * layer_thickness + safety
+        module_thickness = self.nHGLayers * HG_layer_thickness + self.nLGLayers * LG_layer_thickness + safety
         EcalEndcap_inner_radius = Q("0mm")
         EcalEndcap_outer_radius = self.rInner + module_thickness
         Ecal_Barrel_halfZ = self.Barrel_halfZ
         EcalEndcap_min_z = Ecal_Barrel_halfZ
         EcalEndcap_max_z = Ecal_Barrel_halfZ + module_thickness
+        Ecal_Barrel_n_modules = self.nModules
 
         rmin = EcalEndcap_inner_radius
         rmax = EcalEndcap_outer_radius
@@ -386,7 +415,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         zPos = Q("0mm")
         layer_id = 0
-        for ilayer in range(self.nLayers):
+        for ilayer in range(self.nHGLayers):
             layer_id = ilayer + 1
             layername = self.output_name + "_stave" + "_module" + "_layer_%i" % (layer_id)
 
@@ -396,12 +425,30 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             layer_lv = HGLayer_builder.get_volume(layername+"_inter"+"_vol")
 
             # Placement layer in stave
-            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - module_thickness/2.0)
+            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + HG_layer_thickness/2.0 - module_thickness/2.0)
             layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
 
             endcap_stave_lv.placements.append(layer_pla.name)
 
-            zPos += layer_thickness;
+            zPos += HG_layer_thickness;
+
+        for ilayer in range(self.nLGLayers):
+            layer_id = self.nHGLayers + ilayer + 1
+
+            layername = self.output_name + "_stave" + "_module" + "_layer_%i" % (layer_id)
+
+            LGLayer_builder = self.get_builder(self.LGlayer_builder_name)
+            NDHPgTPCLGLayerBuilder.EndcapConfigurationLayer(LGLayer_builder, nsides, rmin, rmax, quadr, layername, "Intersection")
+            NDHPgTPCLGLayerBuilder.construct(LGLayer_builder, geom)
+            layer_lv = LGLayer_builder.get_volume(layername+"_inter"+"_vol")
+
+            #Placement layer in stave
+            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + LG_layer_thickness/2.0 - module_thickness/2.0)
+            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+
+            endcap_stave_lv.placements.append(layer_pla.name)
+
+            zPos += LG_layer_thickness;
 
         #Place staves in the Endcap Volume
         module_id = -1
@@ -409,7 +456,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             if iend == 0:
                 module_id = 0
             else:
-                module_id = 6
+                module_id = Ecal_Barrel_n_modules + 1
 
             this_module_z_offset = (EcalEndcap_min_z + EcalEndcap_max_z)/2.
             if iend == 0:
@@ -450,24 +497,30 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Construct PV Barrel"
 
         HGLayer_builder = self.get_builder(self.HGlayer_builder_name)
+        LGLayer_builder = self.get_builder(self.LGlayer_builder_name)
+
         HGLayer_lv = HGLayer_builder.get_volume()
+        LGLayer_lv = LGLayer_builder.get_volume()
+
         HGLayer_shape = geom.store.shapes.get(HGLayer_lv.shape)
+        LGLayer_shape = geom.store.shapes.get(LGLayer_lv.shape)
+
+        HG_layer_thickness = HGLayer_shape.dz * 2
+        LG_layer_thickness = LGLayer_shape.dz * 2
+
         safety = Q("1mm")
-        layer_thickness = HGLayer_shape.dz * 2
-        module_thickness = self.nLayers * layer_thickness + safety
+        ecal_module_thickness = self.nHGLayers * HG_layer_thickness + self.nLGLayers * LG_layer_thickness + safety
 
         nsides = self.nsides
-        rInnerPVBarrel = self.rInner + module_thickness
+        pv_rInner = self.rInner + ecal_module_thickness + safety
+        pvHalfLength = self.Barrel_halfZ + ecal_module_thickness
+        half_max_dim_x = 0.5*(2 * tan( pi/nsides ) * self.rInner + ecal_module_thickness / sin( 2*pi/nsides ))
+        pv_rmin = sqrt((pv_rInner/Q("1mm"))**2 + (half_max_dim_x/Q("1mm"))**2)*Q("1mm")
+        pv_rmax = pv_rmin + self.pvThickness
 
-        pvHalfLength = self.Barrel_halfZ + module_thickness
-
-        half_max_dim_x = 0.5*(2 * tan( pi/nsides ) * self.rInner + module_thickness / sin( 2*pi/nsides )) #large side
-        rmin = sqrt((rInnerPVBarrel/Q("1mm"))**2 + (half_max_dim_x/Q("1mm"))**2)*Q("1mm")
-
-        pvthickness = self.pvThickness
         # build the pressure vessel barrel
         pvb_name = self.output_name + "Barrel"
-        pvb_shape = geom.shapes.Tubs(pvb_name, rmin=rmin, rmax=rmin+pvthickness, dz=pvHalfLength, sphi="0deg", dphi="360deg")
+        pvb_shape = geom.shapes.Tubs(pvb_name, rmin=pv_rmin, rmax=pv_rmax, dz=pvHalfLength, sphi="0deg", dphi="360deg")
         pvb_vol = geom.structure.Volume(pvb_name+"_vol", shape=pvb_shape, material=self.pvMaterial)
 
         self.add_volume(pvb_vol)
@@ -475,9 +528,10 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Construct PV Endcap"
 
         # build the pressure vessel endcaps
-        pv_endcap_shape_tub = geom.shapes.Tubs("PVEndcap_tubs", rmin=Q("0mm"), rmax=rmin+pvthickness, dz=2*pvHalfLength, sphi="0deg", dphi="360deg")
-        rsph = sqrt((pvHalfLength/Q("1mm"))**2 + ((rmin+pvthickness)/Q("1mm"))**2)*Q("1mm")
-        pv_endcap_shape_sphere = geom.shapes.Sphere("PVEndcap_sphere", rmin=rsph, rmax=rsph+pvthickness, sphi="0deg", dphi="360deg", stheta="0deg", dtheta="179.99999deg")
+        pv_endcap_shape_tub = geom.shapes.Tubs("PVEndcap_tubs", rmin=Q("0mm"), rmax=pv_rmax, dz=2*pvHalfLength, sphi="0deg", dphi="360deg")
+        rmin_sph = sqrt((pvHalfLength/Q("1mm"))**2 + (pv_rmax/Q("1mm"))**2)*Q("1mm")
+        rmax_sph = rmin_sph + self.pvThickness
+        pv_endcap_shape_sphere = geom.shapes.Sphere("PVEndcap_sphere", rmin=rmin_sph, rmax=rmax_sph, sphi="0deg", dphi="360deg", stheta="0deg", dtheta="179.99999deg")
 
         pv_endcap_shape_inter = geom.shapes.Boolean( self.output_name + "Endcap", type='intersection', first=pv_endcap_shape_tub, second=pv_endcap_shape_sphere)
         pvec_vol = geom.structure.Volume( self.output_name+"Endcap"+"_vol", shape=pv_endcap_shape_inter, material=self.pvMaterial )
@@ -487,60 +541,165 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def construct_yoke_barrel_staves(self, geom):
         print "Construct Yoke Barrel"
 
-        nsides = self.nsides
         HGLayer_builder = self.get_builder(self.HGlayer_builder_name)
+        LGLayer_builder = self.get_builder(self.LGlayer_builder_name)
+
         HGLayer_lv = HGLayer_builder.get_volume()
+        LGLayer_lv = LGLayer_builder.get_volume()
+
         HGLayer_shape = geom.store.shapes.get(HGLayer_lv.shape)
+        LGLayer_shape = geom.store.shapes.get(LGLayer_lv.shape)
+
+        HG_layer_thickness = HGLayer_shape.dz * 2
+        LG_layer_thickness = LGLayer_shape.dz * 2
+
         safety = Q("1mm")
-        layer_thickness = HGLayer_shape.dz * 2
-        module_thickness = self.nLayers * layer_thickness + safety
+        ecal_module_thickness = self.nHGLayers * HG_layer_thickness + self.nLGLayers * LG_layer_thickness + safety
 
-        rInnerPVBarrel = self.rInner + module_thickness
-        pvHalfLength = self.Barrel_halfZ + module_thickness
-        half_max_dim_x = 0.5*(2 * tan( pi/nsides ) * self.rInner + module_thickness / sin( 2*pi/nsides )) #large side
-        rmin = sqrt((rInnerPVBarrel/Q("1mm"))**2 + (half_max_dim_x/Q("1mm"))**2)*Q("1mm")
-        rmax=rmin+self.yokeThickness
+        nsides = self.nsides
+        pv_rInner = self.rInner + ecal_module_thickness + safety
+        pvHalfLength = self.Barrel_halfZ + ecal_module_thickness
+        half_max_dim_x = 0.5*(2 * tan( pi/nsides ) * self.rInner + ecal_module_thickness / sin( 2*pi/nsides ))
+        pv_rmin = sqrt((pv_rInner/Q("1mm"))**2 + (half_max_dim_x/Q("1mm"))**2)*Q("1mm")
+        pv_rmax = pv_rmin + self.pvThickness
 
-        rsph = sqrt((pvHalfLength/Q("1mm"))**2 + ((rmin+self.pvThickness)/Q("1mm"))**2)*Q("1mm")
-        dz=pvHalfLength + (rsph - pvHalfLength)
+        distYoke_PV_barrel = Q("15cm")
+        yoke_rmin = pv_rmax + safety + distYoke_PV_barrel
+        yoke_rmax = yoke_rmin + self.yokeThickness
+        Yoke_Barrel_n_modules = self.nModules
 
-        sphi=self.yokePhiCutout/2.0
-        dphi=Q("360deg")-self.yokePhiCutout
+        rmin_sph = sqrt((pvHalfLength/Q("1mm"))**2 + (pv_rmax/Q("1mm"))**2)*Q("1mm")
+        rmax_sph = rmin_sph + self.pvThickness
+
+        dz = pvHalfLength + (rmax_sph - pvHalfLength) + distYoke_PV_barrel
         by_name="YokeBarrel"
 
+        # sphi=self.yokePhiCutout/2.0
+        # dphi=Q("360deg")-self.yokePhiCutout
+
         #Mother volume Barrel
-        # by_shape = geom.shapes.PolyhedraRegular(by_name, numsides=nsides, sphi=sphi, dphi=dphi, rmin=rmin, rmax=rmax, dz=dz)
-        by_shape = geom.shapes.PolyhedraRegular(by_name, numsides=nsides, rmin=rmin, rmax=rmax, dz=dz)
+        by_shape = geom.shapes.PolyhedraRegular(by_name, numsides=nsides, rmin=yoke_rmin, rmax=yoke_rmax, dz=dz)
         by_lv = geom.structure.Volume(by_name+"_vol", shape=by_shape, material='Air')
+
+        #Create a template module
+        yoke_stave_name = by_name + "_stave"
+        yoke_stave_volname = by_name + "_stave" + "_vol"
+
+        Yoke_Barrel_halfZ = dz
+        Yoke_Barrel_module_dim = Yoke_Barrel_halfZ * 2 / Yoke_Barrel_n_modules
+        yoke_max_dim_x = 2 * tan( pi/nsides ) * yoke_rmin + self.yokeThickness / sin( 2*pi/nsides ) #large side
+        yoke_min_dim_x = yoke_max_dim_x - 2*self.yokeThickness / tan( 2*pi/nsides ) # small side
+
+        yoke_stave_shape = geom.shapes.Trapezoid(yoke_stave_name, dx1=yoke_max_dim_x/2.0, dx2=yoke_min_dim_x/2.0,
+        dy1=Yoke_Barrel_module_dim/2.0, dy2=Yoke_Barrel_module_dim/2.0,
+        dz=self.yokeThickness/2.0)
+
+        yoke_stave_lv = geom.structure.Volume(yoke_stave_volname, shape=yoke_stave_shape, material=self.yokeMaterial)
+
+        X = yoke_rmin + self.yokeThickness / 2.
+        Y = (self.yokeThickness / 2.) / sin(2.*pi/nsides)
+        dphi = (2*pi/nsides)
+        hphi = dphi/2;
+
+        #Placing the staves and modules
+        for istave in range(nsides):
+            stave_id = istave+1
+            dstave = int( nsides/4.0 )
+            phirot =  hphi + pi/2.0
+            phirot += (istave - dstave) * dphi
+            phirot2 =  (istave - dstave) * dphi + hphi
+
+            for imodule in range(Yoke_Barrel_n_modules):
+                module_id = imodule+1
+                print "Placing stave ", stave_id, " and module ", module_id
+
+                #Placement staves in Barrel
+                name = yoke_stave_lv.name + "_%i" % (stave_id) + "_module%i" % (module_id)
+                pos = geom.structure.Position(name + "_pos", x=(X*cos(phirot2)-Y*sin(phirot2)), y=(( X*sin(phirot2)+Y*cos(phirot2) )), z=( imodule+0.5 )*Yoke_Barrel_module_dim - Yoke_Barrel_halfZ )
+                rot = geom.structure.Rotation(name + "_rot", x=pi/2.0, y=phirot+pi, z=Q("0deg"))
+                pla = geom.structure.Placement(name + "_pla", volume=yoke_stave_lv, pos=pos, rot=rot)
+
+                by_lv.placements.append(pla.name)
 
         self.add_volume(by_lv)
 
     def construct_yoke_endcap_staves(self, geom):
         print "Construct Yoke Endcap"
 
-        nsides = self.nsides
         HGLayer_builder = self.get_builder(self.HGlayer_builder_name)
+        LGLayer_builder = self.get_builder(self.LGlayer_builder_name)
+
         HGLayer_lv = HGLayer_builder.get_volume()
+        LGLayer_lv = LGLayer_builder.get_volume()
+
         HGLayer_shape = geom.store.shapes.get(HGLayer_lv.shape)
+        LGLayer_shape = geom.store.shapes.get(LGLayer_lv.shape)
+
+        HG_layer_thickness = HGLayer_shape.dz * 2
+        LG_layer_thickness = LGLayer_shape.dz * 2
+
         safety = Q("1mm")
-        layer_thickness = HGLayer_shape.dz * 2
-        module_thickness = self.nLayers * layer_thickness + safety
 
-        rInnerPVBarrel = self.rInner + module_thickness
-        pvHalfLength = self.Barrel_halfZ + module_thickness
-        half_max_dim_x = 0.5*(2 * tan( pi/nsides ) * self.rInner + module_thickness / sin( 2*pi/nsides )) #large side
-        rmin = sqrt((rInnerPVBarrel/Q("1mm"))**2 + (half_max_dim_x/Q("1mm"))**2)*Q("1mm")
-        rmax=rmin+self.yokeThickness
+        ecal_module_thickness = self.nHGLayers * HG_layer_thickness + self.nLGLayers * LG_layer_thickness + safety
 
-        rsph = sqrt((pvHalfLength/Q("1mm"))**2 + ((rmin+self.pvThickness)/Q("1mm"))**2)*Q("1mm")
-        YokeEndcap_min_z = pvHalfLength + (rsph - pvHalfLength)
-        YokeEndcap_max_z = pvHalfLength + (rsph - pvHalfLength) + self.yokeThickness
+        nsides = self.nsides
+        pv_rInner = self.rInner + ecal_module_thickness + safety
+        pvHalfLength = self.Barrel_halfZ + ecal_module_thickness
+        half_max_dim_x = 0.5*(2 * tan( pi/nsides ) * self.rInner + ecal_module_thickness / sin( 2*pi/nsides ))
+        pv_rmin = sqrt((pv_rInner/Q("1mm"))**2 + (half_max_dim_x/Q("1mm"))**2)*Q("1mm")
+        pv_rmax = pv_rmin + self.pvThickness
+
+        distYoke_PV_barrel = Q("15cm")
+        yoke_rmin = pv_rmax + safety + distYoke_PV_barrel
+        yoke_rmax = yoke_rmin + self.yokeThickness
+
+        rmin_sph = sqrt((pvHalfLength/Q("1mm"))**2 + (pv_rmax/Q("1mm"))**2)*Q("1mm")
+        rmax_sph = rmin_sph + self.pvThickness
+
+        YokeEndcap_min_z = pvHalfLength + (rmax_sph - pvHalfLength) + safety + distYoke_PV_barrel
+        YokeEndcap_max_z = pvHalfLength + (rmax_sph - pvHalfLength) + safety + distYoke_PV_barrel + self.yokeThickness
 
         #Mother volume Endcap
-        yoke_endcap_shape_min = geom.shapes.PolyhedraRegular("YokeEndcap_min", numsides=nsides, rmin=Q("0mm"), rmax=rmax, dz=YokeEndcap_min_z)
-        yoke_endcap_shape_max = geom.shapes.PolyhedraRegular("YokeEndcap_max", numsides=nsides, rmin=Q("0mm"), rmax=rmax, dz=YokeEndcap_max_z)
+        yoke_endcap_shape_min = geom.shapes.PolyhedraRegular("YokeEndcap_min", numsides=nsides, rmin=Q("0mm"), rmax=yoke_rmax, dz=YokeEndcap_min_z)
+        yoke_endcap_shape_max = geom.shapes.PolyhedraRegular("YokeEndcap_max", numsides=nsides, rmin=Q("0mm"), rmax=yoke_rmax, dz=YokeEndcap_max_z)
 
-        yoke_endcap_shape = geom.shapes.Boolean( self.output_name, type='subtraction', first=yoke_endcap_shape_max, second=yoke_endcap_shape_min )
-        yoke_endcap_lv = geom.structure.Volume( self.output_name+"_vol", shape=yoke_endcap_shape, material='Air' )
+        yoke_endcap_shape = geom.shapes.Boolean( "YokeEndcap_sub", type='subtraction', first=yoke_endcap_shape_max, second=yoke_endcap_shape_min )
+        center_hole = geom.shapes.Tubs("center_hole", rmin=Q("0mm"), rmax=Q("0.5m"), dz=YokeEndcap_max_z, sphi=Q("0deg"), dphi=Q("360deg"))
+
+        yoke_endcap_shape_whole = geom.shapes.Boolean( "YokeEndcap", type='subtraction', first=yoke_endcap_shape, second=center_hole )
+        yoke_endcap_lv = geom.structure.Volume( self.output_name+"_vol", shape=yoke_endcap_shape_whole, material='Air' )
+
+        #Create endcap stave template
+        ecy_name = "YokeEndcap"
+        yoke_endcap_stave_name = ecy_name + "_stave"
+        yoke_endcap_stave_volname = ecy_name + "_stave" + "_vol"
+
+        yoke_endcap_stave_shape = geom.shapes.PolyhedraRegular(yoke_endcap_stave_name+"_full", numsides=nsides, rmin=Q("0mm"), rmax=yoke_rmax, dz=self.yokeThickness/2.0)
+
+        yoke_endcap_stave_shape_whole = geom.shapes.Boolean(yoke_endcap_stave_name, type='subtraction', first=yoke_endcap_stave_shape, second=center_hole )
+        yoke_endcap_stave_lv = geom.structure.Volume(yoke_endcap_stave_volname, shape=yoke_endcap_stave_shape_whole, material=self.yokeMaterial)
+
+        Yoke_Barrel_n_modules = self.nModules
+        module_id = -1
+        for iend in range(2):
+            if iend == 0:
+                module_id = 0
+            else:
+                module_id = Yoke_Barrel_n_modules + 1
+
+            this_module_z_offset = (YokeEndcap_min_z + YokeEndcap_max_z)/2.
+            if iend == 0:
+                this_module_z_offset *= -1
+
+            print "Placing yoke endcap module ", module_id
+
+            #Placement staves in Endcap
+            name = yoke_endcap_stave_lv.name + "_module%i" % (module_id)
+            yoke_endcap_stave_pos = geom.structure.Position(name + "_pos", x=Q("0mm"), y=Q("0mm"), z=this_module_z_offset)
+            #yoke_endcap_stave_rot = geom.structure.Rotation(name + "_rot", x=Q("180deg"), y=this_module_rotY, z=Q("0deg"))
+            #yoke_endcap_stave_pla = geom.structure.Placement(name + "_pla", volume=yoke_endcap_stave_lv, pos=yoke_endcap_stave_pos, rot=yoke_endcap_stave_rot)
+            yoke_endcap_stave_pla = geom.structure.Placement(name + "_pla", volume=yoke_endcap_stave_lv, pos=yoke_endcap_stave_pos)
+
+            yoke_endcap_lv.placements.append(yoke_endcap_stave_pla.name)
 
         self.add_volume(yoke_endcap_lv)
