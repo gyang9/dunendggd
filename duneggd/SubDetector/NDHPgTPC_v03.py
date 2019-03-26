@@ -26,7 +26,8 @@ class NDHPgTPC_v03_Builder(gegede.builder.Builder):
                    buildGarTPC=True,
                    buildEcal=True,
                    buildPV=True,
-                   buildYoke=False
+                   buildYoke=False,
+                   buildMagnet=False
                    )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -67,6 +68,13 @@ class NDHPgTPC_v03_Builder(gegede.builder.Builder):
         # A description of the return magnetic field and the coils is not implemented
         # if self.buildYoke:
         #     self.build_yoke(main_lv, geom)
+
+
+        ######### magnet ##################################
+        # Build a simple magnet of Al to get the total mass
+        # A description of the return magnetic field and the coils is not implemented
+        if self.buildMagnet:
+            self.build_magnet(main_lv, geom)
 
         return
 
@@ -162,3 +170,15 @@ class NDHPgTPC_v03_Builder(gegede.builder.Builder):
         pvec_pla = geom.structure.Placement("PVEndcap"+"_pla", volume=pvec_vol)
         # Place it in the main lv
         main_lv.placements.append(pvec_pla.name)
+
+    def build_magnet(self, main_lv, geom):
+
+        #Build the PV Barrel
+        magnet_builder = self.get_builder('MagnetBuilder')
+        if magnet_builder == None:
+            return
+
+        magnet_vol = magnet_builder.get_volume("Magnet_vol")
+        magnet_pla = geom.structure.Placement("Magnet"+"_pla", volume=magnet_vol)
+        # Place it in the main lv
+        main_lv.placements.append(magnet_pla.name)

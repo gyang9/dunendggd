@@ -231,7 +231,11 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     rInnerTPC = Q("2740mm"),
                     TPC_halfZ = Q('2600mm'),
                     nLayers = [30, 20],
-                    typeLayers = ['HG1', 'LG1']
+                    typeLayers = ['HG1', 'LG1'],
+                    magnetMaterial = "Aluminum",
+                    magnetThickness = Q("130mm"),
+                    magnetInnerR = Q("3250cm"),
+                    magnetHalfLength = Q("5m")
                     )
 
     #def configure(self, **kwds):
@@ -306,6 +310,8 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             self.construct_ecal_endcap_staves(geom)
         elif self.geometry == 'PV':
             self.construct_pv(geom)
+        elif self.geometry == 'Magnet':
+            self.construct_magnet(geom)
         # elif self.geometry == 'YokeBarrel':
         #     self.construct_yoke_barrel_staves(geom)
         # elif self.geometry == 'YokeEndcap':
@@ -314,6 +320,17 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             print "Could not find the geometry asked!"
             return
         return
+
+    def construct_magnet(self, geom):
+        ''' construct the Magnet '''
+
+        print "Construct Magnet"
+
+        magnet_name = self.output_name
+        magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
+        magnet_vol = geom.structure.Volume(magnet_name+"_vol", shape=magnet_shape, material=self.magnetMaterial)
+
+        self.add_volume(magnet_vol)
 
     def construct_pv(self, geom):
         ''' construct the Pressure Vessel '''
