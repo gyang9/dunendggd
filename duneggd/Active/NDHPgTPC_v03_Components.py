@@ -435,7 +435,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 stave_volname = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
 
                 stave_shape = geom.shapes.Trapezoid(stave_name, dx1=max_dim_stave/2.0, dx2=min_dim_stave/2.0,
-                dy1=Ecal_Barrel_module_dim/2.0, dy2=Ecal_Barrel_module_dim/2.0,
+                dy1=(Ecal_Barrel_module_dim-safety)/2.0, dy2=(Ecal_Barrel_module_dim-safety)/2.0,
                 dz=ecal_module_thickness/2.0)
 
                 stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.material)
@@ -453,7 +453,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                             HGLayer_builder = self.get_builder(self.HGlayerType1_builder_name)
                             layer_thickness = NDHPgTPCHGLayerBuilder.depth(HGLayer_builder)
                             l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
-                            l_dim_y = Ecal_Barrel_module_dim
+                            l_dim_y = Ecal_Barrel_module_dim - safety
 
                             NDHPgTPCHGLayerBuilder.BarrelConfigurationLayer(HGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
                             NDHPgTPCHGLayerBuilder.construct(HGLayer_builder, geom)
@@ -464,7 +464,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                             HGLayer_builder = self.get_builder(self.HGlayerType2_builder_name)
                             layer_thickness = NDHPgTPCHGLayerBuilder.depth(HGLayer_builder)
                             l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
-                            l_dim_y = Ecal_Barrel_module_dim
+                            l_dim_y = Ecal_Barrel_module_dim - safety
 
                             NDHPgTPCHGLayerBuilder.BarrelConfigurationLayer(HGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
                             NDHPgTPCHGLayerBuilder.construct(HGLayer_builder, geom)
@@ -474,7 +474,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                             LGLayer_builder = self.get_builder(self.LGlayerType1_builder_name)
                             layer_thickness = NDHPgTPCLGLayerBuilder.depth(LGLayer_builder)
                             l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
-                            l_dim_y = Ecal_Barrel_module_dim
+                            l_dim_y = Ecal_Barrel_module_dim - safety
 
                             NDHPgTPCLGLayerBuilder.BarrelConfigurationLayer(LGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
                             NDHPgTPCLGLayerBuilder.construct(LGLayer_builder, geom)
@@ -484,7 +484,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                             LGLayer_builder = self.get_builder(self.LGlayerType2_builder_name)
                             layer_thickness = NDHPgTPCLGLayerBuilder.depth(LGLayer_builder)
                             l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
-                            l_dim_y = Ecal_Barrel_module_dim
+                            l_dim_y = Ecal_Barrel_module_dim - safety
 
                             NDHPgTPCLGLayerBuilder.BarrelConfigurationLayer(LGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
                             NDHPgTPCLGLayerBuilder.construct(LGLayer_builder, geom)
