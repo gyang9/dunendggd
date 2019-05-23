@@ -286,8 +286,8 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
     def get_pv_endcap_length(self, geom):
 
-        safety = Q("1mm")
-        pv_rInner = self.rInnerTPC + safety
+        safety = Q("0.1mm")
+        pv_rInner = self.rInnerTPC
         pvHalfLength = self.TPC_halfZ
         pv_rmin = sqrt((pv_rInner/Q("1mm"))**2)*Q("1mm")
         pv_rmax = pv_rmin + self.pvThickness
@@ -336,10 +336,8 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         print "Construct PV Barrel"
 
-        safety = Q("1mm")
-
         nsides = self.nsides
-        pv_rInner = self.rInnerTPC + safety
+        pv_rInner = self.rInnerTPC
         pvHalfLength = self.TPC_halfZ
         pv_rmin = sqrt((pv_rInner/Q("1mm"))**2)*Q("1mm")
         pv_rmax = pv_rmin + self.pvThickness
@@ -382,31 +380,30 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Construct ECAL Barrel"
 
         # ECAL Barrel
-        safety = Q("1mm")
+        safety = Q("0.1mm")
         nsides = self.nsides
         dphi = (2*pi/nsides)
         hphi = dphi/2;
 
-        #dimension of a module along the ND x direction
-        Ecal_Barrel_module_dim = Ecal_Barrel_halfZ * 2 / Ecal_Barrel_n_modules
-
         #ecal module thickness
         ecal_module_thickness = self.get_ecal_module_thickness(geom)
-        ecal_module_thickness_noSupport = ecal_module_thickness - Q("0.1mm")
+        ecal_module_thickness_noSupport = ecal_module_thickness - safety
         #inner radius ecal (TPC + pv + safety)
-        rInnerEcal = self.rInnerTPC + self.pvThickness - safety
+        rInnerEcal = self.rInnerTPC + self.pvThickness
         #barrel length (TPC + PV)
         Barrel_halfZ = self.get_pv_endcap_length(geom)
         #outer radius ecal (inner radius ecal + ecal module)
-        rOuterEcal = rInnerEcal + ecal_module_thickness + safety
+        rOuterEcal = rInnerEcal + ecal_module_thickness
 
         #maximum dimension of the stave
         max_dim_stave = 2 * tan( pi/nsides ) * rInnerEcal + ecal_module_thickness_noSupport / sin( 2*pi/nsides )
         #minimum dimension of the stave
         min_dim_stave = max_dim_stave - 2*ecal_module_thickness / tan( 2*pi/nsides )
 
-        Ecal_Barrel_halfZ = Barrel_halfZ + safety
+        Ecal_Barrel_halfZ = Barrel_halfZ
         Ecal_Barrel_n_modules = self.nModules
+        #dimension of a module along the ND x direction
+        Ecal_Barrel_module_dim = Ecal_Barrel_halfZ * 2 / Ecal_Barrel_n_modules
 
         print "Large side of the stave", max_dim_stave
         print "Small side of the stave", min_dim_stave
@@ -414,12 +411,12 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Module thickness", ecal_module_thickness
 
         #Position of the stave in the Barrel (local coordinates)
-        X = rInnerEcal + ecal_module_thickness / 2.
+        X = rInnerEcal + safety + ecal_module_thickness / 2.
         Y = (ecal_module_thickness_noSupport / 2.) / sin(2.*pi/nsides)
 
 
         #Mother volume Barrel
-        barrel_shape = geom.shapes.PolyhedraRegular(self.output_name, numsides=nsides, rmin=rInnerEcal, rmax=rOuterEcal, dz=Ecal_Barrel_halfZ)
+        barrel_shape = geom.shapes.PolyhedraRegular(self.output_name, numsides=nsides, rmin=rInnerEcal, rmax=rOuterEcal+2*safety, dz=Ecal_Barrel_halfZ+safety)
         barrel_lv = geom.structure.Volume(self.output_name+"_vol", shape=barrel_shape, material=self.material)
 
         sensname = self.output_name + "_vol"
@@ -518,7 +515,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Construct ECAL Endcap"
 
         # ECAL Endcap
-        safety = Q("1mm")
+        safety = Q("0.1mm")
         nsides = self.nsides
         ecal_module_thickness = self.get_ecal_module_thickness(geom)
         rInnerEcal = self.rInnerTPC + self.pvThickness + safety
