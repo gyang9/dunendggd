@@ -2,7 +2,12 @@
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def define_materials( g ):
     h  = g.matter.Element("hydrogen",   "H",  1,  "1.00791*g/mole" )
-    b  = g.matter.Element("boron",      "B",  5,  "10.811*g/mole" )
+    #b  = g.matter.Element("boron",      "B",  5,  "10.811*g/mole" )
+    b10=g.matter.Isotope("boron10", 5, 10, "10.01*g/mole")
+    b11=g.matter.Isotope("boron11", 5, 11, "11.00*g/mole")
+    b=g.matter.Composition("boron",
+                            isotopes=(("boron10",0.199),
+                                      ("boron11",0.801)) )
     c  = g.matter.Element("carbon",     "C",  6,  "12.0107*g/mole")
     n  = g.matter.Element("nitrogen",   "N",  7,  "14.0671*g/mole")
     o  = g.matter.Element("oxygen",     "O",  8,  "15.999*g/mole" )
@@ -329,6 +334,15 @@ def define_materials( g ):
                                     ("carbon",   0.916),
                                     ("hydrogen", 0.084)
                             ))
+
+    # ScintillatorLoadedBoron5:
+    ScintillatorLoadedBoron5  = g.matter.Mixture("ScintillatorLoadedBoron5",   density="1.05*g/cc",
+                            components = (
+                                    ("carbon",  0.866),
+                                    ("hydrogen", 0.084),
+                                    ("boron", 0.05)
+                            ))
+
     # Oil to be fixed
     Oil  = g.matter.Mixture("Oil",   density="0.8*g/cc",
                             components = (

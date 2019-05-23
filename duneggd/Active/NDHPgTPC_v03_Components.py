@@ -268,8 +268,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         LG_layer_type1_thickness = LGLayerType1_shape.dz * 2
         LG_layer_type2_thickness = LGLayerType2_shape.dz * 2
 
-        safety = Q("1mm")
-        ecal_module_thickness = safety
+        ecal_module_thickness = Q("0mm")
 
         for nlayer, type in zip(self.nLayers, self.typeLayers):
             if type == "HG1":
@@ -372,7 +371,12 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         #   /----------------\         //Small side
         #  /                  \
         # /____________________\       //Large side
-
+        #
+        # z
+        # ^
+        # |
+        # |-----> x
+        #
         # need to create the layer based on the position in depth z -> different layer sizes
 
         print "Construct ECAL Barrel"
@@ -380,25 +384,42 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         # ECAL Barrel
         safety = Q("1mm")
         nsides = self.nsides
-        ecal_module_thickness = self.get_ecal_module_thickness(geom)
-        rInnerEcal = self.rInnerTPC + self.pvThickness + safety
-        Barrel_halfZ = self.get_pv_endcap_length(geom) + safety
-
-        max_dim_x = 2 * tan( pi/nsides ) * rInnerEcal + ecal_module_thickness / sin( 2*pi/nsides ) #large side
-        min_dim_x = max_dim_x - 2*ecal_module_thickness / tan( 2*pi/nsides ) # small side
-
-        Ecal_Barrel_halfZ = Barrel_halfZ
-        Ecal_Barrel_n_modules = self.nModules
-        Ecal_Barrel_module_dim = Ecal_Barrel_halfZ * 2 / Ecal_Barrel_n_modules
-
-        X = rInnerEcal + ecal_module_thickness / 2.
-        #end of slabs aligned to inner face of support plate in next stave (not the outer surface)
-        Y = (ecal_module_thickness / 2.) / sin(2.*pi/nsides)
         dphi = (2*pi/nsides)
         hphi = dphi/2;
 
+        #dimension of a module along the ND x direction
+        Ecal_Barrel_module_dim = Ecal_Barrel_halfZ * 2 / Ecal_Barrel_n_modules
+
+        #ecal module thickness
+        ecal_module_thickness = self.get_ecal_module_thickness(geom)
+        ecal_module_thickness_noSupport = ecal_module_thickness - Q("0.1mm")
+        #inner radius ecal (TPC + pv + safety)
+        rInnerEcal = self.rInnerTPC + self.pvThickness - safety
+        #barrel length (TPC + PV)
+        Barrel_halfZ = self.get_pv_endcap_length(geom)
+        #outer radius ecal (inner radius ecal + ecal module)
+        rOuterEcal = rInnerEcal + ecal_module_thickness + safety
+
+        #maximum dimension of the stave
+        max_dim_stave = 2 * tan( pi/nsides ) * rInnerEcal + ecal_module_thickness_noSupport / sin( 2*pi/nsides )
+        #minimum dimension of the stave
+        min_dim_stave = max_dim_stave - 2*ecal_module_thickness / tan( 2*pi/nsides )
+
+        Ecal_Barrel_halfZ = Barrel_halfZ + safety
+        Ecal_Barrel_n_modules = self.nModules
+
+        print "Large side of the stave", max_dim_stave
+        print "Small side of the stave", min_dim_stave
+        print "Barrel module dim in z", Ecal_Barrel_module_dim
+        print "Module thickness", ecal_module_thickness
+
+        #Position of the stave in the Barrel (local coordinates)
+        X = rInnerEcal + ecal_module_thickness / 2.
+        Y = (ecal_module_thickness_noSupport / 2.) / sin(2.*pi/nsides)
+
+
         #Mother volume Barrel
-        barrel_shape = geom.shapes.PolyhedraRegular(self.output_name, numsides=nsides, rmin=rInnerEcal, rmax=rInnerEcal + ecal_module_thickness, dz=Ecal_Barrel_halfZ)
+        barrel_shape = geom.shapes.PolyhedraRegular(self.output_name, numsides=nsides, rmin=rInnerEcal, rmax=rOuterEcal, dz=Ecal_Barrel_halfZ)
         barrel_lv = geom.structure.Volume(self.output_name+"_vol", shape=barrel_shape, material=self.material)
 
         sensname = self.output_name + "_vol"
@@ -416,7 +437,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 stave_name = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
                 stave_volname = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
 
-                stave_shape = geom.shapes.Trapezoid(stave_name, dx1=max_dim_x/2.0, dx2=min_dim_x/2.0,
+                stave_shape = geom.shapes.Trapezoid(stave_name, dx1=max_dim_stave/2.0, dx2=min_dim_stave/2.0,
                 dy1=Ecal_Barrel_module_dim/2.0, dy2=Ecal_Barrel_module_dim/2.0,
                 dz=ecal_module_thickness/2.0)
 
@@ -434,7 +455,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                             #Configure the layer length based on the zPos in the stave
                             HGLayer_builder = self.get_builder(self.HGlayerType1_builder_name)
                             layer_thickness = NDHPgTPCHGLayerBuilder.depth(HGLayer_builder)
-                            l_dim_x = max_dim_x - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
+                            l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
                             l_dim_y = Ecal_Barrel_module_dim
 
                             NDHPgTPCHGLayerBuilder.BarrelConfigurationLayer(HGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
@@ -445,7 +466,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                             #Configure the layer length based on the zPos in the stave
                             HGLayer_builder = self.get_builder(self.HGlayerType2_builder_name)
                             layer_thickness = NDHPgTPCHGLayerBuilder.depth(HGLayer_builder)
-                            l_dim_x = max_dim_x - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
+                            l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
                             l_dim_y = Ecal_Barrel_module_dim
 
                             NDHPgTPCHGLayerBuilder.BarrelConfigurationLayer(HGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
@@ -455,7 +476,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                         if type == 'LG1':
                             LGLayer_builder = self.get_builder(self.LGlayerType1_builder_name)
                             layer_thickness = NDHPgTPCLGLayerBuilder.depth(LGLayer_builder)
-                            l_dim_x = max_dim_x - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
+                            l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
                             l_dim_y = Ecal_Barrel_module_dim
 
                             NDHPgTPCLGLayerBuilder.BarrelConfigurationLayer(LGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
@@ -465,7 +486,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                         if type == 'LG2':
                             LGLayer_builder = self.get_builder(self.LGlayerType2_builder_name)
                             layer_thickness = NDHPgTPCLGLayerBuilder.depth(LGLayer_builder)
-                            l_dim_x = max_dim_x - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
+                            l_dim_x = max_dim_stave - 2 * (zPos + layer_thickness) / tan(2.* pi / nsides)
                             l_dim_y = Ecal_Barrel_module_dim
 
                             NDHPgTPCLGLayerBuilder.BarrelConfigurationLayer(LGLayer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
@@ -483,7 +504,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
                 #Placement staves in Barrel
                 name = stave_lv.name
-                pos = geom.structure.Position(name + "_pos", x=(X*cos(phirot2)-Y*sin(phirot2)), y=(( X*sin(phirot2)+Y*cos(phirot2) )), z=( imodule+0.5 )*Ecal_Barrel_module_dim - Ecal_Barrel_halfZ )
+                pos = geom.structure.Position(name + "_pos", x=(X*cos(phirot2)-Y*sin(phirot2)), y=(( X*sin(phirot2)+Y*cos(phirot2) )), z=( imodule+0.5 )*Ecal_Barrel_module_dim - Barrel_halfZ )
                 rot = geom.structure.Rotation(name + "_rot", x=pi/2.0, y=phirot+pi, z=Q("0deg"))
                 pla = geom.structure.Placement(name + "_pla", volume=stave_lv, pos=pos, rot=rot)
 

@@ -35,9 +35,9 @@ class NDHPgTPC_v03_Builder(gegede.builder.Builder):
 
         ############# build the top level lv ###################
         # it's just a box to hold everything else
-        dx_main=Q("10m")
-        dy_main=Q("10m")
-        dz_main=Q("10m")
+        dx_main=Q("4.0m")
+        dy_main=Q("4.0m")
+        dz_main=Q("5.01m")
         main_shape = geom.shapes.Box('NDHPgTPC', dx=dx_main, dy=dy_main, dz=dz_main)
         main_lv = geom.structure.Volume('vol'+self.name, material='Air', shape=main_shape)
 
