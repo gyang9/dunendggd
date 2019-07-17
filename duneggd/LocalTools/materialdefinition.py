@@ -24,7 +24,7 @@ def define_materials( g ):
 
 #    cu = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
     cu63=g.matter.Isotope("copper63", 29, 63, "62.93*g/mole")
-    cu63=g.matter.Isotope("copper65", 29, 65, "64.93*g/mole")
+    cu65=g.matter.Isotope("copper65", 29, 65, "64.93*g/mole")
     cu=g.matter.Composition("copper",
                             isotopes=(("copper63",0.6917),
                                       ("copper65",0.3083)) )
@@ -37,6 +37,7 @@ def define_materials( g ):
     br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
     sb = g.matter.Element("antimony",   "Sb", 51, "121.76*g/mole" )
     xe = g.matter.Element("xenon",      "Xe", 54, "131.293*g/mole")
+    au = g.matter.Element("gold",       "Au", 79, "196.9666*g/mole")
     pb = g.matter.Element("lead",       "Pb", 82, "207.20*g/mole" )
 
     # Molecules for Rock and fibrous_glass Mixtures
@@ -504,6 +505,9 @@ def define_materials( g ):
 
 # ArCLight (https://arxiv.org/pdf/1711.11409.pdf)
 
+    # Pixelboard pads
+    Gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
+
     # Scintillator (PVT, polyvinyl toluene)
     # 'https://eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286'
     ej280wls = g.matter.Mixture("EJ280WLS", density="1.023g/cc",
@@ -533,31 +537,7 @@ def define_materials( g ):
 
     # SiPM (Hamamatsu S13360-6025PE)
     # 'https://www.hamamatsu.com/eu/en/product/type/S13360-6025PE/index.html'
-    sipm = g.matter.Mixture("SiPM", density="1.023g/cc",            # NEEDS EXACT DEFINITION!
-                            components = (
-                                ("carbon", 9),
-                                ("hydrogen", 10)
-                            ))
-
-
-    # PCB (printed circuit board)
-    pcb = g.matter.Mixture("PCB", density="1.023g/cc",              # NEEDS EXACT DEFINITION!
-                            components = (
-                                ("carbon", 9),
-                                ("hydrogen", 10)
-                            ))
+    # ???
 
     # SiPM plastic spacer
-    plastic = g.matter.Mixture("Plastic", density="1.023g/cc",      # NEEDS EXACT DEFINITION!
-                            components = (
-                                ("carbon", 9),
-                                ("hydrogen", 10)
-                            ))
-
-    # Capton resistive foil
-    capton = g.matter.Mixture("Capton", density="1.023g/cc",        # NEEDS EXACT DEFINITION!
-                            components = (
-                                ("carbon", 9),
-                                ("hydrogen", 10)
-                            ))
-
+    # ???

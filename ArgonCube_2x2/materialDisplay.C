@@ -3,21 +3,20 @@ void materialDisplay(TString filename,Bool_t checkoverlaps=kFALSE,TString label=
   Int_t PriKolor[] = {  2,  3,  4,  5,  6,  7,  8, 9, 28, 30, 38, 40, 41, 42, 46 };
   Int_t PriIndex = 0;
   std::map<TString,Int_t> Kolor;
+  Kolor["Air"] = kWhite;
+  Kolor["Copper"] = kOrange;
   Kolor["EJ280WLS"] = kSpring;
   Kolor["ESR"] = kGray;
-  Kolor["TPB"] = kSpring;
-  Kolor["SiPM"] = kBlack;
-  Kolor["PCB"] = kGreen;
-  Kolor["Plastic"] = kWhite;
-  Kolor["Copper"] = kOrange;
-  Kolor["G10"] = kTeal;
-  Kolor["Capton"] = kBlack;
-  Kolor["LAr"] = kAzure;
-  Kolor["GAr"] = kWhite;
-  Kolor["Steel"] = kRed;
-  
-  Kolor["Air"] = kWhite;
   Kolor["FR4"] = kGreen;
+  Kolor["GAr"] = kWhite;
+  Kolor["Gold"] = kOrange;
+  Kolor["G10"] = kTeal;
+  Kolor["Kapton"] = kBlack;
+  Kolor["LAr"] = kAzure;
+  Kolor["PVT"] = kWhite;
+  Kolor["Silicon"] = kBlack;
+  Kolor["Steel"] = kRed;
+  Kolor["TPB"] = kSpring;
 
   Kolor["One"] = kGreen;
   Kolor["Two"] = kBlue;
