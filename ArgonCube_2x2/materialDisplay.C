@@ -14,7 +14,7 @@ void materialDisplay(TString filename,Bool_t checkoverlaps=kFALSE,TString label=
   Kolor["Kapton"] = kBlack;
   Kolor["LAr"] = kAzure;
   Kolor["PVT"] = kWhite;
-  Kolor["Silicon"] = kBlack;
+  Kolor["SiO2"] = kBlack;
   Kolor["Steel"] = kRed;
   Kolor["TPB"] = kSpring;
 
