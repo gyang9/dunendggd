@@ -508,10 +508,13 @@ def define_materials( g ):
     # Pixelboard pads
     Gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
 
+    # Pixelboard ASICs
+    Silicon = g.matter.Molecule("Silicon",    density="19.32*g/cc",  elements=(("silicon",1),))
+
     # Scintillator (PVT, polyvinyl toluene)
     # 'https://eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286'
-    ej280wls = g.matter.Mixture("EJ280WLS", density="1.023g/cc",
-                            components = (
+    ej280wls = g.matter.Molecule("EJ280WLS", density="1.023g/cc",
+                            elements = (
                                 ("carbon", 9),
                                 ("hydrogen", 10)
                             ))
@@ -520,8 +523,8 @@ def define_materials( g ):
     # 'http://multimedia.3m.com/mws/media/380802O/vikuititm-esr-msds.pdf?fn=ESR.pdf'
     # Mylar (Polyethylenterephthalat) ???
     # 'https://de.wikipedia.org/wiki/Polyethylenterephthalat'
-    esr = g.matter.Mixture("ESR", density="1.38g/cc",
-                            components = (
+    esr = g.matter.Molecule("ESR", density="1.38g/cc",
+                            elements = (
                                 ("carbon", 10),
                                 ("hydrogen", 8),
                                 ("oxygen", 4)
@@ -529,8 +532,8 @@ def define_materials( g ):
 
     # TPB (Tetraphenyl butadiene (1,1,4,4-tetraphenyl-1,3-butadiene))
     # 'https://en.wikipedia.org/wiki/Tetraphenyl_butadiene'
-    tpb = g.matter.Mixture("TPB", density="1.079g/cc",
-                            components = (
+    tpb = g.matter.Molecule("TPB", density="1.079g/cc",
+                            elements = (
                                 ("carbon", 28),
                                 ("hydrogen", 22)
                             ))
