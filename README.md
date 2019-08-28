@@ -8,7 +8,7 @@ dunendggd is based on the sophisticated package called [GeGeDe](https://github.c
 This package could be installed as user, on unix environment:
 
 ```bash
-python setup.sh develop --user
+python setup.py develop --user
 ```
 Don't forget to check your variable `PATH`
 ```bash
@@ -16,7 +16,7 @@ export PATH=~/.local/bin/:${PATH}
 ```
 As root privileges:
 ```bash
-python setup.sh develop
+python setup.py develop
 ```
 
 

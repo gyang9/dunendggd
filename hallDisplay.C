@@ -51,7 +51,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 
 	gGeoManager->GetListOfVolumes()->ls();
 	// TGeoVolume* active =gGeoManager->GetVolume("volLArActive");
-	
+
 	// get argon cube active volume coordinates
 	//	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volLArCryo_0/volArgonCube_0/volArgonCubeActive_0");
 
@@ -59,7 +59,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	gGeoManager->cd(lar_active_location);
 	TGeoMatrix *active = gGeoManager->GetCurrentMatrix();
 	double local_active[3]={0,0,0};
-	double master_active[3]={0,0,0};	
+	double master_active[3]={0,0,0};
 	active->LocalToMaster(local_active,master_active);
 	cout<<"The center of ArgonCubeActive in the global coordinate system: \n"<<" ( "<<master_active[0]<<", "<<master_active[1]<<", "<<master_active[2]<<" )"<<endl;
 
@@ -67,7 +67,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	gGeoManager->cd("/volWorld_1/volDetEnclosure_0");
 	TGeoMatrix *enclosure = gGeoManager->GetCurrentMatrix();
 	double local_enclosure[3]={0,0,0};
-	double master_enclosure[3]={0,0,0};	
+	double master_enclosure[3]={0,0,0};
 	enclosure->LocalToMaster(local_enclosure,master_enclosure);
 	cout<<"The center of DetEnclosure in the global coordinate system: \n"<<" ( "<<master_enclosure[0]<<", "<<master_enclosure[1]<<", "<<master_enclosure[2]<<" )"<<endl;
 
@@ -76,14 +76,14 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	enclosure->MasterToLocal(master_active,active_in_enclosure);
 
 	cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
-	
+
 	// print out location of GArTPC
-	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volCylindricalMPT_0/volGArTPC_0");
+	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volMPD_0/volGArTPC_0");
 	TGeoMatrix *gartpc = gGeoManager->GetCurrentMatrix();
 	double local_gartpc[3]={0,0,0};
-	double master_gartpc[3]={0,0,0};	
+	double master_gartpc[3]={0,0,0};
 	gartpc->LocalToMaster(local_gartpc,master_gartpc);
-	cout<<"The center of GArTPC in the global coordinate system: \n"<<" ( "<<master_gartpc[0]<<", "<<master_gartpc[1]<<", "<<master_gartpc[2]<<" )"<<endl;	
+	cout<<"The center of GArTPC in the global coordinate system: \n"<<" ( "<<master_gartpc[0]<<", "<<master_gartpc[1]<<", "<<master_gartpc[2]<<" )"<<endl;
 
 	double gartpc_in_enclosure[3]={0,0,0};
 	enclosure->MasterToLocal(master_gartpc,gartpc_in_enclosure);
@@ -120,7 +120,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 
 	TGLSAViewer *glsa = (TGLSAViewer *)gPad->GetViewer3D();
 	TGLClipSet* clip =glsa->GetClipSet();
-	// components - A,B,C,D - of plane eq : Ax+By+CZ+D = 0 
+	// components - A,B,C,D - of plane eq : Ax+By+CZ+D = 0
 	// kClipPlane=1
 	Double_t clip_config[6]={-1,0,0,-0.5,0,0};
 	//	clip->SetShowClip(kTRUE);

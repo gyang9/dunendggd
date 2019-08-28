@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 '''
-CylindricalMPTBuilder: Builds the multi purpose tracker
+NDHPgTPC_Builder: Builds the multi purpose tracker
 '''
 
 import gegede.builder
 from gegede import Quantity as Q
 from math import asin, sqrt
 
-class NDHPgTPC_v03_Builder(gegede.builder.Builder):
+class NDHPgTPC_Builder(gegede.builder.Builder):
     '''
     Build a concept of the ND HPgTPC detector. This class directly
     sub-builders for the GArTPC, the ECAL, the Pressure Vessel
