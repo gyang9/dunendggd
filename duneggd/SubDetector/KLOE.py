@@ -401,21 +401,22 @@ class KLOEBuilder(gegede.builder.Builder):
         
         # now build the STT inside
         if self.builders.has_key("KLOESTT"):
-           stt_builder=self.get_builder("KLOESTT")
-           print "self.BuildSTT==",self.BuildSTT
-           print "stt_builder: ",stt_builder
-           if (stt_builder!=None) and (self.BuildSTT==True):
-               rot = [Q("0deg"),Q("90deg"),Q("0deg")]
-               loc = [Q('0m'),Q('0m'),Q('0m')]
-               stt_lv=stt_builder.get_volume()
-               stt_pos=geom.structure.Position(name+"_KLOESTT_pos",
-                                               loc[0],loc[1],loc[2])
-               stt_rot=geom.structure.Rotation(name+"_KLOESTT_rot",
-                                               rot[0],rot[1],rot[2])
-               stt_pla=geom.structure.Placement(name+"_KLOESTT_pla",
-                                                volume=stt_lv,pos=stt_pos,
-                                                rot=stt_rot)
-               lv.placements.append(stt_pla.name)
+            print "we have a KLOESTT builder key"
+            stt_builder=self.get_builder("KLOESTT")
+            print "self.BuildSTT==",self.BuildSTT
+            print "stt_builder: ",stt_builder
+            if (stt_builder!=None) and (self.BuildSTT==True):
+                rot = [Q("0deg"),Q("90deg"),Q("0deg")]
+                loc = [Q('0m'),Q('0m'),Q('0m')]
+                stt_lv=stt_builder.get_volume()
+                stt_pos=geom.structure.Position(name+"_KLOESTT_pos",
+                                                loc[0],loc[1],loc[2])
+                stt_rot=geom.structure.Rotation(name+"_KLOESTT_rot",
+                                                rot[0],rot[1],rot[2])
+                stt_pla=geom.structure.Placement(name+"_KLOESTT_pla",
+                                                 volume=stt_lv,pos=stt_pos,
+                                                 rot=stt_rot)
+                lv.placements.append(stt_pla.name)
         
         # or, build the GArTPC
         if self.builders.has_key("KLOEGAR"):
