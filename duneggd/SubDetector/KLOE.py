@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import gegede.builder
 from duneggd.LocalTools import localtools as ltools
+from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
 class KLOEBuilder(gegede.builder.Builder):
@@ -64,7 +65,7 @@ class KLOEBuilder(gegede.builder.Builder):
         self.build_solenoid(main_lv,geom)
         self.build_ecal(main_lv,geom)
         self.build_tracker(main_lv,geom)
-        self.build_muon_system(main_lv,geom)
+        #self.build_muon_system(main_lv,geom)
         print( "printing main_lv: "+ str(main_lv))
             
             
@@ -75,22 +76,29 @@ class KLOEBuilder(gegede.builder.Builder):
 
 #        pos = [Q('0m'),Q('0m'),-main_hDim[2]]
         pos = [Q('0m'),Q('0m'),Q('0m')]
-#        print( "KLOE subbuilders")
-#        for i,sb in enumerate(self.get_builders()):
-#            sb_lv = sb.get_volume()
-#            print( "Working on ", i, sb_lv.name)
-#            sb_dim = ltools.getShapeDimensions( sb_lv, geom )
+#        rot = [Q('0deg'),Q('90deg'),Q('0deg')]
+#        main_lv = main_lv.get_Volume()
+#        main_pos = gemo.structure.Poition( main_lv.name_pos, Pos[0], Pos[1], Pos[2] )
+#        main_rot = geom.structure.Rotation( main_lv.name_rot, Rot[0], Rot[1], Rot[2] )
+#        main_pla = geom.structure.Placement (main_lv.name_pla, volume=main_lv, pos=main_pos, rot=main_rot )
+#        main_lv.placements.append( main_pla.name )
+
+        print( "KLOE subbuilders")
+        for i,sb in enumerate(self.get_builders()):
+            sb_lv = sb.get_volume()
+            print( "Working on ", i, sb_lv.name)
+            sb_dim = ltools.getShapeDimensions( sb_lv, geom )
 
 #            pos[2] = pos[2] + sb_dim[2] + self.InsideGap[i]
             # defining position, placement, and finally insert into main logic volume.
-#            pos_name=self.name+sb_lv.name+'_pos_'+str(i)
-#            pla_name=self.name+sb_lv.name+'_pla_'+str(i)
-#            print( "Position name", pos_name)
-#            print( "Placement name", pla_name)
-#            sb_pos = geom.structure.Position(pos_name,pos[0], pos[1], pos[2])
-#            sb_pla = geom.structure.Placement(pla_name,volume=sb_lv, pos=sb_pos)
-#            print( "Appending ",sb_pla.name," to main_lv=",main_lv.name)
-#            main_lv.placements.append(sb_pla.name)
+            pos_name=self.name+sb_lv.name+'_pos_'+str(i)
+            pla_name=self.name+sb_lv.name+'_pla_'+str(i)
+            print( "Position name", pos_name)
+            print( "Placement name", pla_name)
+            sb_pos = geom.structure.Position(pos_name,pos[0], pos[1], pos[2])
+            sb_pla = geom.structure.Placement(pla_name,volume=sb_lv, pos=sb_pos)
+            print( "Appending ",sb_pla.name," to main_lv=",main_lv.name)
+            main_lv.placements.append(sb_pla.name)
     
     def build_yoke(self,main_lv,geom):
         
@@ -392,38 +400,40 @@ class KLOEBuilder(gegede.builder.Builder):
         
         
         # now build the STT inside
-        stt_builder=self.get_builder("KLOESTT")
-        print "self.BuildSTT==",self.BuildSTT
-        print "stt_builder: ",stt_builder
-        if (stt_builder!=None) and (self.BuildSTT==True):
-            rot = [Q("0deg"),Q("90deg"),Q("0deg")]
-            loc = [Q('0m'),Q('0m'),Q('0m')]
-            stt_lv=stt_builder.get_volume()
-            stt_pos=geom.structure.Position(name+"_KLOESTT_pos",
-                                            loc[0],loc[1],loc[2])
-            stt_rot=geom.structure.Rotation(name+"_KLOESTT_rot",
-                                            rot[0],rot[1],rot[2])
-            stt_pla=geom.structure.Placement(name+"_KLOESTT_pla",
-                                             volume=stt_lv,pos=stt_pos,
-                                             rot=stt_rot)
-            lv.placements.append(stt_pla.name)
+        if self.builders.has_key("KLOESTT"):
+           stt_builder=self.get_builder("KLOESTT")
+           print "self.BuildSTT==",self.BuildSTT
+           print "stt_builder: ",stt_builder
+           if (stt_builder!=None) and (self.BuildSTT==True):
+               rot = [Q("0deg"),Q("90deg"),Q("0deg")]
+               loc = [Q('0m'),Q('0m'),Q('0m')]
+               stt_lv=stt_builder.get_volume()
+               stt_pos=geom.structure.Position(name+"_KLOESTT_pos",
+                                               loc[0],loc[1],loc[2])
+               stt_rot=geom.structure.Rotation(name+"_KLOESTT_rot",
+                                               rot[0],rot[1],rot[2])
+               stt_pla=geom.structure.Placement(name+"_KLOESTT_pla",
+                                                volume=stt_lv,pos=stt_pos,
+                                                rot=stt_rot)
+               lv.placements.append(stt_pla.name)
         
         # or, build the GArTPC
-        gar_builder=self.get_builder("KLOEGAR")
-        print "self.BuildGAR==",self.BuildGAR
-        print "gar_builder: ",gar_builder
-        if (gar_builder!=None) and (self.BuildGAR==True):
-            rot = [Q("0deg"),Q("0deg"),Q("0deg")]
-            loc = [Q('0m'),Q('0m'),Q('0m')]
-            gar_lv=gar_builder.get_volume()
-            gar_pos=geom.structure.Position(name+"_KLOEGAR_pos",
-                                            loc[0],loc[1],loc[2])
-            gar_rot=geom.structure.Rotation(name+"_KLOEGAR_rot",
-                                            rot[0],rot[1],rot[2])
-            gar_pla=geom.structure.Placement(name+"_KLOEGAR_pla",
-                                             volume=gar_lv,pos=gar_pos,
-                                             rot=gar_rot)
-            lv.placements.append(gar_pla.name)
+        if self.builders.has_key("KLOEGAR"):
+            gar_builder=self.get_builder("KLOEGAR")
+            print "self.BuildGAR==",self.BuildGAR
+            print "gar_builder: ",gar_builder
+            if (gar_builder!=None) and (self.BuildGAR==True):
+                rot = [Q("0deg"),Q("0deg"),Q("0deg")]
+                loc = [Q('0m'),Q('0m'),Q('0m')]
+                gar_lv=gar_builder.get_volume()
+                gar_pos=geom.structure.Position(name+"_KLOEGAR_pos",
+                                                loc[0],loc[1],loc[2])
+                gar_rot=geom.structure.Rotation(name+"_KLOEGAR_rot",
+                                                rot[0],rot[1],rot[2])
+                gar_pla=geom.structure.Placement(name+"_KLOEGAR_pla",
+                                                 volume=gar_lv,pos=gar_pos,
+                                                 rot=gar_rot)
+                lv.placements.append(gar_pla.name)
         
 
 
@@ -440,5 +450,7 @@ class KLOEBuilder(gegede.builder.Builder):
 
 
             
-    def build_muon_system(self,main_lv,geom):
-        pass
+    #def build_muon_system(self,main_lv,geom):
+    #    pass
+
+
