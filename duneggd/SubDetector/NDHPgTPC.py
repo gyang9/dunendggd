@@ -38,30 +38,33 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         dx_main=Q("4.0m")
         dy_main=Q("4.0m")
         dz_main=Q("5.01m")
-        main_shape = geom.shapes.Box('NDHPgTPC', dx=dx_main, dy=dy_main, dz=dz_main)
+        main_shape = geom.shapes.Box('MPD', dx=dx_main, dy=dy_main, dz=dz_main)
         main_lv = geom.structure.Volume('vol'+self.name, material='Air', shape=main_shape)
 
         self.add_volume(main_lv)
+
+        ##### build a fake volume that contains the MPD without the magnet to define the magnetized volume correctly ###
+        fake_lv = self.buildMagnetizedVolume(main_lv, geom)
 
         ######### build the TPC       ##########################
         # use GArTPC Builder, but "disable" the cyrostat by tweaking
         # EndcapThickness, WallThickness, and ChamberMaterial
         # do that in the cfg file
         if self.buildGarTPC:
-            self.build_gartpc(main_lv, geom)
+            self.build_gartpc(fake_lv, geom)
 
         ######### build the pressure vessel  ###################
         # Build the Pressure Vessel using the parameters in the cfg file
         # The PV consists of a cylinder for the Barrel and
         # the intersection of the cylinder and a sphere for the Endcaps
         if self.buildPV:
-            self.build_pressure_vessel(main_lv, geom)
+            self.build_pressure_vessel(fake_lv, geom)
 
         ######### build an ecal ##########################
         # Build the Barrel and Endcaps using the ECALBarrelBuilder and
         # ECALEndcapBuilder in the cfg file
         if self.buildEcal:
-            self.build_ecal(main_lv, geom)
+            self.build_ecal(fake_lv, geom)
 
         ######### magnet yoke ##################################
         # Build the yoke Barrel and Endcaps
@@ -103,6 +106,19 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     #     # Place it in the main lv
     #     main_lv.placements.append(yokeec_pla.name)
     #     return
+
+    def buildMagnetizedVolume(self, main_lv, geom):
+
+        magnet_shape = geom.get_shape("Magnet")
+
+        fake_shape = geom.shapes.Tubs('NDHPgTPC', rmin=Q("0m"), rmax=magnet_shape.rmin, dz=magnet_shape.dz, sphi="0deg", dphi="360deg")
+        fake_lv = geom.structure.Volume('vol'+fake_shape.name, material='Air', shape=fake_shape)
+        fake_lv.params.append(("BField", self.innerBField))
+        fake_pla = geom.structure.Placement("NDHPgTPC"+"_pla", volume=fake_lv)
+        # Place it in the main lv
+        main_lv.placements.append(fake_pla.name)
+
+        return fake_lv
 
     def build_gartpc(self, main_lv, geom):
 
@@ -161,15 +177,26 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             return
 
         pvb_vol = pv_builder.get_volume("PVBarrel_vol")
+        pvb_vol.params.append(("BField", self.innerBField))
+
         pvb_pla = geom.structure.Placement("PVBarrel"+"_pla", volume=pvb_vol)
         # Place it in the main lv
         main_lv.placements.append(pvb_pla.name)
 
         #Build the PV Endcap
         pvec_vol = pv_builder.get_volume("PVEndcap_vol")
-        pvec_pla = geom.structure.Placement("PVEndcap"+"_pla", volume=pvec_vol)
-        # Place it in the main lv
-        main_lv.placements.append(pvec_pla.name)
+        pvec_vol.params.append(("BField", self.innerBField))
+        xpos = pv_builder.get_pv_endcap_position(geom)
+
+        for side in ["L", "R"]:
+            yrot = "0deg" if side == 'L' else "180deg"
+            if side == 'R':
+                xpos = -xpos
+            print "xpos = ", xpos
+            pvec_rot = geom.structure.Rotation("PVEndcap"+side+"_rot", y=yrot)
+            pvec_pos = geom.structure.Position("PVEndcap"+side+"_pos", z=xpos)
+            pvec_pla = geom.structure.Placement("PVEndcap"+side+"_pla", volume=pvec_vol, pos=pvec_pos, rot=pvec_rot)
+            main_lv.placements.append(pvec_pla.name)
 
     def build_magnet(self, main_lv, geom):
 
