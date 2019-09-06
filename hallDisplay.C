@@ -19,7 +19,8 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	double pz= p*cos(beam_angle);
 	double px=0;
 	double vx=0;
-	double vz=-762; //Front of hall at -762 in global coordinate system
+	double vz=0; //Front of hall at -762 in global coordinate system
+	/*
 	double hall_start_z_in_hall_coordinates=-15.02e2;// ~15m
 	double hall_length=-2*hall_start_z_in_hall_coordinates;
 	double hall_back_global=-762 + hall_length;
@@ -28,6 +29,9 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	double vy=beam_entering_height-global_y0_height;
 	cout<<"Beam enters the hall at a height of "<<beam_entering_height<<" cm"<<endl;
 	cout<<"That is y= "<<vy<<" in the global coordinate system"<<endl;
+	*/
+	double hall_length=30e2;
+	double vy=0;
 	TParticle* beam_particle = new TParticle(521,1,m1,m2,d1,d2,px,py,pz,p, vx,vy,vz,0);
 	Int_t track_index = geo->AddTrack(0,pdg,beam_particle);
 	TVirtualGeoTrack* beam_track = geo->GetTrack(track_index);
@@ -49,14 +53,26 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	}
 	TPolyLine3D* beam_line= new TPolyLine3D(npoints,linex,liney,linez);
 
-	gGeoManager->GetListOfVolumes()->ls();
+	// following line produces a lot of print out
+	//	gGeoManager->GetListOfVolumes()->ls();
+
 	// TGeoVolume* active =gGeoManager->GetVolume("volLArActive");
 
 	// get argon cube active volume coordinates
 	//	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volLArCryo_0/volArgonCube_0/volArgonCubeActive_0");
 
-	const char* lar_active_location="/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volMoistureBarrier_0/volInsulationBoard2_0/volGREBoard2_0/volInsulationBoard1_0/volGREBoard1_0/volFireproofBoard_0/volSSMembrane_0/volArgonCubeService_0/volArgonCube_0/volArgonCubeActive_0";
-	gGeoManager->cd(lar_active_location);
+	
+	string detenc_vol="volDetEnclosure";
+	//	string detenc_vol="/NDHallAirVol_lv_0";	
+	string top_vols="/volWorld_1/"; top_vols+=detenc_vol; top_vols+="_0";
+	
+	string lar_active_location=top_vols+"/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volMoistureBarrier_0/volInsulationBoard2_0/volGREBoard2_0/volInsulationBoard1_0/volGREBoard1_0/volFireproofBoard_0/volSSMembrane_0/volArgonCubeService_0/volArgonCube_0/volArgonCubeActive_0";
+	
+	//	const char* lar_active_location="/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volMoistureBarrier_0/volInsulationBoard2_0/volGREBoard2_0/volInsulationBoard1_0/volGREBoard1_0/volFireproofBoard_0/volSSMembrane_0/volArgonCubeService_0/volArgonCube_0/volArgonCubeActive_0";
+
+
+	
+	gGeoManager->cd(lar_active_location.c_str());
 	TGeoMatrix *active = gGeoManager->GetCurrentMatrix();
 	double local_active[3]={0,0,0};
 	double master_active[3]={0,0,0};
@@ -64,7 +80,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	cout<<"The center of ArgonCubeActive in the global coordinate system: \n"<<" ( "<<master_active[0]<<", "<<master_active[1]<<", "<<master_active[2]<<" )"<<endl;
 
 	// get detector enclosure coordinates
-	gGeoManager->cd("/volWorld_1/volDetEnclosure_0");
+	gGeoManager->cd(top_vols.c_str());
 	TGeoMatrix *enclosure = gGeoManager->GetCurrentMatrix();
 	double local_enclosure[3]={0,0,0};
 	double master_enclosure[3]={0,0,0};
@@ -78,7 +94,8 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
 
 	// print out location of GArTPC
-	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volMPD_0/volGArTPC_0");
+	string gar_vol=top_vols+"/volMPD_0/volGArTPC_0";
+	gGeoManager->cd(gar_vol.c_str());
 	TGeoMatrix *gartpc = gGeoManager->GetCurrentMatrix();
 	double local_gartpc[3]={0,0,0};
 	double master_gartpc[3]={0,0,0};
@@ -97,18 +114,24 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	beam_line->SetLineColor(kRed);
 	beam_line->SetLineStyle(kDashed);
 	beam_line->Draw();
-
-	TGeoVolume* enc=geo->GetVolume("volDetEnclosure");
+	cout<<detenc_vol<<endl;
+	TGeoVolume* enc=geo->GetVolume(detenc_vol.c_str());
 	enc->SetVisibility(kFALSE);
 	enc->VisibleDaughters(kTRUE);
+	enc->Print();
+	cout<<"volArgonCubeDetector"<<endl;
 	TGeoVolume* ar3=geo->GetVolume("volArgonCubeDetector");
 	ar3->SetTransparency(50);
 	ar3->SetVisContainers(kTRUE);
 	ar3->VisibleDaughters(kTRUE);
+	ar3->Print();
+	cout<<"volArgonCubeCryostat"<<endl;
 	TGeoVolume* cryo=geo->GetVolume("volArgonCubeCryostat");
 	cryo->SetTransparency(50);
 	cryo->SetVisContainers(kTRUE);
 	cryo->VisibleDaughters(kTRUE);
+	cryo->Print();
+	cout<<"volLArActiveModWolXX"<<endl;
 	for(int iwall=0; iwall<35; iwall++){
 	  TGeoVolume* wall=geo->GetVolume(Form("volLArActiveModWall%02i",iwall));
 	  if(wall) wall->SetTransparency(80);
