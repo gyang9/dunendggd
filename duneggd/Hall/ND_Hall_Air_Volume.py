@@ -108,7 +108,7 @@ class NDHallAirVolumeBuilder(gegede.builder.Builder):
 
         NDHallAirVolShape = geom.shapes.Boolean( 'NDHallAirVolShape', type='union', first=NDHallAirVolTemp5, second=NDHallAirVolSpace7, pos=NDHallAirVolSpace7Position)
 
-        NDHallAirVol_lv = geom.structure.Volume( 'NDHallAirVol_lv', material=self.mat, shape=NDHallAirVolShape)
+        NDHallAirVol_lv = geom.structure.Volume( 'volDetEnclosure', material=self.mat, shape=NDHallAirVolShape)
         self.add_volume( NDHallAirVol_lv )
 
         for i,sb in enumerate(self.get_builders()):
