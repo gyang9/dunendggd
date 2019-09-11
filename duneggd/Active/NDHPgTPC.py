@@ -223,6 +223,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     HGlayerType2_builder_name = "NDHPgTPCHGLayerBuilder2",
                     LGlayerType1_builder_name = "NDHPgTPCLGLayerBuilder1",
                     LGlayerType2_builder_name = "NDHPgTPCLGLayerBuilder2",
+                    pvEndCapBulge = Q("100cm"),
                     pvMaterial = "Steel",
                     pvThickness = Q("20mm"),
                     yokeMaterial = "Steel",
@@ -287,15 +288,20 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def get_pv_endcap_length(self, geom):
 
         safety = Q("0.1mm")
+        length = self.TPC_halfZ + self.pvEndCapBulge + self.pvThickness
+
+        return length
+
+    def get_pv_endcap_position(self, geom):
         pv_rInner = self.rInnerTPC
-        pvHalfLength = self.TPC_halfZ
         pv_rmin = sqrt((pv_rInner/Q("1mm"))**2)*Q("1mm")
-        pv_rmax = pv_rmin + self.pvThickness
+        h = self.pvEndCapBulge
+        x = pv_rmin
+        q = ((h/Q("1mm"))**2 + (x/Q("1mm"))**2)
+        R = q/(2*h/Q("1mm"))*Q("1mm")
+        xpos = self.TPC_halfZ-(R-h)
 
-        rmin_sph = sqrt((pvHalfLength/Q("1mm"))**2 + (pv_rmax/Q("1mm"))**2)*Q("1mm")
-        rmax_sph = rmin_sph + self.pvThickness
-
-        return rmax_sph
+        return xpos
 
     def construct(self, geom):
 
@@ -352,13 +358,18 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Construct PV Endcap"
 
         # build the pressure vessel endcaps
-        pv_endcap_shape_tub = geom.shapes.Tubs("PVEndcap_tubs", rmin=Q("0mm"), rmax=pv_rmax, dz=2*pvHalfLength, sphi="0deg", dphi="360deg")
-        rmin_sph = sqrt((pvHalfLength/Q("1mm"))**2 + (pv_rmax/Q("1mm"))**2)*Q("1mm")
-        rmax_sph = rmin_sph + self.pvThickness
-        pv_endcap_shape_sphere = geom.shapes.Sphere("PVEndcap_sphere", rmin=rmin_sph, rmax=rmax_sph, sphi="0deg", dphi="360deg", stheta="0deg", dtheta="179.99999deg")
+        # some euclidean geometry documented in my notebook
+        h = self.pvEndCapBulge
+        x = pv_rmin
+        q = ((h/Q("1mm"))**2 + (x/Q("1mm"))**2)
+        R = q/(2*h/Q("1mm"))*Q("1mm")
+        dtheta = asin( 2*(h/Q("1mm"))*(x/Q("1mm"))/q)
 
-        pv_endcap_shape_inter = geom.shapes.Boolean( self.output_name + "Endcap", type='intersection', first=pv_endcap_shape_tub, second=pv_endcap_shape_sphere)
-        pvec_vol = geom.structure.Volume( self.output_name+"Endcap"+"_vol", shape=pv_endcap_shape_inter, material=self.pvMaterial )
+        print "h, x, q, R, dtheta = ", h, x, q, R, dtheta
+
+        pvec_name = self.output_name + "Endcap"
+        pvec_shape = geom.shapes.Sphere(pvec_name, rmin=R, rmax=R + self.pvThickness, sphi="0deg", dphi="360deg", stheta="0deg", dtheta=dtheta)
+        pvec_vol = geom.structure.Volume(pvec_name + "_vol", shape=pvec_shape, material=self.pvMaterial)
 
         self.add_volume(pvec_vol)
 
@@ -530,6 +541,9 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         rmin = EcalEndcap_inner_radius
         rmax = EcalEndcap_outer_radius
+
+        print "Quadrant side ", rmax
+        print "Endcap thickness ", ecal_module_thickness
 
         #Mother volume Endcap
         endcap_shape_min = geom.shapes.PolyhedraRegular("ECALEndcap_min", numsides=nsides, rmin=rmin, rmax=rmax, dz=EcalEndcap_min_z)
