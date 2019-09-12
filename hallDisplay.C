@@ -61,17 +61,17 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	// get argon cube active volume coordinates
 	//	gGeoManager->cd("/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volLArCryo_0/volArgonCube_0/volArgonCubeActive_0");
 
-	
-	string detenc_vol="volDetEnclosure";
-	//	string detenc_vol="/NDHallAirVol_lv_0";	
+
+	string detenc_vol="rockBox_lv_0/volDetEnclosure";
+	//	string detenc_vol="/NDHallAirVol_lv_0";
 	string top_vols="/volWorld_1/"; top_vols+=detenc_vol; top_vols+="_0";
-	
+
 	string lar_active_location=top_vols+"/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volMoistureBarrier_0/volInsulationBoard2_0/volGREBoard2_0/volInsulationBoard1_0/volGREBoard1_0/volFireproofBoard_0/volSSMembrane_0/volArgonCubeService_0/volArgonCube_0/volArgonCubeActive_0";
-	
+
 	//	const char* lar_active_location="/volWorld_1/volDetEnclosure_0/volArgonCubeDetector_0/volArgonCubeCryostat_0/volReinforcedConcrete_0/volMoistureBarrier_0/volInsulationBoard2_0/volGREBoard2_0/volInsulationBoard1_0/volGREBoard1_0/volFireproofBoard_0/volSSMembrane_0/volArgonCubeService_0/volArgonCube_0/volArgonCubeActive_0";
 
 
-	
+
 	gGeoManager->cd(lar_active_location.c_str());
 	TGeoMatrix *active = gGeoManager->GetCurrentMatrix();
 	double local_active[3]={0,0,0};
@@ -94,7 +94,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
 
 	// print out location of GArTPC
-	string gar_vol=top_vols+"/volMPD_0/volGArTPC_0";
+	string gar_vol=top_vols+"/volMPD_0/volNDHPgTPC_0/volGArTPC_0";
 	gGeoManager->cd(gar_vol.c_str());
 	TGeoMatrix *gartpc = gGeoManager->GetCurrentMatrix();
 	double local_gartpc[3]={0,0,0};
@@ -115,7 +115,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	beam_line->SetLineStyle(kDashed);
 	beam_line->Draw();
 	cout<<detenc_vol<<endl;
-	TGeoVolume* enc=geo->GetVolume(detenc_vol.c_str());
+	TGeoVolume* enc=geo->GetVolume("rockBox_lv");
 	enc->SetVisibility(kFALSE);
 	enc->VisibleDaughters(kTRUE);
 	enc->Print();
