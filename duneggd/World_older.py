@@ -5,14 +5,13 @@ from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
 
-#Changed DetEnc to Rock
 class WorldBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, halfDimension=None, Material=None, RockPosition=None, RockRotation=None, **kwds):
+    def configure(self, halfDimension=None, Material=None, DetEncPosition=None, DetEncRotation=None, **kwds):
         self.halfDimension = halfDimension
         self.Material = Material
-        self.RockPosition = RockPosition
-        self.RockRotation = RockRotation
+        self.DetEncPosition = DetEncPosition
+        self.DetEncRotation = DetEncRotation
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
@@ -25,15 +24,12 @@ class WorldBuilder(gegede.builder.Builder):
         rminus90aboutX = geom.structure.Rotation( 'rminus90aboutX', '-90deg', '0deg',  '0deg'  )
         r90aboutY      = geom.structure.Rotation( 'r90aboutY',      '0deg',   '90deg', '0deg'  )
         r180aboutY     = geom.structure.Rotation( 'r180aboutY',     '0deg',   '180deg','0deg'  )
-        r180aboutZ     = geom.structure.Rotation( 'r180aboutZ',     '0deg', '0deg',     '180deg')
         rminus90aboutY = geom.structure.Rotation( 'rminus90aboutY', '0deg', '-90deg',  '0deg'  )
         r90aboutZ      = geom.structure.Rotation( 'r90aboutZ',      '0deg',   '0deg',  '90deg' )
         r90aboutXZ     = geom.structure.Rotation( 'r90aboutXZ', '90deg',  '0deg', '90deg'  )
         r90aboutYZ     = geom.structure.Rotation( 'r90aboutYZ', '0deg',  '90deg', '90deg'  )
         r90aboutXminusZ     = geom.structure.Rotation( 'r90aboutXminusZ', '-90deg',  '0deg', '90deg'  )
         r90aboutYminusZ     = geom.structure.Rotation( 'r90aboutYminusZ', '0deg',  '-90deg', '90deg'  )
-        r90aboutX90aboutY = geom.structure.Rotation( 'r90aboutX90aboutY', '90deg', '90deg', '0deg')
-        r90aboutX180aboutY = geom.structure.Rotation( 'r90aboutX180aboutY', '90deg', '180deg', '0deg')
 
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
         self.add_volume(main_lv)
@@ -42,14 +38,13 @@ class WorldBuilder(gegede.builder.Builder):
         de_sb = self.get_builder()
         de_lv = de_sb.get_volume()
 
-        #changed DetEncPosition to RockPosition
         postemp = [Q('0m'),Q('0m'),Q('0m')]
-        if self.RockPosition!=None:
-            postemp=self.RockPosition
-        Rock_pos = geom.structure.Position(de_lv.name+'_pos', postemp[0], postemp[1], postemp[2])
+        if self.DetEncPosition!=None:
+            postemp=self.DetEncPosition
+        detEnc_pos = geom.structure.Position(de_lv.name+'_pos', postemp[0], postemp[1], postemp[2])
         rot=[Q("0deg"),Q("0deg"),Q("0deg")]
-        if self.RockRotation!=None:
-            rot=self.RockRotation
-        Rock_rot = geom.structure.Rotation(de_lv.name+'_rot', rot[0], rot[1], rot[2])
-        Rock_pla = geom.structure.Placement(de_lv.name+'_pla', volume=de_lv, pos=Rock_pos,rot=Rock_rot)
-        main_lv.placements.append(Rock_pla.name)
+        if self.DetEncRotation!=None:
+            rot=self.DetEncRotation
+        detEnc_rot = geom.structure.Rotation(de_lv.name+'_rot', rot[0], rot[1], rot[2])
+        detEnc_pla = geom.structure.Placement(de_lv.name+'_pla', volume=de_lv, pos=detEnc_pos,rot=detEnc_rot)
+        main_lv.placements.append(detEnc_pla.name)
