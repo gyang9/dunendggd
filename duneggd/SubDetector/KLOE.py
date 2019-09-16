@@ -377,6 +377,15 @@ class KLOEBuilder(gegede.builder.Builder):
             main_lv.placements.append(pla.name)
 
     def build_tracker(self,main_lv,geom):
+        # only build the tracker if we are
+        # also building the STT or GArTPC
+        # 3DST works differently
+        if self.builders.has_key("KLOEGAR")==False and self.builders.has_key("KLOESTT")==False :
+            print "KLOEGAR and KLOESTT have not been requested."
+            print "Therefore we will not build the tracking region."
+            return 
+
+        
         # this is where we will use subbuilders
         name="KLOETrackingRegion"
         KLOETrackingRegionRmin=Q("0m")
@@ -420,6 +429,7 @@ class KLOEBuilder(gegede.builder.Builder):
         
         # or, build the GArTPC
         if self.builders.has_key("KLOEGAR"):
+            print "we have a KLOEGAR builder key"
             gar_builder=self.get_builder("KLOEGAR")
             print "self.BuildGAR==",self.BuildGAR
             print "gar_builder: ",gar_builder
