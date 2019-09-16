@@ -1,14 +1,15 @@
-void hallDisplay(TString filename, Int_t VisLevel=5)
+void hallDisplay(TString filename, Int_t VisLevel=5, bool clip=true)
 {
 	TGeoManager *geo = new TGeoManager();
 	geo->Import(filename);
 	geo->DefaultColors();
 
-
+	cout<<"======================== Checking Overlaps ============================="<<endl;
 	geo->CheckOverlaps(1e-5,"d");
  	geo->PrintOverlaps();
 	geo->SetVisOption(1);
 	geo->SetVisLevel(VisLevel);
+	cout<<"========================       Done!       ============================="<<endl;
 
 	// 521 is a rootino
 	int pdg=14;
@@ -45,7 +46,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	  double dy=-dz*tan(beam_angle);
 	  double z=vz+dz;
 	  double y=vy+dy;
-	  cout<<"point "<<ipoint<<" : z= "<<z<<" y= "<<y<<endl;
+	  //cout<<"point "<<ipoint<<" : z= "<<z<<" y= "<<y<<endl;
 	  beam_track->AddPoint(0,y,z,5e-9);
 	  linex[ipoint]=0;
 	  liney[ipoint]=y;
@@ -141,15 +142,58 @@ void hallDisplay(TString filename, Int_t VisLevel=5)
 	//	cout<<"cent_elec "<<cent_elec<<endl;
 
 
+	// flux window
+	/*
+	// in hall flux window
+	double xw1[5]={600, 600, -600, -600, 600 };
+	double yw1[5]={-600, 570, 570, -600, -600};
+	double zw1[5]={250, 250, 250, 250, 250};
+	*/
+
+	// near rock flux window
+	double xw1[5]={1000, 1000, -1500, -1500, 1000 };
+	double yw1[5]={-1160, 2200, 2200, -1160, -1160};
+	double zw1[5]={-550, -550, -550, -550, -550};
+
+	
+	TPolyLine3D* fw1= new TPolyLine3D(5,xw1,yw1,zw1);
+	fw1->SetLineWidth(2);
+	fw1->SetLineColor(kYellow);
+	fw1->SetLineStyle(kDashed);
+	fw1->Draw();
+
+	double window_zstep=500;
+	int n_ds_windows=8;
+	for(int iwin=1; iwin<=n_ds_windows; iwin++){
+	  double zadd=window_zstep*iwin;
+	  double yadd=-zadd*sin(beam_angle);
+	  double yw1_ds[5];
+	  double zw1_ds[5];
+	  for(int i=0; i<5; i++) {
+	    yw1_ds[i]=yw1[i]+yadd;
+	    zw1_ds[i]=zw1[i]+zadd;
+	  }
+	
+	  TPolyLine3D* fw1_ds= new TPolyLine3D(5,xw1,yw1_ds,zw1_ds);
+	  fw1_ds->SetLineWidth(2);
+	  fw1_ds->SetLineColor(kGreen);
+	  fw1_ds->SetLineStyle(kDashed);
+	  fw1_ds->Draw();
+	
+	}
+
+	
 	TGLSAViewer *glsa = (TGLSAViewer *)gPad->GetViewer3D();
-	TGLClipSet* clip =glsa->GetClipSet();
 	// components - A,B,C,D - of plane eq : Ax+By+CZ+D = 0
 	// kClipPlane=1
-	Double_t clip_config[6]={-1,0,0,-0.5,0,0};
-	//	clip->SetShowClip(kTRUE);
-	clip->SetAutoUpdate(kTRUE);
-	clip->SetClipState(TGLClip::EType::kClipPlane,clip_config);
-	clip->SetClipType(TGLClip::EType::kClipPlane);
+	if(clip){
+	  TGLClipSet* clip =glsa->GetClipSet();
+	  Double_t clip_config[6]={-1,0,0,-0.5,0,0};
+	  //	clip->SetShowClip(kTRUE);
+	  clip->SetAutoUpdate(kTRUE);
+	  clip->SetClipState(TGLClip::EType::kClipPlane,clip_config);
+	  clip->SetClipType(TGLClip::EType::kClipPlane);
+	}
 	glsa->DrawGuides();
 	glsa->UpdateScene();
 
