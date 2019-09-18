@@ -167,7 +167,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
             ypos3dstPlane=Q('0m')
             zpos3dstPlane=-0.5*self.cubeDim[2]*nCubeZ + (k+0.5)*self.cubeDim[2]
 
-            f3dstPos = geom.structure.Position('3dstpos'+'_'+str(i)+'_'+str(j)+'_'+str(k),
+            f3dstPos = geom.structure.Position('cube3dstpos'+'_'+str(i)+'_'+str(j)+'_'+str(k),
                                                xpos3dstPlane,
                                                ypos3dstPlane,
                                                zpos3dstPlane)
