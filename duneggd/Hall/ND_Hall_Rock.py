@@ -5,10 +5,12 @@ from gegede import Quantity as Q
 
 class RockBuilder(gegede.builder.Builder):
 
-    def configure(self, mat=None, rockBoxMainDim=None, rockBoxSubtDim=None, rockBoxSubtPos=None, rockTubDim=None, rockTubPos=None, Positions=None, Rotations=None):
+    def configure(self, mat=None, rockBoxMainDim=None, rockBoxUpstreamDim=None, rockBoxUpstreamPos=None, rockBoxSubtDim=None, rockBoxSubtPos=None, rockTubDim=None, rockTubPos=None, Positions=None, Rotations=None):
 
         self.mat=mat
         self.rockBoxMainDim=rockBoxMainDim
+        self.rockBoxUpstreamDim=rockBoxUpstreamDim
+        self.rockBoxUpstreamPos=rockBoxUpstreamPos
         self.rockBoxSubtDim=rockBoxSubtDim
         self.rockBoxSubtPos=rockBoxSubtPos
         self.rockTubDim=rockTubDim
@@ -23,6 +25,16 @@ class RockBuilder(gegede.builder.Builder):
                 dx = 0.5*self.rockBoxMainDim[0],
                 dy = 0.5*self.rockBoxMainDim[1],
                 dz = 0.5*self.rockBoxMainDim[2])
+
+        rockBoxUpstream = geom.shapes.Box( 'RockBoxUpstream',
+                dx = 0.5*self.rockBoxUpstreamDim[0],
+                dy = 0.5*self.rockBoxUpstreamDim[1],
+                dz = 0.5*self.rockBoxUpstreamDim[2])
+
+        rockBoxUpstreamPosition = geom.structure.Position( 'rockBoxUpstreamPosition',
+                self.rockBoxUpstreamPos[0],
+                self.rockBoxUpstreamPos[1],
+                self.rockBoxUpstreamPos[2])
 
         rockBoxSubt = geom.shapes.Box( 'RockBoxSubt',
                 dx = 0.5*self.rockBoxSubtDim[0],
@@ -46,8 +58,9 @@ class RockBuilder(gegede.builder.Builder):
                 self.rockTubPos[1],
                 self.rockTubPos[2])
 
-        rockBoxTemp = geom.shapes.Boolean( 'rockBoxTemp', type='subtraction', first=rockBoxMain, second=rockBoxSubt, pos=rockBoxSubtPosition)
-        rockBox = geom.shapes.Boolean( 'rockBox', type='union', first=rockBoxTemp, second=rockTub, rot='r90aboutX', pos=rockTubPosition)
+        rockBoxTemp1 = geom.shapes.Boolean( 'rockBoxTemp1', type='union', first=rockBoxMain, second=rockBoxUpstream, pos=rockBoxUpstreamPosition)
+        rockBoxTemp2 = geom.shapes.Boolean( 'rockBoxTemp2', type='subtraction', first=rockBoxTemp1, second=rockBoxSubt, pos=rockBoxSubtPosition)
+        rockBox = geom.shapes.Boolean( 'rockBox', type='union', first=rockBoxTemp2, second=rockTub, rot='r90aboutX', pos=rockTubPosition)
 
         rockBox_lv = geom.structure.Volume( 'rockBox_lv', material=self.mat, shape=rockBox)
         self.add_volume( rockBox_lv )
