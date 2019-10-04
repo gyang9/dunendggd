@@ -55,7 +55,8 @@ class GArTPCBuilder(gegede.builder.Builder):
                 structure separating two electrode sheets
         CentElectrodeThickness: Thickness of mylar (or similar)
                 sheet used to make the central electrode
-
+        BuildEmpty: if True, build a volume the size of the TPC
+                but filled with NoGas. Useful for antifiducial generation.
     """
 
     def configure(self,chamberDimension,tpcDimension,
@@ -84,7 +85,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                     PadThickness, PadMaterial, PadOffset,
                     PadFrameThickness,PadFrameMaterial
                     CentElectrodeHCThickness,
-                    CentElectrodeThickness
+                    CentElectrodeThickness,BuildEmpty
         """
 
         # The vacuum chamber is a G4Tubs for now
@@ -94,20 +95,27 @@ class GArTPCBuilder(gegede.builder.Builder):
         self.EndCapThickness = Q("1cm")
         self.WallThickness = Q("1cm")
         self.ChamberMaterial = "Steel"
-
+        self.BuildEmpty = False
         if "EndCapThickness" in kwargs.keys():
             self.EndCapThickness = kwargs['EndCapThickness']
         if 'WallThickness' in kwargs.keys():
             self.WallThiciness = kwargs['WallThickness']
         if 'ChamberMaterial' in kwargs.keys():
             self.ChamberMaterial = kwargs['ChamberMaterial']
-
+        if 'BuildEmpty' in kwargs.keys():
+            self.BuildEmpty = kwargs['BuildEmpty']
+            
         # Should be a 3D array Quantity objects
         # Will support dipole and solenoid type fields
         # Really should be set with a magnet builder but here for testing
         # Not currently used
         self.BField = BField
         self.Material = 'Air'
+        if self.BuildEmpty:
+            self.Material='NoGas'
+            self.GasType='NoGas'
+            GasType='NoGas'
+            self.ChamberMaterial='NoGas'
         # The gas
         if type(GasType)==str:
             # Set from a pre-defined material
@@ -236,7 +244,8 @@ class GArTPCBuilder(gegede.builder.Builder):
 
 
         # Construct the TPCs
-        self.construct_tpcs(geom,tpc_gas_lv)
+        if not self.BuildEmpty:
+            self.construct_tpcs(geom,tpc_gas_lv)
 
 
     def construct_tpcs(self,geom,lv):

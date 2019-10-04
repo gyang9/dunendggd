@@ -6,6 +6,7 @@ void hallDisplay(TString filename, Int_t VisLevel=5, bool clip=true)
 
 	cout<<"======================== Checking Overlaps ============================="<<endl;
 	geo->CheckOverlaps(1e-5,"d");
+	geo->CheckGeometry();
  	geo->PrintOverlaps();
 	geo->SetVisOption(1);
 	geo->SetVisLevel(VisLevel);
@@ -76,9 +77,11 @@ void hallDisplay(TString filename, Int_t VisLevel=5, bool clip=true)
 	gGeoManager->cd(lar_active_location.c_str());
 	TGeoMatrix *active = gGeoManager->GetCurrentMatrix();
 	double local_active[3]={0,0,0};
-	double master_active[3]={0,0,0};
-	active->LocalToMaster(local_active,master_active);
+	double master_active[3]={0,0,0};	  
+	if(active){
+	  active->LocalToMaster(local_active,master_active);
 	cout<<"The center of ArgonCubeActive in the global coordinate system: \n"<<" ( "<<master_active[0]<<", "<<master_active[1]<<", "<<master_active[2]<<" )"<<endl;
+	}
 
 	// get detector enclosure coordinates
 	gGeoManager->cd(top_vols.c_str());
@@ -89,25 +92,27 @@ void hallDisplay(TString filename, Int_t VisLevel=5, bool clip=true)
 	cout<<"The center of DetEnclosure in the global coordinate system: \n"<<" ( "<<master_enclosure[0]<<", "<<master_enclosure[1]<<", "<<master_enclosure[2]<<" )"<<endl;
 
 	// print location of LArTPC in the detector enclosure
-	double active_in_enclosure[3]={0,0,0};
-	enclosure->MasterToLocal(master_active,active_in_enclosure);
+	if(active){
+	  double active_in_enclosure[3]={0,0,0};
+	  enclosure->MasterToLocal(master_active,active_in_enclosure);
 
-	cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
-
+	  cout<<"The center of ArgonCubeActive in the DetEnclosure coordinate system: \n"<<" ( "<<active_in_enclosure[0]<<", "<<active_in_enclosure[1]<<", "<<active_in_enclosure[2]<<" )"<<endl;
+	}
 	// print out location of GArTPC
 	string gar_vol=top_vols+"/volMPD_0/volNDHPgTPC_0/volGArTPC_0";
 	gGeoManager->cd(gar_vol.c_str());
 	TGeoMatrix *gartpc = gGeoManager->GetCurrentMatrix();
-	double local_gartpc[3]={0,0,0};
-	double master_gartpc[3]={0,0,0};
-	gartpc->LocalToMaster(local_gartpc,master_gartpc);
-	cout<<"The center of GArTPC in the global coordinate system: \n"<<" ( "<<master_gartpc[0]<<", "<<master_gartpc[1]<<", "<<master_gartpc[2]<<" )"<<endl;
+	if(gartpc){
+	  double local_gartpc[3]={0,0,0};
+	  double master_gartpc[3]={0,0,0};
+	  gartpc->LocalToMaster(local_gartpc,master_gartpc);
+	  cout<<"The center of GArTPC in the global coordinate system: \n"<<" ( "<<master_gartpc[0]<<", "<<master_gartpc[1]<<", "<<master_gartpc[2]<<" )"<<endl;
+	  
+	  double gartpc_in_enclosure[3]={0,0,0};
+	  enclosure->MasterToLocal(master_gartpc,gartpc_in_enclosure);
 
-	double gartpc_in_enclosure[3]={0,0,0};
-	enclosure->MasterToLocal(master_gartpc,gartpc_in_enclosure);
-
-	cout<<"The center of GArTPC in the DetEnclosure coordinate system: \n"<<" ( "<<gartpc_in_enclosure[0]<<", "<<gartpc_in_enclosure[1]<<", "<<gartpc_in_enclosure[2]<<" )"<<endl;
-
+	  cout<<"The center of GArTPC in the DetEnclosure coordinate system: \n"<<" ( "<<gartpc_in_enclosure[0]<<", "<<gartpc_in_enclosure[1]<<", "<<gartpc_in_enclosure[2]<<" )"<<endl;
+	}
 
 	geo->GetTopVolume()->Draw("ogl");
 	//	geo->DrawTracks("ogl");
@@ -117,28 +122,34 @@ void hallDisplay(TString filename, Int_t VisLevel=5, bool clip=true)
 	beam_line->Draw();
 	cout<<detenc_vol<<endl;
 	TGeoVolume* enc=geo->GetVolume("rockBox_lv");
-	enc->SetVisibility(kFALSE);
+	enc->SetVisibility(kTRUE);
 	enc->VisibleDaughters(kTRUE);
 	enc->Print();
 	cout<<"volArgonCubeDetector"<<endl;
 	TGeoVolume* ar3=geo->GetVolume("volArgonCubeDetector");
-	ar3->SetTransparency(50);
-	ar3->SetVisContainers(kTRUE);
-	ar3->VisibleDaughters(kTRUE);
-	ar3->Print();
+	if(ar3){
+	  ar3->SetTransparency(50);
+	  ar3->SetVisContainers(kTRUE);
+	  ar3->VisibleDaughters(kTRUE);
+	  ar3->Print();
+	}	
 	cout<<"volArgonCubeCryostat"<<endl;
 	TGeoVolume* cryo=geo->GetVolume("volArgonCubeCryostat");
-	cryo->SetTransparency(50);
-	cryo->SetVisContainers(kTRUE);
-	cryo->VisibleDaughters(kTRUE);
-	cryo->Print();
+	if(cryo){
+	  cryo->SetTransparency(50);
+	  cryo->SetVisContainers(kTRUE);
+	  cryo->VisibleDaughters(kTRUE);
+	  cryo->Print();
+	}
 	cout<<"volLArActiveModWolXX"<<endl;
 	for(int iwall=0; iwall<35; iwall++){
 	  TGeoVolume* wall=geo->GetVolume(Form("volLArActiveModWall%02i",iwall));
 	  if(wall) wall->SetTransparency(80);
 	}
 	TGeoVolume* cent_elec=geo->GetVolume("cent_elec_vol");
-	cent_elec->SetTransparency(90);
+	if(cent_elec){
+	  cent_elec->SetTransparency(90);
+	}
 	//	cout<<"cent_elec "<<cent_elec<<endl;
 
 
@@ -150,10 +161,17 @@ void hallDisplay(TString filename, Int_t VisLevel=5, bool clip=true)
 	double zw1[5]={250, 250, 250, 250, 250};
 	*/
 
+	/*
 	// near rock flux window
 	double xw1[5]={1000, 1000, -1500, -1500, 1000 };
 	double yw1[5]={-1160, 2200, 2200, -1160, -1160};
 	double zw1[5]={-550, -550, -550, -550, -550};
+	*/
+
+	// MPD fiducial flux window
+	double xw1[5]={350, 350, -350, -350, 350 };
+	double yw1[5]={-355, 305, 305, -355, -355};
+	double zw1[5]={250, 250, 250, 250, 250};
 
 	
 	TPolyLine3D* fw1= new TPolyLine3D(5,xw1,yw1,zw1);
