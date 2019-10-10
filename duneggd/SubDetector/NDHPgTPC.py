@@ -24,7 +24,8 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
 
     defaults=dict( innerBField="0.4 T, 0.0 T, 0.0 T",
                    buildGarTPC=True,
-                   buildEcal=True,
+                   buildEcalBarrel=True,
+                   buildEcalEndcap=True,
                    buildPV=True,
                    buildYoke=False,
                    buildMagnet=False
@@ -63,8 +64,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         ######### build an ecal ##########################
         # Build the Barrel and Endcaps using the ECALBarrelBuilder and
         # ECALEndcapBuilder in the cfg file
-        if self.buildEcal:
-            self.build_ecal(fake_lv, geom)
+        self.build_ecal(fake_lv, geom)
 
         ######### magnet yoke ##################################
         # Build the yoke Barrel and Endcaps
@@ -137,37 +137,39 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
 
     def build_ecal(self, main_lv, geom):
 
-        # build the ecalbarrel
-        ibb = self.get_builder('ECALBarrelBuilder')
-        if ibb == None:
-            return
+        if self.buildEcalBarrel == True:
+            # build the ecalbarrel
+            ibb = self.get_builder('ECALBarrelBuilder')
+            if ibb == None:
+                return
 
-        ib_vol = ibb.get_volume()
-        # Add the magnetic field to the volume
-        ib_vol.params.append(("BField", self.innerBField))
+            ib_vol = ibb.get_volume()
+            # Add the magnetic field to the volume
+            ib_vol.params.append(("BField", self.innerBField))
 
-        ecal_shape = geom.store.shapes.get(ib_vol.shape)
-        nsides = ecal_shape.numsides
-        rot_z = Q("90.0deg")-Q("180.0deg")/nsides
+            ecal_shape = geom.store.shapes.get(ib_vol.shape)
+            nsides = ecal_shape.numsides
+            rot_z = Q("90.0deg")-Q("180.0deg")/nsides
 
-        ib_rot = geom.structure.Rotation(ibb.name+"_rot", z=rot_z)
-        ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol, rot=ib_rot)
-        # Place it in the main lv
-        main_lv.placements.append(ib_pla.name)
+            ib_rot = geom.structure.Rotation(ibb.name+"_rot", z=rot_z)
+            ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol, rot=ib_rot)
+            # Place it in the main lv
+            main_lv.placements.append(ib_pla.name)
 
-        # build the ecal endcap
-        iecb = self.get_builder("ECALEndcapBuilder")
-        if iecb == None:
-            return
+        if self.buildEcalEndcap == True:
+            # build the ecal endcap
+            iecb = self.get_builder("ECALEndcapBuilder")
+            if iecb == None:
+                return
 
-        iec_vol = iecb.get_volume()
-        # Add the magnetic field to the volume
-        iec_vol.params.append(("BField", self.innerBField))
+            iec_vol = iecb.get_volume()
+            # Add the magnetic field to the volume
+            iec_vol.params.append(("BField", self.innerBField))
 
-        iec_rot = geom.structure.Rotation(iecb.name+"_rot", z=rot_z)
-        iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol, rot=iec_rot)
-        # Place it in the main lv
-        main_lv.placements.append(iec_pla.name)
+            iec_rot = geom.structure.Rotation(iecb.name+"_rot", z=rot_z)
+            iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol, rot=iec_rot)
+            # Place it in the main lv
+            main_lv.placements.append(iec_pla.name)
 
     def build_pressure_vessel(self, main_lv, geom):
 
