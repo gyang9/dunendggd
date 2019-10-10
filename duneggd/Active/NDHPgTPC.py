@@ -326,7 +326,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         #Y = (ecal_barrel_module_thickness_noSupport / 2.) / sin(2.*pi/nsides)
         Y = Q('0mm')
 
-        print "X ", X, " and Y ", Y
+        #print "X ", X, " and Y ", Y
         #Mother volume Barrel
         barrel_shape = geom.shapes.PolyhedraRegular(self.output_name, numsides=nsides, rmin=rInnerEcal, rmax=rOuterEcal+2*safety, dz=Ecal_Barrel_halfZ+safety)
         barrel_lv = geom.structure.Volume(self.output_name+"_vol", shape=barrel_shape, material=self.material)
@@ -387,8 +387,8 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 #Placement staves in Barrel
                 name = stave_lv.name
 
-                print "Placing stave at x= ", (X*cos(phirot2)-Y*sin(phirot2))
-                print "Placing stave at y= ", (X*sin(phirot2)+Y*cos(phirot2))
+                #print "Placing stave at x= ", (X*cos(phirot2)-Y*sin(phirot2))
+                #print "Placing stave at y= ", (X*sin(phirot2)+Y*cos(phirot2))
 
                 pos = geom.structure.Position(name + "_pos", x=(X*cos(phirot2)-Y*sin(phirot2)), y=(X*sin(phirot2)+Y*cos(phirot2)), z=( imodule+0.5 )*Ecal_Barrel_module_dim - Barrel_halfZ )
                 rot = geom.structure.Rotation(name + "_rot", x=pi/2.0, y=phirot+pi, z=Q("0deg"))
@@ -506,3 +506,4 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 endcap_lv.placements.append(endcap_stave_pla.name)
 
         self.add_volume(endcap_lv)
+   
