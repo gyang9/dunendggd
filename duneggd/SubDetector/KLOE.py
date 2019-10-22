@@ -293,88 +293,27 @@ class KLOEBuilder(gegede.builder.Builder):
                                      pos=pos)        
         print( "appending "+pla.name)
         main_lv.placements.append(pla.name)
-
-    def build_ecal(self,main_lv,geom):
-        # References
-        # M. Adinolfi et al., NIM A 482 (2002) 364-386
-        # and a talk at the June 2017 ND workshop
-        #
-        # ECAL is a Pb/SciFi/epoxy sandwich in the volume ratio 42:48:10
-        # with an average density of 5.3g/cc
-        #
-        # fibers are coupled to lightguides at both ends and readout by PMTs
-        #
-        # BARREL
-        # there is a barrel section that is nearly cylindrical, with 24 modules
-        # each covering 15 degrees. The modules are 4.3m long, 23cm thick, 
-        # trapezoids with bases of 52 and 59 cm.
         
-        KLOEBarrelECALHL=Q("2.15m")
-        KLOEBarrelECALDepth=Q("23cm")
-        KLOEBarrelECALSegmentation=24
-        KLOEBarrelECALRmin=Q("2.0m")
-        KLOEEcalMaterial='KLOEEcal'
-#        segmentation_radians=2*math.pi/KLOEBarrelECALSegmentation
-        dphi=Q("360 deg")/KLOEBarrelECALSegmentation
-
-        for iseg in range(0,KLOEBarrelECALSegmentation):
-            
-            name="KLOEBarrelECAL_"+str(iseg)
-            sphi=Q("0 deg")+iseg*dphi          
-            
-            shape=geom.shapes.Tubs(name, 
-                                   rmin=KLOEBarrelECALRmin, 
-                                   rmax=KLOEBarrelECALRmin+KLOEBarrelECALDepth, 
-                                   dz=KLOEBarrelECALHL,
-                                   sphi=sphi, dphi=dphi)
-            lv=geom.structure.Volume(name+'_volume', 
-                                     material=KLOEEcalMaterial, 
-                                     shape=shape)
-            pos = [Q('0m'),Q('0m'),Q('0m')]
-            
-            pos=geom.structure.Position(name+"_pos",
-                                        pos[0],pos[1], pos[2])
-            pla=geom.structure.Placement(name+"_pla",
-                                         volume=lv,
-                                         pos=pos)
-            print( "appending "+pla.name)
-            main_lv.placements.append(pla.name)
-
-
-        # ENDCAPs
-        # there are two endcaps which are 23 cm thick, roughly 2m outer radius,
-        # 0.208m inner radius and divided into 32 modules 
-        # which run vertically, and curve 90degrees at the end to be read out
-        # this is nontrivial to model and will take some work and improvements
-        # to gegede
-        # just model as a disk with a hole
-
-        KLOEEndcapECALDepth=Q("0.23m")
-        KLOEEndcapECALStartZ=Q("1.69m")
-        KLOEEndcapECALRmax=Q("2.0m")
-        KLOEEndcapECALRmin=Q("20.8cm")
+    def build_ecal(self, main_lv, geom):
         
-        for side in ['L','R']:
-            name='KLOEEndcapECAL'+side
-            shape=geom.shapes.Tubs(name, 
-                                   rmin=KLOEEndcapECALRmin, 
-                                   rmax=KLOEEndcapECALRmax, 
-                                   dz=KLOEEndcapECALDepth/2.0)
-            lv=geom.structure.Volume(name+'_volume', 
-                                     material=KLOEEcalMaterial, 
-                                    shape=shape)
-            pos = [Q('0m'),Q('0m'),Q('0m')]
-            pos[2]=KLOEEndcapECALStartZ+KLOEEndcapECALDepth/2.0
-            if side=='L':
-                pos[2]=-pos[2]
-            print( "pos[2]="+str(pos[2]))
-            pos=geom.structure.Position(name+"_pos",
-                                        pos[0],pos[1], pos[2])
-            pla=geom.structure.Placement(name+"_pla",
-                                         volume=lv,
-                                         pos=pos)
-            print( "appending "+pla.name)
-            main_lv.placements.append(pla.name)
+        if self.get_builder("KLOEEMCALO") == None:
+            print "KLOEEMCALO builder not found"
+            return 
+
+        emcalo_builder=self.get_builder("KLOEEMCALO")
+        emcalo_lv=emcalo_builder.get_volume()
+        
+        emcalo_position = geom.structure.Position(
+                'emcalo_position', Q('0m'), Q('0m'), Q('0m'))
+
+        emcalo_rotation = geom.structure.Rotation(
+                'emcalo_rotation', Q('0deg'), Q('0deg'), Q('0deg'))
+
+        emcalo_placement = geom.structure.Placement('emcalo_place',
+                                                  volume=emcalo_lv,
+                                                  pos=emcalo_position,
+                                                  rot=emcalo_rotation)
+        main_lv.placements.append(emcalo_placement.name)
 
     def build_tracker(self,main_lv,geom):
         # only build the tracker if we are
