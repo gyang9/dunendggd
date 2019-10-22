@@ -104,7 +104,7 @@ class GArTPCBuilder(gegede.builder.Builder):
             self.ChamberMaterial = kwargs['ChamberMaterial']
         if 'BuildEmpty' in kwargs.keys():
             self.BuildEmpty = kwargs['BuildEmpty']
-            
+
         # Should be a 3D array Quantity objects
         # Will support dipole and solenoid type fields
         # Really should be set with a magnet builder but here for testing
@@ -208,7 +208,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         tpc_chamber_shape = geom.shapes.Tubs('TPCChamber',
                                        rmax = self.ChamberRadius,
                                        dz = self.ChamberLength*0.5)
-        tpc_chamber_lv = geom.structure.Volume('TPCChamber_vol',
+        tpc_chamber_lv = geom.structure.Volume('volTPCChamber',
                                                material=self.ChamberMaterial,
                                                shape=tpc_chamber_shape)
 
@@ -229,7 +229,7 @@ class GArTPCBuilder(gegede.builder.Builder):
                              rmax=self.ChamberRadius-self.WallThickness,
                              dz=0.5*self.ChamberLength - self.EndCapThickness)
 
-        tpc_gas_lv = geom.structure.Volume('TPCGas_vol',
+        tpc_gas_lv = geom.structure.Volume('volTPCGas',
                                            material=self.GasType,
                                            shape=tpc_gas_shape)
 

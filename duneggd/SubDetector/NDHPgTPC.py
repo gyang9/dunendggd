@@ -40,7 +40,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         dy_main=Q("4.0m")
         dz_main=Q("5.01m")
         main_shape = geom.shapes.Box('MPD', dx=dx_main, dy=dy_main, dz=dz_main)
-        main_lv = geom.structure.Volume('vol'+self.name, material='Air', shape=main_shape)
+        main_lv = geom.structure.Volume('vol'+main_shape.name, material='Air', shape=main_shape)
 
         self.add_volume(main_lv)
 
@@ -178,7 +178,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         if pv_builder == None:
             return
 
-        pvb_vol = pv_builder.get_volume("PVBarrel_vol")
+        pvb_vol = pv_builder.get_volume("volPVBarrel")
         pvb_vol.params.append(("BField", self.innerBField))
 
         pvb_pla = geom.structure.Placement("PVBarrel"+"_pla", volume=pvb_vol)
@@ -186,7 +186,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         main_lv.placements.append(pvb_pla.name)
 
         #Build the PV Endcap
-        pvec_vol = pv_builder.get_volume("PVEndcap_vol")
+        pvec_vol = pv_builder.get_volume("volPVEndcap")
         pvec_vol.params.append(("BField", self.innerBField))
         xpos = pv_builder.get_pv_endcap_position(geom)
 
@@ -207,7 +207,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         if magnet_builder == None:
             return
 
-        magnet_vol = magnet_builder.get_volume("Magnet_vol")
+        magnet_vol = magnet_builder.get_volume("volMagnet")
         magnet_pla = geom.structure.Placement("Magnet"+"_pla", volume=magnet_vol)
         # Place it in the main lv
         main_lv.placements.append(magnet_pla.name)
