@@ -223,7 +223,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         magnet_name = self.output_name
         magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
-        magnet_vol = geom.structure.Volume(magnet_name+"_vol", shape=magnet_shape, material=self.magnetMaterial)
+        magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material=self.magnetMaterial)
 
         self.add_volume(magnet_vol)
 
@@ -241,7 +241,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         # build the pressure vessel barrel
         pvb_name = self.output_name + "Barrel"
         pvb_shape = geom.shapes.Tubs(pvb_name, rmin=pv_rmin, rmax=pv_rmax, dz=pvHalfLength, sphi="0deg", dphi="360deg")
-        pvb_vol = geom.structure.Volume(pvb_name+"_vol", shape=pvb_shape, material=self.pvMaterial)
+        pvb_vol = geom.structure.Volume("vol"+pvb_name, shape=pvb_shape, material=self.pvMaterial)
 
         self.add_volume(pvb_vol)
 
@@ -259,7 +259,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         pvec_name = self.output_name + "Endcap"
         pvec_shape = geom.shapes.Sphere(pvec_name, rmin=R, rmax=R + self.pvThickness, sphi="0deg", dphi="360deg", stheta="0deg", dtheta=dtheta)
-        pvec_vol = geom.structure.Volume(pvec_name + "_vol", shape=pvec_shape, material=self.pvMaterial)
+        pvec_vol = geom.structure.Volume("vol"+pvec_name, shape=pvec_shape, material=self.pvMaterial)
 
         self.add_volume(pvec_vol)
 
@@ -329,7 +329,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         #print "X ", X, " and Y ", Y
         #Mother volume Barrel
         barrel_shape = geom.shapes.PolyhedraRegular(self.output_name, numsides=nsides, rmin=rInnerEcal, rmax=rOuterEcal+2*safety, dz=Ecal_Barrel_halfZ+safety)
-        barrel_lv = geom.structure.Volume(self.output_name+"_vol", shape=barrel_shape, material=self.material)
+        barrel_lv = geom.structure.Volume("vol"+self.output_name, shape=barrel_shape, material=self.material)
 
         sensname = self.output_name + "_vol"
         for istave in range(nsides):
@@ -429,7 +429,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         endcap_shape_max = geom.shapes.PolyhedraRegular("ECALEndcap_max", numsides=nsides, rmin=rmin, rmax=rmax, dz=EcalEndcap_max_z)
 
         endcap_shape = geom.shapes.Boolean( self.output_name, type='subtraction', first=endcap_shape_max, second=endcap_shape_min )
-        endcap_lv = geom.structure.Volume( self.output_name+"_vol", shape=endcap_shape, material=self.material )
+        endcap_lv = geom.structure.Volume( "vol"+self.output_name, shape=endcap_shape, material=self.material )
 
         # Place staves in the Endcap Volume
         sensname = self.output_name + "_vol"
