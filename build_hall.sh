@@ -16,6 +16,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -54,6 +55,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -76,6 +78,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -99,6 +102,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -122,6 +126,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept_No_TPC.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -146,6 +151,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -169,6 +175,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_No_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -192,6 +199,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
@@ -215,6 +223,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_Hall_Rock.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
 	   duneggd/Config/MPD_Concept_No_TPC.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
