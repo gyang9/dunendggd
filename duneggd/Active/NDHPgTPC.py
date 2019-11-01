@@ -132,7 +132,8 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     magnetMaterial = "Aluminum",
                     magnetThickness = Q("130mm"),
                     magnetInnerR = Q("3250cm"),
-                    magnetHalfLength = Q("5m")
+                    magnetHalfLength = Q("5m"),
+                    magnetType = ""
                     )
 
     #def configure(self, **kwds):
@@ -219,13 +220,58 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def construct_magnet(self, geom):
         ''' construct the Magnet '''
 
-        print "Construct Magnet"
+        if self.magnetType == "5Coils" or self.magnetType == "4Coils" or self.magnetType == "2Coils":
+            ''' construct a 5/4/2 Helmoltz coil design based on Vladimir Kashikhin model'''
+            ''' 1st coil is at 0, side coils at +/- 3m and shielding coils at +/- 5.5 m '''
+            ''' coil thickness is 62 cm and with is 27 cm for center and shielding coils, 61,6 cm for the side coils '''
+            ''' the model does not separate coil and cryo - the inner radius is 3.5m and the thickness is 70 cm '''
+            ''' total weight for the 5 coil design is around 93t '''
 
-        magnet_name = self.output_name
-        magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
-        magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material=self.magnetMaterial)
+            if self.magnetType == "5Coils":
+                print "Construct Magnet - 5 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                nCoils = 5
+                CoilWidth = [Q("27cm"), Q("61.6cm"), Q("27cm"), Q("61.6cm"), Q("27cm")]
+                CoilPos = [Q("-5.5m"), Q("-3m"), Q("0m"), Q("3m"), Q("5.5m")]
+            if self.magnetType == "4Coils":
+                print "Construct Magnet - 4 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                nCoils = 4
+                CoilWidth = [Q("27cm"), Q("61.6cm"), Q("61.6cm"), Q("27cm")]
+                CoilPos = [Q("-5.5m"), Q("-3m"), Q("3m"), Q("5.5m")]
+            if self.magnetType == "2Coils":
+                print "Construct Magnet - 2 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                nCoils = 2
+                CoilWidth = [Q("61.6cm"), Q("61.6cm")]
+                CoilPos = [Q("-3m"), Q("3m")]
 
-        self.add_volume(magnet_vol)
+            ''' Fake shape filled with Air to contain the coils '''
+            magnet_name = self.output_name
+            magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
+            magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material="Air")
+
+            for ncoil, coilw, coilp in zip(range(nCoils), CoilWidth, CoilPos):
+                coil_name = self.output_name + "_Coil%01i" % ncoil
+                coil_shape = geom.shapes.Tubs(coil_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=coilw/2., sphi="0deg", dphi="360deg")
+                coil_vol = geom.structure.Volume("vol"+coil_name, shape=coil_shape, material=self.magnetMaterial)
+
+                '''Place the coils in the magnet volume'''
+                #Placement layer in stave
+                coil_pos = geom.structure.Position(coil_name+"_pos", z=coilp)
+                coil_pla = geom.structure.Placement(coil_name+"_pla", volume=coil_vol, pos=coil_pos)
+                magnet_vol.placements.append(coil_pla.name)
+
+            self.add_volume(magnet_vol)
+
+        elif self.magnetType == "":
+            print "Construct Magnet - Approximation to a magnet of 100t made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+
+            magnet_name = self.output_name
+            magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
+            magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material=self.magnetMaterial)
+
+            self.add_volume(magnet_vol)
+        else:
+            print "Magnet model unknown.... "
+            return
 
     def construct_pv(self, geom):
         ''' construct the Pressure Vessel '''

@@ -22,7 +22,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
 
     '''
 
-    defaults=dict( innerBField="0.4 T, 0.0 T, 0.0 T",
+    defaults=dict( innerBField="0.5 T, 0.0 T, 0.0 T",
                    buildGarTPC=True,
                    buildEcalBarrel=True,
                    buildEcalEndcap=True,
@@ -36,9 +36,10 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
 
         ############# build the top level lv ###################
         # it's just a box to hold everything else
-        dx_main=Q("4.0m")
-        dy_main=Q("4.0m")
-        dz_main=Q("5.01m")
+        magnet_shape = geom.get_shape("Magnet")
+        dx_main=magnet_shape.rmax
+        dy_main=magnet_shape.rmax
+        dz_main=magnet_shape.dz
         main_shape = geom.shapes.Box('MPD', dx=dx_main, dy=dy_main, dz=dz_main)
         main_lv = geom.structure.Volume('vol'+main_shape.name, material='Air', shape=main_shape)
 
