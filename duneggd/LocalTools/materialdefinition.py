@@ -85,6 +85,13 @@ def define_materials( g ):
                                 ("oxygen",   0.209476),
                                 ("argon",    0.00934)
                             ))
+    
+    air35C   = g.matter.Mixture( "Air35C", density = "0.00115*g/cc",
+                            components = (
+                                ("nitrogen", 0.781154),
+                                ("oxygen",   0.209476),
+                                ("argon",    0.00934)
+                            ))
 
 
     bakelite = g.matter.Mixture( "Bakelite", density = "1.25*g/cc",
@@ -119,14 +126,24 @@ def define_materials( g ):
     fracCO2 = .3
     densArCO2 = fracCO2 * densCO2 + (1-fracCO2) * densAr
     densXeCO2 = fracCO2 * densCO2 + (1-fracCO2) * densXe
+    densXeCO2_19=densXeCO2*1.9
+    densArCO2_19=densArCO2*1.9
     dArCO2 = str(densArCO2)+"*g/cc"
     dXeCO2 = str(densXeCO2)+"*g/cc"
+    dArCO2_19 = str(densArCO2_19)+"*g/cc"
+    dXeCO2_19 = str(densXeCO2_19)+"*g/cc"
 
     stGas_Xe = g.matter.Mixture( "stGas_Xe", density = dXeCO2,
                             components = (
                                 ("CO2",    fracCO2),
                                 ("argon",  1-fracCO2)
                                 #("xenon",  1-fracCO2)   #GENIE XSec spline having trouble with xenon
+                            ))
+                            
+    stGas_Xe19 = g.matter.Mixture( "stGas_Xe19", density = dXeCO2_19,
+                            components = (
+                                ("CO2",    fracCO2),
+                                ("argon",  1-fracCO2)
                             ))
 
     # Materials for the targets and st planes following
@@ -146,10 +163,17 @@ def define_materials( g ):
                                 ("CO2",    fracCO2),
                                 ("argon",  1-fracCO2)
                             ))
+    stGas_Ar19 = g.matter.Mixture( "stGas_Ar19", density = dArCO2_19,
+                            components = (
+                                ("CO2",    fracCO2),
+                                ("argon",  1-fracCO2)
+                            ))
 
     Kapton   = g.matter.Molecule("Kapton",   density="1.4*g/cc",   elements=(("carbon",22), ("oxygen",5), ("nitrogen",2)))
 
 
+    Tungsten = g.matter.Molecule("Tungsten", density="19.3*g/cc",  elements=(("tungsten",1),))
+    Gold     = g.matter.Molecule("Gold",     density="19.3*g/cc",  elements=(("gold",1),))
     Iron     = g.matter.Molecule("Iron",     density="7.874*g/cc", elements=(("iron",1),))
     Graphite = g.matter.Molecule("Graphite", density="2.23*g/cc",  elements=(("carbon",1),))
     Calcium  = g.matter.Molecule("Calcium",  density="1.55*g/cc",  elements=(("calcium",1),))
