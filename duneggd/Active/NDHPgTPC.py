@@ -298,7 +298,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
             self.add_volume(magnet_vol)
 
-        elif self.magnetType == "":
+        elif self.magnetType == "Uniform":
             print "Construct Magnet - Approximation to a magnet of 100t made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
 
             magnet_name = self.output_name
