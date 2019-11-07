@@ -35,15 +35,17 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     def construct(self, geom):
 
         ''' Top level volume (MPD) - It is rotated later in the cavern (x, y, z) -> (z, y, x)'''
-        eyoke_shape = geom.get_shape("YokeEndcap_max")
-        magnet_shape = geom.get_shape("Magnet")
 
-        r = eyoke_shape.rmax
-        dz = eyoke_shape.dz
-        if r < magnet_shape.rmax:
-            r = magnet_shape.rmax
-        if dz < magnet_shape.dz:
-            dz = magnet_shape.dz
+        magnet_shape = geom.get_shape("Magnet")
+        r = magnet_shape.rmax
+        dz = magnet_shape.dz
+
+        if self.buildYoke == True:
+            eyoke_shape = geom.get_shape("YokeEndcap_max")
+            if r < eyoke_shape.rmax:
+                r = eyoke_shape.rmax
+            if dz < eyoke_shape.dz:
+                dz = eyoke_shape.dz
 
         dx_main=r #dimension along the beam
         dy_main=r #dimension in height
