@@ -34,12 +34,23 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
-        ############# build the top level lv ###################
-        # it's just a box to hold everything else
+        ''' Top level volume (MPD) - It is rotated later in the cavern (x, y, z) -> (z, y, x)'''
+        eyoke_shape = geom.get_shape("YokeEndcap_max")
         magnet_shape = geom.get_shape("Magnet")
-        dx_main=magnet_shape.rmax
-        dy_main=magnet_shape.rmax
-        dz_main=magnet_shape.dz
+
+        r = eyoke_shape.rmax
+        dz = eyoke_shape.dz
+        if r < magnet_shape.rmax:
+            r = magnet_shape.rmax
+        if dz < magnet_shape.dz:
+            dz = magnet_shape.dz
+
+        dx_main=r #dimension along the beam
+        dy_main=r #dimension in height
+        dz_main=dz #dimension perp to the beam
+
+        print "Dimension of the MPD in along the beam ", dx_main*2, " dimension in height ", dy_main*2, " and dimension perp to the beam ", dz_main*2
+
         main_shape = geom.shapes.Box('MPD', dx=dx_main, dy=dy_main, dz=dz_main)
         main_lv = geom.structure.Volume('vol'+main_shape.name, material='Air', shape=main_shape)
 
@@ -53,6 +64,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # EndcapThickness, WallThickness, and ChamberMaterial
         # do that in the cfg file
         if self.buildGarTPC:
+            print "Building TPC"
             self.build_gartpc(fake_lv, geom)
 
         ######### build the pressure vessel  ###################
@@ -60,6 +72,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # The PV consists of a cylinder for the Barrel and
         # the intersection of the cylinder and a sphere for the Endcaps
         if self.buildPV:
+            print "Building PV"
             self.build_pressure_vessel(fake_lv, geom)
 
         ######### build an ecal ##########################
@@ -67,52 +80,29 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # ECALEndcapBuilder in the cfg file
         self.build_ecal(fake_lv, geom)
 
-        ######### magnet yoke ##################################
-        # Build the yoke Barrel and Endcaps
-        # A description of the return magnetic field and the coils is not implemented
-        # if self.buildYoke:
-        #     self.build_yoke(main_lv, geom)
-
 
         ######### magnet ##################################
         # Build a simple magnet of Al to get the total mass
         # A description of the return magnetic field and the coils is not implemented
         if self.buildMagnet:
+            print "Building Magnet"
             self.build_magnet(main_lv, geom)
+
+        ######### magnet yoke ##################################
+        # Build the yoke Barrel and Endcaps
+        # A description of the return magnetic field and the coils is not implemented
+        if self.buildYoke:
+            print "Building Yoke"
+            self.build_yoke(main_lv, geom)
 
         return
 
-
-    # def build_yoke(self,main_lv,geom):
-    #
-    #     #### build the barrel ####
-    #     yokeb_builder = self.get_builder('YokeBarrelBuilder')
-    #     yokeb_vol = yokeb_builder.get_volume()
-    #
-    #     yoke_shape = geom.store.shapes.get(yokeb_vol.shape)
-    #     nsides = yoke_shape.numsides
-    #     rot_z = Q("90.0deg")-Q("180.0deg")/nsides
-    #
-    #     yokeb_rot = geom.structure.Rotation(yokeb_builder.name+"_rot", z=rot_z)
-    #     yokeb_pla = geom.structure.Placement(yokeb_builder.name+"_pla", volume=yokeb_vol, rot=yokeb_rot)
-    #     # Place it in the main lv
-    #     main_lv.placements.append(yokeb_pla.name)
-    #
-    #     #### build the endcap ####
-    #     yokeec_builder = self.get_builder('YokeEndcapBuilder')
-    #     yokeec_vol = yokeec_builder.get_volume()
-    #
-    #     yokeec_rot = geom.structure.Rotation(yokeec_builder.name+"_rot", z=rot_z)
-    #     yokeec_pla = geom.structure.Placement(yokeec_builder.name+"_pla", volume=yokeec_vol, rot=yokeec_rot)
-    #     # Place it in the main lv
-    #     main_lv.placements.append(yokeec_pla.name)
-    #     return
-
     def buildMagnetizedVolume(self, main_lv, geom):
+        '''Magnetized volume (fake volume) for G4 that includes the TPC + ECAL only'''
 
         magnet_shape = geom.get_shape("Magnet")
-
-        fake_shape = geom.shapes.Tubs('NDHPgTPC', rmin=Q("0m"), rmax=magnet_shape.rmin, dz=magnet_shape.dz, sphi="0deg", dphi="360deg")
+        eECal_shape = geom.get_shape("ECALEndcap_max")
+        fake_shape = geom.shapes.Tubs('NDHPgTPC', rmin=Q("0m"), rmax=magnet_shape.rmin, dz=eECal_shape.dz, sphi="0deg", dphi="360deg")
         fake_lv = geom.structure.Volume('vol'+fake_shape.name, material='Air', shape=fake_shape)
         fake_lv.params.append(("BField", self.innerBField))
         fake_pla = geom.structure.Placement("NDHPgTPC"+"_pla", volume=fake_lv)
@@ -212,3 +202,23 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         magnet_pla = geom.structure.Placement("Magnet"+"_pla", volume=magnet_vol)
         # Place it in the main lv
         main_lv.placements.append(magnet_pla.name)
+
+    def build_yoke(self,main_lv,geom):
+
+        yoke_builder = self.get_builder('YokeBuilder')
+        if yoke_builder == None:
+            return
+
+        byoke_vol = yoke_builder.get_volume("volYokeBarrel")
+        nsides = yoke_builder.nsides
+        rot_z = Q("90.0deg")-Q("180.0deg")/nsides
+        byoke_rot = geom.structure.Rotation(byoke_vol.name+"_rot", z=rot_z)
+        byoke_pla = geom.structure.Placement("YokeBarrel"+"_pla", volume=byoke_vol, rot=byoke_rot)
+        # Place it in the main lv
+        main_lv.placements.append(byoke_pla.name)
+
+        eyoke_vol = yoke_builder.get_volume("volYokeEndcap")
+        eyoke_rot = geom.structure.Rotation(eyoke_vol.name+"_rot", z=rot_z)
+        eyoke_pla = geom.structure.Placement("YokeEndcap"+"_pla", volume=eyoke_vol, rot=eyoke_rot)
+        # Place it in the main lv
+        main_lv.placements.append(eyoke_pla.name)
