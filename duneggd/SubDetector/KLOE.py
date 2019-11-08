@@ -349,9 +349,8 @@ class KLOEBuilder(gegede.builder.Builder):
                 print("Position name", pos_name)
                 print("Placement name", pla_name)
                 sb_pos = geom.structure.Position(pos_name, pos[0], pos[1], pos[2])
-                sb_pla = geom.structure.Placement(pla_name,
-					                                                    volume=a3dst_lv,
-					                                                    pos=sb_pos)
+                sb_pla = geom.structure.Placement(pla_name,volume=a3dst_lv,
+					          pos=sb_pos)
                 print("Appending ", sb_pla.name, " to main_lv=", main_lv.name)
                 main_lv.placements.append(sb_pla.name)
 
