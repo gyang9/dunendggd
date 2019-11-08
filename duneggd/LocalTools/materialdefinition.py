@@ -24,6 +24,8 @@ def define_materials( g ):
     mn = g.matter.Element("manganese",  "Mn", 25, "54.9380*g/mole")
     fe = g.matter.Element("iron",       "Fe", 26, "55.8450*g/mole")
     ni = g.matter.Element("nickel",     "Ni", 28, "58.6934*g/mole")
+    w = g.matter.Element("tungsten",    "W", 74, "183.84*g/mole")
+    au = g.matter.Element("gold",       "Au", 79, "196.966*g/mole")
 
 #    cu = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
     cu63=g.matter.Isotope("copper63", 29, 63, "62.93*g/mole")
@@ -85,7 +87,7 @@ def define_materials( g ):
                                 ("oxygen",   0.209476),
                                 ("argon",    0.00934)
                             ))
-    
+
     air35C   = g.matter.Mixture( "Air35C", density = "0.00115*g/cc",
                             components = (
                                 ("nitrogen", 0.781154),
@@ -139,7 +141,7 @@ def define_materials( g ):
                                 ("argon",  1-fracCO2)
                                 #("xenon",  1-fracCO2)   #GENIE XSec spline having trouble with xenon
                             ))
-                            
+
     stGas_Xe19 = g.matter.Mixture( "stGas_Xe19", density = dXeCO2_19,
                             components = (
                                 ("CO2",    fracCO2),
