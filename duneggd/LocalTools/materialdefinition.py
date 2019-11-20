@@ -473,35 +473,6 @@ def define_materials( g ):
     nogas =  g.matter.Mixture('NoGas',
                               density='1.0E-25*g/cc',components=(('argon',1.0),) )
 
-# Documentation
-
-    one     = g.matter.Mixture( "One", density = "0.001225*g/cc",
-                            components = (
-                                ("nitrogen", 0.781154),
-                                ("oxygen",   0.209476),
-                                ("argon",    0.00934)
-                            ))
-
-    two     = g.matter.Mixture( "Two", density = "0.001225*g/cc",
-                            components = (
-                                ("nitrogen", 0.781154),
-                                ("oxygen",   0.209476),
-                                ("argon",    0.00934)
-                            ))
-
-    three   = g.matter.Mixture( "Three", density = "0.001225*g/cc",
-                            components = (
-                                ("nitrogen", 0.781154),
-                                ("oxygen",   0.209476),
-                                ("argon",    0.00934)
-                            ))
-
-    four    = g.matter.Mixture( "Four", density = "0.001225*g/cc",
-                            components = (
-                                ("nitrogen", 0.781154),
-                                ("oxygen",   0.209476),
-                                ("argon",    0.00934)
-                            ))
 
 # ArCLight (https://arxiv.org/pdf/1711.11409.pdf)
 
@@ -524,6 +495,14 @@ def define_materials( g ):
     # Mylar (Polyethylenterephthalat) ???
     # 'https://de.wikipedia.org/wiki/Polyethylenterephthalat'
     esr = g.matter.Molecule("ESR", density="1.38g/cc",
+                            elements = (
+                                ("carbon", 10),
+                                ("hydrogen", 8),
+                                ("oxygen", 4)
+                            ))
+
+    # Dichroic mirror (for the moment same as Mirror film)
+    esr = g.matter.Molecule("DC", density="1.38g/cc",
                             elements = (
                                 ("carbon", 10),
                                 ("hydrogen", 8),

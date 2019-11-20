@@ -5,6 +5,7 @@ void materialDisplay(TString filename,Bool_t checkoverlaps=kFALSE,TString label=
   std::map<TString,Int_t> Kolor;
   Kolor["Air"] = kWhite;
   Kolor["Copper"] = kOrange;
+  Kolor["DC"] = kViolet;
   Kolor["EJ280WLS"] = kSpring;
   Kolor["ESR"] = kGray;
   Kolor["FR4"] = kGreen;
