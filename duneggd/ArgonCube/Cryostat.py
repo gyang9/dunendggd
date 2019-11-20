@@ -1,4 +1,4 @@
-""" PhotonSim.py
+""" Cryostat.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,8 +9,8 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class PhotonSimBuilder(gegede.builder.Builder):
-    """ Class to build PhotonSim geometry.
+class CryostatBuilder(gegede.builder.Builder):
+    """ Class to build Cryostat geometry.
 
     """
 
@@ -41,7 +41,7 @@ class PhotonSimBuilder(gegede.builder.Builder):
                                 'dz':   htpc_builder.halfDimension['dz']+Q('1cm')/2}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('PhotonSimBuilder::construct()')
+        print('CryostatBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 

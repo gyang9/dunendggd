@@ -1,4 +1,4 @@
-""" ArCLight.py
+""" OpticalDet.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,8 +9,8 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class ArCLightBuilder(gegede.builder.Builder):
-    """ Class to build ArCLight geometry.
+class OpticalDetBuilder(gegede.builder.Builder):
+    """ Class to build OpticalDet geometry.
 
     """
 
@@ -71,7 +71,7 @@ class ArCLightBuilder(gegede.builder.Builder):
         """
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('ArCLightBuilder::construct()')
+        print('OpticalDetBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
@@ -81,7 +81,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                        dy = self.WLS_dy,
                                        dz = self.WLS_dz)
 
-        WLS_lv = geom.structure.Volume('WLS_vol',
+        WLS_lv = geom.structure.Volume('volWLS',
                                             material=self.WLS_Material,
                                             shape=WLS_shape)
 
@@ -103,7 +103,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                        dy = self.WLS_dy+2*self.ESR_d,
                                        dz = self.WLS_dz+self.ESR_d)
 
-        ESR_lv = geom.structure.Volume('ESR_vol',
+        ESR_lv = geom.structure.Volume('volESR',
                                             material=self.ESR_Material,
                                             shape=ESR_shape)
 
@@ -125,7 +125,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                        dy = self.WLS_dy+2*self.ESR_d,
                                        dz = self.DC_dz)
 
-        DC_lv = geom.structure.Volume('DC_vol',
+        DC_lv = geom.structure.Volume('volDC',
                                             material=self.DC_Material,
                                             shape=DC_shape)
 
@@ -147,7 +147,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                        dy = self.WLS_dy+2*self.ESR_d,
                                        dz = self.TPB_dz)
 
-        TPB_lv = geom.structure.Volume('TPB_vol',
+        TPB_lv = geom.structure.Volume('volTPB',
                                             material=self.TPB_Material,
                                             shape=TPB_shape)
 
@@ -169,7 +169,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                        dy = self.WLS_dy,
                                        dz = self.WLS_dz)
 
-        PVT_lv = geom.structure.Volume('PVT_vol',
+        PVT_lv = geom.structure.Volume('volPVT',
                                             material=self.PVT_Material,
                                             shape=PVT_shape)
 
@@ -191,7 +191,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                        dy = self.WLS_dy,
                                        dz = self.WLS_dz)
 
-        ArC_PCB_lv = geom.structure.Volume('ArC_PCB_vol',
+        ArC_PCB_lv = geom.structure.Volume('volArCPCB',
                                             material=self.ArC_PCB_Material,
                                             shape=ArC_PCB_shape)
 
@@ -214,7 +214,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                            dy = self.SiPM_dy,
                                            dz = self.SiPM_dz)
 
-            SiPM_lv = geom.structure.Volume('SiPM_vol'+str(n),
+            SiPM_lv = geom.structure.Volume('volSiPM'+str(n),
                                                 material=self.SiPM_Material,
                                                 shape=SiPM_shape)
 

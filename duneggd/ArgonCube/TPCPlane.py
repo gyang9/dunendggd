@@ -1,4 +1,4 @@
-""" PixelBoard.py
+""" TPCPlane.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,8 +9,8 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class PixelBoardBuilder(gegede.builder.Builder):
-    """ Class to build PixelBoard geometry.
+class TPCPlaneBuilder(gegede.builder.Builder):
+    """ Class to build TPCPlane geometry.
 
     """
 
@@ -63,7 +63,7 @@ class PixelBoardBuilder(gegede.builder.Builder):
         """
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('PixelBoardBuilder::construct()')
+        print('TPCPlaneBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
@@ -97,7 +97,7 @@ class PixelBoardBuilder(gegede.builder.Builder):
                                        dy = self.PCB_dy,
                                        dz = self.PCB_dz)
 
-        PCB_lv = geom.structure.Volume('PCB_vol',
+        PCB_lv = geom.structure.Volume('volTPCPCB',
                                             material=self.PCB_Material,
                                             shape=PCB_shape)
 
@@ -119,7 +119,7 @@ class PixelBoardBuilder(gegede.builder.Builder):
                                        dy = self.Pixel_dy,
                                        dz = self.Pixel_dz)
 
-        Pixel_lv = geom.structure.Volume('Pixel_vol',
+        Pixel_lv = geom.structure.Volume('volTPCPixel',
                                             material=self.Pixel_Material,
                                             shape=Pixel_shape)
 
@@ -143,7 +143,7 @@ class PixelBoardBuilder(gegede.builder.Builder):
                                        dy = self.Asic_dy,
                                        dz = self.Asic_dz)
 
-        Asic_lv = geom.structure.Volume('Asic_vol',
+        Asic_lv = geom.structure.Volume('volTPCAsic',
                                             material=self.Asic_Material,
                                             shape=Asic_shape)
 
@@ -167,7 +167,7 @@ class PixelBoardBuilder(gegede.builder.Builder):
                                        dy = self.PCB_dy,
                                        dz = self.PCB_border_dz)
 
-        PCB_border_lv = geom.structure.Volume('PCB_border_vol',
+        PCB_border_lv = geom.structure.Volume('volTPCPCBBorder',
                                             material=self.PCB_Material,
                                             shape=PCB_border_shape)
 

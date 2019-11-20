@@ -1,4 +1,4 @@
-""" LArActive.py
+""" TPC.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,8 +9,8 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class LArActiveBuilder(gegede.builder.Builder):
-    """ Class to build LArActive geometry.
+class TPCBuilder(gegede.builder.Builder):
+    """ Class to build TPC geometry.
 
     """
 
@@ -39,8 +39,8 @@ class LArActiveBuilder(gegede.builder.Builder):
 
         """
 
-        arcl_builder = self.get_builder('ArCLight')
-        pixel_builder = self.get_builder('PixelBoard')
+        arcl_builder = self.get_builder('OpticalDet')
+        pixel_builder = self.get_builder('TPCPlane')
 
         self.halfDimension  = { 'dx':   pixel_builder.halfDimension['dx']
                                         +arcl_builder.halfDimension['dx']
@@ -54,11 +54,11 @@ class LArActiveBuilder(gegede.builder.Builder):
                                         +self.Gap_Pixel_Pixel}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('LArActiveBuilder::construct()')
+        print('TPCBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        # Build ArCLight
+        # Build OpticalDet
         pos = [pixel_builder.halfDimension['dx']+self.Gap_ArCL_Pixel-self.Bar_width,Q('0mm'),-pixel_builder.halfDimension['dz']+pixel_builder.PCB_border_dz-self.Gap_Pixel_Pixel]
 
         arcl_lv = arcl_builder.get_volume()
@@ -72,7 +72,7 @@ class LArActiveBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(arcl_pla.name)
 
-        # Build PixelBoard
+        # Build TPCPlane
         pos = [-arcl_builder.halfDimension['dx']-self.Gap_ArCL_Pixel-self.Bar_width,Q('0mm'),-self.Gap_Pixel_Pixel]
 
 
@@ -93,7 +93,7 @@ class LArActiveBuilder(gegede.builder.Builder):
                                         dy = self.halfDimension['dy'],
                                         dz = arcl_builder.halfDimension['dz'])
 
-        bar_lv = geom.structure.Volume('Bar_vol',
+        bar_lv = geom.structure.Volume('volTPCBar',
                                         material=self.Bar_Material,
                                         shape=bar_shape)
 
@@ -108,4 +108,33 @@ class LArActiveBuilder(gegede.builder.Builder):
                                                 pos=bar_pos)
 
         arcl_lv.placements.append(bar_pla.name)
+
+        # Construct TPCActive
+        TPCActive_shape = geom.shapes.Box('TPCActive',
+                                        dx =    arcl_builder.halfDimension['dx']
+                                                +self.Gap_ArCL_Pixel
+                                                +self.Bar_width,
+
+                                        dy =    arcl_builder.halfDimension['dy']
+                                                +2*self.Gap_Pixel_Pixel,
+
+                                        dz =    pixel_builder.halfDimension['dz']
+                                                -arcl_builder.halfDimension['dz']
+                                                +self.Gap_Pixel_Pixel)
+
+        TPCActive_lv = geom.structure.Volume('volTPCActive',
+                                        material=self.Material,
+                                        shape=TPCActive_shape)
+
+        # Place TPCActive
+        pos = [pixel_builder.halfDimension['dx'],Q('0cm'),arcl_builder.halfDimension['dz']]
+
+        TPCActive_pos = geom.structure.Position('TPCActive_pos',
+                                                pos[0],pos[1],pos[2])
+
+        TPCActive_pla = geom.structure.Placement('TPCActive_pla',
+                                                volume=TPCActive_lv,
+                                                pos=TPCActive_pos)
+
+        main_lv.placements.append(TPCActive_pla.name)
 

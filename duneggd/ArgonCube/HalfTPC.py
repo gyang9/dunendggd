@@ -37,7 +37,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
 
         """
 
-        lara_builder = self.get_builder('LArActive')
+        lara_builder = self.get_builder('TPC')
 
         self.halfDimension  = { 'dx':   lara_builder.halfDimension['dx'],
                                 'dy':   self.NUnits*lara_builder.halfDimension['dy'],
@@ -48,7 +48,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        # Build LArActive Array
+        # Build TPC Array
         for i in range(self.NUnits):
             pos = [Q('0cm'),(-self.NUnits+1+2*i)*lara_builder.halfDimension['dy'],-lara_builder.halfDimension['dz']]
 
