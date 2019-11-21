@@ -32,6 +32,16 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   -w World -o nd_hall_with_dets.gdml
 fi
 
+if [ $option = "all" -o $option = "3DST_STT" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/KLOE_with_3DST_STT.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
+           -w World -o nd_hall_with_3DST_STT.gdml
+fi
+
 # build a hall with no detectors
 if [ $option = "all" -o $option = "empty" ];
 then

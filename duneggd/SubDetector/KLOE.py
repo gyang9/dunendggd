@@ -16,6 +16,7 @@ class KLOEBuilder(gegede.builder.Builder):
                   BuildGAR=False,
                   Build3DST=False,
                   BuildSTTFULL=False,
+                  Build3DSTwithSTT=False,
                   **kwds):
         del BField
         self.halfDimension = halfDimension
@@ -24,7 +25,7 @@ class KLOEBuilder(gegede.builder.Builder):
         self.BuildGAR      = BuildGAR
         self.Build3DST     = Build3DST
         self.BuildSTTFULL  = BuildSTTFULL
-        
+        self.Build3DSTwithSTT = Build3DSTwithSTT
         # The overall logical volume
         self.LVHalfLength=Q("3.1m")
         self.LVRadius=Q("3.6m")
@@ -83,6 +84,8 @@ class KLOEBuilder(gegede.builder.Builder):
             self.build_sttfull(main_lv,geom)
         if(self.Build3DST is True):
             self.build_3DST(main_lv, geom)
+        if(self.Build3DSTwithSTT is True):
+            self.build_3DSTwithSTT(main_lv, geom)
 
         print("printing main_lv: " + str(main_lv))
             
@@ -314,9 +317,9 @@ class KLOEBuilder(gegede.builder.Builder):
         
     def build_ecal(self, main_lv, geom):
         
-        if self.get_builder("KLOEEMCALO") == None:
+        if (self.builders.has_key("KLOEEMCALO") is False):
             print "KLOEEMCALO builder not found"
-            return 
+            return            
 
         emcalo_builder=self.get_builder("KLOEEMCALO")
         emcalo_lv=emcalo_builder.get_volume()
@@ -366,6 +369,18 @@ class KLOEBuilder(gegede.builder.Builder):
                 stt_pla = geom.structure.Placement("KLOESTTFULL_pla",
                                                    volume=stt_lv)
                 main_lv.placements.append(stt_pla.name)
+
+    def build_3DSTwithSTT(self,main_lv, geom):
+        if self.builders.has_key("3DST_STT")==False:
+            print "3DST_STT doesnot exist, return"
+            return
+        threeDSTwithSTT_builder=self.get_builder("3DST_STT")
+        threeDSTwithSTT_lv=threeDSTwithSTT_builder.get_volume()
+        threeDSTwithSTT_pla = geom.structure.Placement('threeDSTwithSTT_pla',
+                                                  volume=threeDSTwithSTT_lv)
+        main_lv.placements.append(threeDSTwithSTT_pla.name)
+        
+
 
     def build_tracker(self,main_lv,geom):
         # only build the tracker if we are
