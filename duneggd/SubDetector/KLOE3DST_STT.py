@@ -62,7 +62,7 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
         self.Nstraw_list=[]
     def construct(self,geom):
         #  liqAR STXXYY STXXYY ||||| 3+ 1+ 12 + 1 + 12 + 1 + 12 + 1 + 12+ 1 + 12+ 1 + 12 + 1 + 3  |||| 5 no_slab modules
-        sqrt3             = 1.732
+        sqrt3             = 1.7320508
         kloeTrkRegRadius  = self.kloeVesselRadius - self.extRadialgap
         kloeTrkRegHalfDx  = self.kloeVesselHalfDx - self.extLateralgap
         planeXXThickness = self.strawRadius * (2 + sqrt3)
@@ -225,8 +225,8 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
             z= self.Width3DST/2 + (imod+1/2.)*(self.SingleSTModThickness + self.SingleSTModGap)
             mod_posL=geom.structure.Position("posL_"+name, x, Q("0cm"), z)
             mod_posR=geom.structure.Position("posR_"+name, x, Q("0cm"), -z)
-            mod_plaL=geom.structure.Placement("plaL_"+name,volume=mod_lv, pos=mod_posL, rot="r90aboutY",copynumber=imod)
-            mod_plaR=geom.structure.Placement("plaR_"+name,volume=mod_lv, pos=mod_posR, rot="r90aboutY",copynumber=imod)
+            mod_plaL=geom.structure.Placement("plaL_"+name,volume=mod_lv, pos=mod_posL, rot="r90aboutY")
+            mod_plaR=geom.structure.Placement("plaR_"+name,volume=mod_lv, pos=mod_posR, rot="r90aboutY")
             main_lv.placements.append(mod_plaL.name)
             main_lv.placements.append(mod_plaR.name)
             
@@ -240,7 +240,7 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
             mod_lv=self.construct_doubleST(geom, name1 , height,"reg")
             x= c2seg - (self.pureSTModThickness+self.pureSTModGap)/2.
             mod_pos=geom.structure.Position("pos_"+name1, x, Q("0cm"), Q("0cm"))
-            mod_pla=geom.structure.Placement("pla_"+name1,volume=mod_lv, pos=mod_pos, copynumber=imod)
+            mod_pla=geom.structure.Placement("pla_"+name1,volume=mod_lv, pos=mod_pos)
             main_lv.placements.append(mod_pla.name)
 
         depth= self.Depth3DST/2-self.offset3DSTcenter+ self.nRear1Mod*(self.pureSTModThickness+self.pureSTModGap)
@@ -262,7 +262,7 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
                 mod_lv=self.construct_noSlabModule(geom, name2, self.Material, halfDimension)
             x= c2seg - ModThickness/2
             mod_pos=geom.structure.Position("pos_"+name2, x, Q("0cm"), Q("0cm"))
-            mod_pla=geom.structure.Placement("pla_"+name2,volume=mod_lv, pos=mod_pos, copynumber=imod)
+            mod_pla=geom.structure.Placement("pla_"+name2,volume=mod_lv, pos=mod_pos)
             main_lv.placements.append(mod_pla.name)
 
         depth+=self.nRear2Mod * ModThickness
@@ -276,7 +276,7 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
             mod_lv=self.construct_noSlabModule(geom, name3, self.Material, halfDimension)
             x= c2seg - self.noSlabModThickness/2
             mod_pos=geom.structure.Position("pos_"+name3, x, Q("0cm"), Q("0cm"))
-            mod_pla=geom.structure.Placement("pla_"+name3,volume=mod_lv, pos=mod_pos, copynumber=imod)
+            mod_pla=geom.structure.Placement("pla_"+name3,volume=mod_lv, pos=mod_pos)
             main_lv.placements.append(mod_pla.name)
 
 
@@ -361,8 +361,8 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
         vv_lv=self.construct_XXST(geom, "vv", name+"_ver",height,dcolumnLen,modtype)
         hh_pla1=geom.structure.Placement("pla1_"+name+"_hh", volume=hh_lv, pos="pos_hh1_in_doubleST")
         vv_pla1=geom.structure.Placement("pla1_"+name+"_vv", volume=vv_lv,   pos="pos_vv1_in_doubleST",rot= "r90aboutX")
-        hh_pla2=geom.structure.Placement("pla2_"+name+"_hh", volume=hh_lv, pos="pos_hh1_in_doubleST")
-        vv_pla2=geom.structure.Placement("pla2_"+name+"_vv", volume=vv_lv,   pos="pos_vv1_in_doubleST",rot= "r90aboutX")
+        hh_pla2=geom.structure.Placement("pla2_"+name+"_hh", volume=hh_lv, pos="pos_hh2_in_doubleST")
+        vv_pla2=geom.structure.Placement("pla2_"+name+"_vv", volume=vv_lv,   pos="pos_vv2_in_doubleST",rot= "r90aboutX")
         main_lv.placements.append(hh_pla1.name)
         main_lv.placements.append(vv_pla1.name)
         main_lv.placements.append(hh_pla2.name)
@@ -406,12 +406,12 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
         for i in range(Nstraw):
             pos1=[-self.planeXXThickness/2.0+self.strawRadius, halfCrosslength - (2*i+1)*self.strawRadius, Q('0m')]
             straw_pos1=geom.structure.Position("pos_"+name+"_"+str(i), pos1[0],pos1[1], pos1[2])
-            straw_pla1=geom.structure.Placement("pla_"+name+"_"+str(i), volume=straw_lv, pos=straw_pos1, copynumber=i)
+            straw_pla1=geom.structure.Placement("pla_"+name+"_"+str(i), volume=straw_lv, pos=straw_pos1)
             main_lv.placements.append(straw_pla1.name)
 
             pos2=[self.planeXXThickness/2.0 - self.strawRadius,  halfCrosslength -(2*i+2)*self.strawRadius, Q('0m')]
             straw_pos2=geom.structure.Position("pos_"+name+"_"+str(i+Nstraw), pos2[0],pos2[1], pos2[2])
-            straw_pla2=geom.structure.Placement("pla_"+name+"_"+str(i+Nstraw), volume=straw_lv, pos=straw_pos2, copynumber=i+1000)
+            straw_pla2=geom.structure.Placement("pla_"+name+"_"+str(i+Nstraw), volume=straw_lv, pos=straw_pos2)
             main_lv.placements.append(straw_pla2.name)        
         return main_lv
         

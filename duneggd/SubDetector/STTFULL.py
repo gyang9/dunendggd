@@ -9,7 +9,7 @@ class STTFULLBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure( self, halfDimension=None, Material=None, **kwds ):
-        sqrt3                    = 1.732
+        sqrt3                    = 1.7320508
         self.halfDimension, self.Material = ( halfDimension, Material )
         
         # ST

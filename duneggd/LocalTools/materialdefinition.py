@@ -24,8 +24,8 @@ def define_materials( g ):
     mn = g.matter.Element("manganese",  "Mn", 25, "54.9380*g/mole")
     fe = g.matter.Element("iron",       "Fe", 26, "55.8450*g/mole")
     ni = g.matter.Element("nickel",     "Ni", 28, "58.6934*g/mole")
-#    w = g.matter.Element("tungsten",    "W", 74, "183.84*g/mole")
-#    au = g.matter.Element("gold",       "Au", 79, "196.966*g/mole")
+    w = g.matter.Element("tungsten",    "W", 74, "183.84*g/mole")
+    au = g.matter.Element("gold",       "Au", 79, "196.966*g/mole")
 
 #    cu = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
     cu63=g.matter.Isotope("copper63", 29, 63, "62.93*g/mole")
@@ -174,8 +174,8 @@ def define_materials( g ):
     Kapton   = g.matter.Molecule("Kapton",   density="1.4*g/cc",   elements=(("carbon",22), ("oxygen",5), ("nitrogen",2)))
 
 
-#    Tungsten = g.matter.Molecule("Tungsten", density="19.3*g/cc",  elements=(("tungsten",1),))
-#    Gold     = g.matter.Molecule("Gold",     density="19.3*g/cc",  elements=(("gold",1),))
+    Tungsten = g.matter.Molecule("Tungsten", density="19.3*g/cc",  elements=(("tungsten",1),))
+    Gold     = g.matter.Molecule("Gold",     density="19.3*g/cc",  elements=(("gold",1),))
     Iron     = g.matter.Molecule("Iron",     density="7.874*g/cc", elements=(("iron",1),))
     Graphite = g.matter.Molecule("Graphite", density="2.23*g/cc",  elements=(("carbon",1),))
     Calcium  = g.matter.Molecule("Calcium",  density="1.55*g/cc",  elements=(("calcium",1),))

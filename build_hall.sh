@@ -37,8 +37,21 @@ then
 gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Air_Volume.cfg \
            duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/ND_ElevatorStruct.cfg \
            duneggd/Config/KLOE_with_3DST_STT.cfg \
            duneggd/Config/KLOEEMCALO.cfg \
+           duneggd/Config/MPD_Concept.cfg \
+           duneggd/Config/ND_CraneRailStruct1.cfg \
+           duneggd/Config/ND_CraneRailStruct2.cfg \
+           duneggd/Config/ND_HallwayStruct.cfg \
+           duneggd/Config/ND_CryoStruct.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeActiveModule.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeModule.cfg \
+           duneggd/Config/ArgonCube/BottomStructure.cfg \
+           duneggd/Config/ArgonCube/FrontStructure.cfg \
+           duneggd/Config/ArgonCube/SideStructure.cfg \
            -w World -o nd_hall_with_3DST_STT.gdml
 fi
 
@@ -175,6 +188,33 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ArgonCube/FrontStructure.cfg \
 	   duneggd/Config/ArgonCube/SideStructure.cfg \
 	   -w World -o nd_hall_only_kloe.gdml
+fi
+
+# KLOE filled with STT
+if [ $option = "all" -o $option = "kloe_sttonly" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume_Only_KLOE.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/ND_ElevatorStruct.cfg \
+           duneggd/Config/KLOE_STTFULL.cfg \
+           duneggd/Config/STTFULL.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
+           duneggd/Config/KLOESTT.cfg \
+           duneggd/Config/3DST.cfg \
+           duneggd/Config/MPD_Concept.cfg \
+           duneggd/Config/ND_CraneRailStruct1.cfg \
+           duneggd/Config/ND_CraneRailStruct2.cfg \
+           duneggd/Config/ND_HallwayStruct.cfg \
+           duneggd/Config/ND_CryoStruct.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeActiveModule.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeModule.cfg \
+           duneggd/Config/ArgonCube/BottomStructure.cfg \
+           duneggd/Config/ArgonCube/FrontStructure.cfg \
+           duneggd/Config/ArgonCube/SideStructure.cfg \
+           -w World -o nd_hall_kloe_sttonly.gdml
 fi
 
 # KLOE anti-fiducial
