@@ -161,6 +161,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
 
                 PCB_lv.placements.append(Asic_pla.name)
 
+"""
         # Construct PCB border
         PCB_border_shape = geom.shapes.Box('PCB_border',
                                        dx = self.PCB_dx,
@@ -182,4 +183,4 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                                 pos=PCB_border_pos)
 
         PCB_lv.placements.append(PCB_border_pla.name)
-
+"""

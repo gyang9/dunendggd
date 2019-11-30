@@ -14,7 +14,7 @@ class CryostatBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,**kwargs):
+    def configure(self,Kapton_thickness,Bucket_thickness,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -27,7 +27,11 @@ class CryostatBuilder(gegede.builder.Builder):
                 kwargs: Additional keyword arguments. Allowed are:
         """
 
-        self.Material       = 'G10'
+        self.Kapton_thickness   = Kapton_thickness
+        self.Bucket_thickness   = Bucket_thickness
+
+        self.Kapton_Material    = 'Kapton'
+        self.Material           = 'G10'
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -36,17 +40,39 @@ class CryostatBuilder(gegede.builder.Builder):
 
         htpc_builder = self.get_builder('HalfTPC')
 
-        self.halfDimension  = { 'dx':   htpc_builder.halfDimension['dx']+Q('1cm')/2,
-                                'dy':   htpc_builder.halfDimension['dy']+Q('1cm')/2,
-                                'dz':   htpc_builder.halfDimension['dz']+Q('1cm')/2}
+        self.halfDimension  = { 'dx':   htpc_builder.halfDimension['dx']+self.Kapton_thickness+2*self.Bucket_thickness,
+                                'dy':   htpc_builder.halfDimension['dy']+2*self.Kapton_thickness+2*self.Bucket_thickness,
+                                'dz':   htpc_builder.halfDimension['dz']+2*self.Kapton_thickness+2*self.Bucket_thickness}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('CryostatBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
+        # Construct Kapton layer
+        Kapton_shape = geom.shapes.Box('Kapton_panel',
+                                       dx = htpc_builder.halfDimension['dx']+self.Kapton_thickness,
+                                       dy = htpc_builder.halfDimension['dy']+2*self.Kapton_thickness,
+                                       dz = htpc_builder.halfDimension['dz']+2*self.Kapton_thickness)
+
+        Kapton_lv = geom.structure.Volume('volKapton',
+                                            material=self.Kapton_Material,
+                                            shape=Kapton_shape)
+
+        # Place Kapton layer into main LV
+        pos = [Q('0m'),Q('0m'),Q('0m')]
+
+        Kapton_pos = geom.structure.Position('Kapton_pos',
+                                                pos[0],pos[1],pos[2])
+
+        Kapton_pla = geom.structure.Placement('Kapton_pla',
+                                                volume=Kapton_lv,
+                                                pos=Kapton_pos)
+
+        main_lv.placements.append(Kapton_pla.name)
+
         # Build HalfTPC
-        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
+        pos = [-self.Kapton_thickness,Q('0cm'),Q('0cm')]
 
         htpc_lv = htpc_builder.get_volume()
 

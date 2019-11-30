@@ -6537,14 +6537,8 @@
     <position name="pcb_pos3" unit="cm" x="-15.2399" y="47.235" z="0"/>
     <position name="TPCPlane_pos" unit="cm" x="-15.3099" y="0.0" z="0.0"/>
     <position name="TPCActive_pos" unit="cm" x="0.22" y="0" z="0"/>
-    <position name="TPC_pos" unit="cm" x="0" y="0" z="0"/>
-    <position name="OpticalDet_pos_L" unit="cm" x="0" y="0" z="-31.74015"/>
-    <position name="OpticalDet_pos_R" unit="cm" x="0" y="0" z="31.74015"/>
-    <rotation name="OpticalDet_rot" unit="degree" x="180.0" y="0" z="0"/>
-    <position name="Kapton_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
-    <position name="HalfTPC_pos" unit="cm" x="-0.0005" y="0" z="0"/>
-    <position name="volCryostat_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
-    <rotation name="volCryostat_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="volTPC_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <rotation name="volTPC_rot" unit="degree" x="0" y="0" z="0"/>
     <rotation name="noRotate" unit="degree" x="0" y="0" z="0"/>
     <rotation name="r90aboutX" unit="degree" x="90" y="0" z="0"/>
     <rotation name="rminus90aboutX" unit="degree" x="-90" y="0" z="0"/>
@@ -7107,17 +7101,10 @@
     <box lunit="cm" name="PCBBar" x="0.3" y="30.99" z="1.0003"/>
     <box lunit="cm" name="TPC" x="31.0598" y="127.46" z="62.48"/>
     <box lunit="cm" name="TPCActive" x="30.6198" y="127.46" z="62.48"/>
-    <box lunit="cm" name="HalfTPC" x="31.0598" y="127.46" z="64.4806"/>
-    <box lunit="cm" name="Cryostat" x="32.0608" y="128.462" z="65.4826"/>
-    <box lunit="cm" name="Kapton_panel" x="31.0608" y="127.462" z="64.4826"/>
     <box lunit="cm" name="DetEnclosure" x="200.0" y="200.0" z="200.0"/>
     <box lunit="cm" name="World" x="40000.0" y="40000.0" z="40000.0"/>
   </solids>
   <structure>
-    <volume name="volKapton">
-      <materialref ref="Kapton"/>
-      <solidref ref="Kapton_panel"/>
-    </volume>
     <volume name="volTPCPixel">
       <materialref ref="Gold"/>
       <solidref ref="Pixel"/>
@@ -39701,215 +39688,13 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="volArCPCB">
-      <materialref ref="FR4"/>
-      <solidref ref="ArC_PCB_bar"/>
-    </volume>
-    <volume name="volPVT">
-      <materialref ref="PVT"/>
-      <solidref ref="PVT_bar"/>
-      <physvol>
-        <volumeref ref="volArCPCB"/>
-        <positionref ref="ArC_PCB_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="volESR">
-      <materialref ref="ESR"/>
-      <solidref ref="ESR_film"/>
-      <physvol>
-        <volumeref ref="volPVT"/>
-        <positionref ref="PVT_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="volTPB">
-      <materialref ref="TPB"/>
-      <solidref ref="TPB_layer"/>
-    </volume>
-    <volume name="volDC">
-      <materialref ref="DC"/>
-      <solidref ref="DC_film"/>
-      <physvol>
-        <volumeref ref="volTPB"/>
-        <positionref ref="TPB_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="volSiPM0">
-      <materialref ref="Silicon"/>
-      <solidref ref="SiPM0"/>
-    </volume>
-    <volume name="volSiPM1">
-      <materialref ref="Silicon"/>
-      <solidref ref="SiPM1"/>
-    </volume>
-    <volume name="volSiPM2">
-      <materialref ref="Silicon"/>
-      <solidref ref="SiPM2"/>
-    </volume>
-    <volume name="volSiPM3">
-      <materialref ref="Silicon"/>
-      <solidref ref="SiPM3"/>
-    </volume>
-    <volume name="volSiPM4">
-      <materialref ref="Silicon"/>
-      <solidref ref="SiPM4"/>
-    </volume>
-    <volume name="volSiPM5">
-      <materialref ref="Silicon"/>
-      <solidref ref="SiPM5"/>
-    </volume>
-    <volume name="volWLS">
-      <materialref ref="EJ280WLS"/>
-      <solidref ref="WLS_panel"/>
-      <physvol>
-        <volumeref ref="volESR"/>
-        <positionref ref="ESR_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volDC"/>
-        <positionref ref="DC_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volSiPM0"/>
-        <positionref ref="SiPM_pos0"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volSiPM1"/>
-        <positionref ref="SiPM_pos1"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volSiPM2"/>
-        <positionref ref="SiPM_pos2"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volSiPM3"/>
-        <positionref ref="SiPM_pos3"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volSiPM4"/>
-        <positionref ref="SiPM_pos4"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volSiPM5"/>
-        <positionref ref="SiPM_pos5"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="volArCLight">
-      <materialref ref="LAr"/>
-      <solidref ref="ArCLight"/>
-      <physvol>
-        <volumeref ref="volWLS"/>
-        <positionref ref="WLS_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="volTPCBar">
-      <materialref ref="G10"/>
-      <solidref ref="Bar"/>
-    </volume>
-    <volume name="volPCBBar">
-      <materialref ref="FR4"/>
-      <solidref ref="PCBBar"/>
-    </volume>
-    <volume name="volOpticalDet">
-      <materialref ref="LAr"/>
-      <solidref ref="OpticalDet"/>
-      <physvol>
-        <volumeref ref="volArCLight"/>
-        <positionref ref="ArCLight_pos_0"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volArCLight"/>
-        <positionref ref="ArCLight_pos_1"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volArCLight"/>
-        <positionref ref="ArCLight_pos_2"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volArCLight"/>
-        <positionref ref="ArCLight_pos_3"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volTPCBar"/>
-        <positionref ref="bar_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="pcb_pos0"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="pcb_pos1"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="pcb_pos2"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="pcb_pos3"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="volHalfTPC">
-      <materialref ref="LAr"/>
-      <solidref ref="HalfTPC"/>
-      <physvol>
-        <volumeref ref="volTPC"/>
-        <positionref ref="TPC_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volOpticalDet"/>
-        <positionref ref="OpticalDet_pos_L"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volOpticalDet"/>
-        <positionref ref="OpticalDet_pos_R"/>
-        <rotationref ref="OpticalDet_rot"/>
-      </physvol>
-    </volume>
-    <volume name="volCryostat">
-      <materialref ref="G10"/>
-      <solidref ref="Cryostat"/>
-      <physvol>
-        <volumeref ref="volKapton"/>
-        <positionref ref="Kapton_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volHalfTPC"/>
-        <positionref ref="HalfTPC_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
     <volume name="volDetEnclosure">
       <materialref ref="Air"/>
       <solidref ref="DetEnclosure"/>
       <physvol>
-        <volumeref ref="volCryostat"/>
-        <positionref ref="volCryostat_pos"/>
-        <rotationref ref="volCryostat_rot"/>
+        <volumeref ref="volTPC"/>
+        <positionref ref="volTPC_pos"/>
+        <rotationref ref="volTPC_rot"/>
       </physvol>
     </volume>
     <volume name="volWorld">

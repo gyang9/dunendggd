@@ -14,7 +14,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,N_UnitsY,EField,**kwargs):
+    def configure(self,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -27,9 +27,6 @@ class HalfTPCBuilder(gegede.builder.Builder):
                 kwargs: Additional keyword arguments. Allowed are:
         """
 
-        self.NUnits         = N_UnitsY
-        self.EField         = EField
-
         self.Material       = 'LAr'
 
     def construct(self,geom):
@@ -37,51 +34,66 @@ class HalfTPCBuilder(gegede.builder.Builder):
 
         """
 
-        lara_builder = self.get_builder('TPC')
+        tpc_builder = self.get_builder('TPC')
+        opticaldet_builder = self.get_builder('OpticalDet')
 
-        self.halfDimension  = { 'dx':   lara_builder.halfDimension['dx'],
-                                'dy':   self.NUnits*lara_builder.halfDimension['dy'],
-                                'dz':   2*lara_builder.halfDimension['dz']}
+        self.halfDimension  = { 'dx':   opticaldet_builder.halfDimension['dx'],
+                                'dy':   tpc_builder.halfDimension['dy'],
+                                'dz':   tpc_builder.halfDimension['dz']+2*opticaldet_builder.halfDimension['dz']}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('HalfTPCBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        # Build TPC Array
-        for i in range(self.NUnits):
-            pos = [Q('0cm'),(-self.NUnits+1+2*i)*lara_builder.halfDimension['dy'],-lara_builder.halfDimension['dz']]
+        # Build TPC
+        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
 
-            lara_lv = lara_builder.get_volume()
+        tpc_lv = tpc_builder.get_volume()
 
-            lara_pos = geom.structure.Position(lara_builder.name+'_pos_'+str(i)+'R',
+        tpc_pos = geom.structure.Position(tpc_builder.name+'_pos',
+                                            pos[0],pos[1],pos[2])
+
+        tpc_pla = geom.structure.Placement(tpc_builder.name+'_pla',
+                                                volume=tpc_lv,
+                                                pos=tpc_pos)
+
+        main_lv.placements.append(tpc_pla.name)
+
+        # Build OpticalDet L
+        pos = [Q('0cm'),Q('0cm'),-tpc_builder.halfDimension['dz']-opticaldet_builder.halfDimension['dz']]
+
+        opticaldet_lv = opticaldet_builder.get_volume()
+
+        opticaldet_pos = geom.structure.Position(opticaldet_builder.name+'_pos_L',
                                                 pos[0],pos[1],pos[2])
 
-            lara_pla = geom.structure.Placement(lara_builder.name+'_pla_'+str(i)+'R',
-                                                    volume=lara_lv,
-                                                    pos=lara_pos)
+        opticaldet_pla = geom.structure.Placement(opticaldet_builder.name+'_pla_L',
+                                                volume=opticaldet_lv,
+                                                pos=opticaldet_pos)
 
-            main_lv.placements.append(lara_pla.name)
+        main_lv.placements.append(opticaldet_pla.name)
 
-        for i in range(self.NUnits):
-            pos = [Q('0cm'),(-self.NUnits+1+2*i)*lara_builder.halfDimension['dy'],+lara_builder.halfDimension['dz']]
+        # Build OpticalDet R
+        pos = [Q('0cm'),Q('0cm'),+tpc_builder.halfDimension['dz']+opticaldet_builder.halfDimension['dz']]
 
-            lara_lv = lara_builder.get_volume()
+        opticaldet_lv = opticaldet_builder.get_volume()
 
-            lara_pos = geom.structure.Position(lara_builder.name+'_pos_'+str(i)+'L',
+        opticaldet_pos = geom.structure.Position(opticaldet_builder.name+'_pos_R',
                                                 pos[0],pos[1],pos[2])
 
-            rot_x = Q('180.0deg')
+        rot_x = Q('180.0deg')
 
-            lara_rot = geom.structure.Rotation(lara_builder.name+'_rot_'+str(i)+'L',
+        opticaldet_rot = geom.structure.Rotation(opticaldet_builder.name+'_rot',
                                                 x=rot_x)
 
-            lara_pla = geom.structure.Placement(lara_builder.name+'_pla_'+str(i)+'L',
-                                                    volume=lara_lv,
-                                                    pos=lara_pos,
-                                                    rot=lara_rot)
+        opticaldet_pla = geom.structure.Placement(opticaldet_builder.name+'_pla_R',
+                                                volume=opticaldet_lv,
+                                                pos=opticaldet_pos,
+                                                rot=opticaldet_rot)
 
-            main_lv.placements.append(lara_pla.name)
+        main_lv.placements.append(opticaldet_pla.name)
+
 
         # Place E-Field
-        main_lv.params.append(("EField",self.EField))
+        #main_lv.params.append(("EField",self.EField))

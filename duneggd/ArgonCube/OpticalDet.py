@@ -14,7 +14,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,WLS_dimension,SiPM_dimension,NSiPM,**kwargs):
+    def configure(self,Gap_ArCL,Gap_ArCL_Pixel,G10_bar_width,Gap_top,Gap_bottom,N_UnitsY,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -27,205 +27,97 @@ class OpticalDetBuilder(gegede.builder.Builder):
                 kwargs: Additional keyword arguments. Allowed are:
         """
 
-        self.WLS_dx     = WLS_dimension['dx']
-        self.WLS_dy     = WLS_dimension['dy']
-        self.WLS_dz     = WLS_dimension['dz']
+        self.Gap_ArCL       = Gap_ArCL
+        self.Gap_ArCL_Pixel = Gap_ArCL_Pixel
+        self.Bar_width      = G10_bar_width
+        self.Gap_top        = Gap_top
+        self.Gap_bottom     = Gap_bottom
+        self.NUnits         = N_UnitsY
 
-        self.SiPM_dx    = SiPM_dimension['dx']
-        self.SiPM_dy    = SiPM_dimension['dy']
-        self.SiPM_dz    = SiPM_dimension['dz']
-
-        self.ESR_d          = Q('1um')/2
-        self.DC_dz          = Q('1um')/2
-        self.TPB_dz         = Q('1um')/2
-        self.PVT_dx         = self.SiPM_dx-self.ESR_d
-        self.ArC_PCB_dx     = Q('1.5mm')/2
-
-        self.WLS_Material       = 'EJ280WLS'
-        self.ESR_Material       = 'ESR'
-        self.DC_Material        = 'DC'
-        self.TPB_Material       = 'TPB'
-        self.PVT_Material       = 'PVT'
-        self.ArC_PCB_Material   = 'FR4'
-        self.SiPM_Material      = 'Silicon'
-
-        self.NSiPM          = NSiPM
-
+        self.Bar_Material   = 'G10'
         self.Material       = 'LAr'
-        self.halfDimension  = { 'dx':   self.WLS_dx
-                                        +self.ESR_d
-                                        +self.SiPM_dx
-                                        +self.ArC_PCB_dx,
-
-                                'dy':   self.WLS_dy
-                                        +2*self.ESR_d,
-
-                                'dz':   self.WLS_dz
-                                        +self.ESR_d
-                                        +self.DC_dz
-                                        +self.TPB_dz}
 
     def construct(self,geom):
         """ Construct the geometry.
 
         """
 
+        arclight_builder = self.get_builder('ArCLight')
+        tpcplane_builder = self.get_builder('TPCPlane')
+        pixelplane_builder = self.get_builder('PixelPlane')
+
+        self.halfDimension  = { 'dx':   tpcplane_builder.halfDimension['dx']
+                                        +arclight_builder.halfDimension['dx']
+                                        +self.Gap_ArCL_Pixel
+                                        +self.Bar_width,
+
+                                'dy':   tpcplane_builder.halfDimension['dy']
+                                        +self.Gap_top
+                                        +self.Gap_bottom,
+
+                                'dz':   arclight_builder.halfDimension['dz']}
+
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('OpticalDetBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        # Construct WLS panel
-        WLS_shape = geom.shapes.Box('WLS_panel',
-                                       dx = self.WLS_dx,
-                                       dy = self.WLS_dy,
-                                       dz = self.WLS_dz)
+        # Build ArCLight Array
+        for i in range(self.NUnits):
+            pos = [tpcplane_builder.halfDimension['dx']+self.Gap_ArCL_Pixel-self.Bar_width,(-self.NUnits+1+2*i)*(arclight_builder.halfDimension['dy']+self.Gap_ArCL),Q('0cm')]
 
-        WLS_lv = geom.structure.Volume('volWLS',
-                                            material=self.WLS_Material,
-                                            shape=WLS_shape)
+            arclight_lv = arclight_builder.get_volume()
 
-        # Place WLS panel into main LV
-        pos = [self.PVT_dx+self.ArC_PCB_dx,Q('0m'),self.ESR_d-self.DC_dz-self.TPB_dz]
-
-        WLS_pos = geom.structure.Position('WLS_pos',
+            arclight_pos = geom.structure.Position(arclight_builder.name+'_pos_'+str(i),
                                                 pos[0],pos[1],pos[2])
 
-        WLS_pla = geom.structure.Placement('WLS_pla',
-                                                volume=WLS_lv,
-                                                pos=WLS_pos)
+            arclight_pla = geom.structure.Placement(arclight_builder.name+'_pla_'+str(i),
+                                                    volume=arclight_lv,
+                                                    pos=arclight_pos)
 
-        main_lv.placements.append(WLS_pla.name)
+            main_lv.placements.append(arclight_pla.name)
 
-        # Construct ESR LV
-        ESR_shape = geom.shapes.Box('ESR_film',
-                                       dx = self.WLS_dx+2*self.ESR_d,
-                                       dy = self.WLS_dy+2*self.ESR_d,
-                                       dz = self.WLS_dz+self.ESR_d)
+        # Construct G10 Bar
+        bar_shape = geom.shapes.Box('Bar',
+                                        dx = self.Bar_width,
+                                        dy = self.halfDimension['dy'],
+                                        dz = arclight_builder.halfDimension['dz'])
 
-        ESR_lv = geom.structure.Volume('volESR',
-                                            material=self.ESR_Material,
-                                            shape=ESR_shape)
+        bar_lv = geom.structure.Volume('volTPCBar',
+                                        material=self.Bar_Material,
+                                        shape=bar_shape)
 
-        # Place ESR LV into WLS panel
-        pos = [Q('0m'),Q('0m'),-self.ESR_d]
+        # Place G10 Bar
+        pos = [tpcplane_builder.halfDimension['dx']+arclight_builder.halfDimension['dx']+self.Gap_ArCL_Pixel,Q('0cm'),Q('0cm')]
 
-        ESR_pos = geom.structure.Position('ESR_pos',
+        bar_pos = geom.structure.Position('bar_pos',
                                                 pos[0],pos[1],pos[2])
 
-        ESR_pla = geom.structure.Placement('ESR_pla',
-                                                volume=ESR_lv,
-                                                pos=ESR_pos)
+        bar_pla = geom.structure.Placement('bar_pla',
+                                                volume=bar_lv,
+                                                pos=bar_pos)
 
-        WLS_lv.placements.append(ESR_pla.name)
+        main_lv.placements.append(bar_pla.name)
 
-        # Construct DC LV
-        DC_shape = geom.shapes.Box('DC_film',
-                                       dx = self.WLS_dx+2*self.ESR_d,
-                                       dy = self.WLS_dy+2*self.ESR_d,
-                                       dz = self.DC_dz)
+        # Construct PCB Bar
+        pcb_shape = geom.shapes.Box('PCBBar',
+                                        dx = pixelplane_builder.PCB_dx,
+                                        dy = pixelplane_builder.PCB_dy,
+                                        dz = arclight_builder.halfDimension['dz'])
 
-        DC_lv = geom.structure.Volume('volDC',
-                                            material=self.DC_Material,
-                                            shape=DC_shape)
+        pcb_lv = geom.structure.Volume('volPCBBar',
+                                        material=pixelplane_builder.PCB_Material,
+                                        shape=pcb_shape)
 
-        # Place DC LV next to WLS plane
-        pos = [Q('0m'),Q('0m'),(self.WLS_dz+self.DC_dz)]
+        # Place PCB Bars
+        for i in range(tpcplane_builder.NUnits):
+            pos = [-arclight_builder.halfDimension['dx']-self.Gap_ArCL_Pixel-self.Bar_width+pixelplane_builder.Asic_dx,(-tpcplane_builder.NUnits+1+2*i)*(pixelplane_builder.halfDimension['dy']+tpcplane_builder.Gap),Q('0cm')]
 
-        DC_pos = geom.structure.Position('DC_pos',
-                                                pos[0],pos[1],pos[2])
-
-        DC_pla = geom.structure.Placement('DC_pla',
-                                                volume=DC_lv,
-                                                pos=DC_pos)
-
-        WLS_lv.placements.append(DC_pla.name)
-
-        # Construct TPB LV
-        TPB_shape = geom.shapes.Box('TPB_layer',
-                                       dx = self.WLS_dx+2*self.ESR_d,
-                                       dy = self.WLS_dy+2*self.ESR_d,
-                                       dz = self.TPB_dz)
-
-        TPB_lv = geom.structure.Volume('volTPB',
-                                            material=self.TPB_Material,
-                                            shape=TPB_shape)
-
-        # Place TPB LV next to WLS plane
-        pos = [Q('0m'),Q('0m'),(self.DC_dz+self.TPB_dz)]
-
-        TPB_pos = geom.structure.Position('TPB_pos',
-                                                pos[0],pos[1],pos[2])
-
-        TPB_pla = geom.structure.Placement('TPB_pla',
-                                                volume=TPB_lv,
-                                                pos=TPB_pos)
-
-        DC_lv.placements.append(TPB_pla.name)
-
-        # Construct PVT LV
-        PVT_shape = geom.shapes.Box('PVT_bar',
-                                       dx = self.PVT_dx,
-                                       dy = self.WLS_dy,
-                                       dz = self.WLS_dz)
-
-        PVT_lv = geom.structure.Volume('volPVT',
-                                            material=self.PVT_Material,
-                                            shape=PVT_shape)
-
-        # Place PVT LV next to WLS plane
-        pos = [-self.WLS_dx-self.ESR_d*2-self.PVT_dx,Q('0m'),self.ESR_d]
-
-        PVT_pos = geom.structure.Position('PVT_pos',
-                                                pos[0],pos[1],pos[2])
-
-        PVT_pla = geom.structure.Placement('PVT_pla',
-                                                volume=PVT_lv,
-                                                pos=PVT_pos)
-
-        ESR_lv.placements.append(PVT_pla.name)
-
-        # Construct ArC_PCB LV
-        ArC_PCB_shape = geom.shapes.Box('ArC_PCB_bar',
-                                       dx = self.ArC_PCB_dx,
-                                       dy = self.WLS_dy,
-                                       dz = self.WLS_dz)
-
-        ArC_PCB_lv = geom.structure.Volume('volArCPCB',
-                                            material=self.ArC_PCB_Material,
-                                            shape=ArC_PCB_shape)
-
-        # Place ArC_PCB LV next to WLS plane
-        pos = [-self.PVT_dx-self.ArC_PCB_dx,Q('0m'),Q('0m')]
-
-        ArC_PCB_pos = geom.structure.Position('ArC_PCB_pos',
-                                                pos[0],pos[1],pos[2])
-
-        ArC_PCB_pla = geom.structure.Placement('ArC_PCB_pla',
-                                                volume=ArC_PCB_lv,
-                                                pos=ArC_PCB_pos)
-
-        PVT_lv.placements.append(ArC_PCB_pla.name)
-
-        for n in range(self.NSiPM):
-            # Construct SiPM LV
-            SiPM_shape = geom.shapes.Box('SiPM'+str(n),
-                                           dx = self.SiPM_dx,
-                                           dy = self.SiPM_dy,
-                                           dz = self.SiPM_dz)
-
-            SiPM_lv = geom.structure.Volume('volSiPM'+str(n),
-                                                material=self.SiPM_Material,
-                                                shape=SiPM_shape)
-
-            # Place SiPMs next to WLS plane
-            pos = [-self.WLS_dx-self.SiPM_dx,-self.WLS_dy+self.WLS_dy/self.NSiPM*(1+2*n),Q('0m')]
-
-            SiPM_pos = geom.structure.Position('SiPM_pos'+str(n),
+            pcb_pos = geom.structure.Position('pcb_pos'+str(i),
                                                     pos[0],pos[1],pos[2])
 
-            SiPM_pla = geom.structure.Placement('SiPM_pla'+str(n),
-                                                    volume=SiPM_lv,
-                                                    pos=SiPM_pos)
+            pcb_pla = geom.structure.Placement('pcb_pla'+str(i),
+                                                    volume=pcb_lv,
+                                                    pos=pcb_pos)
 
-            WLS_lv.placements.append(SiPM_pla.name)
+            main_lv.placements.append(pcb_pla.name)

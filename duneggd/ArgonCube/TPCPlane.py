@@ -14,7 +14,7 @@ class TPCPlaneBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,PCB_border_dz,NPixel,NAsic,**kwargs):
+    def configure(self,N_UnitsY,Gap_PixelPlane,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -22,164 +22,66 @@ class TPCPlaneBuilder(gegede.builder.Builder):
             if Material is a dict-type rather than a string.
 
             Args:
-                PCB_dimension: Outer dimensions of the PCB panel.
+                WLS_dimension: Outer dimensions of the WLS panel.
                     Dict. with keys 'dx', 'dy' and 'dz'
                 kwargs: Additional keyword arguments. Allowed are:
         """
 
-        self.PCB_dx = PCB_dimension['dx']
-        self.PCB_dy = PCB_dimension['dy']
-        self.PCB_dz = PCB_dimension['dz']
-
-        self.Pixel_dx = Pixel_dimension['dx']
-        self.Pixel_dy = Pixel_dimension['dy']
-        self.Pixel_dz = Pixel_dimension['dz']
-
-        self.Asic_dx = Asic_dimension['dx']
-        self.Asic_dy = Asic_dimension['dy']
-        self.Asic_dz = Asic_dimension['dz']
-
-        self.PCB_border_dz  = PCB_border_dz
-
-        self.PCB_Material   = 'FR4'
-        self.Pixel_Material = 'Gold'
-        self.Asic_Material  = 'Silicon'
-
-        self.NPixel         = NPixel
-        self.NAsic          = NAsic
+        self.NUnits         = N_UnitsY
+        self.Gap            = Gap_PixelPlane
 
         self.Material       = 'LAr'
-        self.halfDimension  = { 'dx':   self.PCB_dx
-                                        +self.Asic_dx,
-
-                                'dy':   self.PCB_dy,
-
-                                'dz':   self.PCB_dz
-                                        +self.PCB_border_dz}
 
     def construct(self,geom):
         """ Construct the geometry.
 
         """
 
+        pixelplane_builder = self.get_builder('PixelPlane')
+
+        self.halfDimension  = { 'dx':   pixelplane_builder.halfDimension['dx'],
+                                'dy':   self.NUnits*pixelplane_builder.halfDimension['dy']+(self.NUnits-1)*self.Gap,
+                                'dz':   2*pixelplane_builder.halfDimension['dz']+self.Gap}
+
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('TPCPlaneBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        """
-        # Construct volTPCPlane according to LArSoft convention
-        TPCPlane_shape = geom.shapes.Box('TPCPlane',
-                                            dx = self.halfDimension['dx'],
-                                            dy = self.halfDimension['dy'],
-                                            dz = self.halfDimension['dz'])
+        # Build TPC Array
+        for i in range(self.NUnits):
+            pos = [Q('0cm'),(-self.NUnits+1+2*i)*(pixelplane_builder.halfDimension['dy']+self.Gap),-pixelplane_builder.halfDimension['dz']-self.Gap]
 
-        TPCPlane_lv = geom.structure.Volume('volTPCPlane',
-                                                material=self.Material,
-                                                shape=TPCPlane_shape)
+            pixelplane_lv = pixelplane_builder.get_volume()
 
-        # Place TPCPlane into main LV
-        pos = [Q('0m'),Q('0m'),Q('0m')]
-
-        TPCPlane_pos = geom.structure.Position('TPCPlane_pos',
-                                                    pos[0],pos[1],pos[2])
-
-        TPCPlane_pla = geom.structure.Placement('TPCPlane_pla',
-                                                    volume=TPCPlane_lv,
-                                                    pos=TPCPlane_pos)
-
-        main_lv.placements.append(TPCPlane_pla.name)
-        """
-
-        # Construct PCB panel
-        PCB_shape = geom.shapes.Box('PCB_panel',
-                                       dx = self.PCB_dx,
-                                       dy = self.PCB_dy,
-                                       dz = self.PCB_dz)
-
-        PCB_lv = geom.structure.Volume('volTPCPCB',
-                                            material=self.PCB_Material,
-                                            shape=PCB_shape)
-
-        # Place PCB panel into main LV
-        pos = [self.Asic_dx,Q('0m'),self.PCB_border_dz]
-
-        PCB_pos = geom.structure.Position('PCB_pos',
+            pixelplane_pos = geom.structure.Position(pixelplane_builder.name+'_pos_'+str(i)+'R',
                                                 pos[0],pos[1],pos[2])
 
-        PCB_pla = geom.structure.Placement('PCB_pla',
-                                                volume=PCB_lv,
-                                                pos=PCB_pos)
+            pixelplane_pla = geom.structure.Placement(pixelplane_builder.name+'_pla_'+str(i)+'R',
+                                                    volume=pixelplane_lv,
+                                                    pos=pixelplane_pos)
 
-        main_lv.placements.append(PCB_pla.name)
+            main_lv.placements.append(pixelplane_pla.name)
 
-        # Construct Pixel
-        Pixel_shape = geom.shapes.Box('Pixel',
-                                       dx = self.Pixel_dx,
-                                       dy = self.Pixel_dy,
-                                       dz = self.Pixel_dz)
+        for i in range(self.NUnits):
+            pos = [Q('0cm'),(-self.NUnits+1+2*i)*(pixelplane_builder.halfDimension['dy']+self.Gap),+pixelplane_builder.halfDimension['dz']+self.Gap]
 
-        Pixel_lv = geom.structure.Volume('volTPCPixel',
-                                            material=self.Pixel_Material,
-                                            shape=Pixel_shape)
+            pixelplane_lv = pixelplane_builder.get_volume()
 
-        for n in range(self.NPixel):
-            for m in range(self.NPixel):
-                # Place Pixel into PCB board
-                pos = [self.PCB_dx-self.Pixel_dx,-self.PCB_dy+self.PCB_dy/self.NPixel*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NPixel*(1+2*m)]
-
-                Pixel_pos = geom.structure.Position('Pixel_pos'+str(n)+'.'+str(m),
-                                                        pos[0],pos[1],pos[2])
-
-                Pixel_pla = geom.structure.Placement('Pixel_pla'+str(n)+'.'+str(m),
-                                                        volume=Pixel_lv,
-                                                        pos=Pixel_pos)
-
-                PCB_lv.placements.append(Pixel_pla.name)
-
-        # Construct ASIC
-        Asic_shape = geom.shapes.Box('Asic',
-                                       dx = self.Asic_dx,
-                                       dy = self.Asic_dy,
-                                       dz = self.Asic_dz)
-
-        Asic_lv = geom.structure.Volume('volTPCAsic',
-                                            material=self.Asic_Material,
-                                            shape=Asic_shape)
-
-        for n in range(self.NAsic):
-            for m in range(self.NAsic):
-                # Place ASICs into PCB board
-                pos = [-self.PCB_dx-self.Asic_dx,-self.PCB_dy+self.PCB_dy/self.NAsic*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NAsic*(1+2*m)]
-
-                Asic_pos = geom.structure.Position('Asic_pos'+str(n)+'.'+str(m),
-                                                        pos[0],pos[1],pos[2])
-
-                Asic_pla = geom.structure.Placement('Asic_pla'+str(n)+'.'+str(m),
-                                                        volume=Asic_lv,
-                                                        pos=Asic_pos)
-
-                PCB_lv.placements.append(Asic_pla.name)
-
-        # Construct PCB border
-        PCB_border_shape = geom.shapes.Box('PCB_border',
-                                       dx = self.PCB_dx,
-                                       dy = self.PCB_dy,
-                                       dz = self.PCB_border_dz)
-
-        PCB_border_lv = geom.structure.Volume('volTPCPCBBorder',
-                                            material=self.PCB_Material,
-                                            shape=PCB_border_shape)
-
-        # Place PCB border into main LV
-        pos = [Q('0m'),Q('0m'),-self.PCB_dz-self.PCB_border_dz]
-
-        PCB_border_pos = geom.structure.Position('PCB_border_pos',
+            pixelplane_pos = geom.structure.Position(pixelplane_builder.name+'_pos_'+str(i)+'L',
                                                 pos[0],pos[1],pos[2])
 
-        PCB_border_pla = geom.structure.Placement('PCB_border_pla',
-                                                volume=PCB_border_lv,
-                                                pos=PCB_border_pos)
+            rot_x = Q('180.0deg')
 
-        PCB_lv.placements.append(PCB_border_pla.name)
+            pixelplane_rot = geom.structure.Rotation(pixelplane_builder.name+'_rot_'+str(i)+'L',
+                                                x=rot_x)
 
+            pixelplane_pla = geom.structure.Placement(pixelplane_builder.name+'_pla_'+str(i)+'L',
+                                                    volume=pixelplane_lv,
+                                                    pos=pixelplane_pos,
+                                                    rot=pixelplane_rot)
+
+            main_lv.placements.append(pixelplane_pla.name)
+
+        # Place E-Field
+        #main_lv.params.append(("EField",self.EField))

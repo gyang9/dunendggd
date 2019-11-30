@@ -6541,10 +6541,8 @@
     <position name="OpticalDet_pos_L" unit="cm" x="0" y="0" z="-31.74015"/>
     <position name="OpticalDet_pos_R" unit="cm" x="0" y="0" z="31.74015"/>
     <rotation name="OpticalDet_rot" unit="degree" x="180.0" y="0" z="0"/>
-    <position name="Kapton_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
-    <position name="HalfTPC_pos" unit="cm" x="-0.0005" y="0" z="0"/>
-    <position name="volCryostat_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
-    <rotation name="volCryostat_rot" unit="degree" x="0" y="0" z="0"/>
+    <position name="volHalfTPC_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
+    <rotation name="volHalfTPC_rot" unit="degree" x="0" y="0" z="0"/>
     <rotation name="noRotate" unit="degree" x="0" y="0" z="0"/>
     <rotation name="r90aboutX" unit="degree" x="90" y="0" z="0"/>
     <rotation name="rminus90aboutX" unit="degree" x="-90" y="0" z="0"/>
@@ -7108,16 +7106,10 @@
     <box lunit="cm" name="TPC" x="31.0598" y="127.46" z="62.48"/>
     <box lunit="cm" name="TPCActive" x="30.6198" y="127.46" z="62.48"/>
     <box lunit="cm" name="HalfTPC" x="31.0598" y="127.46" z="64.4806"/>
-    <box lunit="cm" name="Cryostat" x="32.0608" y="128.462" z="65.4826"/>
-    <box lunit="cm" name="Kapton_panel" x="31.0608" y="127.462" z="64.4826"/>
     <box lunit="cm" name="DetEnclosure" x="200.0" y="200.0" z="200.0"/>
     <box lunit="cm" name="World" x="40000.0" y="40000.0" z="40000.0"/>
   </solids>
   <structure>
-    <volume name="volKapton">
-      <materialref ref="Kapton"/>
-      <solidref ref="Kapton_panel"/>
-    </volume>
     <volume name="volTPCPixel">
       <materialref ref="Gold"/>
       <solidref ref="Pixel"/>
@@ -39889,27 +39881,13 @@
         <rotationref ref="OpticalDet_rot"/>
       </physvol>
     </volume>
-    <volume name="volCryostat">
-      <materialref ref="G10"/>
-      <solidref ref="Cryostat"/>
-      <physvol>
-        <volumeref ref="volKapton"/>
-        <positionref ref="Kapton_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volHalfTPC"/>
-        <positionref ref="HalfTPC_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
     <volume name="volDetEnclosure">
       <materialref ref="Air"/>
       <solidref ref="DetEnclosure"/>
       <physvol>
-        <volumeref ref="volCryostat"/>
-        <positionref ref="volCryostat_pos"/>
-        <rotationref ref="volCryostat_rot"/>
+        <volumeref ref="volHalfTPC"/>
+        <positionref ref="volHalfTPC_pos"/>
+        <rotationref ref="volHalfTPC_rot"/>
       </physvol>
     </volume>
     <volume name="volWorld">
