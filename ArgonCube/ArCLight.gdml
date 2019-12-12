@@ -3,16 +3,16 @@
   <define>
     <position name="WLS_pos" unit="cm" x="0.14745" y="0.0" z="-5e-05"/>
     <position name="ESR_pos" unit="cm" x="0.0" y="0.0" z="-5e-05"/>
-    <position name="DC_pos" unit="cm" x="0.0" y="0.0" z="0.50005"/>
+    <position name="DC_pos" unit="cm" x="0.0" y="0.0" z="0.51275"/>
     <position name="TPB_pos" unit="cm" x="0.0" y="0.0" z="0.0001"/>
-    <position name="PVT_pos" unit="cm" x="-14.4398" y="0.0" z="5e-05"/>
+    <position name="PVT_pos" unit="cm" x="-14.0853" y="0.0" z="5e-05"/>
     <position name="ArC_PCB_pos" unit="cm" x="-0.14745" y="0.0" z="0.0"/>
-    <position name="SiPM_pos0" unit="cm" x="-14.43975" y="-12.9125" z="0.0"/>
-    <position name="SiPM_pos1" unit="cm" x="-14.43975" y="-7.7475" z="0.0"/>
-    <position name="SiPM_pos2" unit="cm" x="-14.43975" y="-2.5825" z="0.0"/>
-    <position name="SiPM_pos3" unit="cm" x="-14.43975" y="2.5825" z="0.0"/>
-    <position name="SiPM_pos4" unit="cm" x="-14.43975" y="7.7475" z="0.0"/>
-    <position name="SiPM_pos5" unit="cm" x="-14.43975" y="12.9125" z="0.0"/>
+    <position name="SiPM_pos0" unit="cm" x="-14.08525" y="-12.5105833333" z="0.0"/>
+    <position name="SiPM_pos1" unit="cm" x="-14.08525" y="-7.50635" z="0.0"/>
+    <position name="SiPM_pos2" unit="cm" x="-14.08525" y="-2.50211666667" z="0.0"/>
+    <position name="SiPM_pos3" unit="cm" x="-14.08525" y="2.50211666667" z="0.0"/>
+    <position name="SiPM_pos4" unit="cm" x="-14.08525" y="7.50635" z="0.0"/>
+    <position name="SiPM_pos5" unit="cm" x="-14.08525" y="12.5105833333" z="0.0"/>
     <position name="volArCLight_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
     <rotation name="volArCLight_rot" unit="degree" x="0" y="0" z="0"/>
     <rotation name="noRotate" unit="degree" x="0" y="0" z="0"/>
@@ -554,13 +554,13 @@
     </material>
   </materials>
   <solids>
-    <box lunit="cm" name="ArCLight" x="29.0296" y="30.9902" z="1.0003"/>
-    <box lunit="cm" name="WLS_panel" x="28.7345" y="30.99" z="1.0"/>
-    <box lunit="cm" name="ESR_film" x="28.7347" y="30.9902" z="1.0001"/>
-    <box lunit="cm" name="DC_film" x="28.7347" y="30.9902" z="0.0001"/>
-    <box lunit="cm" name="TPB_layer" x="28.7347" y="30.9902" z="0.0001"/>
-    <box lunit="cm" name="PVT_bar" x="0.1449" y="30.99" z="1.0"/>
-    <box lunit="cm" name="ArC_PCB_bar" x="0.15" y="30.99" z="1.0"/>
+    <box lunit="cm" name="ArCLight" x="28.3206" y="30.0256" z="1.0257"/>
+    <box lunit="cm" name="WLS_panel" x="28.0255" y="30.0254" z="1.0254"/>
+    <box lunit="cm" name="ESR_film" x="28.0257" y="30.0256" z="1.0255"/>
+    <box lunit="cm" name="DC_film" x="28.0257" y="30.0256" z="0.0001"/>
+    <box lunit="cm" name="TPB_layer" x="28.0257" y="30.0256" z="0.0001"/>
+    <box lunit="cm" name="PVT_bar" x="0.1449" y="30.0254" z="1.0254"/>
+    <box lunit="cm" name="ArC_PCB_bar" x="0.15" y="30.0254" z="1.0254"/>
     <box lunit="cm" name="SiPM0" x="0.145" y="0.735" z="0.685"/>
     <box lunit="cm" name="SiPM1" x="0.145" y="0.735" z="0.685"/>
     <box lunit="cm" name="SiPM2" x="0.145" y="0.735" z="0.685"/>
