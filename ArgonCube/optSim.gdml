@@ -6515,8 +6515,8 @@
     <position name="PixelPlane_pos_3L" unit="cm" x="0" y="46.56" z="15.52"/>
     <rotation name="PixelPlane_rot_3L" unit="degree" x="180.0" y="0" z="0"/>
     <position name="WLS_pos" unit="cm" x="0.1475" y="0.0" z="-0.1"/>
-    <position name="DC_pos" unit="cm" x="0.0" y="0.0" z="0.5627"/>
-    <position name="TPB_pos" unit="cm" x="0.0" y="0.0" z="0.1"/>
+    <position name="DC_pos" unit="cm" x="0.1475" y="0.0" z="0.4627"/>
+    <position name="TPB_pos" unit="cm" x="0.1475" y="0.0" z="0.5627"/>
     <position name="PVT_pos" unit="cm" x="-14.08525" y="0.0" z="0.0"/>
     <position name="ArC_PCB_pos" unit="cm" x="-0.1475" y="0.0" z="0.0"/>
     <position name="SiPM_pos0" unit="cm" x="-14.08525" y="-12.5105833333" z="0.0"/>
@@ -39699,19 +39699,6 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="volTPB">
-      <materialref ref="TPB"/>
-      <solidref ref="TPB_layer"/>
-    </volume>
-    <volume name="volDC">
-      <materialref ref="DC"/>
-      <solidref ref="DC_film"/>
-      <physvol>
-        <volumeref ref="volTPB"/>
-        <positionref ref="TPB_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
     <volume name="volArCPCB">
       <materialref ref="FR4"/>
       <solidref ref="ArC_PCB_bar"/>
@@ -39753,11 +39740,6 @@
       <materialref ref="EJ280WLS"/>
       <solidref ref="WLS_panel"/>
       <physvol>
-        <volumeref ref="volDC"/>
-        <positionref ref="DC_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
         <volumeref ref="volPVT"/>
         <positionref ref="PVT_pos"/>
         <rotationref ref="identity"/>
@@ -39793,12 +39775,30 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
+    <volume name="volDC">
+      <materialref ref="DC"/>
+      <solidref ref="DC_film"/>
+    </volume>
+    <volume name="volTPB">
+      <materialref ref="TPB"/>
+      <solidref ref="TPB_layer"/>
+    </volume>
     <volume name="volArCLight">
       <materialref ref="LAr"/>
       <solidref ref="ArCLight"/>
       <physvol>
         <volumeref ref="volWLS"/>
         <positionref ref="WLS_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volDC"/>
+        <positionref ref="DC_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volTPB"/>
+        <positionref ref="TPB_pos"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>

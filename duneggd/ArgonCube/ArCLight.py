@@ -108,7 +108,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             shape=DC_shape)
 
         # Place DC LV next to WLS plane
-        pos = [Q('0m'),Q('0m'),(self.WLS_dz+self.DC_dz)]
+        pos = [self.PVT_dx+self.ArC_PCB_dx,Q('0m'),self.WLS_dz-self.TPB_dz]
 
         DC_pos = geom.structure.Position('DC_pos',
                                                 pos[0],pos[1],pos[2])
@@ -117,7 +117,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                 volume=DC_lv,
                                                 pos=DC_pos)
 
-        WLS_lv.placements.append(DC_pla.name)
+        main_lv.placements.append(DC_pla.name)
 
         # Construct TPB LV
         TPB_shape = geom.shapes.Box('TPB_layer',
@@ -129,8 +129,8 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             material=self.TPB_Material,
                                             shape=TPB_shape)
 
-        # Place TPB LV next to WLS plane
-        pos = [Q('0m'),Q('0m'),(self.DC_dz+self.TPB_dz)]
+        # Place TPB LV next to DC LV plane
+        pos = [self.PVT_dx+self.ArC_PCB_dx,Q('0m'),self.WLS_dz+self.DC_dz]
 
         TPB_pos = geom.structure.Position('TPB_pos',
                                                 pos[0],pos[1],pos[2])
@@ -139,7 +139,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                 volume=TPB_lv,
                                                 pos=TPB_pos)
 
-        DC_lv.placements.append(TPB_pla.name)
+        main_lv.placements.append(TPB_pla.name)
 
         # Construct PVT LV
         PVT_shape = geom.shapes.Box('PVT_bar',
@@ -161,7 +161,6 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                 volume=PVT_lv,
                                                 pos=PVT_pos)
 
-        #ESR_lv.placements.append(PVT_pla.name)
         WLS_lv.placements.append(PVT_pla.name)
 
         # Construct ArC_PCB LV
