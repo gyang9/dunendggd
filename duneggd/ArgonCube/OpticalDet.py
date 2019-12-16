@@ -14,7 +14,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Gap_ArCL,Gap_ArCL_Pixel,G10_bar_width,Gap_top,Gap_bottom,N_UnitsY,**kwargs):
+    def configure(self,Gap_ArCL,Gap_ArCL_Bucket,Gap_ArCL_Pixel,G10_bar_width,Gap_top,Gap_bottom,N_UnitsY,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -29,6 +29,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
         self.Gap_ArCL       = Gap_ArCL
         self.Gap_ArCL_Pixel = Gap_ArCL_Pixel
+        self.Gap_ArCL_Bucket= Gap_ArCL_Bucket
         self.Bar_width      = G10_bar_width
         self.Gap_top        = Gap_top
         self.Gap_bottom     = Gap_bottom
@@ -55,7 +56,8 @@ class OpticalDetBuilder(gegede.builder.Builder):
                                         +self.Gap_top
                                         +self.Gap_bottom,
 
-                                'dz':   arclight_builder.halfDimension['dz']}
+                                'dz':   arclight_builder.halfDimension['dz']
+                                        +self.Gap_ArCL_Bucket}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('OpticalDetBuilder::construct()')
@@ -64,7 +66,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
         # Build ArCLight Array
         for i in range(self.NUnits):
-            pos = [tpcplane_builder.halfDimension['dx']+self.Gap_ArCL_Pixel-self.Bar_width,(-self.NUnits+1+2*i)*(arclight_builder.halfDimension['dy']+self.Gap_ArCL),Q('0cm')]
+            pos = [tpcplane_builder.halfDimension['dx']+self.Gap_ArCL_Pixel-self.Bar_width,(-self.NUnits+1+2*i)*(arclight_builder.halfDimension['dy']+self.Gap_ArCL),self.Gap_ArCL_Bucket]
 
             arclight_lv = arclight_builder.get_volume()
 
@@ -88,7 +90,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
                                         shape=bar_shape)
 
         # Place G10 Bar
-        pos = [tpcplane_builder.halfDimension['dx']+arclight_builder.halfDimension['dx']+self.Gap_ArCL_Pixel,Q('0cm'),Q('0cm')]
+        pos = [tpcplane_builder.halfDimension['dx']+arclight_builder.halfDimension['dx']+self.Gap_ArCL_Pixel,Q('0cm'),self.Gap_ArCL_Bucket]
 
         bar_pos = geom.structure.Position('bar_pos',
                                                 pos[0],pos[1],pos[2])
@@ -111,7 +113,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
         # Place PCB Bars
         for i in range(tpcplane_builder.NUnits):
-            pos = [-arclight_builder.halfDimension['dx']-self.Gap_ArCL_Pixel-self.Bar_width+pixelplane_builder.Asic_dx,(-tpcplane_builder.NUnits+1+2*i)*(pixelplane_builder.halfDimension['dy']+tpcplane_builder.Gap),Q('0cm')]
+            pos = [-arclight_builder.halfDimension['dx']-self.Gap_ArCL_Pixel-self.Bar_width+pixelplane_builder.Asic_dx,(-tpcplane_builder.NUnits+1+2*i)*(pixelplane_builder.halfDimension['dy']+tpcplane_builder.Gap),self.Gap_ArCL_Bucket]
 
             pcb_pos = geom.structure.Position('pcb_pos'+str(i),
                                                     pos[0],pos[1],pos[2])
