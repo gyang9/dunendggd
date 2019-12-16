@@ -36,8 +36,8 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.SiPM_dz    = SiPM_dimension['dz']
 
         self.ESR_d          = Q('0mm')/2
-        self.DC_dz          = Q('1mm')/2
-        self.TPB_dz         = Q('1mm')/2
+        self.DC_dz          = Q('10um')/2
+        self.TPB_dz         = Q('10um')/2
         self.PVT_dx         = self.SiPM_dx-self.ESR_d
         self.ArC_PCB_dx     = Q('1.5mm')/2
 
