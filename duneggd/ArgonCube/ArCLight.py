@@ -35,9 +35,9 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.SiPM_dy    = SiPM_dimension['dy']
         self.SiPM_dz    = SiPM_dimension['dz']
 
-        self.ESR_d          = Q('1um')/2
-        self.DC_dz          = Q('1um')/2
-        self.TPB_dz         = Q('1um')/2
+        self.ESR_d          = Q('0mm')/2
+        self.DC_dz          = Q('1mm')/2
+        self.TPB_dz         = Q('1mm')/2
         self.PVT_dx         = self.SiPM_dx-self.ESR_d
         self.ArC_PCB_dx     = Q('1.5mm')/2
 
@@ -96,28 +96,6 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                 pos=WLS_pos)
 
         main_lv.placements.append(WLS_pla.name)
-
-        # Construct ESR LV
-        ESR_shape = geom.shapes.Box('ESR_film',
-                                       dx = self.WLS_dx+2*self.ESR_d,
-                                       dy = self.WLS_dy+2*self.ESR_d,
-                                       dz = self.WLS_dz+self.ESR_d)
-
-        ESR_lv = geom.structure.Volume('volESR',
-                                            material=self.ESR_Material,
-                                            shape=ESR_shape)
-
-        # Place ESR LV into WLS panel
-        pos = [Q('0m'),Q('0m'),-self.ESR_d]
-
-        ESR_pos = geom.structure.Position('ESR_pos',
-                                                pos[0],pos[1],pos[2])
-
-        ESR_pla = geom.structure.Placement('ESR_pla',
-                                                volume=ESR_lv,
-                                                pos=ESR_pos)
-
-        WLS_lv.placements.append(ESR_pla.name)
 
         # Construct DC LV
         DC_shape = geom.shapes.Box('DC_film',
@@ -183,7 +161,8 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                 volume=PVT_lv,
                                                 pos=PVT_pos)
 
-        ESR_lv.placements.append(PVT_pla.name)
+        #ESR_lv.placements.append(PVT_pla.name)
+        WLS_lv.placements.append(PVT_pla.name)
 
         # Construct ArC_PCB LV
         ArC_PCB_shape = geom.shapes.Box('ArC_PCB_bar',
