@@ -318,7 +318,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         nsides = self.nsides
         pv_rInner = self.rInnerTPC
         pvHalfLength = self.TPC_halfZ
-        pv_rmin = sqrt((pv_rInner/Q("1mm"))**2)*Q("1mm")
+        pv_rmin = pv_rInner
         pv_rmax = pv_rmin + self.pvThickness
 
         # build the pressure vessel barrel
@@ -379,6 +379,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         Barrel_halfZ = self.get_pv_endcap_length(geom)
         #outer radius ecal (inner radius ecal + ecal module)
         rOuterEcal = rInnerEcal + ecal_barrel_module_thickness
+        print "Ecal outer radius ", rOuterEcal
         #check that the ECAL thickness does not go over the magnet radius
         ecal_barrel_module_thickness_max = self.magnetInnerR * cos(pi/nsides) - rInnerEcal
 
@@ -386,7 +387,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Maximum allowed thickness ", ecal_barrel_module_thickness_max
 
         if ecal_barrel_module_thickness > ecal_barrel_module_thickness_max:
-            print "Will have overlaps!"
+            print "Will have overlaps if the magnet is present!"
 
         #minimum dimension of the stave
         min_dim_stave = 2 * tan( pi/nsides ) * rInnerEcal
@@ -495,7 +496,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         Ecal_Barrel_n_modules = self.nModules
 
         rmin = EcalEndcap_inner_radius
-        rmax = EcalEndcap_outer_radius
+        rmax = EcalEndcap_outer_radius + 2*safety
 
         print "Quadrant side ", rmax
         print "Endcap thickness ", ecal_endcap_module_thickness
