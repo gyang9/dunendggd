@@ -97,28 +97,6 @@ class ArCLightBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(WLS_pla.name)
 
-        # Construct DC LV
-        DC_shape = geom.shapes.Box('DC_film',
-                                       dx = self.WLS_dx+2*self.ESR_d,
-                                       dy = self.WLS_dy+2*self.ESR_d,
-                                       dz = self.DC_dz)
-
-        DC_lv = geom.structure.Volume('volDC',
-                                            material=self.DC_Material,
-                                            shape=DC_shape)
-
-        # Place DC LV next to WLS plane
-        pos = [self.PVT_dx+self.ArC_PCB_dx,Q('0m'),self.WLS_dz-self.TPB_dz]
-
-        DC_pos = geom.structure.Position('DC_pos',
-                                                pos[0],pos[1],pos[2])
-
-        DC_pla = geom.structure.Placement('DC_pla',
-                                                volume=DC_lv,
-                                                pos=DC_pos)
-
-        #main_lv.placements.append(DC_pla.name)
-
         # Construct TPB LV
         TPB_shape = geom.shapes.Box('TPB_layer',
                                        dx = self.WLS_dx+2*self.ESR_d,

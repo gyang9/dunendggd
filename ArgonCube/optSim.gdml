@@ -6515,7 +6515,6 @@
     <position name="PixelPlane_pos_3L" unit="cm" x="0" y="46.56" z="15.52"/>
     <rotation name="PixelPlane_rot_3L" unit="degree" x="180.0" y="0" z="0"/>
     <position name="WLS_pos" unit="cm" x="0.1475" y="0.0" z="-0.0005"/>
-    <position name="DC_pos" unit="cm" x="0.1475" y="0.0" z="0.5122"/>
     <position name="TPB_pos" unit="cm" x="0.1475" y="0.0" z="0.5127"/>
     <position name="PVT_pos" unit="cm" x="-14.08525" y="0.0" z="0.0"/>
     <position name="ArC_PCB_pos" unit="cm" x="-0.1475" y="0.0" z="0.0"/>
@@ -7090,7 +7089,6 @@
     <box lunit="cm" name="TPCPlane" x="0.46" y="124.11" z="62.03"/>
     <box lunit="cm" name="ArCLight" x="28.3205" y="30.0254" z="1.0264"/>
     <box lunit="cm" name="WLS_panel" x="28.0255" y="30.0254" z="1.0254"/>
-    <box lunit="cm" name="DC_film" x="28.0255" y="30.0254" z="0.0"/>
     <box lunit="cm" name="TPB_layer" x="28.0255" y="30.0254" z="0.001"/>
     <box lunit="cm" name="PVT_bar" x="0.145" y="30.0254" z="1.0254"/>
     <box lunit="cm" name="ArC_PCB_bar" x="0.15" y="30.0254" z="1.0254"/>
