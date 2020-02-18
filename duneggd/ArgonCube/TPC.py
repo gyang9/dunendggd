@@ -88,19 +88,4 @@ class TPCBuilder(gegede.builder.Builder):
                                                 pos=TPCActive_pos)
 
         main_lv.placements.append(TPCActive_pla.name)
-"""
-        # Build OpticalDet
-        pos = [tpcplane_builder.halfDimension['dx']+self.Gap_ArCL_Pixel-self.Bar_width,Q('0mm'),-tpcplane_builder.halfDimension['dz']+tpcplane_builder.PCB_border_dz-self.Gap_Pixel_Pixel]
 
-        optdet_lv = optdet_builder.get_volume()
-
-        optdet_pos = geom.structure.Position(optdet_builder.name+'_pos',
-                                            pos[0],pos[1],pos[2])
-
-        optdet_pla = geom.structure.Placement(optdet_builder.name+'_pla',
-                                                volume=optdet_lv,
-                                                pos=optdet_pos)
-
-        main_lv.placements.append(optdet_pla.name)
-
-"""

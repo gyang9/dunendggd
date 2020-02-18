@@ -6514,26 +6514,26 @@
     <rotation name="PixelPlane_rot_2L" unit="degree" x="180.0" y="0" z="0"/>
     <position name="PixelPlane_pos_3L" unit="cm" x="0" y="46.56" z="15.52"/>
     <rotation name="PixelPlane_rot_3L" unit="degree" x="180.0" y="0" z="0"/>
-    <position name="WLS_pos" unit="cm" x="0.1475" y="0.0" z="-0.0005"/>
-    <position name="TPB_pos" unit="cm" x="0.1475" y="0.0" z="0.5127"/>
-    <position name="PVT_pos" unit="cm" x="-14.08525" y="0.0" z="0.0"/>
-    <position name="ArC_PCB_pos" unit="cm" x="-0.1475" y="0.0" z="0.0"/>
-    <position name="SiPM_pos0" unit="cm" x="-14.08525" y="-12.5105833333" z="0.0"/>
-    <position name="SiPM_pos1" unit="cm" x="-14.08525" y="-7.50635" z="0.0"/>
-    <position name="SiPM_pos2" unit="cm" x="-14.08525" y="-2.50211666667" z="0.0"/>
-    <position name="SiPM_pos3" unit="cm" x="-14.08525" y="2.50211666667" z="0.0"/>
-    <position name="SiPM_pos4" unit="cm" x="-14.08525" y="7.50635" z="0.0"/>
-    <position name="SiPM_pos5" unit="cm" x="-14.08525" y="12.5105833333" z="0.0"/>
+    <position name="WLS_pos" unit="cm" x="0.1465" y="0.0" z="-0.0005"/>
+    <position name="TPB_pos" unit="cm" x="0.1465" y="0.0" z="0.5127"/>
+    <position name="PVT_pos" unit="cm" x="-13.93775" y="0.0" z="-0.0005"/>
+    <position name="ArC_PCB_pos" unit="cm" x="-14.08425" y="0.0" z="-0.0005"/>
+    <position name="SiPM_pos0" unit="cm" x="-13.93775" y="-12.5105833333" z="-0.0005"/>
+    <position name="SiPM_pos1" unit="cm" x="-13.93775" y="-7.50635" z="-0.0005"/>
+    <position name="SiPM_pos2" unit="cm" x="-13.93775" y="-2.50211666667" z="-0.0005"/>
+    <position name="SiPM_pos3" unit="cm" x="-13.93775" y="2.50211666667" z="-0.0005"/>
+    <position name="SiPM_pos4" unit="cm" x="-13.93775" y="7.50635" z="-0.0005"/>
+    <position name="SiPM_pos5" unit="cm" x="-13.93775" y="12.5105833333" z="-0.0005"/>
     <position name="ArCLight_pos_0" unit="cm" x="0.11135" y="-46.56" z="0.4288"/>
     <position name="ArCLight_pos_1" unit="cm" x="0.11135" y="-15.52" z="0.4288"/>
     <position name="ArCLight_pos_2" unit="cm" x="0.11135" y="15.52" z="0.4288"/>
     <position name="ArCLight_pos_3" unit="cm" x="0.11135" y="46.56" z="0.4288"/>
-    <position name="bar_pos" unit="cm" x="14.89455" y="0" z="0.4288"/>
-    <position name="pcb_pos0" unit="cm" x="-15.2175" y="-46.56" z="0.4288"/>
-    <position name="pcb_pos1" unit="cm" x="-15.2175" y="-15.52" z="0.4288"/>
-    <position name="pcb_pos2" unit="cm" x="-15.2175" y="15.52" z="0.4288"/>
-    <position name="pcb_pos3" unit="cm" x="-15.2175" y="46.56" z="0.4288"/>
-    <position name="TPCPlane_pos" unit="cm" x="-15.2875" y="0.0" z="0.0"/>
+    <position name="bar_pos" unit="cm" x="14.89355" y="0" z="0.4288"/>
+    <position name="pcb_pos0" unit="cm" x="-15.2165" y="-46.56" z="0.4288"/>
+    <position name="pcb_pos1" unit="cm" x="-15.2165" y="-15.52" z="0.4288"/>
+    <position name="pcb_pos2" unit="cm" x="-15.2165" y="15.52" z="0.4288"/>
+    <position name="pcb_pos3" unit="cm" x="-15.2165" y="46.56" z="0.4288"/>
+    <position name="TPCPlane_pos" unit="cm" x="-15.2865" y="0.0" z="0.0"/>
     <position name="TPCActive_pos" unit="cm" x="0.23" y="0" z="0"/>
     <position name="TPC_pos" unit="cm" x="0" y="0" z="0"/>
     <position name="OpticalDet_pos_L" unit="cm" x="0" y="0" z="-31.957"/>
@@ -7087,10 +7087,10 @@
     <box lunit="cm" name="Pixel" x="0.01" y="0.2" z="0.2"/>
     <box lunit="cm" name="Asic" x="0.14" y="1.6" z="1.6"/>
     <box lunit="cm" name="TPCPlane" x="0.46" y="124.11" z="62.03"/>
-    <box lunit="cm" name="ArCLight" x="28.3205" y="30.0254" z="1.0264"/>
+    <box lunit="cm" name="ArCLight" x="28.3185" y="30.0254" z="1.0264"/>
     <box lunit="cm" name="WLS_panel" x="28.0255" y="30.0254" z="1.0254"/>
-    <box lunit="cm" name="TPB_layer" x="28.0255" y="30.0254" z="0.001"/>
-    <box lunit="cm" name="PVT_bar" x="0.145" y="30.0254" z="1.0254"/>
+    <box lunit="cm" name="TPB_LAr_layer" x="28.0255" y="30.0254" z="0.001"/>
+    <box lunit="cm" name="PVT_bar" x="0.143" y="30.0254" z="1.0254"/>
     <box lunit="cm" name="ArC_PCB_bar" x="0.15" y="30.0254" z="1.0254"/>
     <box lunit="cm" name="SiPM0" x="0.145" y="0.735" z="0.685"/>
     <box lunit="cm" name="SiPM1" x="0.145" y="0.735" z="0.685"/>
@@ -7098,14 +7098,14 @@
     <box lunit="cm" name="SiPM3" x="0.145" y="0.735" z="0.685"/>
     <box lunit="cm" name="SiPM4" x="0.145" y="0.735" z="0.685"/>
     <box lunit="cm" name="SiPM5" x="0.145" y="0.735" z="0.685"/>
-    <box lunit="cm" name="OpticalDet" x="31.035" y="127.1474" z="1.884"/>
+    <box lunit="cm" name="OpticalDet" x="31.033" y="127.1474" z="1.884"/>
     <box lunit="cm" name="Bar" x="1.2459" y="127.1474" z="1.0264"/>
     <box lunit="cm" name="PCBBar" x="0.32" y="30.99" z="1.0264"/>
-    <box lunit="cm" name="TPC" x="31.035" y="127.1474" z="62.03"/>
-    <box lunit="cm" name="TPCActive" x="30.575" y="127.1474" z="62.03"/>
-    <box lunit="cm" name="HalfTPC" x="31.035" y="127.1474" z="65.798"/>
-    <box lunit="cm" name="Cryostat" x="32.036" y="128.1494" z="66.8"/>
-    <box lunit="cm" name="Kapton_panel" x="31.036" y="127.1494" z="65.8"/>
+    <box lunit="cm" name="TPC" x="31.033" y="127.1474" z="62.03"/>
+    <box lunit="cm" name="TPCActive" x="30.573" y="127.1474" z="62.03"/>
+    <box lunit="cm" name="HalfTPC" x="31.033" y="127.1474" z="65.798"/>
+    <box lunit="cm" name="Cryostat" x="32.034" y="128.1494" z="66.8"/>
+    <box lunit="cm" name="Kapton_panel" x="31.034" y="127.1494" z="65.8"/>
     <box lunit="cm" name="DetEnclosure" x="200.0" y="200.0" z="200.0"/>
     <box lunit="cm" name="World" x="40000.0" y="40000.0" z="40000.0"/>
   </solids>
@@ -39697,18 +39697,21 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="volArCPCB">
-      <materialref ref="FR4"/>
-      <solidref ref="ArC_PCB_bar"/>
+    <volume name="volWLS">
+      <materialref ref="EJ280WLS"/>
+      <solidref ref="WLS_panel"/>
+    </volume>
+    <volume name="volTPB_LAr">
+      <materialref ref="LAr"/>
+      <solidref ref="TPB_LAr_layer"/>
     </volume>
     <volume name="volPVT">
       <materialref ref="PVT"/>
       <solidref ref="PVT_bar"/>
-      <physvol>
-        <volumeref ref="volArCPCB"/>
-        <positionref ref="ArC_PCB_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
+    </volume>
+    <volume name="volArCPCB">
+      <materialref ref="FR4"/>
+      <solidref ref="ArC_PCB_bar"/>
     </volume>
     <volume name="volSiPM0">
       <materialref ref="Silicon"/>
@@ -39734,12 +39737,27 @@
       <materialref ref="Silicon"/>
       <solidref ref="SiPM5"/>
     </volume>
-    <volume name="volWLS">
-      <materialref ref="EJ280WLS"/>
-      <solidref ref="WLS_panel"/>
+    <volume name="volArCLight">
+      <materialref ref="LAr"/>
+      <solidref ref="ArCLight"/>
+      <physvol>
+        <volumeref ref="volWLS"/>
+        <positionref ref="WLS_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volTPB_LAr"/>
+        <positionref ref="TPB_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
       <physvol>
         <volumeref ref="volPVT"/>
         <positionref ref="PVT_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volArCPCB"/>
+        <positionref ref="ArC_PCB_pos"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
@@ -39770,24 +39788,6 @@
       <physvol>
         <volumeref ref="volSiPM5"/>
         <positionref ref="SiPM_pos5"/>
-        <rotationref ref="identity"/>
-      </physvol>
-    </volume>
-    <volume name="volTPB">
-      <materialref ref="TPB"/>
-      <solidref ref="TPB_layer"/>
-    </volume>
-    <volume name="volArCLight">
-      <materialref ref="LAr"/>
-      <solidref ref="ArCLight"/>
-      <physvol>
-        <volumeref ref="volWLS"/>
-        <positionref ref="WLS_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
-      <physvol>
-        <volumeref ref="volTPB"/>
-        <positionref ref="TPB_pos"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>
