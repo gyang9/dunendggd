@@ -14,7 +14,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,**kwargs):
+    def configure(self,Gap_ASIC_G10,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -27,6 +27,8 @@ class HalfTPCBuilder(gegede.builder.Builder):
                 kwargs: Additional keyword arguments. Allowed are:
         """
 
+        self.Gap_ASIC_G10 = Gap_ASIC_G10
+
         self.Material       = 'LAr'
 
     def construct(self,geom):
@@ -37,7 +39,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
         tpc_builder = self.get_builder('TPC')
         opticaldet_builder = self.get_builder('OpticalDet')
 
-        self.halfDimension  = { 'dx':   opticaldet_builder.halfDimension['dx'],
+        self.halfDimension  = { 'dx':   opticaldet_builder.halfDimension['dx'] + self.Gap_ASIC_G10,
                                 'dy':   tpc_builder.halfDimension['dy'],
                                 'dz':   tpc_builder.halfDimension['dz']+2*opticaldet_builder.halfDimension['dz']}
 
@@ -47,7 +49,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
         self.add_volume(main_lv)
 
         # Build TPC
-        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
+        pos = [self.Gap_ASIC_G10,Q('0cm'),Q('0cm')]
 
         tpc_lv = tpc_builder.get_volume()
 
@@ -61,7 +63,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
         main_lv.placements.append(tpc_pla.name)
 
         # Build OpticalDet L
-        pos = [Q('0cm'),Q('0cm'),-tpc_builder.halfDimension['dz']-opticaldet_builder.halfDimension['dz']]
+        pos = [self.Gap_ASIC_G10,Q('0cm'),-tpc_builder.halfDimension['dz']-opticaldet_builder.halfDimension['dz']]
 
         opticaldet_lv = opticaldet_builder.get_volume()
 
@@ -75,7 +77,7 @@ class HalfTPCBuilder(gegede.builder.Builder):
         main_lv.placements.append(opticaldet_pla.name)
 
         # Build OpticalDet R
-        pos = [Q('0cm'),Q('0cm'),+tpc_builder.halfDimension['dz']+opticaldet_builder.halfDimension['dz']]
+        pos = [self.Gap_ASIC_G10,Q('0cm'),+tpc_builder.halfDimension['dz']+opticaldet_builder.halfDimension['dz']]
 
         opticaldet_lv = opticaldet_builder.get_volume()
 
