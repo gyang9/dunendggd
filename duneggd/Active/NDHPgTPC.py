@@ -137,7 +137,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     PRYMaterial = "Iron",
                     PRYThickness = Q("100mm"),
                     buildThinUpstream = False,
-                    nLayers_Upstream = [1]
+                    nLayers_Upstream = [8, 0]
                     )
 
     #def configure(self, **kwds):
