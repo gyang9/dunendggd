@@ -135,7 +135,9 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     magnetHalfLength = Q("5m"),
                     magnetType = "",
                     PRYMaterial = "Iron",
-                    PRYThickness = Q("100mm")
+                    PRYThickness = Q("100mm"),
+                    buildThinUpstream = False,
+                    nLayers_Upstream = [1]
                     )
 
     #def configure(self, **kwds):
@@ -402,6 +404,9 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         print "Large side of the stave", max_dim_stave
         print "Small side of the stave", min_dim_stave
         print "Barrel module dim in z", Ecal_Barrel_module_dim
+        print "Build Thinner Upstream ECAL", self.buildThinUpstream
+        if self.buildThinUpstream:
+            print "Number of layers for the Upstream ECAL", self.nLayers_Upstream
 
         #Position of the stave in the Barrel (local coordinates)
         X = rInnerEcal + safety + ecal_barrel_module_thickness / 2.
@@ -421,6 +426,12 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             phirot += (istave - dstave)*dphi
             phirot2 =  (istave - dstave) * dphi + hphi
 
+            placing_angle = phirot2*180/pi+292.5
+            if placing_angle >= 360:
+                placing_angle = placing_angle - 360
+
+            print "Placing stave ", stave_id, " at angle ", placing_angle, " deg"
+
             for imodule in range(Ecal_Barrel_n_modules):
                 module_id = imodule+1
                 print "Placing stave ", stave_id, " and module ", module_id
@@ -437,29 +448,59 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 zPos = Q("0mm")
                 layer_id = 1
 
-                for nlayer, type in zip(self.nLayers_Barrel, self.layer_builder_name):
-                    for ilayer in range(nlayer):
+                # check if angle is below -90/90 deg for full modules, otherwise thinner upstream ECAL
+                if placing_angle < 315 and placing_angle > 45:
+                    for nlayer, type in zip(self.nLayers_Barrel, self.layer_builder_name):
+                        for ilayer in range(nlayer):
 
-                        layername = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
+                            layername = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
 
-                        #Configure the layer length based on the zPos in the stave
-                        Layer_builder = self.get_builder(type)
-                        layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
-                        l_dim_x = min_dim_stave + 2 * zPos * tan( pi/nsides )
-                        l_dim_y = Ecal_Barrel_module_dim - safety
+                            #Configure the layer length based on the zPos in the stave
+                            Layer_builder = self.get_builder(type)
+                            layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
+                            l_dim_x = min_dim_stave + 2 * zPos * tan( pi/nsides )
+                            l_dim_y = Ecal_Barrel_module_dim - safety
 
-                        NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
-                        NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
-                        layer_lv = Layer_builder.get_volume(layername+"_vol")
+                            NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
+                            NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
+                            layer_lv = Layer_builder.get_volume(layername+"_vol")
 
-                        #Placement layer in stave
-                        layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - ecal_barrel_module_thickness/2.0)
-                        layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+                            #Placement layer in stave
+                            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - ecal_barrel_module_thickness/2.0)
+                            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
 
-                        stave_lv.placements.append(layer_pla.name)
+                            stave_lv.placements.append(layer_pla.name)
 
-                        zPos += layer_thickness;
-                        layer_id += 1
+                            zPos += layer_thickness;
+                            layer_id += 1
+                else:
+                    nLoopLayers = self.nLayers_Barrel
+                    if self.buildThinUpstream:
+                        nLoopLayers = self.nLayers_Upstream
+
+                    for nlayer, type in zip(nLoopLayers, self.layer_builder_name):
+                        for ilayer in range(nlayer):
+
+                            layername = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
+
+                            #Configure the layer length based on the zPos in the stave
+                            Layer_builder = self.get_builder(type)
+                            layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
+                            l_dim_x = min_dim_stave + 2 * zPos * tan( pi/nsides )
+                            l_dim_y = Ecal_Barrel_module_dim - safety
+
+                            NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
+                            NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
+                            layer_lv = Layer_builder.get_volume(layername+"_vol")
+
+                            #Placement layer in stave
+                            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - ecal_barrel_module_thickness/2.0)
+                            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+
+                            stave_lv.placements.append(layer_pla.name)
+
+                            zPos += layer_thickness;
+                            layer_id += 1
 
                 #Placement staves in Barrel
                 name = stave_lv.name
