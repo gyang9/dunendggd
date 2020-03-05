@@ -135,7 +135,6 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     magnetHalfLength = Q("5m"),
                     magnetType = "",
                     PRYMaterial = "Iron",
-                    PRYThickness = Q("100mm"),
                     buildThinUpstream = False,
                     nLayers_Upstream = [8, 0],
                     IntegratedMuID = False,
@@ -203,6 +202,22 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         xpos = self.TPC_halfZ-(R-h)
 
         return xpos
+
+    def get_yoke_barrel_module_thickness(self, geom):
+        yoke_barrel_module_thickness = Q("0mm")
+        print "Yoke barrel thickness"
+        for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
+            # print "Builder name ", type
+            Layer_builder = self.get_builder(type)
+            Layer_lv = Layer_builder.get_volume()
+
+            Layer_shape = geom.store.shapes.get(Layer_lv.shape)
+            layer_thickness = Layer_shape.dz * 2
+
+            print "nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness
+            yoke_barrel_module_thickness += nlayer * layer_thickness
+
+        return yoke_barrel_module_thickness
 
     def construct(self, geom):
 
@@ -632,13 +647,15 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         safety = Q("1mm")
         space = Q("1cm")
+        yoke_barrel_thickness = self.get_yoke_barrel_module_thickness(geom)
         rmin_barrel = self.magnetInnerR + self.magnetThickness + space
-        rmax_endcap = self.rInnerTPC + Q("1400mm")
+        # rmax_endcap = self.rInnerTPC + Q("1400mm")
+        rmax_endcap = rmin_barrel + yoke_barrel_thickness + safety
         ecal_endcap_module_thickness = self.get_ecal_endcap_module_thickness(geom)
         YokeEndcap_min_z = self.get_pv_endcap_length(geom) + ecal_endcap_module_thickness + safety
-        YokeEndcap_max_z = YokeEndcap_min_z + self.PRYThickness
+        YokeEndcap_max_z = YokeEndcap_min_z + yoke_barrel_thickness + safety
 
-        print "Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", self.PRYThickness, " and a length of ", self.magnetHalfLength*2
+        print "Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", yoke_barrel_thickness, " and a length of ", self.magnetHalfLength*2
         print "Build integrated Muon ID ", self.IntegratedMuID
 
         '''Barrel'''
@@ -646,11 +663,10 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         yoke_barrel_shape = geom.shapes.PolyhedraRegular(byoke_name, numsides=self.nsides, rmin=rmin_barrel, rmax=rmax_endcap, dz=YokeEndcap_min_z)
         yoke_barrel_vol = geom.structure.Volume("vol"+byoke_name, shape=yoke_barrel_shape, material="Air")
 
-        ''' Make two type of staves: the ones complete and the ones going only up to 30 deg '''
         #minimum dimension of the stave
         min_dim_stave = 2 * tan( pi/self.nsides ) * rmin_barrel
         #maximum dimension of the stave
-        max_dim_stave = 2 * tan( pi/self.nsides ) * rmin_barrel+self.PRYThickness
+        max_dim_stave = 2 * tan( pi/self.nsides ) * rmax_endcap
         Yoke_Barrel_n_modules = 2
         Yoke_Barrel_module_dim = YokeEndcap_min_z * 2 / Yoke_Barrel_n_modules
 
@@ -659,14 +675,13 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         hphi = dphi/2;
 
         sensname = "MuID" + "_vol"
-        spacing_muID = Q("2cm")
 
         ''' Normal stave '''
         for istave in range(self.nsides):
             if istave == 3: #remove the stave in front of the LAr
                 continue
 
-            X = rmin_barrel + self.PRYThickness / 2.
+            X = rmin_barrel + yoke_barrel_thickness / 2.
             Y = Q('0mm')
             stave_id = istave+1
             dstave = int( self.nsides/4.0 )
@@ -678,16 +693,16 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             ypos = X*sin(phirot2)+Y*cos(phirot2)
 
             #Need correction.... calculate correctly the position...
-            if istave == 2:
-                phirot22 = phirot2 - hphi/2.0
-                X += Q("15.5cm")
-                xpos = X*cos(phirot22)-Y*sin(phirot22)
-                ypos = X*sin(phirot22)+Y*cos(phirot22)
-            if istave == 4:
-                phirot22 = phirot2 + hphi/2.0
-                X += Q("15.5cm")
-                xpos = X*cos(phirot22)-Y*sin(phirot22)
-                ypos = X*sin(phirot22)+Y*cos(phirot22)
+            # if istave == 2:
+            #     phirot22 = phirot2 - hphi/2.0
+            #     X += Q("15.5cm")
+            #     xpos = X*cos(phirot22)-Y*sin(phirot22)
+            #     ypos = X*sin(phirot22)+Y*cos(phirot22)
+            # if istave == 4:
+            #     phirot22 = phirot2 + hphi/2.0
+            #     X += Q("15.5cm")
+            #     xpos = X*cos(phirot22)-Y*sin(phirot22)
+            #     ypos = X*sin(phirot22)+Y*cos(phirot22)
 
             for imodule in range(Yoke_Barrel_n_modules):
                 module_id = imodule+1
@@ -696,76 +711,76 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 stave_name = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
                 stave_volname = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
 
-                if istave == 2 or istave == 4:
-                    stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/4.0, dx2=max_dim_stave/4.0,
-                    dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
-                    dz=self.PRYThickness/2.0)
-                    stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.PRYMaterial)
+                # if istave == 2 or istave == 4:
+                #     stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/4.0, dx2=max_dim_stave/4.0,
+                #     dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
+                #     dz=self.PRYThickness/2.0)
+                #     stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.PRYMaterial)
+                #
+                #     if self.IntegratedMuID == True:
+                #         zPos = Q("0mm")
+                #         layer_id = 1
+                #
+                #         for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
+                #             for ilayer in range(nlayer):
+                #
+                #                 layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
+                #
+                #                 print "Adding ", layername
+                #
+                #                 #Configure the layer length based on the zPos in the stave
+                #                 Layer_builder = self.get_builder(type)
+                #                 layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
+                #                 l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides )
+                #                 l_dim_y = Yoke_Barrel_module_dim - safety
+                #
+                #                 NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x/2., l_dim_y, layername, sensname, "Box")
+                #                 NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
+                #                 layer_lv = Layer_builder.get_volume(layername+"_vol")
+                #
+                #                 #Placement layer in stave
+                #                 layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - self.PRYThickness/2.0)
+                #                 layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+                #
+                #                 stave_lv.placements.append(layer_pla.name)
+                #
+                #                 zPos += layer_thickness+spacing_muID;
+                #                 layer_id += 1
+                # else:
+                stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/2.0, dx2=max_dim_stave/2.0,
+                dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
+                dz=yoke_barrel_thickness/2.0)
+                stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.PRYMaterial)
 
-                    if self.IntegratedMuID == True:
-                        zPos = Q("0mm")
-                        layer_id = 1
+                if self.IntegratedMuID == True:
+                    zPos = Q("0mm")
+                    layer_id = 1
 
-                        for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
-                            for ilayer in range(nlayer):
+                    for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
+                        for ilayer in range(nlayer):
 
-                                layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
+                            layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
 
-                                print "Adding ", layername
+                            print "Adding ", layername
 
-                                #Configure the layer length based on the zPos in the stave
-                                Layer_builder = self.get_builder(type)
-                                layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
-                                l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides )
-                                l_dim_y = Yoke_Barrel_module_dim - safety
+                            #Configure the layer length based on the zPos in the stave
+                            Layer_builder = self.get_builder(type)
+                            layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
+                            l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides )
+                            l_dim_y = Yoke_Barrel_module_dim - safety
 
-                                NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x/2., l_dim_y, layername, sensname, "Box")
-                                NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
-                                layer_lv = Layer_builder.get_volume(layername+"_vol")
+                            NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
+                            NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
+                            layer_lv = Layer_builder.get_volume(layername+"_vol")
 
-                                #Placement layer in stave
-                                layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - self.PRYThickness/2.0)
-                                layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+                            #Placement layer in stave
+                            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - yoke_barrel_thickness/2.0)
+                            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
 
-                                stave_lv.placements.append(layer_pla.name)
+                            stave_lv.placements.append(layer_pla.name)
 
-                                zPos += layer_thickness+spacing_muID;
-                                layer_id += 1
-                else:
-                    stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/2.0, dx2=max_dim_stave/2.0,
-                    dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
-                    dz=self.PRYThickness/2.0)
-                    stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.PRYMaterial)
-
-                    if self.IntegratedMuID == True:
-                        zPos = Q("0mm")
-                        layer_id = 1
-
-                        for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
-                            for ilayer in range(nlayer):
-
-                                layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
-
-                                print "Adding ", layername
-                                
-                                #Configure the layer length based on the zPos in the stave
-                                Layer_builder = self.get_builder(type)
-                                layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
-                                l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides )
-                                l_dim_y = Yoke_Barrel_module_dim - safety
-
-                                NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
-                                NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
-                                layer_lv = Layer_builder.get_volume(layername+"_vol")
-
-                                #Placement layer in stave
-                                layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - self.PRYThickness/2.0)
-                                layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
-
-                                stave_lv.placements.append(layer_pla.name)
-
-                                zPos += layer_thickness+spacing_muID;
-                                layer_id += 1
+                            zPos += layer_thickness;
+                            layer_id += 1
 
                 #Placement staves in Barrel
                 name = stave_lv.name
