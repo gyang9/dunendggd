@@ -14,7 +14,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,PCB_border_dz,NPixel,NAsic,**kwargs):
+    def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,NPixel,NAsic,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -39,8 +39,6 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         self.Asic_dy = Asic_dimension['dy']
         self.Asic_dz = Asic_dimension['dz']
 
-        self.PCB_border_dz  = PCB_border_dz
-
         self.PCB_Material   = 'FR4'
         self.Pixel_Material = 'Gold'
         self.Asic_Material  = 'Silicon'
@@ -50,12 +48,12 @@ class PixelPlaneBuilder(gegede.builder.Builder):
 
         self.Material       = 'LAr'
         self.halfDimension  = { 'dx':   self.PCB_dx
+                                        +self.Pixel_dx
                                         +self.Asic_dx,
 
                                 'dy':   self.PCB_dy,
 
-                                'dz':   self.PCB_dz
-                                        +self.PCB_border_dz}
+                                'dz':   self.PCB_dz}
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -66,30 +64,6 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         print('PixelPlaneBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
-
-        """
-        # Construct volPixelPlane according to LArSoft convention
-        PixelPlane_shape = geom.shapes.Box('PixelPlane',
-                                            dx = self.halfDimension['dx'],
-                                            dy = self.halfDimension['dy'],
-                                            dz = self.halfDimension['dz'])
-
-        PixelPlane_lv = geom.structure.Volume('volPixelPlane',
-                                                material=self.Material,
-                                                shape=PixelPlane_shape)
-
-        # Place PixelPlane into main LV
-        pos = [Q('0m'),Q('0m'),Q('0m')]
-
-        PixelPlane_pos = geom.structure.Position('PixelPlane_pos',
-                                                    pos[0],pos[1],pos[2])
-
-        PixelPlane_pla = geom.structure.Placement('PixelPlane_pla',
-                                                    volume=PixelPlane_lv,
-                                                    pos=PixelPlane_pos)
-
-        main_lv.placements.append(PixelPlane_pla.name)
-        """
 
         # Construct PCB panel
         PCB_shape = geom.shapes.Box('PCB_panel',
@@ -102,7 +76,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                             shape=PCB_shape)
 
         # Place PCB panel into main LV
-        pos = [self.Asic_dx,Q('0m'),self.PCB_border_dz]
+        pos = [-self.Pixel_dx+self.Asic_dx,Q('0m'),Q('0m')]
 
         PCB_pos = geom.structure.Position('PCB_pos',
                                                 pos[0],pos[1],pos[2])
@@ -126,7 +100,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         for n in range(self.NPixel):
             for m in range(self.NPixel):
                 # Place Pixel into PCB board
-                pos = [self.PCB_dx-self.Pixel_dx,-self.PCB_dy+self.PCB_dy/self.NPixel*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NPixel*(1+2*m)]
+                pos = [self.PCB_dx+self.Asic_dx,-self.PCB_dy+self.PCB_dy/self.NPixel*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NPixel*(1+2*m)]
 
                 Pixel_pos = geom.structure.Position('Pixel_pos'+str(n)+'.'+str(m),
                                                         pos[0],pos[1],pos[2])
@@ -135,7 +109,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                                         volume=Pixel_lv,
                                                         pos=Pixel_pos)
 
-                PCB_lv.placements.append(Pixel_pla.name)
+                main_lv.placements.append(Pixel_pla.name)
 
         # Construct ASIC
         Asic_shape = geom.shapes.Box('Asic',
@@ -150,7 +124,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         for n in range(self.NAsic):
             for m in range(self.NAsic):
                 # Place ASICs into PCB board
-                pos = [-self.PCB_dx-self.Asic_dx,-self.PCB_dy+self.PCB_dy/self.NAsic*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NAsic*(1+2*m)]
+                pos = [-self.PCB_dx-self.Pixel_dx,-self.PCB_dy+self.PCB_dy/self.NAsic*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NAsic*(1+2*m)]
 
                 Asic_pos = geom.structure.Position('Asic_pos'+str(n)+'.'+str(m),
                                                         pos[0],pos[1],pos[2])
@@ -159,28 +133,5 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                                         volume=Asic_lv,
                                                         pos=Asic_pos)
 
-                PCB_lv.placements.append(Asic_pla.name)
+                main_lv.placements.append(Asic_pla.name)
 
-"""
-        # Construct PCB border
-        PCB_border_shape = geom.shapes.Box('PCB_border',
-                                       dx = self.PCB_dx,
-                                       dy = self.PCB_dy,
-                                       dz = self.PCB_border_dz)
-
-        PCB_border_lv = geom.structure.Volume('volTPCPCBBorder',
-                                            material=self.PCB_Material,
-                                            shape=PCB_border_shape)
-
-        # Place PCB border into main LV
-        pos = [Q('0m'),Q('0m'),-self.PCB_dz-self.PCB_border_dz]
-
-        PCB_border_pos = geom.structure.Position('PCB_border_pos',
-                                                pos[0],pos[1],pos[2])
-
-        PCB_border_pla = geom.structure.Placement('PCB_border_pla',
-                                                volume=PCB_border_lv,
-                                                pos=PCB_border_pos)
-
-        PCB_lv.placements.append(PCB_border_pla.name)
-"""

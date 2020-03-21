@@ -2,3 +2,5 @@
 dunend.egg-info
 dunendggd.egg-info
 *.swp
+ArgonCube/geom-test.root
+ArgonCube/PixelPlane.gdml
