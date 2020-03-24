@@ -14,7 +14,7 @@ class TPCBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,**kwargs):
+    def configure(self,Drift_Length,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -26,8 +26,11 @@ class TPCBuilder(gegede.builder.Builder):
                     Dict. with keys 'dx', 'dy' and 'dz'
                 kwargs: Additional keyword arguments. Allowed are:
         """
+        self.Drift_Length       = Drift_Length
 
-        self.Bar_Material       = 'G10'
+        # Give some clearance within fieldcage for possible precision errors
+        self.Drift_Length       = self.Drift_Length-Q('0.5mm')/2
+
         self.Active_Material    = 'LAr'
         self.Material           = 'LAr'
 
@@ -36,13 +39,13 @@ class TPCBuilder(gegede.builder.Builder):
 
         """
 
-        tpcplane_builder = self.get_builder('TPCPlane')
-        optdet_builder = self.get_builder('OpticalDet')
+        optdet_builder      = self.get_builder('OpticalDet')
+        tpcplane_builder    = optdet_builder.get_builder('TPCPlane')
 
-        self.halfDimension  = { 'dx':   optdet_builder.halfDimension['dx'],
+        self.halfDimension  = { 'dx':   self.Drift_Length
+                                        +tpcplane_builder.halfDimension['dx'],
 
-                                'dy':   optdet_builder.halfDimension['dy'],
-
+                                'dy':   tpcplane_builder.halfDimension['dy'],
                                 'dz':   tpcplane_builder.halfDimension['dz']}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
@@ -51,7 +54,7 @@ class TPCBuilder(gegede.builder.Builder):
         self.add_volume(main_lv)
 
         # Build TPCPlane
-        pos = [-optdet_builder.halfDimension['dx']+tpcplane_builder.halfDimension['dx'],Q('0mm'),Q('0mm')]
+        pos = [-self.Drift_Length,Q('0mm'),Q('0mm')]
 
         tpcplane_lv = tpcplane_builder.get_volume()
 
@@ -66,11 +69,8 @@ class TPCBuilder(gegede.builder.Builder):
 
         # Construct TPCActive
         TPCActive_shape = geom.shapes.Box('TPCActive',
-                                        dx =    optdet_builder.halfDimension['dx']
-                                                -tpcplane_builder.halfDimension['dx'],
-
-                                        dy =    optdet_builder.halfDimension['dy'],
-
+                                        dx =    self.Drift_Length,
+                                        dy =    tpcplane_builder.halfDimension['dy'],
                                         dz =    tpcplane_builder.halfDimension['dz'])
 
         TPCActive_lv = geom.structure.Volume('volTPCActive',

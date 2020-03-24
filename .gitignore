@@ -1,6 +1,10 @@
-*.pyc
 dunend.egg-info
-dunendggd.egg-info
 *.swp
+*.pyc
+
+dunendggd.egg-info
+
 ArgonCube/geom-test.root
-ArgonCube/PixelPlane.gdml
+
+ArgonCube/*.gdml
+!ArgonCube/otpSim.gdml
