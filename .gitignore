@@ -7,4 +7,3 @@ dunendggd.egg-info
 ArgonCube/geom-test.root
 
 ArgonCube/*.gdml
-!ArgonCube/otpSim.gdml

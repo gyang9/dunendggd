@@ -58,9 +58,9 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
         # Construct Fieldcage
         fieldcage_shape = geom.shapes.Box('Fieldcage',
-                                        dx = self.Fieldcage_dx,
-                                        dy = self.Fieldcage_dy,
-                                        dz = self.Fieldcage_dz)
+                                        dx = self.halfDimension['dx'],
+                                        dy = self.halfDimension['dy'],
+                                        dz = self.halfDimension['dz'])
 
         fieldcage_lv = geom.structure.Volume('volFieldcage',
                                         material=self.Material,
@@ -101,7 +101,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         fieldcage_lv.placements.append(larVolume_pla.name)
 
         # Build TPC
-        pos = [-self.Fieldcage_dx+self.Cathode_dx/2+tpc_builder.halfDimension['dx']+2*self.Gap_ASIC_Backplate,Q('0cm'),Q('0cm')]
+        pos = [-self.Fieldcage_dx+tpc_builder.halfDimension['dx']+self.Cathode_dx/2+2*self.Gap_ASIC_Backplate,Q('0cm'),Q('0cm')]
 
         tpc_lv = tpc_builder.get_volume()
 
@@ -115,7 +115,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         larVolume_lv.placements.append(tpc_pla.name)
 
         # Build OpticalDet L
-        pos = [-self.Fieldcage_dx+self.Cathode_dx/2+opticaldet_builder.halfDimension['dx']+2*self.Gap_ASIC_Backplate,Q('0cm'),-tpc_builder.halfDimension['dz']-opticaldet_builder.halfDimension['dz']]
+        pos = [-self.Fieldcage_dx+opticaldet_builder.halfDimension['dx']+self.Cathode_dx/2+2*self.Gap_ASIC_Backplate,Q('0cm'),-tpc_builder.halfDimension['dz']-opticaldet_builder.halfDimension['dz']]
 
         opticaldet_lv = opticaldet_builder.get_volume()
 
@@ -129,7 +129,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         larVolume_lv.placements.append(opticaldet_pla.name)
 
         # Build OpticalDet R
-        pos = [-self.Fieldcage_dx+self.Cathode_dx/2+opticaldet_builder.halfDimension['dx']+2*self.Gap_ASIC_Backplate,Q('0cm'),+tpc_builder.halfDimension['dz']+opticaldet_builder.halfDimension['dz']]
+        pos = [-self.Fieldcage_dx+opticaldet_builder.halfDimension['dx']+self.Cathode_dx/2+2*self.Gap_ASIC_Backplate,Q('0cm'),+tpc_builder.halfDimension['dz']+opticaldet_builder.halfDimension['dz']]
 
         opticaldet_lv = opticaldet_builder.get_volume()
 
