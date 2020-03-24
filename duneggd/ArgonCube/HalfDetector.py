@@ -14,7 +14,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Fieldcage_dimension,Cathode_dx,Gap_ASIC_Backplate,**kwargs):
+    def configure(self,Fieldcage_dimension,Bracket_dimension,Cathode_dx,Gap_ASIC_Backplate,**kwargs):
 
         """ Set the configuration for the geometry.
 
@@ -32,11 +32,16 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         self.Fieldcage_dz   = Fieldcage_dimension['dz']
         self.Fieldcage_dd   = Fieldcage_dimension['dd']
 
+        self.Bracket_dx   = Bracket_dimension['dx']
+        self.Bracket_dy   = Bracket_dimension['dy']
+        self.Bracket_dz   = Bracket_dimension['dz']
+
         self.Cathode_dx     = Cathode_dx
 
         self.Gap_ASIC_Backplate = Gap_ASIC_Backplate
 
-        self.LArVolume_Material = 'LAr'
+        self.LAr_Material       = 'LAr'
+        self.Bracket_Material   = 'G10'
         self.Material           = 'G10'
 
     def construct(self,geom):
@@ -79,26 +84,26 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         main_lv.placements.append(fieldcage_pla.name)
 
         # Construct LAr Volume
-        larVolume_shape = geom.shapes.Box('LArVolume',
+        lar_shape = geom.shapes.Box('LAr',
                                         dx = self.Fieldcage_dx-self.Cathode_dx/2,
                                         dy = self.Fieldcage_dy-self.Fieldcage_dd*2,
                                         dz = self.Fieldcage_dz-self.Fieldcage_dd*2)
 
-        larVolume_lv = geom.structure.Volume('volLArVolume',
-                                        material=self.LArVolume_Material,
-                                        shape=larVolume_shape)
+        lar_lv = geom.structure.Volume('volLAr',
+                                        material=self.LAr_Material,
+                                        shape=lar_shape)
 
         # Place LAr Volume inside Fieldcage volume
         pos = [-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
 
-        larVolume_pos = geom.structure.Position('larVolume_pos',
+        lar_pos = geom.structure.Position('lar_pos',
                                                 pos[0],pos[1],pos[2])
 
-        larVolume_pla = geom.structure.Placement('larVolume_pla',
-                                                volume=larVolume_lv,
-                                                pos=larVolume_pos)
+        lar_pla = geom.structure.Placement('lar_pla',
+                                                volume=lar_lv,
+                                                pos=lar_pos)
 
-        fieldcage_lv.placements.append(larVolume_pla.name)
+        fieldcage_lv.placements.append(lar_pla.name)
 
         # Build TPC
         pos = [-self.Fieldcage_dx+tpc_builder.halfDimension['dx']+self.Cathode_dx/2+2*self.Gap_ASIC_Backplate,Q('0cm'),Q('0cm')]
@@ -112,7 +117,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                                 volume=tpc_lv,
                                                 pos=tpc_pos)
 
-        larVolume_lv.placements.append(tpc_pla.name)
+        lar_lv.placements.append(tpc_pla.name)
 
         # Build OpticalDet L
         pos = [-self.Fieldcage_dx+opticaldet_builder.halfDimension['dx']+self.Cathode_dx/2+2*self.Gap_ASIC_Backplate,Q('0cm'),-tpc_builder.halfDimension['dz']-opticaldet_builder.halfDimension['dz']]
@@ -126,7 +131,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                                 volume=opticaldet_lv,
                                                 pos=opticaldet_pos)
 
-        larVolume_lv.placements.append(opticaldet_pla.name)
+        lar_lv.placements.append(opticaldet_pla.name)
 
         # Build OpticalDet R
         pos = [-self.Fieldcage_dx+opticaldet_builder.halfDimension['dx']+self.Cathode_dx/2+2*self.Gap_ASIC_Backplate,Q('0cm'),+tpc_builder.halfDimension['dz']+opticaldet_builder.halfDimension['dz']]
@@ -146,7 +151,41 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                                 pos=opticaldet_pos,
                                                 rot=opticaldet_rot)
 
-        larVolume_lv.placements.append(opticaldet_pla.name)
+        lar_lv.placements.append(opticaldet_pla.name)
+
+        # Construct Bracket Volume
+        bracket_shape = geom.shapes.Box('Bracket',
+                                        dx = self.Bracket_dx,
+                                        dy = self.Bracket_dy,
+                                        dz = self.Bracket_dz)
+
+        bracket_lv = geom.structure.Volume('volBracket',
+                                        material=self.Bracket_Material,
+                                        shape=bracket_shape)
+
+        # Place Bracket Volume L inside Fieldcage volume
+        pos = [self.Fieldcage_dx-self.Fieldcage_dd-self.Bracket_dx,Q('0cm'),-self.Fieldcage_dz+self.Fieldcage_dd*2+self.Bracket_dz]
+
+        bracket_pos = geom.structure.Position('bracket_pos_L',
+                                                pos[0],pos[1],pos[2])
+
+        bracket_pla = geom.structure.Placement('bracket_pla_L',
+                                                volume=bracket_lv,
+                                                pos=bracket_pos)
+
+        fieldcage_lv.placements.append(bracket_pla.name)
+
+        # Place Bracket Volume R inside Fieldcage volume
+        pos = [self.Fieldcage_dx-self.Fieldcage_dd-self.Bracket_dx,Q('0cm'),self.Fieldcage_dz-self.Fieldcage_dd*2-self.Bracket_dz]
+
+        bracket_pos = geom.structure.Position('bracket_pos_R',
+                                                pos[0],pos[1],pos[2])
+
+        bracket_pla = geom.structure.Placement('bracket_pla_R',
+                                                volume=bracket_lv,
+                                                pos=bracket_pos)
+
+        fieldcage_lv.placements.append(bracket_pla.name)
 
 
         # Place E-Field
