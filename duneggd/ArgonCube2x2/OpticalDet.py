@@ -16,21 +16,12 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
     def configure(self,Gap_LightTile,Gap_LightTile_PixelPlane,N_TilesY,**kwargs):
 
-        """ Set the configuration for the geometry.
-
-            The keywords MaterialName and Density should only be used
-            if Material is a dict-type rather than a string.
-
-            Args:
-                WLS_dimension: Outer dimensions of the WLS panel.
-                    Dict. with keys 'dx', 'dy' and 'dz'
-                kwargs: Additional keyword arguments. Allowed are:
-        """
-
+        # Read dimensions form config file
         self.Gap_LightTile              = Gap_LightTile
         self.Gap_LightTile_PixelPlane   = Gap_LightTile_PixelPlane
         self.N_TilesY                   = N_TilesY
 
+        # Material definitons
         self.Material       = 'LAr'
 
     def construct(self,geom):

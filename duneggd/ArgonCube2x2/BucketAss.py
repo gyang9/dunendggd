@@ -16,17 +16,7 @@ class BucketAssBuilder(gegede.builder.Builder):
 
     def configure(self,Bucket_dimension,Backplate_dimension,LAr_level,Offset_fullDimension,**kwargs):
 
-        """ Set the configuration for the geometry.
-
-            The keywords MaterialName and Density should only be used
-            if Material is a dict-type rather than a string.
-
-            Args:
-                WLS_dimension: Outer dimensions of the WLS panel.
-                    Dict. with keys 'dx', 'dy' and 'dz'
-                kwargs: Additional keyword arguments. Allowed are:
-        """
-
+        # Read dimensions form config file
         self.Bucket_dx          = Bucket_dimension['dx']
         self.Bucket_dy          = Bucket_dimension['dy']
         self.Bucket_dz          = Bucket_dimension['dz']
@@ -41,6 +31,7 @@ class BucketAssBuilder(gegede.builder.Builder):
         self.LAr_dy             = LAr_level
         self.GAr_dy             = self.Bucket_dy-self.LAr_dy
 
+        # Material definitons
         self.Bucket_Material    = 'G10'
         self.Backplate_Material = 'G10'
         self.LArPhase_Material  = 'LAr'

@@ -21,7 +21,7 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.WLS_dy             = WLS_dimension['dy']
         self.WLS_dz             = WLS_dimension['dz']
 
-        self.Mirror_d          = WLS_dimension['mirror_d']
+        self.Mirror_d           = WLS_dimension['mirror_d']
 
         self.TPB_dz             = WLS_dimension['tpb_dz']
 
@@ -52,17 +52,6 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.SiPM_pcb_Material  = 'FR4'
 
         self.Material           = 'LAr'
-        self.halfDimension      = { 'dx':   self.WLS_dx
-                                            +2*self.Mirror_d
-                                            +self.SiPM_mask_dx
-                                            +self.SiPM_pcb_dx,
-
-                                    'dy':   self.NMask*self.SiPM_pcb_dy
-                                            +(self.NMask-1)*self.SiPM_pcb_gap,
-
-                                    'dz':   self.WLS_dz
-                                            +self.Mirror_d
-                                            +self.TPB_dz}
 
         # Toggle mirror ON/OFF
         self.Mirror             = Mirror
@@ -81,6 +70,18 @@ class ArCLightBuilder(gegede.builder.Builder):
         """ Construct the geometry.
 
         """
+
+        self.halfDimension      = { 'dx':   self.WLS_dx
+                                            +2*self.Mirror_d
+                                            +self.SiPM_mask_dx
+                                            +self.SiPM_pcb_dx,
+
+                                    'dy':   self.NMask*self.SiPM_pcb_dy
+                                            +(self.NMask-1)*self.SiPM_pcb_gap,
+
+                                    'dz':   self.WLS_dz
+                                            +self.Mirror_d
+                                            +self.TPB_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('ArCLightBuilder::construct()')

@@ -16,37 +16,34 @@ class PixelPlaneBuilder(gegede.builder.Builder):
 
     def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,NPixel,NAsic,**kwargs):
 
-        """ Set the configuration for the geometry.
+        # Read dimensions form config file
+        self.PCB_dx     = PCB_dimension['dx']
+        self.PCB_dy     = PCB_dimension['dy']
+        self.PCB_dz     = PCB_dimension['dz']
 
-            The keywords MaterialName and Density should only be used
-            if Material is a dict-type rather than a string.
+        self.Pixel_dx   = Pixel_dimension['dx']
+        self.Pixel_dy   = Pixel_dimension['dy']
+        self.Pixel_dz   = Pixel_dimension['dz']
 
-            Args:
-                PCB_dimension: Outer dimensions of the PCB panel.
-                    Dict. with keys 'dx', 'dy' and 'dz'
-                kwargs: Additional keyword arguments. Allowed are:
-        """
-
-        self.PCB_dx = PCB_dimension['dx']
-        self.PCB_dy = PCB_dimension['dy']
-        self.PCB_dz = PCB_dimension['dz']
-
-        self.Pixel_dx = Pixel_dimension['dx']
-        self.Pixel_dy = Pixel_dimension['dy']
-        self.Pixel_dz = Pixel_dimension['dz']
-
-        self.Asic_dx = Asic_dimension['dx']
-        self.Asic_dy = Asic_dimension['dy']
-        self.Asic_dz = Asic_dimension['dz']
-
-        self.PCB_Material   = 'FR4'
-        self.Pixel_Material = 'Gold'
-        self.Asic_Material  = 'Silicon'
+        self.Asic_dx    = Asic_dimension['dx']
+        self.Asic_dy    = Asic_dimension['dy']
+        self.Asic_dz    = Asic_dimension['dz']
 
         self.NPixel         = NPixel
         self.NAsic          = NAsic
 
+        # Material definitons
+        self.PCB_Material   = 'FR4'
+        self.Pixel_Material = 'Gold'
+        self.Asic_Material  = 'Silicon'
+
         self.Material       = 'LAr'
+
+    def construct(self,geom):
+        """ Construct the geometry.
+
+        """
+
         self.halfDimension  = { 'dx':   self.PCB_dx
                                         +self.Pixel_dx
                                         +self.Asic_dx,
@@ -54,11 +51,6 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                 'dy':   self.PCB_dy,
 
                                 'dz':   self.PCB_dz}
-
-    def construct(self,geom):
-        """ Construct the geometry.
-
-        """
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('PixelPlaneBuilder::construct()')

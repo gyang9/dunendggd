@@ -16,22 +16,15 @@ class TPCBuilder(gegede.builder.Builder):
 
     def configure(self,Drift_Length,**kwargs):
 
-        """ Set the configuration for the geometry.
-
-            The keywords MaterialName and Density should only be used
-            if Material is a dict-type rather than a string.
-
-            Args:
-                WLS_dimension: Outer dimensions of the WLS panel.
-                    Dict. with keys 'dx', 'dy' and 'dz'
-                kwargs: Additional keyword arguments. Allowed are:
-        """
+        # Read dimensions form config file
         self.Drift_Length       = Drift_Length
 
         # Give some clearance within fieldcage for possible precision errors
         self.Drift_Length       = self.Drift_Length-Q('0.1mm')/2
 
+        # Material definitons
         self.Active_Material    = 'LAr'
+
         self.Material           = 'LAr'
 
     def construct(self,geom):

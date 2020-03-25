@@ -16,17 +16,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
     def configure(self,Fieldcage_dimension,Bracket_dimension,Cathode_dx,Gap_ASIC_Backplate,**kwargs):
 
-        """ Set the configuration for the geometry.
-
-            The keywords MaterialName and Density should only be used
-            if Material is a dict-type rather than a string.
-
-            Args:
-                WLS_dimension: Outer dimensions of the WLS panel.
-                    Dict. with keys 'dx', 'dy' and 'dz'
-                kwargs: Additional keyword arguments. Allowed are:
-        """
-
+        # Read dimensions form config file
         self.Fieldcage_dx   = Fieldcage_dimension['dx']
         self.Fieldcage_dy   = Fieldcage_dimension['dy']
         self.Fieldcage_dz   = Fieldcage_dimension['dz']
@@ -40,6 +30,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
         self.Gap_ASIC_Backplate     = Gap_ASIC_Backplate
 
+        # Material definitons
         self.LAr_Material           = 'LAr'
         self.Bracket_Material       = 'G10'
 

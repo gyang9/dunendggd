@@ -16,17 +16,7 @@ class InnerDetectorBuilder(gegede.builder.Builder):
 
     def configure(self,**kwargs):
 
-        """ Set the configuration for the geometry.
-
-            The keywords MaterialName and Density should only be used
-            if Material is a dict-type rather than a string.
-
-            Args:
-                WLS_dimension: Outer dimensions of the WLS panel.
-                    Dict. with keys 'dx', 'dy' and 'dz'
-                kwargs: Additional keyword arguments. Allowed are:
-        """
-
+        # Material definitons
         self.Material           = 'G10'
 
     def construct(self,geom):

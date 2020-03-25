@@ -16,20 +16,11 @@ class TPCPlaneBuilder(gegede.builder.Builder):
 
     def configure(self,Gap_PixelTile,N_UnitsY,**kwargs):
 
-        """ Set the configuration for the geometry.
-
-            The keywords MaterialName and Density should only be used
-            if Material is a dict-type rather than a string.
-
-            Args:
-                WLS_dimension: Outer dimensions of the WLS panel.
-                    Dict. with keys 'dx', 'dy' and 'dz'
-                kwargs: Additional keyword arguments. Allowed are:
-        """
-
+        # Read dimensions form config file
         self.Gap_PixelTile  = Gap_PixelTile
         self.N_UnitsY       = N_UnitsY
 
+        # Material definitons
         self.Material       = 'LAr'
 
     def construct(self,geom):
