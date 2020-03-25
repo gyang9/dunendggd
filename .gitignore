@@ -1,10 +1,8 @@
-dunend.egg-info
-*.swp
 *.pyc
-
+dunend.egg-info
 dunendggd.egg-info
+*.gdml
+*.swp
 
 ArgonCube/geom-test.root
-
-ArgonCube/*.gdml
 !ArgonCube/optSim.gdml

@@ -2,7 +2,12 @@
 #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 def define_materials( g ):
     h  = g.matter.Element("hydrogen",   "H",  1,  "1.00791*g/mole" )
-    b  = g.matter.Element("boron",      "B",  5,  "10.811*g/mole" )
+    #b  = g.matter.Element("boron",      "B",  5,  "10.811*g/mole" )
+    b10=g.matter.Isotope("boron10", 5, 10, "10.01*g/mole")
+    b11=g.matter.Isotope("boron11", 5, 11, "11.00*g/mole")
+    b=g.matter.Composition("boron",
+                            isotopes=(("boron10",0.199),
+                                      ("boron11",0.801)) )
     c  = g.matter.Element("carbon",     "C",  6,  "12.0107*g/mole")
     n  = g.matter.Element("nitrogen",   "N",  7,  "14.0671*g/mole")
     o  = g.matter.Element("oxygen",     "O",  8,  "15.999*g/mole" )
@@ -24,7 +29,7 @@ def define_materials( g ):
 
 #    cu = g.matter.Element("copper",     "Cu", 29, "63.546*g/mole")
     cu63=g.matter.Isotope("copper63", 29, 63, "62.93*g/mole")
-    cu65=g.matter.Isotope("copper65", 29, 65, "64.93*g/mole")
+    cu63=g.matter.Isotope("copper65", 29, 65, "64.93*g/mole")
     cu=g.matter.Composition("copper",
                             isotopes=(("copper63",0.6917),
                                       ("copper65",0.3083)) )
@@ -316,12 +321,6 @@ def define_materials( g ):
                                     ("Glass",0.794)
                             ))
 
-    g10 = g.matter.Mixture("G10", density="1.850*g/cc",
-                            components = (
-                                    ("Epoxy",0.206),
-                                    ("Glass",0.794)
-                            ))
-
     # Radiation Physics and Chemistry 63 (2002) 89 92, jp
     # http://www.eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286?highlight=WyJwb2x5dmlueWx0b2x1ZW5lIl0=
     pvt = g.matter.Molecule("PVT", density="1.023*g/cc",
@@ -336,6 +335,15 @@ def define_materials( g ):
                                     ("carbon",   0.916),
                                     ("hydrogen", 0.084)
                             ))
+
+    # ScintillatorLoadedBoron5:
+    ScintillatorLoadedBoron5  = g.matter.Mixture("ScintillatorLoadedBoron5",   density="1.05*g/cc",
+                            components = (
+                                    ("carbon",  0.866),
+                                    ("hydrogen", 0.084),
+                                    ("boron", 0.05)
+                            ))
+
     # Oil to be fixed
     Oil  = g.matter.Mixture("Oil",   density="0.8*g/cc",
                             components = (
@@ -476,6 +484,13 @@ def define_materials( g ):
 
 # ArCLight (https://arxiv.org/pdf/1711.11409.pdf)
 
+    # G10 structure (same as FR4)
+    g10 = g.matter.Mixture("G10", density="1.850*g/cc",
+                            components = (
+                                    ("Epoxy",0.206),
+                                    ("Glass",0.794)
+                            ))
+
     # Pixelboard pads
     Gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
 
@@ -502,12 +517,7 @@ def define_materials( g ):
                             ))
 
     # Dichroic mirror (for the moment same as Mirror film)
-    esr = g.matter.Molecule("DC", density="1.38g/cc",
-                            elements = (
-                                ("carbon", 10),
-                                ("hydrogen", 8),
-                                ("oxygen", 4)
-                            ))
+    # not yet used
 
     # TPB (Tetraphenyl butadiene (1,1,4,4-tetraphenyl-1,3-butadiene))
     # 'https://en.wikipedia.org/wiki/Tetraphenyl_butadiene'
@@ -519,7 +529,7 @@ def define_materials( g ):
 
     # SiPM (Hamamatsu S13360-6025PE)
     # 'https://www.hamamatsu.com/eu/en/product/type/S13360-6025PE/index.html'
-    # ???
+    # Using Silicon
 
     # SiPM plastic spacer
-    # ???
+    # Using PVT
