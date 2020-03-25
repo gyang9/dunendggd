@@ -7,3 +7,4 @@ dunendggd.egg-info
 ArgonCube/geom-test.root
 
 ArgonCube/*.gdml
+!ArgonCube/optSim.gdml

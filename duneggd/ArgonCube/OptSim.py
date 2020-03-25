@@ -1,4 +1,4 @@
-""" HalfDetector.py
+""" OptSim.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,8 +9,8 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class HalfDetectorBuilder(gegede.builder.Builder):
-    """ Class to build HalfDetector geometry.
+class OptSimBuilder(gegede.builder.Builder):
+    """ Class to build OptSim geometry.
 
     """
 
@@ -37,11 +37,13 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         self.Bracket_dz     = Bracket_dimension['dz']
 
         self.Cathode_dx     = Cathode_dx
+        self.Kapton_dd      = Q('0.025mm')/2
 
         self.Gap_ASIC_Backplate     = Gap_ASIC_Backplate
 
         self.LAr_Material           = 'LAr'
         self.Bracket_Material       = 'G10'
+        self.KaptonVolume_Material  = 'Kapton'
 
         self.Material               = 'G10'
 
@@ -53,12 +55,12 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         tpc_builder         = self.get_builder('TPC')
         opticaldet_builder  = tpc_builder.get_builder('OpticalDet')
 
-        self.halfDimension  = { 'dx':   self.Fieldcage_dx,
+        self.halfDimension  = { 'dx':   self.Fieldcage_dx+self.Cathode_dx/2,
                                 'dy':   self.Fieldcage_dy,
                                 'dz':   self.Fieldcage_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('HalfDetectorBuilder::construct()')
+        print('OptSimBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
@@ -84,6 +86,28 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(fieldcage_pla.name)
 
+        # Construct Capton Volume
+        kaptonVolume_shape = geom.shapes.Box('KaptonVolume',
+                                        dx = self.Fieldcage_dx-self.Cathode_dx/2+self.Kapton_dd,
+                                        dy = self.Fieldcage_dy-self.Fieldcage_dd*2+self.Kapton_dd*2,
+                                        dz = self.Fieldcage_dz-self.Fieldcage_dd*2+self.Kapton_dd*2)
+
+        kaptonVolume_lv = geom.structure.Volume('volKaptonVolume',
+                                        material=self.KaptonVolume_Material,
+                                        shape=kaptonVolume_shape)
+
+        # Place Capton Volume inside Fieldcage volume
+        pos = [self.Kapton_dd,Q('0cm'),Q('0cm')]
+
+        kaptonVolume_pos = geom.structure.Position('kaptonVolume_pos',
+                                                pos[0],pos[1],pos[2])
+
+        kaptonVolume_pla = geom.structure.Placement('kaptonVolume_pla',
+                                                volume=kaptonVolume_lv,
+                                                pos=kaptonVolume_pos)
+
+        fieldcage_lv.placements.append(kaptonVolume_pla.name)
+
         # Construct LAr Volume
         lar_shape = geom.shapes.Box('LAr',
                                         dx = self.Fieldcage_dx-self.Cathode_dx/2,
@@ -95,7 +119,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                         shape=lar_shape)
 
         # Place LAr Volume inside Fieldcage volume
-        pos = [-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
+        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
 
         lar_pos = geom.structure.Position('lar_pos',
                                                 pos[0],pos[1],pos[2])
@@ -165,7 +189,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                         shape=bracket_shape)
 
         # Place Bracket Volume L inside Fieldcage volume
-        pos = [self.Fieldcage_dx-self.Cathode_dx-self.Bracket_dx,Q('0cm'),-self.Fieldcage_dz+self.Fieldcage_dd*2+self.Bracket_dz]
+        pos = [self.Fieldcage_dx-self.Cathode_dx/2-self.Bracket_dx,Q('0cm'),-self.Fieldcage_dz+self.Fieldcage_dd*2+self.Bracket_dz]
 
         bracket_pos = geom.structure.Position('bracket_pos_L',
                                                 pos[0],pos[1],pos[2])
@@ -177,7 +201,7 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         fieldcage_lv.placements.append(bracket_pla.name)
 
         # Place Bracket Volume R inside Fieldcage volume
-        pos = [self.Fieldcage_dx-self.Cathode_dx-self.Bracket_dx,Q('0cm'),self.Fieldcage_dz-self.Fieldcage_dd*2-self.Bracket_dz]
+        pos = [self.Fieldcage_dx-self.Cathode_dx/2-self.Bracket_dx,Q('0cm'),self.Fieldcage_dz-self.Fieldcage_dd*2-self.Bracket_dz]
 
         bracket_pos = geom.structure.Position('bracket_pos_R',
                                                 pos[0],pos[1],pos[2])
