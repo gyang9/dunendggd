@@ -19,9 +19,6 @@ class TPCBuilder(gegede.builder.Builder):
         # Read dimensions form config file
         self.Drift_Length       = Drift_Length
 
-        # Give some clearance within fieldcage for possible precision errors
-        self.Drift_Length       = self.Drift_Length-Q('0.1mm')/2
-
         # Material definitons
         self.Active_Material    = 'LAr'
 

@@ -6536,14 +6536,14 @@
     <position name="pcb_pos1" unit="cm" x="-14.4408" y="-15.52" z="0"/>
     <position name="pcb_pos2" unit="cm" x="-14.4408" y="15.52" z="0"/>
     <position name="pcb_pos3" unit="cm" x="-14.4408" y="46.56" z="0"/>
-    <position name="TPCPlane_pos" unit="cm" x="-15.13115" y="0.0" z="0.0"/>
+    <position name="TPCPlane_pos" unit="cm" x="-15.13615" y="0.0" z="0.0"/>
     <position name="TPCActive_pos" unit="cm" x="0.2324" y="0" z="0"/>
     <position name="fieldcage_pos" unit="cm" x="0" y="0" z="0"/>
     <position name="kaptonVolume_pos" unit="cm" x="0.00125" y="0" z="0"/>
     <position name="lar_pos" unit="cm" x="0" y="0" z="0"/>
-    <position name="TPC_pos" unit="cm" x="0.340725" y="0" z="0"/>
-    <position name="OpticalDet_pos_L" unit="cm" x="-0.281075" y="0" z="-31.52635"/>
-    <position name="OpticalDet_pos_R" unit="cm" x="-0.281075" y="0" z="31.52635"/>
+    <position name="TPC_pos" unit="cm" x="0.352075" y="0" z="0"/>
+    <position name="OpticalDet_pos_L" unit="cm" x="-0.274725" y="0" z="-31.52635"/>
+    <position name="OpticalDet_pos_R" unit="cm" x="-0.274725" y="0" z="31.52635"/>
     <rotation name="OpticalDet_rot" unit="degree" x="180.0" y="0" z="0"/>
     <position name="bracket_pos_L" unit="cm" x="15.187225" y="0" z="-31.29535"/>
     <position name="bracket_pos_R" unit="cm" x="15.187225" y="0" z="31.29535"/>
@@ -7117,8 +7117,8 @@
     <box lunit="cm" name="SiPM_pcb2" x="0.3" y="9.95" z="1.0"/>
     <box lunit="cm" name="OpticalDet" x="29.4835" y="124.11" z="1.0227"/>
     <box lunit="cm" name="PCBBar" x="0.3175" y="30.99" z="1.0227"/>
-    <box lunit="cm" name="TPC" x="30.7271" y="124.11" z="62.03"/>
-    <box lunit="cm" name="TPCActive" x="30.2623" y="124.11" z="62.03"/>
+    <box lunit="cm" name="TPC" x="30.7371" y="124.11" z="62.03"/>
+    <box lunit="cm" name="TPCActive" x="30.2723" y="124.11" z="62.03"/>
     <box lunit="cm" name="OptSim" x="31.75875" y="126.8222" z="64.7497"/>
     <box lunit="cm" name="Fieldcage" x="31.75875" y="126.8222" z="64.7497"/>
     <box lunit="cm" name="KaptonVolume" x="31.44375" y="126.1922" z="64.1197"/>
