@@ -66,7 +66,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # EndcapThickness, WallThickness, and ChamberMaterial
         # do that in the cfg file
         if self.buildGarTPC:
-            print "Building TPC"
+            print "Adding TPC to main volume"
             self.build_gartpc(fake_lv, geom)
 
         ######### build the pressure vessel  ###################
@@ -74,7 +74,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # The PV consists of a cylinder for the Barrel and
         # the intersection of the cylinder and a sphere for the Endcaps
         if self.buildPV:
-            print "Building PV"
+            print "Adding PV to main volume"
             self.build_pressure_vessel(fake_lv, geom)
 
         ######### build an ecal ##########################
@@ -87,14 +87,14 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # Build a simple magnet of Al to get the total mass
         # A description of the return magnetic field and the coils is not implemented
         if self.buildMagnet:
-            print "Building Magnet"
+            print "Adding Magnet to main volume"
             self.build_magnet(main_lv, geom)
 
         ######### magnet yoke ##################################
         # Build the yoke Barrel and Endcaps
         # A description of the return magnetic field and the coils is not implemented
         if self.buildYoke:
-            print "Building Yoke"
+            print "Adding Yoke to main volume"
             self.build_yoke(main_lv, geom)
 
         return
@@ -102,12 +102,15 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     def buildMagnetizedVolume(self, main_lv, geom):
         '''Magnetized volume (fake volume) for G4 that includes the TPC + ECAL only'''
 
-        magnet_shape = geom.get_shape("Magnet")
+        print "Making fake magnetized volume and adding to main volume"
+
         eECal_shape = geom.get_shape("ECALEndcap_max")
-        fake_shape = geom.shapes.Tubs('NDHPgTPC', rmin=Q("0m"), rmax=magnet_shape.rmin, dz=eECal_shape.dz, sphi="0deg", dphi="360deg")
+        fake_shape = geom.shapes.PolyhedraRegular('NDHPgTPC', numsides=eECal_shape.numsides, rmin=Q("0m"), rmax=eECal_shape.rmax, dz=eECal_shape.dz)
         fake_lv = geom.structure.Volume('vol'+fake_shape.name, material='Air', shape=fake_shape)
         fake_lv.params.append(("BField", self.innerBField))
-        fake_pla = geom.structure.Placement("NDHPgTPC"+"_pla", volume=fake_lv)
+        rot_z = Q("90.0deg")-Q("180.0deg")/eECal_shape.numsides
+        fake_lv_rot = geom.structure.Rotation(fake_lv.name+"_rot", z=rot_z)
+        fake_pla = geom.structure.Placement("NDHPgTPC"+"_pla", volume=fake_lv, rot=fake_lv_rot)
         # Place it in the main lv
         main_lv.placements.append(fake_pla.name)
 
@@ -131,6 +134,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     def build_ecal(self, main_lv, geom):
 
         if self.buildEcalBarrel == True:
+            print "Adding ECAL Barrel to main volume"
             # build the ecalbarrel
             ibb = self.get_builder('ECALBarrelBuilder')
             if ibb == None:
@@ -142,14 +146,16 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
 
             ecal_shape = geom.store.shapes.get(ib_vol.shape)
             nsides = ecal_shape.numsides
-            rot_z = Q("90.0deg")-Q("180.0deg")/nsides
-
-            ib_rot = geom.structure.Rotation(ibb.name+"_rot", z=rot_z)
-            ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol, rot=ib_rot)
+            # rot_z = Q("90.0deg")-Q("180.0deg")/nsides
+            #
+            # ib_rot = geom.structure.Rotation(ibb.name+"_rot", z=rot_z)
+            # ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol, rot=ib_rot)
+            ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol)
             # Place it in the main lv
             main_lv.placements.append(ib_pla.name)
 
         if self.buildEcalEndcap == True:
+            print "Adding ECAL Endcap to main volume"
             # build the ecal endcap
             iecb = self.get_builder("ECALEndcapBuilder")
             if iecb == None:
@@ -159,8 +165,9 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             # Add the magnetic field to the volume
             iec_vol.params.append(("BField", self.innerBField))
 
-            iec_rot = geom.structure.Rotation(iecb.name+"_rot", z=rot_z)
-            iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol, rot=iec_rot)
+            # iec_rot = geom.structure.Rotation(iecb.name+"_rot", z=rot_z)
+            # iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol, rot=iec_rot)
+            iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol)
             # Place it in the main lv
             main_lv.placements.append(iec_pla.name)
 
