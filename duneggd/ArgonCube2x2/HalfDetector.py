@@ -177,6 +177,3 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
         fieldcage_lv.placements.append(bracket_pla.name)
 
-
-        # Place E-Field
-        #main_lv.params.append(("EField",self.EField))

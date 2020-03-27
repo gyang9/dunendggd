@@ -79,3 +79,5 @@ class TPCBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(TPCActive_pla.name)
 
+        # Place E-Field
+        #TPCActive_lv.params.append(("EField",self.EField))

@@ -74,5 +74,3 @@ class TPCPlaneBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(pixelplane_pla.name)
 
-        # Place E-Field
-        #main_lv.params.append(("EField",self.EField))
