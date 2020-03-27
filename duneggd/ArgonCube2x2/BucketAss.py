@@ -49,8 +49,6 @@ class BucketAssBuilder(gegede.builder.Builder):
 
         """
 
-        #innerDetector_builder   = self.get_builder('InnerDetector')
-
         self.halfDimension  = { 'dx':   self.Bucket_dx,
                                 'dy':   self.Bucket_dy,
                                 'dz':   self.Bucket_dz}

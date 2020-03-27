@@ -14,7 +14,7 @@ class ModuleTopBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,ModuleTop_dimension,Flange_dimension,PillowTop_dimension,PillowSide_dimension,PillowBottom_dy,AngleBarTop_dimension,Angle_length,Angle_dd,nAngle,**kwargs):
+    def configure(self,ModuleTop_dimension,Flange_dimension,PillowTop_dimension,PillowSide_dimension,PillowBottom_dy,AngleBarTop_dimension,Angle_length,Angle_dd,N_Angle,**kwargs):
 
         # Read dimensions form config file
         self.ModuleTop_dx       = ModuleTop_dimension['dx']
@@ -43,8 +43,8 @@ class ModuleTopBuilder(gegede.builder.Builder):
 
         self.Angle_length       = Angle_length
         self.Angle_dd           = Angle_dd
-        self.nAngle             = nAngle
-        self.Angle_gap          = (self.AngleBarTop_dz-self.Angle_length*self.nAngle)/(self.nAngle-1)
+        self.N_Angle             = N_Angle
+        self.Angle_gap          = (self.AngleBarTop_dz-self.Angle_length*self.N_Angle)/(self.N_Angle-1)
 
         # Material definitons
         self.ModuleTop_Material = 'Steel'
@@ -207,13 +207,13 @@ class ModuleTopBuilder(gegede.builder.Builder):
 
         # Place Angle Base Volume inside  volume
         for i in range(2):
-            for j in range(self.nAngle):
-                pos = [(-1)**i*(self.AngleBarTop_gap+angleBase_shape[1]),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-self.Angle_dd,-(self.nAngle-1-2*j)*self.Angle_length-(self.nAngle-1-2*j)*self.Angle_gap]
+            for j in range(self.N_Angle):
+                pos = [(-1)**i*(self.AngleBarTop_gap+angleBase_shape[1]),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-self.Angle_dd,-(self.N_Angle-1-2*j)*self.Angle_length-(self.N_Angle-1-2*j)*self.Angle_gap]
 
-                angleBase_pos = geom.structure.Position('angleBase_pos'+str(i*self.nAngle+j),
+                angleBase_pos = geom.structure.Position('angleBase_pos'+str(i*self.N_Angle+j),
                                                         pos[0],pos[1],pos[2])
 
-                angleBase_pla = geom.structure.Placement('angleBase_pla'+str(i*self.nAngle+j),
+                angleBase_pla = geom.structure.Placement('angleBase_pla'+str(i*self.N_Angle+j),
                                                         volume=angleBase_lv,
                                                         pos=angleBase_pos)
 
@@ -231,13 +231,13 @@ class ModuleTopBuilder(gegede.builder.Builder):
 
         # Place Angle Side Volume inside  volume
         for i in range(2):
-            for j in range(self.nAngle):
-                pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx-angleSide_shape[1]),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-angleSide_shape[2],-(self.nAngle-1-2*j)*self.Angle_length-(self.nAngle-1-2*j)*self.Angle_gap]
+            for j in range(self.N_Angle):
+                pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx-angleSide_shape[1]),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-angleSide_shape[2],-(self.N_Angle-1-2*j)*self.Angle_length-(self.N_Angle-1-2*j)*self.Angle_gap]
 
-                angleSide_pos = geom.structure.Position('angleSide_pos'+str(i*self.nAngle+j),
+                angleSide_pos = geom.structure.Position('angleSide_pos'+str(i*self.N_Angle+j),
                                                         pos[0],pos[1],pos[2])
 
-                angleSide_pla = geom.structure.Placement('angleSide_pla'+str(i*self.nAngle+j),
+                angleSide_pla = geom.structure.Placement('angleSide_pla'+str(i*self.N_Angle+j),
                                                         volume=angleSide_lv,
                                                         pos=angleSide_pos)
 
