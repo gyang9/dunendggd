@@ -5,3 +5,4 @@ dunendggd.egg-info
 *.swp
 ArgonCube2x2/geom-test.root
 !ArgonCube2x2/optSim.gdml
+!ArgonCube2x2/Module.gdml
