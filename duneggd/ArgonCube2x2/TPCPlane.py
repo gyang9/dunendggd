@@ -23,16 +23,18 @@ class TPCPlaneBuilder(gegede.builder.Builder):
         # Material definitons
         self.Material       = 'LAr'
 
+        # Subbuilders
+        self.PixelPlane_builder  = self.get_builder('PixelPlane')
+
+
     def construct(self,geom):
         """ Construct the geometry.
 
         """
 
-        pixelplane_builder  = self.get_builder('PixelPlane')
-
-        self.halfDimension  = { 'dx':   pixelplane_builder.halfDimension['dx'],
-                                'dy':   self.N_UnitsY*pixelplane_builder.halfDimension['dy']+(self.N_UnitsY-1)*self.Gap_PixelTile,
-                                'dz':   2*pixelplane_builder.halfDimension['dz']+self.Gap_PixelTile}
+        self.halfDimension  = { 'dx':   self.PixelPlane_builder.halfDimension['dx'],
+                                'dy':   self.N_UnitsY*self.PixelPlane_builder.halfDimension['dy']+(self.N_UnitsY-1)*self.Gap_PixelTile,
+                                'dz':   2*self.PixelPlane_builder.halfDimension['dz']+self.Gap_PixelTile}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('TPCPlaneBuilder::construct()')
@@ -41,36 +43,36 @@ class TPCPlaneBuilder(gegede.builder.Builder):
 
         # Build TPC Array
         for i in range(self.N_UnitsY):
-            pos = [Q('0cm'),(-self.N_UnitsY+1+2*i)*(pixelplane_builder.halfDimension['dy']+self.Gap_PixelTile),-pixelplane_builder.halfDimension['dz']-self.Gap_PixelTile]
+            pos = [Q('0cm'),(-self.N_UnitsY+1+2*i)*(self.PixelPlane_builder.halfDimension['dy']+self.Gap_PixelTile),-self.PixelPlane_builder.halfDimension['dz']-self.Gap_PixelTile]
 
-            pixelplane_lv = pixelplane_builder.get_volume()
+            PixelPlane_lv = self.PixelPlane_builder.get_volume()
 
-            pixelplane_pos = geom.structure.Position(pixelplane_builder.name+'_pos_'+str(i)+'R',
+            PixelPlane_pos = geom.structure.Position(self.PixelPlane_builder.name+'_pos_'+str(i)+'_R',
                                                 pos[0],pos[1],pos[2])
 
-            pixelplane_pla = geom.structure.Placement(pixelplane_builder.name+'_pla_'+str(i)+'R',
-                                                    volume=pixelplane_lv,
-                                                    pos=pixelplane_pos)
+            PixelPlane_pla = geom.structure.Placement(self.PixelPlane_builder.name+'_pla_'+str(i)+'_R',
+                                                    volume=PixelPlane_lv,
+                                                    pos=PixelPlane_pos)
 
-            main_lv.placements.append(pixelplane_pla.name)
+            main_lv.placements.append(PixelPlane_pla.name)
 
         for i in range(self.N_UnitsY):
-            pos = [Q('0cm'),(-self.N_UnitsY+1+2*i)*(pixelplane_builder.halfDimension['dy']+self.Gap_PixelTile),+pixelplane_builder.halfDimension['dz']+self.Gap_PixelTile]
+            pos = [Q('0cm'),(-self.N_UnitsY+1+2*i)*(self.PixelPlane_builder.halfDimension['dy']+self.Gap_PixelTile),+self.PixelPlane_builder.halfDimension['dz']+self.Gap_PixelTile]
 
-            pixelplane_lv = pixelplane_builder.get_volume()
+            PixelPlane_lv = self.PixelPlane_builder.get_volume()
 
-            pixelplane_pos = geom.structure.Position(pixelplane_builder.name+'_pos_'+str(i)+'L',
+            PixelPlane_pos = geom.structure.Position(self.PixelPlane_builder.name+'_pos_'+str(i)+'_L',
                                                 pos[0],pos[1],pos[2])
 
             rot_x = Q('180.0deg')
 
-            pixelplane_rot = geom.structure.Rotation(pixelplane_builder.name+'_rot_'+str(i)+'L',
+            PixelPlane_rot = geom.structure.Rotation(self.PixelPlane_builder.name+'_rot_'+str(i)+'_L',
                                                 x=rot_x)
 
-            pixelplane_pla = geom.structure.Placement(pixelplane_builder.name+'_pla_'+str(i)+'L',
-                                                    volume=pixelplane_lv,
-                                                    pos=pixelplane_pos,
-                                                    rot=pixelplane_rot)
+            PixelPlane_pla = geom.structure.Placement(self.PixelPlane_builder.name+'_pla_'+str(i)+'_L',
+                                                    volume=PixelPlane_lv,
+                                                    pos=PixelPlane_pos,
+                                                    rot=PixelPlane_rot)
 
-            main_lv.placements.append(pixelplane_pla.name)
+            main_lv.placements.append(PixelPlane_pla.name)
 

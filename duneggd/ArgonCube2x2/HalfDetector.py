@@ -34,13 +34,14 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
         self.Material               = 'G10'
 
+        # Subbuilders
+        self.TPC_builder            = self.get_builder('TPC')
+        self.OpticalDet_builder     = self.TPC_builder.get_builder('OpticalDet')
+
     def construct(self,geom):
         """ Construct the geometry.
 
         """
-
-        tpc_builder         = self.get_builder('TPC')
-        opticaldet_builder  = tpc_builder.get_builder('OpticalDet')
 
         self.halfDimension  = { 'dx':   self.Fieldcage_dx,
                                 'dy':   self.Fieldcage_dy,
@@ -52,128 +53,128 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         self.add_volume(main_lv)
 
         # Construct Fieldcage
-        fieldcage_shape = geom.shapes.Box('Fieldcage',
+        Fieldcage_shape = geom.shapes.Box('Fieldcage_shape',
                                         dx = self.halfDimension['dx'],
                                         dy = self.halfDimension['dy'],
                                         dz = self.halfDimension['dz'])
 
-        fieldcage_lv = geom.structure.Volume('volFieldcage',
+        Fieldcage_lv = geom.structure.Volume('volFieldcage',
                                         material=self.Material,
-                                        shape=fieldcage_shape)
+                                        shape=Fieldcage_shape)
 
         # Place Fieldcage
         pos = [Q('0cm'),Q('0cm'),Q('0cm')]
 
-        fieldcage_pos = geom.structure.Position('fieldcage_pos',
+        Fieldcage_pos = geom.structure.Position('Fieldcage_pos',
                                                 pos[0],pos[1],pos[2])
 
-        fieldcage_pla = geom.structure.Placement('fieldcage_pla',
-                                                volume=fieldcage_lv,
-                                                pos=fieldcage_pos)
+        Fieldcage_pla = geom.structure.Placement('Fieldcage_pla',
+                                                volume=Fieldcage_lv,
+                                                pos=Fieldcage_pos)
 
-        main_lv.placements.append(fieldcage_pla.name)
+        main_lv.placements.append(Fieldcage_pla.name)
 
         # Construct LAr Volume
-        lar_shape = geom.shapes.Box('LAr',
+        LAr_shape = geom.shapes.Box('LAr_shape',
                                         dx = self.Fieldcage_dx-self.Cathode_dx/2,
                                         dy = self.Fieldcage_dy-self.Fieldcage_dd*2,
                                         dz = self.Fieldcage_dz-self.Fieldcage_dd*2)
 
-        lar_lv = geom.structure.Volume('volLAr',
+        LAr_lv = geom.structure.Volume('volLAr',
                                         material=self.LAr_Material,
-                                        shape=lar_shape)
+                                        shape=LAr_shape)
 
         # Place LAr Volume inside Fieldcage volume
         pos = [-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
 
-        lar_pos = geom.structure.Position('lar_pos',
+        LAr_pos = geom.structure.Position('LAr_pos',
                                                 pos[0],pos[1],pos[2])
 
-        lar_pla = geom.structure.Placement('lar_pla',
-                                                volume=lar_lv,
-                                                pos=lar_pos)
+        LAr_pla = geom.structure.Placement('LAr_pla',
+                                                volume=LAr_lv,
+                                                pos=LAr_pos)
 
-        fieldcage_lv.placements.append(lar_pla.name)
+        Fieldcage_lv.placements.append(LAr_pla.name)
 
         # Build TPC
-        pos = [self.Fieldcage_dx-tpc_builder.halfDimension['dx']-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
+        pos = [self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
 
-        tpc_lv = tpc_builder.get_volume()
+        TPC_lv = self.TPC_builder.get_volume()
 
-        tpc_pos = geom.structure.Position(tpc_builder.name+'_pos',
+        TPC_pos = geom.structure.Position(self.TPC_builder.name+'_pos',
                                             pos[0],pos[1],pos[2])
 
-        tpc_pla = geom.structure.Placement(tpc_builder.name+'_pla',
-                                                volume=tpc_lv,
-                                                pos=tpc_pos)
+        TPC_pla = geom.structure.Placement(self.TPC_builder.name+'_pla',
+                                                volume=TPC_lv,
+                                                pos=TPC_pos)
 
-        lar_lv.placements.append(tpc_pla.name)
+        LAr_lv.placements.append(TPC_pla.name)
 
         # Build OpticalDet L
-        pos = [self.Fieldcage_dx-tpc_builder.halfDimension['dx']*2-self.Cathode_dx/2+opticaldet_builder.halfDimension['dx'],Q('0cm'),-tpc_builder.halfDimension['dz']-opticaldet_builder.halfDimension['dz']]
+        pos = [self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']*2-self.Cathode_dx/2+self.OpticalDet_builder.halfDimension['dx'],Q('0cm'),-self.TPC_builder.halfDimension['dz']-self.OpticalDet_builder.halfDimension['dz']]
 
-        opticaldet_lv = opticaldet_builder.get_volume()
+        OpticalDet_lv = self.OpticalDet_builder.get_volume()
 
-        opticaldet_pos = geom.structure.Position(opticaldet_builder.name+'_pos_L',
+        OpticalDet_pos = geom.structure.Position(self.OpticalDet_builder.name+'_pos_L',
                                                 pos[0],pos[1],pos[2])
 
-        opticaldet_pla = geom.structure.Placement(opticaldet_builder.name+'_pla_L',
-                                                volume=opticaldet_lv,
-                                                pos=opticaldet_pos)
+        OpticalDet_pla = geom.structure.Placement(self.OpticalDet_builder.name+'_pla_L',
+                                                volume=OpticalDet_lv,
+                                                pos=OpticalDet_pos)
 
-        lar_lv.placements.append(opticaldet_pla.name)
+        LAr_lv.placements.append(OpticalDet_pla.name)
 
         # Build OpticalDet R
-        pos = [self.Fieldcage_dx-tpc_builder.halfDimension['dx']*2-self.Cathode_dx/2+opticaldet_builder.halfDimension['dx'],Q('0cm'),+tpc_builder.halfDimension['dz']+opticaldet_builder.halfDimension['dz']]
+        pos = [self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']*2-self.Cathode_dx/2+self.OpticalDet_builder.halfDimension['dx'],Q('0cm'),+self.TPC_builder.halfDimension['dz']+self.OpticalDet_builder.halfDimension['dz']]
 
-        opticaldet_lv = opticaldet_builder.get_volume()
+        OpticalDet_lv = self.OpticalDet_builder.get_volume()
 
-        opticaldet_pos = geom.structure.Position(opticaldet_builder.name+'_pos_R',
+        OpticalDet_pos = geom.structure.Position(self.OpticalDet_builder.name+'_pos_R',
                                                 pos[0],pos[1],pos[2])
 
         rot_x = Q('180.0deg')
 
-        opticaldet_rot = geom.structure.Rotation(opticaldet_builder.name+'_rot',
+        OpticalDet_rot = geom.structure.Rotation(self.OpticalDet_builder.name+'_rot',
                                                 x=rot_x)
 
-        opticaldet_pla = geom.structure.Placement(opticaldet_builder.name+'_pla_R',
-                                                volume=opticaldet_lv,
-                                                pos=opticaldet_pos,
-                                                rot=opticaldet_rot)
+        OpticalDet_pla = geom.structure.Placement(self.OpticalDet_builder.name+'_pla_R',
+                                                volume=OpticalDet_lv,
+                                                pos=OpticalDet_pos,
+                                                rot=OpticalDet_rot)
 
-        lar_lv.placements.append(opticaldet_pla.name)
+        LAr_lv.placements.append(OpticalDet_pla.name)
 
         # Construct Bracket Volume
-        bracket_shape = geom.shapes.Box('Bracket',
+        Bracket_shape = geom.shapes.Box('Bracket_shape',
                                         dx = self.Bracket_dx,
                                         dy = self.Bracket_dy,
                                         dz = self.Bracket_dz)
 
-        bracket_lv = geom.structure.Volume('volBracket',
+        Bracket_lv = geom.structure.Volume('volBracket',
                                         material=self.Bracket_Material,
-                                        shape=bracket_shape)
+                                        shape=Bracket_shape)
 
         # Place Bracket Volume L inside Fieldcage volume
         pos = [self.Fieldcage_dx-self.Cathode_dx-self.Bracket_dx,Q('0cm'),-self.Fieldcage_dz+self.Fieldcage_dd*2+self.Bracket_dz]
 
-        bracket_pos = geom.structure.Position('bracket_pos_L',
+        Bracket_pos = geom.structure.Position('Bracket_pos_L',
                                                 pos[0],pos[1],pos[2])
 
-        bracket_pla = geom.structure.Placement('bracket_pla_L',
-                                                volume=bracket_lv,
-                                                pos=bracket_pos)
+        Bracket_pla = geom.structure.Placement('Bracket_pla_L',
+                                                volume=Bracket_lv,
+                                                pos=Bracket_pos)
 
-        fieldcage_lv.placements.append(bracket_pla.name)
+        Fieldcage_lv.placements.append(Bracket_pla.name)
 
         # Place Bracket Volume R inside Fieldcage volume
         pos = [self.Fieldcage_dx-self.Cathode_dx-self.Bracket_dx,Q('0cm'),self.Fieldcage_dz-self.Fieldcage_dd*2-self.Bracket_dz]
 
-        bracket_pos = geom.structure.Position('bracket_pos_R',
+        Bracket_pos = geom.structure.Position('Bracket_pos_R',
                                                 pos[0],pos[1],pos[2])
 
-        bracket_pla = geom.structure.Placement('bracket_pla_R',
-                                                volume=bracket_lv,
-                                                pos=bracket_pos)
+        Bracket_pla = geom.structure.Placement('Bracket_pla_R',
+                                                volume=Bracket_lv,
+                                                pos=Bracket_pos)
 
-        fieldcage_lv.placements.append(bracket_pla.name)
+        Fieldcage_lv.placements.append(Bracket_pla.name)
 

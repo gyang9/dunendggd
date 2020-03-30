@@ -14,7 +14,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,NPixel,NAsic,**kwargs):
+    def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,N_Pixel,N_Asic,**kwargs):
 
         # Read dimensions form config file
         self.PCB_dx     = PCB_dimension['dx']
@@ -29,8 +29,8 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         self.Asic_dy    = Asic_dimension['dy']
         self.Asic_dz    = Asic_dimension['dz']
 
-        self.NPixel         = NPixel
-        self.NAsic          = NAsic
+        self.N_Pixel         = N_Pixel
+        self.N_Asic          = N_Asic
 
         # Material definitons
         self.PCB_Material   = 'FR4'
@@ -58,7 +58,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         self.add_volume(main_lv)
 
         # Construct PCB panel
-        PCB_shape = geom.shapes.Box('PCB_panel',
+        PCB_shape = geom.shapes.Box('PCB_shape',
                                        dx = self.PCB_dx,
                                        dy = self.PCB_dy,
                                        dz = self.PCB_dz)
@@ -80,7 +80,7 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         main_lv.placements.append(PCB_pla.name)
 
         # Construct Pixel
-        Pixel_shape = geom.shapes.Box('Pixel',
+        Pixel_shape = geom.shapes.Box('Pixel_shape',
                                        dx = self.Pixel_dx,
                                        dy = self.Pixel_dy,
                                        dz = self.Pixel_dz)
@@ -89,22 +89,22 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                             material=self.Pixel_Material,
                                             shape=Pixel_shape)
 
-        for n in range(self.NPixel):
-            for m in range(self.NPixel):
+        for n in range(self.N_Pixel):
+            for m in range(self.N_Pixel):
                 # Place Pixel into PCB board
-                pos = [self.PCB_dx+self.Asic_dx,-self.PCB_dy+self.PCB_dy/self.NPixel*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NPixel*(1+2*m)]
+                pos = [self.PCB_dx+self.Asic_dx,-self.PCB_dy+self.PCB_dy/self.N_Pixel*(1+2*n),-self.PCB_dz+self.PCB_dz/self.N_Pixel*(1+2*m)]
 
-                Pixel_pos = geom.structure.Position('Pixel_pos'+str(n)+'.'+str(m),
+                Pixel_pos = geom.structure.Position('Pixel_pos_'+str(n)+'.'+str(m),
                                                         pos[0],pos[1],pos[2])
 
-                Pixel_pla = geom.structure.Placement('Pixel_pla'+str(n)+'.'+str(m),
+                Pixel_pla = geom.structure.Placement('Pixel_pla_'+str(n)+'.'+str(m),
                                                         volume=Pixel_lv,
                                                         pos=Pixel_pos)
 
                 main_lv.placements.append(Pixel_pla.name)
 
         # Construct ASIC
-        Asic_shape = geom.shapes.Box('Asic',
+        Asic_shape = geom.shapes.Box('Asic_shape',
                                        dx = self.Asic_dx,
                                        dy = self.Asic_dy,
                                        dz = self.Asic_dz)
@@ -113,15 +113,15 @@ class PixelPlaneBuilder(gegede.builder.Builder):
                                             material=self.Asic_Material,
                                             shape=Asic_shape)
 
-        for n in range(self.NAsic):
-            for m in range(self.NAsic):
+        for n in range(self.N_Asic):
+            for m in range(self.N_Asic):
                 # Place ASICs into PCB board
-                pos = [-self.PCB_dx-self.Pixel_dx,-self.PCB_dy+self.PCB_dy/self.NAsic*(1+2*n),-self.PCB_dz+self.PCB_dz/self.NAsic*(1+2*m)]
+                pos = [-self.PCB_dx-self.Pixel_dx,-self.PCB_dy+self.PCB_dy/self.N_Asic*(1+2*n),-self.PCB_dz+self.PCB_dz/self.N_Asic*(1+2*m)]
 
-                Asic_pos = geom.structure.Position('Asic_pos'+str(n)+'.'+str(m),
+                Asic_pos = geom.structure.Position('Asic_pos_'+str(n)+'.'+str(m),
                                                         pos[0],pos[1],pos[2])
 
-                Asic_pla = geom.structure.Placement('Asic_pla'+str(n)+'.'+str(m),
+                Asic_pla = geom.structure.Placement('Asic_pla_'+str(n)+'.'+str(m),
                                                         volume=Asic_lv,
                                                         pos=Asic_pos)
 

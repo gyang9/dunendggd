@@ -1,4 +1,4 @@
-""" BucketAss.py
+""" Bucket.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,12 +9,12 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class BucketAssBuilder(gegede.builder.Builder):
-    """ Class to build BucketAss geometry.
+class BucketBuilder(gegede.builder.Builder):
+    """ Class to build Bucket geometry.
 
     """
 
-    def configure(self,Bucket_dimension,LAr_level,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,**kwargs):
+    def configure(self,Bucket_dimension,LAr_Level,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,**kwargs):
 
         # Read dimensions form config file
         self.Bucket_dx          = Bucket_dimension['dx']
@@ -34,7 +34,7 @@ class BucketAssBuilder(gegede.builder.Builder):
         self.LArVol2_dy         = LArVol2_dimension['dy']
         self.LArVol2_dz         = LArVol2_dimension['dz']
 
-        self.LAr_dy             = LAr_level
+        self.LAr_dy             = LAr_Level
         self.GAr_dy             = self.Bucket_dy-self.LAr_dy
 
         # Material definitons
@@ -54,117 +54,117 @@ class BucketAssBuilder(gegede.builder.Builder):
                                 'dz':   self.Bucket_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('BucketAssBuilder::construct()')
+        print('BucketBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
         # Construct LAr Phase Bucket Volume
-        larPhaseBucket_shape = geom.shapes.Box('LArPhaseBucket',
+        LArPhaseBucket_shape = geom.shapes.Box('LArPhaseBucket_shape',
                                         dx = self.Bucket_dx-self.Bucket_dd*2,
                                         dy = self.LAr_dy,
                                         dz = self.Bucket_dz-self.Bucket_dd*2)
 
-        larPhaseBucket_lv = geom.structure.Volume('volLArPhaseBucket',
+        LArPhaseBucket_lv = geom.structure.Volume('volLArPhaseBucket',
                                         material=self.LArPhase_Material,
-                                        shape=larPhaseBucket_shape)
+                                        shape=LArPhaseBucket_shape)
 
         # Place LAr Phase Bucket Volume inside Bucket volume
         pos = [Q('0cm'),-self.GAr_dy,Q('0cm')]
 
-        larPhaseBucket_pos = geom.structure.Position('larPhaseBucket_pos',
+        LArPhaseBucket_pos = geom.structure.Position('LArPhaseBucket_pos',
                                                 pos[0],pos[1],pos[2])
 
-        larPhaseBucket_pla = geom.structure.Placement('larPhaseBucket_pla',
-                                                volume=larPhaseBucket_lv,
-                                                pos=larPhaseBucket_pos)
+        LArPhaseBucket_pla = geom.structure.Placement('LArPhaseBucket_pla',
+                                                volume=LArPhaseBucket_lv,
+                                                pos=LArPhaseBucket_pos)
 
-        main_lv.placements.append(larPhaseBucket_pla.name)
+        main_lv.placements.append(LArPhaseBucket_pla.name)
 
         # Construct GAr Phase Bucket Volume
-        garPhaseBucket_shape = geom.shapes.Box('GArPhaseBucket',
+        GArPhaseBucket_shape = geom.shapes.Box('GArPhaseBucket_shape',
                                         dx = self.Bucket_dx-self.Bucket_dd*2,
                                         dy = self.GAr_dy,
                                         dz = self.Bucket_dz-self.Bucket_dd*2)
 
-        garPhaseBucket_lv = geom.structure.Volume('volGArPhaseBucket',
+        GArPhaseBucket_lv = geom.structure.Volume('volGArPhaseBucket',
                                         material=self.GArPhase_Material,
-                                        shape=garPhaseBucket_shape)
+                                        shape=GArPhaseBucket_shape)
 
         # Place GAr Phase Bucket Volume inside Bucket volume
         pos = [Q('0cm'),self.LAr_dy,Q('0cm')]
 
-        garPhaseBucket_pos = geom.structure.Position('garPhaseBucket_pos',
+        GArPhaseBucket_pos = geom.structure.Position('GArPhaseBucket_pos',
                                                 pos[0],pos[1],pos[2])
 
-        garPhaseBucket_pla = geom.structure.Placement('garPhaseBucket_pla',
-                                                volume=garPhaseBucket_lv,
-                                                pos=garPhaseBucket_pos)
+        GArPhaseBucket_pla = geom.structure.Placement('GArPhaseBucket_pla',
+                                                volume=GArPhaseBucket_lv,
+                                                pos=GArPhaseBucket_pos)
 
-        main_lv.placements.append(garPhaseBucket_pla.name)
+        main_lv.placements.append(GArPhaseBucket_pla.name)
 
         # Construct G10 Bottom Volume
-        G10bottom_shape = geom.shapes.Box('G10Bottom',
+        G10Bottom_shape = geom.shapes.Box('G10Bottom_shape',
                                         dx = self.G10Bottom_dx,
                                         dy = self.G10Bottom_dy,
                                         dz = self.G10Bottom_dz)
 
-        G10bottom_lv = geom.structure.Volume('volG10Bottom',
+        G10Bottom_lv = geom.structure.Volume('volG10Bottom',
                                         material=self.Bucket_Material,
-                                        shape=G10bottom_shape)
+                                        shape=G10Bottom_shape)
 
         # Place G10 Bottom Volume inside Bucket volume
         pos = [Q('0cm'),-self.Bucket_dy+self.G10Bottom_dy,Q('0cm')]
 
-        G10bottom_pos = geom.structure.Position('G10bottom_pos',
+        G10Bottom_pos = geom.structure.Position('G10Bottom_pos',
                                                 pos[0],pos[1],pos[2])
 
-        G10bottom_pla = geom.structure.Placement('G10bottom_pla',
-                                                volume=G10bottom_lv,
-                                                pos=G10bottom_pos)
+        G10Bottom_pla = geom.structure.Placement('G10Bottom_pla',
+                                                volume=G10Bottom_lv,
+                                                pos=G10Bottom_pos)
 
-        main_lv.placements.append(G10bottom_pla.name)
+        main_lv.placements.append(G10Bottom_pla.name)
 
         # Construct LAr Volume 1
-        larVol1_shape = geom.shapes.Box('LArVol1',
+        LArVol1_shape = geom.shapes.Box('LArVol1_shape',
                                         dx = self.LArVol1_dx,
                                         dy = self.LArVol1_dy+self.LArVol2_dy,
                                         dz = self.LArVol1_dz)
 
-        larVol1_lv = geom.structure.Volume('volLArVol1',
+        LArVol1_lv = geom.structure.Volume('volLArVol1',
                                         material=self.LArPhase_Material,
-                                        shape=larVol1_shape)
+                                        shape=LArVol1_shape)
 
         # Place LAr Volume 1 inside Bucket volume
         pos = [Q('0cm'),-self.Bucket_dy+self.LArVol1_dy+self.LArVol2_dy,Q('0cm')]
 
-        larVol1_pos = geom.structure.Position('larVol1_pos',
+        LArVol1_pos = geom.structure.Position('LArVol1_pos',
                                                 pos[0],pos[1],pos[2])
 
-        larVol1_pla = geom.structure.Placement('larVol1_pla',
-                                                volume=larVol1_lv,
-                                                pos=larVol1_pos)
+        LArVol1_pla = geom.structure.Placement('LArVol1_pla',
+                                                volume=LArVol1_lv,
+                                                pos=LArVol1_pos)
 
-        main_lv.placements.append(larVol1_pla.name)
+        main_lv.placements.append(LArVol1_pla.name)
 
         # Construct LAr Volume 2
-        larVol2_shape = geom.shapes.Box('LArVol2',
+        LArVol2_shape = geom.shapes.Box('LArVol2_shape',
                                         dx = self.LArVol2_dx,
                                         dy = self.LArVol2_dy,
                                         dz = self.LArVol2_dz)
 
-        larVol2_lv = geom.structure.Volume('volLArVol2',
+        LArVol2_lv = geom.structure.Volume('volLArVol2',
                                         material=self.LArPhase_Material,
-                                        shape=larVol2_shape)
+                                        shape=LArVol2_shape)
 
         # Place LAr Volume 2 inside Bucket volume
         pos = [Q('0cm'),-self.Bucket_dy+self.LArVol2_dy,Q('0cm')]
 
-        larVol2_pos = geom.structure.Position('larVol2_pos',
+        LArVol2_pos = geom.structure.Position('LArVol2_pos',
                                                 pos[0],pos[1],pos[2])
 
-        larVol2_pla = geom.structure.Placement('larVol2_pla',
-                                                volume=larVol2_lv,
-                                                pos=larVol2_pos)
+        LArVol2_pla = geom.structure.Placement('LArVol2_pla',
+                                                volume=LArVol2_lv,
+                                                pos=LArVol2_pos)
 
-        main_lv.placements.append(larVol2_pla.name)
+        main_lv.placements.append(LArVol2_pla.name)
 

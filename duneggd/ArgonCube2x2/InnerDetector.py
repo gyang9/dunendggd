@@ -19,16 +19,17 @@ class InnerDetectorBuilder(gegede.builder.Builder):
         # Material definitons
         self.Material           = 'G10'
 
+        # Subbuilders
+        self.HalfDetector_builder = self.get_builder('HalfDetector')
+
     def construct(self,geom):
         """ Construct the geometry.
 
         """
 
-        halfdet_builder = self.get_builder('HalfDetector')
-
-        self.halfDimension  = { 'dx':   2*halfdet_builder.halfDimension['dx'],
-                                'dy':   halfdet_builder.halfDimension['dy'],
-                                'dz':   halfdet_builder.halfDimension['dz']}
+        self.halfDimension  = { 'dx':   2*self.HalfDetector_builder.halfDimension['dx'],
+                                'dy':   self.HalfDetector_builder.halfDimension['dy'],
+                                'dz':   self.HalfDetector_builder.halfDimension['dz']}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('InnerDetectorBuilder::construct()')
@@ -36,36 +37,36 @@ class InnerDetectorBuilder(gegede.builder.Builder):
         self.add_volume(main_lv)
 
         # Build HalfDetector L
-        pos = [-halfdet_builder.halfDimension['dx'],Q('0cm'),Q('0cm')]
+        pos = [-self.HalfDetector_builder.halfDimension['dx'],Q('0cm'),Q('0cm')]
 
-        halfDetector_lv = halfdet_builder.get_volume()
+        HalfDetector_lv = self.HalfDetector_builder.get_volume()
 
-        halfDetector_pos = geom.structure.Position(halfdet_builder.name+'_pos_L',
+        HalfDetector_pos = geom.structure.Position(self.HalfDetector_builder.name+'_pos_L',
                                                 pos[0],pos[1],pos[2])
 
-        halfDetector_pla = geom.structure.Placement(halfdet_builder.name+'_pla_L',
-                                                volume=halfDetector_lv,
-                                                pos=halfDetector_pos)
+        HalfDetector_pla = geom.structure.Placement(self.HalfDetector_builder.name+'_pla_L',
+                                                volume=HalfDetector_lv,
+                                                pos=HalfDetector_pos)
 
-        main_lv.placements.append(halfDetector_pla.name)
+        main_lv.placements.append(HalfDetector_pla.name)
 
         # Build HalfDetector R
-        pos = [halfdet_builder.halfDimension['dx'],Q('0cm'),Q('0cm')]
+        pos = [self.HalfDetector_builder.halfDimension['dx'],Q('0cm'),Q('0cm')]
 
-        halfDetector_lv = halfdet_builder.get_volume()
+        HalfDetector_lv = self.HalfDetector_builder.get_volume()
 
-        halfDetector_pos = geom.structure.Position(halfdet_builder.name+'_pos_R',
+        HalfDetector_pos = geom.structure.Position(self.HalfDetector_builder.name+'_pos_R',
                                                 pos[0],pos[1],pos[2])
 
         rot_y = Q('180.0deg')
 
-        halfDetector_rot = geom.structure.Rotation(halfdet_builder.name+'_rot',
+        HalfDetector_rot = geom.structure.Rotation(self.HalfDetector_builder.name+'_rot',
                                                 y=rot_y)
 
-        halfDetector_pla = geom.structure.Placement(halfdet_builder.name+'_pla_R',
-                                                volume=halfDetector_lv,
-                                                pos=halfDetector_pos,
-                                                rot=halfDetector_rot)
+        HalfDetector_pla = geom.structure.Placement(self.HalfDetector_builder.name+'_pla_R',
+                                                volume=HalfDetector_lv,
+                                                pos=HalfDetector_pos,
+                                                rot=HalfDetector_rot)
 
-        main_lv.placements.append(halfDetector_pla.name)
+        main_lv.placements.append(HalfDetector_pla.name)
 
