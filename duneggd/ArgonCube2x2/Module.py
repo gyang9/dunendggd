@@ -14,23 +14,20 @@ class ModuleBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Module_dimension,Bucket_Offset,InnerDetector_Offset,**kwargs):
+    def configure(self,Bucket_Offset,InnerDetector_Offset,**kwargs):
 
         # Read dimensions form config file
-        self.Module_dx          = Module_dimension['dx']
-        self.Module_dy          = Module_dimension['dy']
-        self.Module_dz          = Module_dimension['dz']
-
         self.Bucket_Offset          = Bucket_Offset
         self.InnerDetector_Offset   = InnerDetector_Offset
 
         # Material definitons
 
-        self.Material           = 'Air'
+        self.Material   = 'LAr'
 
         # Subbuilders
+        self.Flange_builder         = self.get_builder('Flange')
         self.Bucket_builder         = self.get_builder('Bucket')
-        self.ModuleTop_builder      = self.get_builder('ModuleTop')
+        self.Pillow_builder         = self.get_builder('Pillow')
         self.InnerDetector_builder  = self.get_builder('InnerDetector')
 
     def construct(self,geom):
@@ -38,17 +35,31 @@ class ModuleBuilder(gegede.builder.Builder):
 
         """
 
-        self.halfDimension  = { 'dx':   self.ModuleTop_builder.halfDimension['dx'],
-                                'dy':   self.InnerDetector_Offset+self.Bucket_builder.halfDimension['dy'],
-                                'dz':   self.ModuleTop_builder.halfDimension['dz']}
+        self.halfDimension  = { 'dx':   self.Flange_builder.halfDimension['dx'],
+                                'dy':   self.Bucket_Offset+self.Bucket_builder.halfDimension['dy'],
+                                'dz':   self.Flange_builder.halfDimension['dz']}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('ModuleBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
+        # Build Flange
+        pos = [Q('0cm'),self.halfDimension['dy']-self.Flange_builder.halfDimension['dy'],Q('0cm')]
+
+        Flange_lv = self.Flange_builder.get_volume()
+
+        Flange_pos = geom.structure.Position(self.Flange_builder.name+'_pos',
+                                                pos[0],pos[1],pos[2])
+
+        Flange_pla = geom.structure.Placement(self.Flange_builder.name+'_pla',
+                                                volume=Flange_lv,
+                                                pos=Flange_pos)
+
+        main_lv.placements.append(Flange_pla.name)
+
         # Build Bucket
-        pos = [Q('0cm'),self.halfDimension['dy']-self.Bucket_builder.halfDimension['dy']-self.Bucket_Offset*2,Q('0cm')]
+        pos = [Q('0cm'),self.halfDimension['dy']-self.Bucket_builder.halfDimension['dy']-2*self.Bucket_Offset,Q('0cm')]
 
         Bucket_lv = self.Bucket_builder.get_volume()
 
@@ -61,23 +72,22 @@ class ModuleBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(Bucket_pla.name)
 
+        # Build Pillow
+        pos = [Q('0cm'),self.halfDimension['dy']-self.Pillow_builder.halfDimension['dy']-2*self.Flange_builder.halfDimension['dy'],Q('0cm')]
 
-        # Build Module Top
-        pos = [Q('0cm'),self.halfDimension['dy']-self.ModuleTop_builder.halfDimension['dy'],Q('0cm')]
+        Pillow_lv = self.Pillow_builder.get_volume()
 
-        ModuleTop_lv = self.ModuleTop_builder.get_volume()
-
-        ModuleTop_pos = geom.structure.Position(self.ModuleTop_builder.name+'_pos',
+        Pillow_pos = geom.structure.Position(self.Pillow_builder.name+'_pos',
                                                 pos[0],pos[1],pos[2])
 
-        ModuleTop_pla = geom.structure.Placement(self.ModuleTop_builder.name+'_pla',
-                                                volume=ModuleTop_lv,
-                                                pos=ModuleTop_pos)
+        Pillow_pla = geom.structure.Placement(self.Pillow_builder.name+'_pla',
+                                                volume=Pillow_lv,
+                                                pos=Pillow_pos)
 
-        main_lv.placements.append(ModuleTop_pla.name)
+        main_lv.placements.append(Pillow_pla.name)
 
         # Build Inner Detector
-        pos = [Q('0cm'),self.halfDimension['dy']-self.InnerDetector_builder.halfDimension['dy']-self.InnerDetector_Offset*2,Q('0cm')]
+        pos = [Q('0cm'),self.halfDimension['dy']-self.InnerDetector_builder.halfDimension['dy']-2*self.InnerDetector_Offset,Q('0cm')]
 
         InnerDetector_lv = self.InnerDetector_builder.get_volume()
 

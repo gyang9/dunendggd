@@ -1,4 +1,4 @@
-""" ModuleTop.py
+""" Pillow.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,25 +9,17 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class ModuleTopBuilder(gegede.builder.Builder):
-    """ Class to build ModuleTop geometry.
+class PillowBuilder(gegede.builder.Builder):
+    """ Class to build Pillow geometry.
 
     """
 
-    def configure(self,ModuleTop_dimension,Flange_dimension,PillowTop_dimension,PillowSide_dimension,PillowBottom_dy,AngleBarTop_dimension,AngleBarSide_dimension,Angle_Length,Angle_dd,N_Angle,LAr_Level_Flange,**kwargs):
+    def configure(self,Pillow_dimension,PillowSide_dimension,PillowBottom_dy,AngleBarTop_dimension,AngleBarSide_dimension,Angle_Length,Angle_dd,N_Angle,LAr_Level_Pillow,**kwargs):
 
         # Read dimensions form config file
-        self.ModuleTop_dx       = ModuleTop_dimension['dx']
-        self.ModuleTop_dy       = ModuleTop_dimension['dy']
-        self.ModuleTop_dz       = ModuleTop_dimension['dz']
-
-        self.Flange_dx          = Flange_dimension['dx']
-        self.Flange_dy          = Flange_dimension['dy']
-        self.Flange_dz          = Flange_dimension['dz']
-
-        self.PillowTop_dx       = PillowTop_dimension['dx']
-        self.PillowTop_dy       = PillowTop_dimension['dy']
-        self.PillowTop_dz       = PillowTop_dimension['dz']
+        self.Pillow_dx          = Pillow_dimension['dx']
+        self.Pillow_dy          = Pillow_dimension['dy']
+        self.Pillow_dz          = Pillow_dimension['dz']
 
         self.PillowSide_dx      = PillowSide_dimension['dx']
         self.PillowSide_dy      = PillowSide_dimension['dy']
@@ -50,11 +42,11 @@ class ModuleTopBuilder(gegede.builder.Builder):
         self.N_Angle            = N_Angle
         self.Angle_gap          = (self.AngleBarTop_dz-self.Angle_Length*self.N_Angle)/(self.N_Angle-1)
 
-        self.GAr_dy             = LAr_Level_Flange
-        self.LAr_dy             = self.ModuleTop_dy-self.GAr_dy
+        self.GAr_dy             = LAr_Level_Pillow
+        self.LAr_dy             = self.Pillow_dy-self.GAr_dy
 
         # Material definitons
-        self.ModuleTop_Material = 'Steel'
+        self.Pillow_Material    = 'Steel'
         self.LArPhase_Material  = 'LAr'
         self.GArPhase_Material  = 'GAr'
 
@@ -68,102 +60,58 @@ class ModuleTopBuilder(gegede.builder.Builder):
 
         """
 
-        self.halfDimension  = { 'dx':   self.ModuleTop_dx,
-                                'dy':   self.ModuleTop_dy,
-                                'dz':   self.ModuleTop_dz}
+        self.halfDimension  = { 'dx':   self.Pillow_dx,
+                                'dy':   self.Pillow_dy,
+                                'dz':   self.Pillow_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('ModuleTopBuilder::construct()')
+        print('PillowBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        # Construct LAr Phase ModuleTop Volume
-        LArPhaseModuleTop_shape = geom.shapes.Box('LArPhaseModuleTop_shape',
-                                        dx = self.ModuleTop_dx,
+        # Construct LAr Phase Pillow Volume
+        LArPhasePillow_shape = geom.shapes.Box('LArPhasePillow_shape',
+                                        dx = self.Pillow_dx,
                                         dy = self.LAr_dy,
-                                        dz = self.ModuleTop_dz)
+                                        dz = self.Pillow_dz)
 
-        LArPhaseModuleTop_lv = geom.structure.Volume('volLArPhaseModuleTop',
+        LArPhasePillow_lv = geom.structure.Volume('volLArPhasePillow',
                                         material=self.LArPhase_Material,
-                                        shape=LArPhaseModuleTop_shape)
+                                        shape=LArPhasePillow_shape)
 
-        # Place LAr Phase ModuleTop Volume inside ModuleTop volume
+        # Place LAr Phase Pillow Volume inside Pillow volume
         pos = [Q('0cm'),-self.GAr_dy,Q('0cm')]
 
-        LArPhaseModuleTop_pos = geom.structure.Position('LArPhaseModuleTop_pos',
+        LArPhasePillow_pos = geom.structure.Position('LArPhasePillow_pos',
                                                 pos[0],pos[1],pos[2])
 
-        LArPhaseModuleTop_pla = geom.structure.Placement('LArPhaseModuleTop_pla',
-                                                volume=LArPhaseModuleTop_lv,
-                                                pos=LArPhaseModuleTop_pos)
+        LArPhasePillow_pla = geom.structure.Placement('LArPhasePillow_pla',
+                                                volume=LArPhasePillow_lv,
+                                                pos=LArPhasePillow_pos)
 
-        main_lv.placements.append(LArPhaseModuleTop_pla.name)
+        main_lv.placements.append(LArPhasePillow_pla.name)
 
-        # Construct GAr Phase ModuleTop Volume
-        GArPhaseModuleTop_shape = geom.shapes.Box('GArPhaseModuleTop_shape',
-                                        dx = self.ModuleTop_dx,
+        # Construct GAr Phase Pillow Volume
+        GArPhasePillow_shape = geom.shapes.Box('GArPhasePillow_shape',
+                                        dx = self.Pillow_dx,
                                         dy = self.GAr_dy,
-                                        dz = self.ModuleTop_dz)
+                                        dz = self.Pillow_dz)
 
-        GArPhaseModuleTop_lv = geom.structure.Volume('volGArPhaseModuleTop',
+        GArPhasePillow_lv = geom.structure.Volume('volGArPhasePillow',
                                         material=self.GArPhase_Material,
-                                        shape=GArPhaseModuleTop_shape)
+                                        shape=GArPhasePillow_shape)
 
-        # Place GAr Phase ModuleTop Volume inside ModuleTop volume
+        # Place GAr Phase Pillow Volume inside Pillow volume
         pos = [Q('0cm'),self.LAr_dy,Q('0cm')]
 
-        GArPhaseModuleTop_pos = geom.structure.Position('GArPhaseModuleTop_pos',
+        GArPhasePillow_pos = geom.structure.Position('GArPhasePillow_pos',
                                                 pos[0],pos[1],pos[2])
 
-        GArPhaseModuleTop_pla = geom.structure.Placement('GArPhaseModuleTop_pla',
-                                                volume=GArPhaseModuleTop_lv,
-                                                pos=GArPhaseModuleTop_pos)
+        GArPhasePillow_pla = geom.structure.Placement('GArPhasePillow_pla',
+                                                volume=GArPhasePillow_lv,
+                                                pos=GArPhasePillow_pos)
 
-        main_lv.placements.append(GArPhaseModuleTop_pla.name)
-
-        # Construct Flange Volume
-        Flange_shape = geom.shapes.Box('Flange_shape',
-                                        dx = self.Flange_dx,
-                                        dy = self.Flange_dy,
-                                        dz = self.Flange_dz)
-
-        Flange_lv = geom.structure.Volume('volFlange',
-                                        material=self.ModuleTop_Material,
-                                        shape=Flange_shape)
-
-        # Place Flange Volume inside Module Top volume
-        pos = [Q('0cm'),self.ModuleTop_dy-self.Flange_dy,Q('0cm')]
-
-        Flange_pos = geom.structure.Position('Flange_pos',
-                                                pos[0],pos[1],pos[2])
-
-        Flange_pla = geom.structure.Placement('Flange_pla',
-                                                volume=Flange_lv,
-                                                pos=Flange_pos)
-
-        main_lv.placements.append(Flange_pla.name)
-
-        # Construct Pillow Top Volume
-        PillowTop_shape = geom.shapes.Box('PillowTop_shape',
-                                        dx = self.PillowTop_dx,
-                                        dy = self.PillowTop_dy,
-                                        dz = self.PillowTop_dz)
-
-        PillowTop_lv = geom.structure.Volume('volPillowTop',
-                                        material=self.ModuleTop_Material,
-                                        shape=PillowTop_shape)
-
-        # Place Pillow Top Volume inside Module Top volume
-        pos = [Q('0cm'),self.ModuleTop_dy-2*self.Flange_dy-self.PillowTop_dy,Q('0cm')]
-
-        PillowTop_pos = geom.structure.Position('PillowTop_pos',
-                                                pos[0],pos[1],pos[2])
-
-        PillowTop_pla = geom.structure.Placement('PillowTop_pla',
-                                                volume=PillowTop_lv,
-                                                pos=PillowTop_pos)
-
-        main_lv.placements.append(PillowTop_pla.name)
+        main_lv.placements.append(GArPhasePillow_pla.name)
 
         # Construct Pillow Side Volume
         PillowSide_shape = geom.shapes.Box('PillowSide_shape',
@@ -172,11 +120,11 @@ class ModuleTopBuilder(gegede.builder.Builder):
                                         dz = self.PillowSide_dz)
 
         PillowSide_lv = geom.structure.Volume('volPillowSide',
-                                        material=self.ModuleTop_Material,
+                                        material=self.Pillow_Material,
                                         shape=PillowSide_shape)
 
         # Place Pillow Side Volume inside Module Top volume
-        pos = [Q('0cm'),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-self.PillowSide_dy,Q('0cm')]
+        pos = [Q('0cm'),self.Pillow_dy-self.PillowSide_dy,Q('0cm')]
 
         PillowSide_pos = geom.structure.Position('PillowSide_pos',
                                                 pos[0],pos[1],pos[2])
@@ -198,7 +146,7 @@ class ModuleTopBuilder(gegede.builder.Builder):
                                         shape=PillowCavity_shape)
 
         # Place Pillow Cavity Volume inside Module Top volume
-        pos = [Q('0cm'),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-self.PillowSide_dy+self.PillowBottom_dy,Q('0cm')]
+        pos = [Q('0cm'),self.Pillow_dy-self.PillowSide_dy+self.PillowBottom_dy,Q('0cm')]
 
         PillowCavity_pos = geom.structure.Position('PillowCavity_pos',
                                                 pos[0],pos[1],pos[2])
@@ -216,11 +164,11 @@ class ModuleTopBuilder(gegede.builder.Builder):
                                         dz = self.AngleBarTop_dz)
 
         AngleBarTop_lv = geom.structure.Volume('volAngleBarTop',
-                                        material=self.ModuleTop_Material,
+                                        material=self.Pillow_Material,
                                         shape=AngleBarTop_shape)
 
         # Place Angle Bar Top L Volume inside Module Top volume
-        pos = [-self.AngleBarTop_gap-self.AngleBarTop_dx,self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-self.AngleBarTop_dy,Q('0cm')]
+        pos = [-self.AngleBarTop_gap-self.AngleBarTop_dx,self.Pillow_dy-2*self.PillowSide_dy-self.AngleBarTop_dy,Q('0cm')]
 
         AngleBarTop_L_pos = geom.structure.Position('AngleBarTop_L_pos',
                                                 pos[0],pos[1],pos[2])
@@ -232,7 +180,7 @@ class ModuleTopBuilder(gegede.builder.Builder):
         main_lv.placements.append(AngleBarTop_L_pla.name)
 
         # Place Angle Bar Top R Volume inside Module Top volume
-        pos = [self.AngleBarTop_gap+self.AngleBarTop_dx,self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-self.AngleBarTop_dy,Q('0cm')]
+        pos = [self.AngleBarTop_gap+self.AngleBarTop_dx,self.Pillow_dy-2*self.PillowSide_dy-self.AngleBarTop_dy,Q('0cm')]
 
         rot_y = Q('180.0deg')
 
@@ -256,13 +204,13 @@ class ModuleTopBuilder(gegede.builder.Builder):
                                         dz = self.Angle_Length)
 
         AngleBase_lv = geom.structure.Volume('volAngleBase',
-                                        material=self.ModuleTop_Material,
+                                        material=self.Pillow_Material,
                                         shape=AngleBase_shape)
 
         # Place Angle Base Volume Module Top volume
         for i in range(2):
             for j in range(self.N_Angle):
-                pos = [(-1)**i*(self.AngleBarTop_gap+AngleBase_shape[1]),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-self.Angle_dd,-(self.N_Angle-1-2*j)*self.Angle_Length-(self.N_Angle-1-2*j)*self.Angle_gap]
+                pos = [(-1)**i*(self.AngleBarTop_gap+AngleBase_shape[1]),self.Pillow_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-self.Angle_dd,-(self.N_Angle-1-2*j)*self.Angle_Length-(self.N_Angle-1-2*j)*self.Angle_gap]
 
                 AngleBase_pos = geom.structure.Position('AngleBase_pos_'+str(i*self.N_Angle+j),
                                                         pos[0],pos[1],pos[2])
@@ -280,13 +228,13 @@ class ModuleTopBuilder(gegede.builder.Builder):
                                         dz = self.Angle_Length)
 
         AngleSide_lv = geom.structure.Volume('volAngleSide',
-                                        material=self.ModuleTop_Material,
+                                        material=self.Pillow_Material,
                                         shape=AngleSide_shape)
 
         # Place Angle Side Volume Module Top volume
         for i in range(2):
             for j in range(self.N_Angle):
-                pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx-AngleSide_shape[1]),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-AngleSide_shape[2],-(self.N_Angle-1-2*j)*self.Angle_Length-(self.N_Angle-1-2*j)*self.Angle_gap]
+                pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx-AngleSide_shape[1]),self.Pillow_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-AngleSide_shape[2],-(self.N_Angle-1-2*j)*self.Angle_Length-(self.N_Angle-1-2*j)*self.Angle_gap]
 
                 AngleSide_pos = geom.structure.Position('AngleSide_pos_'+str(i*self.N_Angle+j),
                                                         pos[0],pos[1],pos[2])
@@ -304,12 +252,12 @@ class ModuleTopBuilder(gegede.builder.Builder):
                                         dz = self.AngleBarSide_dz)
 
         AngleBarSide_lv = geom.structure.Volume('volAngleBarSide',
-                                        material=self.ModuleTop_Material,
+                                        material=self.Pillow_Material,
                                         shape=AngleBarSide_shape)
 
         # Place Angle Bar Side Volume Module Top volume
         for i in range(2):
-            pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx+2*self.Backplate_builder.halfDimension['dx']+self.AngleBarSide_dx),self.ModuleTop_dy-2*self.Flange_dy-2*self.PillowTop_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-2*AngleSide_shape[2]+self.AngleBarSide_dy,Q('0cm')]
+            pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx+2*self.Backplate_builder.halfDimension['dx']+self.AngleBarSide_dx),self.Pillow_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-2*AngleSide_shape[2]+self.AngleBarSide_dy,Q('0cm')]
 
             AngleBarSide_pos = geom.structure.Position('AngleBarSide_pos_'+str(i*self.N_Angle+j),
                                                     pos[0],pos[1],pos[2])

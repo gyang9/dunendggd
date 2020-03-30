@@ -40,9 +40,10 @@ class BackplateBuilder(gegede.builder.Builder):
         """ Construct the geometry.
 
         """
-        self.N_Gap = self.TPCPlane_builder.N_UnitsY
 
         self.Backplate_top_off = self.Backplate_dy-self.TPCPlane_builder.halfDimension['dy']-self.Backplate_btm_off
+
+        self.N_Gap = self.TPCPlane_builder.N_UnitsY
 
         self.halfDimension  = { 'dx':   self.Backplate_dx,
                                 'dy':   self.Backplate_dy,
@@ -52,28 +53,6 @@ class BackplateBuilder(gegede.builder.Builder):
         print('BackplateBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
-
-        # Construct Backplate Center Volume
-        BackplateCenter_shape = geom.shapes.Box('BackplateCenter_shape',
-                                        dx = self.Backplate_dx,
-                                        dy = self.TPCPlane_builder.halfDimension['dy'],
-                                        dz = self.Backplate_dz)
-
-        BackplateCenter_lv = geom.structure.Volume('volBackplateCenter',
-                                        material=self.Material,
-                                        shape=BackplateCenter_shape)
-
-        # Place Backplate Center Volume inside Backplate volume
-        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
-
-        BackplateCenter_pos = geom.structure.Position('BackplateCenter_pos',
-                                                pos[0],pos[1],pos[2])
-
-        BackplateCenter_pla = geom.structure.Placement('BackplateCenter_pla',
-                                                volume=BackplateCenter_lv,
-                                                pos=BackplateCenter_pos)
-
-        #main_lv.placements.append(BackplateCenter_pla.name)
 
         # Construct Backplate Gap Volume
         BackplateGap_shape = geom.shapes.Box('BackplateGap_shape',

@@ -14,7 +14,7 @@ class BucketBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Bucket_dimension,LAr_Level,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,**kwargs):
+    def configure(self,Bucket_dimension,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,LAr_Level_Bucket,**kwargs):
 
         # Read dimensions form config file
         self.Bucket_dx          = Bucket_dimension['dx']
@@ -34,7 +34,7 @@ class BucketBuilder(gegede.builder.Builder):
         self.LArVol2_dy         = LArVol2_dimension['dy']
         self.LArVol2_dz         = LArVol2_dimension['dz']
 
-        self.LAr_dy             = LAr_Level
+        self.LAr_dy             = LAr_Level_Bucket
         self.GAr_dy             = self.Bucket_dy-self.LAr_dy
 
         # Material definitons
