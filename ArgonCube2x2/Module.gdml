@@ -212,7 +212,7 @@
     <position name="BackplateGap_pos_6" unit="cm" x="0" y="-22.09815" z="-30.1498"/>
     <position name="BackplateGap_pos_7" unit="cm" x="0" y="-53.12565" z="-30.1498"/>
     <position name="FlangeTop_pos" unit="cm" x="0" y="0.0762" z="0"/>
-    <position name="FlangeMask_pos" unit="cm" x="0" y="-0.7968" z="0"/>
+    <position name="FlangeBtm_pos" unit="cm" x="0" y="-0.9238" z="0"/>
     <position name="LArPhaseBucket_pos" unit="cm" x="0" y="-9.37095" z="0"/>
     <position name="GArPhaseBucket_pos" unit="cm" x="0" y="76.35405" z="0"/>
     <position name="G10Bottom_pos" unit="cm" x="0" y="-83.185" z="0"/>
@@ -252,9 +252,9 @@
     <position name="HalfDetector_pos_L" unit="cm" x="-15.8" y="0" z="0"/>
     <position name="HalfDetector_pos_R" unit="cm" x="15.8" y="0" z="0"/>
     <rotation name="HalfDetector_rot" unit="degree" x="0" y="180.0" z="0"/>
-    <position name="Flange_pos" unit="cm" x="0" y="86.4108" z="0"/>
+    <position name="Flange_pos" unit="cm" x="0" y="86.2838" z="0"/>
     <position name="Bucket_pos" unit="cm" x="0" y="-1.5588" z="0"/>
-    <position name="Pillow_pos" unit="cm" x="0" y="4.414" z="0"/>
+    <position name="Pillow_pos" unit="cm" x="0" y="4.16" z="0"/>
     <position name="InnerDetector_pos" unit="cm" x="0" y="-7.9867" z="0"/>
     <position name="volModule_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
     <rotation name="volModule_rot" unit="degree" x="0" y="0" z="0"/>
@@ -831,9 +831,9 @@
     <box lunit="cm" name="TPCActive_shape" x="30.2723" y="124.11" z="62.03"/>
     <box lunit="cm" name="Backplate" x="0.3175" y="151.13" z="64.7446"/>
     <box lunit="cm" name="BackplateGap_shape" x="0.3175" y="23.3" z="4.445"/>
-    <box lunit="cm" name="Flange" x="67.0" y="1.746" z="67.0"/>
-    <box lunit="cm" name="FlangeTop_shape" x="67.0" y="1.5936" z="67.0"/>
-    <box lunit="cm" name="FlangeMask_shape" x="65.9364" y="0.1524" z="65.9364"/>
+    <box lunit="cm" name="Flange" x="67.0" y="2.0" z="67.0"/>
+    <box lunit="cm" name="FlangeTop_shape" x="67.0" y="1.8476" z="67.0"/>
+    <box lunit="cm" name="FlangeBtm_shape" x="65.9364" y="0.1524" z="65.9364"/>
     <box lunit="cm" name="Bucket" x="66.9925" y="171.45" z="66.9925"/>
     <box lunit="cm" name="LArPhaseBucket_shape" x="65.7225" y="152.7081" z="65.7225"/>
     <box lunit="cm" name="GArPhaseBucket_shape" x="65.7225" y="18.7419" z="65.7225"/>
@@ -863,9 +863,9 @@
       <materialref ref="Steel"/>
       <solidref ref="FlangeTop_shape"/>
     </volume>
-    <volume name="volFlangeMask">
+    <volume name="volFlangeBtm">
       <materialref ref="Steel"/>
-      <solidref ref="FlangeMask_shape"/>
+      <solidref ref="FlangeBtm_shape"/>
     </volume>
     <volume name="volFlange">
       <materialref ref="GAr"/>
@@ -876,8 +876,8 @@
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="volFlangeMask"/>
-        <positionref ref="FlangeMask_pos"/>
+        <volumeref ref="volFlangeBtm"/>
+        <positionref ref="FlangeBtm_pos"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>

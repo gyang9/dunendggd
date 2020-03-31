@@ -14,16 +14,20 @@ class FlangeBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,FlangeTop_dimension,FlangeMask_dimension,**kwargs):
+    def configure(self,Flange_dimension,FlangeBtm_dimension,**kwargs):
 
         # Read dimensions form config file
-        self.FlangeTop_dx       = FlangeTop_dimension['dx']
-        self.FlangeTop_dy       = FlangeTop_dimension['dy']
-        self.FlangeTop_dz       = FlangeTop_dimension['dz']
+        self.Flange_dx          = Flange_dimension['dx']
+        self.Flange_dy          = Flange_dimension['dy']
+        self.Flange_dz          = Flange_dimension['dz']
 
-        self.FlangeMask_dx      = FlangeMask_dimension['dx']
-        self.FlangeMask_dy      = FlangeMask_dimension['dy']
-        self.FlangeMask_dz      = FlangeMask_dimension['dz']
+        self.FlangeBtm_dx       = FlangeBtm_dimension['dx']
+        self.FlangeBtm_dy       = FlangeBtm_dimension['dy']
+        self.FlangeBtm_dz       = FlangeBtm_dimension['dz']
+
+        self.FlangeTop_dx       = self.Flange_dx
+        self.FlangeTop_dy       = self.Flange_dy-self.FlangeBtm_dy
+        self.FlangeTop_dz       = self.Flange_dz
 
         # Material definitons
         self.Flange_Material    = 'Steel'
@@ -38,9 +42,9 @@ class FlangeBuilder(gegede.builder.Builder):
 
         """
 
-        self.halfDimension  = { 'dx':   self.FlangeTop_dx,
-                                'dy':   self.FlangeTop_dy+self.FlangeMask_dy,
-                                'dz':   self.FlangeTop_dz}
+        self.halfDimension  = { 'dx':   self.Flange_dx,
+                                'dy':   self.Flange_dy,
+                                'dz':   self.Flange_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('FlangeBuilder::construct()')
@@ -58,7 +62,7 @@ class FlangeBuilder(gegede.builder.Builder):
                                         shape=FlangeTop_shape)
 
         # Place FlangeTop Volume inside Flange volume
-        pos = [Q('0cm'),self.FlangeMask_dy,Q('0cm')]
+        pos = [Q('0cm'),-self.Flange_dy+2*self.FlangeBtm_dy+self.FlangeTop_dy,Q('0cm')]
 
         FlangeTop_pos = geom.structure.Position('FlangeTop_pos',
                                                 pos[0],pos[1],pos[2])
@@ -69,25 +73,25 @@ class FlangeBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(FlangeTop_pla.name)
 
-        # Construct FlangeMask Volume
-        FlangeMask_shape = geom.shapes.Box('FlangeMask_shape',
-                                        dx = self.FlangeMask_dx,
-                                        dy = self.FlangeMask_dy,
-                                        dz = self.FlangeMask_dz)
+        # Construct FlangeBtm Volume
+        FlangeBtm_shape = geom.shapes.Box('FlangeBtm_shape',
+                                        dx = self.FlangeBtm_dx,
+                                        dy = self.FlangeBtm_dy,
+                                        dz = self.FlangeBtm_dz)
 
-        FlangeMask_lv = geom.structure.Volume('volFlangeMask',
+        FlangeBtm_lv = geom.structure.Volume('volFlangeBtm',
                                         material=self.Flange_Material,
-                                        shape=FlangeMask_shape)
+                                        shape=FlangeBtm_shape)
 
-        # Place FlangeMask Volume inside Flange volume
-        pos = [Q('0cm'),-self.FlangeTop_dy,Q('0cm')]
+        # Place FlangeBtm Volume inside Flange volume
+        pos = [Q('0cm'),-self.Flange_dy+self.FlangeBtm_dy,Q('0cm')]
 
-        FlangeMask_pos = geom.structure.Position('FlangeMask_pos',
+        FlangeBtm_pos = geom.structure.Position('FlangeBtm_pos',
                                                 pos[0],pos[1],pos[2])
 
-        FlangeMask_pla = geom.structure.Placement('FlangeMask_pla',
-                                                volume=FlangeMask_lv,
-                                                pos=FlangeMask_pos)
+        FlangeBtm_pla = geom.structure.Placement('FlangeBtm_pla',
+                                                volume=FlangeBtm_lv,
+                                                pos=FlangeBtm_pos)
 
-        main_lv.placements.append(FlangeMask_pla.name)
+        main_lv.placements.append(FlangeBtm_pla.name)
 
