@@ -14,13 +14,9 @@ class PillowBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Pillow_dimension,PillowSide_dimension,PillowBottom_dy,AngleBarTop_dimension,AngleBarSide_dimension,Angle_Length,Angle_dd,N_Angle,LAr_Level_Pillow,**kwargs):
+    def configure(self,Pillow_dimension,PillowSide_dimension,PillowBottom_dy,AngleBarTop_dimension,AngleBarSide_dimension,Angle_Length,Angle_dd,N_Angle,**kwargs):
 
         # Read dimensions form config file
-        self.Pillow_dx          = Pillow_dimension['dx']
-        self.Pillow_dy          = Pillow_dimension['dy']
-        self.Pillow_dz          = Pillow_dimension['dz']
-
         self.PillowSide_dx      = PillowSide_dimension['dx']
         self.PillowSide_dy      = PillowSide_dimension['dy']
         self.PillowSide_dz      = PillowSide_dimension['dz']
@@ -42,18 +38,14 @@ class PillowBuilder(gegede.builder.Builder):
         self.N_Angle            = N_Angle
         self.Angle_gap          = (self.AngleBarTop_dz-self.Angle_Length*self.N_Angle)/(self.N_Angle-1)
 
-        self.GAr_dy             = LAr_Level_Pillow
-        self.LAr_dy             = self.Pillow_dy-self.GAr_dy
+        self.Pillow_dx          = Pillow_dimension['dx']
+        self.Pillow_dy          = self.PillowSide_dy+self.AngleBarTop_dy+self.AngleBarTop_dx
+        self.Pillow_dz          = Pillow_dimension['dz']
 
         # Material definitons
         self.Pillow_Material    = 'Steel'
-        self.LArPhase_Material  = 'LAr'
-        self.GArPhase_Material  = 'GAr'
 
-        self.Material           = 'Air'
-
-        # Subbuilders
-        self.Backplate_builder  = self.get_builder('Backplate')
+        self.Material           = 'GAr'
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -68,50 +60,6 @@ class PillowBuilder(gegede.builder.Builder):
         print('PillowBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
-
-        # Construct LAr Phase Pillow Volume
-        LArPhasePillow_shape = geom.shapes.Box('LArPhasePillow_shape',
-                                        dx = self.Pillow_dx,
-                                        dy = self.LAr_dy,
-                                        dz = self.Pillow_dz)
-
-        LArPhasePillow_lv = geom.structure.Volume('volLArPhasePillow',
-                                        material=self.LArPhase_Material,
-                                        shape=LArPhasePillow_shape)
-
-        # Place LAr Phase Pillow Volume inside Pillow volume
-        pos = [Q('0cm'),-self.GAr_dy,Q('0cm')]
-
-        LArPhasePillow_pos = geom.structure.Position('LArPhasePillow_pos',
-                                                pos[0],pos[1],pos[2])
-
-        LArPhasePillow_pla = geom.structure.Placement('LArPhasePillow_pla',
-                                                volume=LArPhasePillow_lv,
-                                                pos=LArPhasePillow_pos)
-
-        main_lv.placements.append(LArPhasePillow_pla.name)
-
-        # Construct GAr Phase Pillow Volume
-        GArPhasePillow_shape = geom.shapes.Box('GArPhasePillow_shape',
-                                        dx = self.Pillow_dx,
-                                        dy = self.GAr_dy,
-                                        dz = self.Pillow_dz)
-
-        GArPhasePillow_lv = geom.structure.Volume('volGArPhasePillow',
-                                        material=self.GArPhase_Material,
-                                        shape=GArPhasePillow_shape)
-
-        # Place GAr Phase Pillow Volume inside Pillow volume
-        pos = [Q('0cm'),self.LAr_dy,Q('0cm')]
-
-        GArPhasePillow_pos = geom.structure.Position('GArPhasePillow_pos',
-                                                pos[0],pos[1],pos[2])
-
-        GArPhasePillow_pla = geom.structure.Placement('GArPhasePillow_pla',
-                                                volume=GArPhasePillow_lv,
-                                                pos=GArPhasePillow_pos)
-
-        main_lv.placements.append(GArPhasePillow_pla.name)
 
         # Construct Pillow Side Volume
         PillowSide_shape = geom.shapes.Box('PillowSide_shape',
@@ -257,7 +205,7 @@ class PillowBuilder(gegede.builder.Builder):
 
         # Place Angle Bar Side Volume Module Top volume
         for i in range(2):
-            pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx+2*self.Backplate_builder.halfDimension['dx']+self.AngleBarSide_dx),self.Pillow_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-2*AngleSide_shape[2]+self.AngleBarSide_dy,Q('0cm')]
+            pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx+3*self.AngleBarSide_dx),self.Pillow_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-2*AngleSide_shape[2]+self.AngleBarSide_dy,Q('0cm')]
 
             AngleBarSide_pos = geom.structure.Position('AngleBarSide_pos_'+str(i*self.N_Angle+j),
                                                     pos[0],pos[1],pos[2])
@@ -267,32 +215,4 @@ class PillowBuilder(gegede.builder.Builder):
                                                     pos=AngleBarSide_pos)
 
             main_lv.placements.append(AngleBarSide_pla.name)
-
-        # Build Backplate L
-        pos = [self.AngleBarTop_gap+2*self.AngleBarTop_dx+self.Backplate_builder.halfDimension['dx'],-self.halfDimension['dy']+self.Backplate_builder.halfDimension['dy'],Q('0cm')]
-
-        Backplate_lv = self.Backplate_builder.get_volume()
-
-        Backplate_pos = geom.structure.Position(self.Backplate_builder.name+'_pos_L',
-                                                pos[0],pos[1],pos[2])
-
-        Backplate_pla = geom.structure.Placement(self.Backplate_builder.name+'_pla_L',
-                                                volume=Backplate_lv,
-                                                pos=Backplate_pos)
-
-        main_lv.placements.append(Backplate_pla.name)
-
-        # Build Backplate R
-        pos = [-self.AngleBarTop_gap-2*self.AngleBarTop_dx-self.Backplate_builder.halfDimension['dx'],-self.halfDimension['dy']+self.Backplate_builder.halfDimension['dy'],Q('0cm')]
-
-        Backplate_lv = self.Backplate_builder.get_volume()
-
-        Backplate_pos = geom.structure.Position(self.Backplate_builder.name+'_pos_R',
-                                                pos[0],pos[1],pos[2])
-
-        Backplate_pla = geom.structure.Placement(self.Backplate_builder.name+'_pla_R',
-                                                volume=Backplate_lv,
-                                                pos=Backplate_pos)
-
-        main_lv.placements.append(Backplate_pla.name)
 

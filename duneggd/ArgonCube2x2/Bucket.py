@@ -14,35 +14,48 @@ class BucketBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Bucket_dimension,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,LAr_Level_Bucket,**kwargs):
+    def configure(self,G10Side_dimension,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,LAr_Level_Bucket,G10Side_Offset,Backplate_Offset,InnerDetector_Offset,**kwargs):
 
         # Read dimensions form config file
-        self.Bucket_dx          = Bucket_dimension['dx']
-        self.Bucket_dy          = Bucket_dimension['dy']
-        self.Bucket_dz          = Bucket_dimension['dz']
-        self.Bucket_dd          = Bucket_dimension['dd']
+        self.G10Side_dx             = G10Side_dimension['dx']
+        self.G10Side_dy             = G10Side_dimension['dy']
+        self.G10Side_dz             = G10Side_dimension['dz']
+        self.G10Side_dd             = G10Side_dimension['dd']
 
-        self.G10Bottom_dx       = G10Bottom_dimension['dx']
-        self.G10Bottom_dy       = G10Bottom_dimension['dy']
-        self.G10Bottom_dz       = G10Bottom_dimension['dz']
+        self.G10Bottom_dx           = G10Bottom_dimension['dx']
+        self.G10Bottom_dy           = G10Bottom_dimension['dy']
+        self.G10Bottom_dz           = G10Bottom_dimension['dz']
 
-        self.LArVol1_dx         = LArVol1_dimension['dx']
-        self.LArVol1_dy         = LArVol1_dimension['dy']
-        self.LArVol1_dz         = LArVol1_dimension['dz']
+        self.LArVol1_dx             = LArVol1_dimension['dx']
+        self.LArVol1_dy             = LArVol1_dimension['dy']
+        self.LArVol1_dz             = LArVol1_dimension['dz']
 
-        self.LArVol2_dx         = LArVol2_dimension['dx']
-        self.LArVol2_dy         = LArVol2_dimension['dy']
-        self.LArVol2_dz         = LArVol2_dimension['dz']
+        self.LArVol2_dx             = LArVol2_dimension['dx']
+        self.LArVol2_dy             = LArVol2_dimension['dy']
+        self.LArVol2_dz             = LArVol2_dimension['dz']
 
-        self.LAr_dy             = LAr_Level_Bucket
-        self.GAr_dy             = self.Bucket_dy-self.LAr_dy
+        self.LAr_dy                 = LAr_Level_Bucket
+        self.GAr_dy                 = self.G10Side_dy-self.LAr_dy
+
+        self.G10Side_Offset         = G10Side_Offset
+        self.Backplate_Offset       = Backplate_Offset
+        self.InnerDetector_Offset   = InnerDetector_Offset
 
         # Material definitons
-        self.Bucket_Material    = 'G10'
-        self.LArPhase_Material  = 'LAr'
-        self.GArPhase_Material  = 'GAr'
+        self.G10_Material           = 'G10'
+        self.LArPhase_Material      = 'LAr'
+        self.GArPhase_Material      = 'GAr'
 
-        self.Material           = 'G10'
+        self.Material               = 'GAr'
+
+        self.Bucket_dx              = self.G10Side_dx
+        self.Bucket_dy              = self.G10Side_dy+self.G10Side_Offset
+        self.Bucket_dz              = self.G10Side_dz
+
+        # Subbuilders
+        self.Pillow_builder         = self.get_builder('Pillow')
+        self.Backplate_builder      = self.get_builder('Backplate')
+        self.InnerDetector_builder  = self.get_builder('InnerDetector')
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -58,49 +71,71 @@ class BucketBuilder(gegede.builder.Builder):
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        # Construct LAr Phase Bucket Volume
-        LArPhaseBucket_shape = geom.shapes.Box('LArPhaseBucket_shape',
-                                        dx = self.Bucket_dx-self.Bucket_dd*2,
+        # Construct G10 Side Volume
+        G10Side_shape = geom.shapes.Box('G10Side_shape',
+                                        dx = self.G10Side_dx,
+                                        dy = self.G10Side_dy,
+                                        dz = self.G10Side_dz)
+
+        G10Side_lv = geom.structure.Volume('volG10Side',
+                                        material=self.G10_Material,
+                                        shape=G10Side_shape)
+
+        # Place G10 Side Volume inside Bucket volume
+        pos = [Q('0cm'),-self.halfDimension['dy']+self.G10Side_dy,Q('0cm')]
+
+        G10Side_pos = geom.structure.Position('G10Side_pos',
+                                                pos[0],pos[1],pos[2])
+
+        G10Side_pla = geom.structure.Placement('G10Side_pla',
+                                                volume=G10Side_lv,
+                                                pos=G10Side_pos)
+
+        main_lv.placements.append(G10Side_pla.name)
+
+        # Construct LAr Phase G10 Side Volume
+        LArPhaseG10Side_shape = geom.shapes.Box('LArPhaseG10Side_shape',
+                                        dx = self.G10Side_dx-self.G10Side_dd*2,
                                         dy = self.LAr_dy,
-                                        dz = self.Bucket_dz-self.Bucket_dd*2)
+                                        dz = self.G10Side_dz-self.G10Side_dd*2)
 
-        LArPhaseBucket_lv = geom.structure.Volume('volLArPhaseBucket',
+        LArPhaseG10Side_lv = geom.structure.Volume('volLArPhaseG10Side',
                                         material=self.LArPhase_Material,
-                                        shape=LArPhaseBucket_shape)
+                                        shape=LArPhaseG10Side_shape)
 
-        # Place LAr Phase Bucket Volume inside Bucket volume
-        pos = [Q('0cm'),-self.GAr_dy,Q('0cm')]
+        # Place LAr Phase G10 Side Volume inside Bucket volume
+        pos = [Q('0cm'),-self.halfDimension['dy']+self.LAr_dy,Q('0cm')]
 
-        LArPhaseBucket_pos = geom.structure.Position('LArPhaseBucket_pos',
+        LArPhaseG10Side_pos = geom.structure.Position('LArPhaseG10Side_pos',
                                                 pos[0],pos[1],pos[2])
 
-        LArPhaseBucket_pla = geom.structure.Placement('LArPhaseBucket_pla',
-                                                volume=LArPhaseBucket_lv,
-                                                pos=LArPhaseBucket_pos)
+        LArPhaseG10Side_pla = geom.structure.Placement('LArPhaseG10Side_pla',
+                                                volume=LArPhaseG10Side_lv,
+                                                pos=LArPhaseG10Side_pos)
 
-        main_lv.placements.append(LArPhaseBucket_pla.name)
+        main_lv.placements.append(LArPhaseG10Side_pla.name)
 
-        # Construct GAr Phase Bucket Volume
-        GArPhaseBucket_shape = geom.shapes.Box('GArPhaseBucket_shape',
-                                        dx = self.Bucket_dx-self.Bucket_dd*2,
+        # Construct GAr Phase G10 Side Volume
+        GArPhaseG10Side_shape = geom.shapes.Box('GArPhaseG10Side_shape',
+                                        dx = self.G10Side_dx-self.G10Side_dd*2,
                                         dy = self.GAr_dy,
-                                        dz = self.Bucket_dz-self.Bucket_dd*2)
+                                        dz = self.G10Side_dz-self.G10Side_dd*2)
 
-        GArPhaseBucket_lv = geom.structure.Volume('volGArPhaseBucket',
+        GArPhaseG10Side_lv = geom.structure.Volume('volGArPhaseG10Side',
                                         material=self.GArPhase_Material,
-                                        shape=GArPhaseBucket_shape)
+                                        shape=GArPhaseG10Side_shape)
 
-        # Place GAr Phase Bucket Volume inside Bucket volume
-        pos = [Q('0cm'),self.LAr_dy,Q('0cm')]
+        # Place GAr Phase G10 Side Volume inside Bucket volume
+        pos = [Q('0cm'),-self.halfDimension['dy']+2*self.LAr_dy+self.GAr_dy,Q('0cm')]
 
-        GArPhaseBucket_pos = geom.structure.Position('GArPhaseBucket_pos',
+        GArPhaseG10Side_pos = geom.structure.Position('GArPhaseG10Side_pos',
                                                 pos[0],pos[1],pos[2])
 
-        GArPhaseBucket_pla = geom.structure.Placement('GArPhaseBucket_pla',
-                                                volume=GArPhaseBucket_lv,
-                                                pos=GArPhaseBucket_pos)
+        GArPhaseG10Side_pla = geom.structure.Placement('GArPhaseG10Side_pla',
+                                                volume=GArPhaseG10Side_lv,
+                                                pos=GArPhaseG10Side_pos)
 
-        main_lv.placements.append(GArPhaseBucket_pla.name)
+        main_lv.placements.append(GArPhaseG10Side_pla.name)
 
         # Construct G10 Bottom Volume
         G10Bottom_shape = geom.shapes.Box('G10Bottom_shape',
@@ -109,11 +144,11 @@ class BucketBuilder(gegede.builder.Builder):
                                         dz = self.G10Bottom_dz)
 
         G10Bottom_lv = geom.structure.Volume('volG10Bottom',
-                                        material=self.Bucket_Material,
+                                        material=self.G10_Material,
                                         shape=G10Bottom_shape)
 
         # Place G10 Bottom Volume inside Bucket volume
-        pos = [Q('0cm'),-self.Bucket_dy+self.G10Bottom_dy,Q('0cm')]
+        pos = [Q('0cm'),-self.halfDimension['dy']+self.G10Bottom_dy,Q('0cm')]
 
         G10Bottom_pos = geom.structure.Position('G10Bottom_pos',
                                                 pos[0],pos[1],pos[2])
@@ -135,7 +170,7 @@ class BucketBuilder(gegede.builder.Builder):
                                         shape=LArVol1_shape)
 
         # Place LAr Volume 1 inside Bucket volume
-        pos = [Q('0cm'),-self.Bucket_dy+self.LArVol1_dy+self.LArVol2_dy,Q('0cm')]
+        pos = [Q('0cm'),-self.halfDimension['dy']+self.LArVol1_dy+self.LArVol2_dy,Q('0cm')]
 
         LArVol1_pos = geom.structure.Position('LArVol1_pos',
                                                 pos[0],pos[1],pos[2])
@@ -157,7 +192,7 @@ class BucketBuilder(gegede.builder.Builder):
                                         shape=LArVol2_shape)
 
         # Place LAr Volume 2 inside Bucket volume
-        pos = [Q('0cm'),-self.Bucket_dy+self.LArVol2_dy,Q('0cm')]
+        pos = [Q('0cm'),-self.halfDimension['dy']+self.LArVol2_dy,Q('0cm')]
 
         LArVol2_pos = geom.structure.Position('LArVol2_pos',
                                                 pos[0],pos[1],pos[2])
@@ -167,4 +202,60 @@ class BucketBuilder(gegede.builder.Builder):
                                                 pos=LArVol2_pos)
 
         main_lv.placements.append(LArVol2_pla.name)
+
+        # Build Pillow
+        pos = [Q('0cm'),self.halfDimension['dy']-self.Pillow_builder.halfDimension['dy'],Q('0cm')]
+
+        Pillow_lv = self.Pillow_builder.get_volume()
+
+        Pillow_pos = geom.structure.Position(self.Pillow_builder.name+'_pos',
+                                                pos[0],pos[1],pos[2])
+
+        Pillow_pla = geom.structure.Placement(self.Pillow_builder.name+'_pla',
+                                                volume=Pillow_lv,
+                                                pos=Pillow_pos)
+
+        main_lv.placements.append(Pillow_pla.name)
+
+        # Build Backplate L
+        pos = [-self.InnerDetector_builder.halfDimension['dx']-self.Backplate_builder.halfDimension['dx'],self.halfDimension['dy']-self.Backplate_builder.halfDimension['dy']-2*self.Backplate_Offset,Q('0cm')]
+
+        Backplate_lv = self.Backplate_builder.get_volume()
+
+        Backplate_pos = geom.structure.Position(self.Backplate_builder.name+'_pos_L',
+                                                pos[0],pos[1],pos[2])
+
+        Backplate_pla = geom.structure.Placement(self.Backplate_builder.name+'_pla_L',
+                                                volume=Backplate_lv,
+                                                pos=Backplate_pos)
+
+        main_lv.placements.append(Backplate_pla.name)
+
+        # Build Backplate R
+        pos = [self.InnerDetector_builder.halfDimension['dx']+self.Backplate_builder.halfDimension['dx'],self.halfDimension['dy']-self.Backplate_builder.halfDimension['dy']-2*self.Backplate_Offset,Q('0cm')]
+
+        Backplate_lv = self.Backplate_builder.get_volume()
+
+        Backplate_pos = geom.structure.Position(self.Backplate_builder.name+'_pos_R',
+                                                pos[0],pos[1],pos[2])
+
+        Backplate_pla = geom.structure.Placement(self.Backplate_builder.name+'_pla_R',
+                                                volume=Backplate_lv,
+                                                pos=Backplate_pos)
+
+        main_lv.placements.append(Backplate_pla.name)
+
+        # Build Inner Detector
+        pos = [Q('0cm'),self.halfDimension['dy']-self.InnerDetector_builder.halfDimension['dy']-2*self.InnerDetector_Offset,Q('0cm')]
+
+        InnerDetector_lv = self.InnerDetector_builder.get_volume()
+
+        InnerDetector_pos = geom.structure.Position(self.InnerDetector_builder.name+'_pos',
+                                                pos[0],pos[1],pos[2])
+
+        InnerDetector_pla = geom.structure.Placement(self.InnerDetector_builder.name+'_pla',
+                                                volume=InnerDetector_lv,
+                                                pos=InnerDetector_pos)
+
+        main_lv.placements.append(InnerDetector_pla.name)
 

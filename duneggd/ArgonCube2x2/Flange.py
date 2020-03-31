@@ -34,9 +34,6 @@ class FlangeBuilder(gegede.builder.Builder):
 
         self.Material           = 'GAr'
 
-        # Subbuilders
-        self.Backplate_builder  = self.get_builder('Backplate')
-
     def construct(self,geom):
         """ Construct the geometry.
 
