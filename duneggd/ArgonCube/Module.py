@@ -1,4 +1,4 @@
-""" Module_2x2.py
+""" Module.py
 
 Original Author: P. Koller, University of Bern
 
@@ -9,8 +9,8 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 
-class Module_2x2Builder(gegede.builder.Builder):
-    """ Class to build Module_2x2 geometry.
+class ModuleBuilder(gegede.builder.Builder):
+    """ Class to build Module geometry.
 
     """
 
@@ -36,7 +36,7 @@ class Module_2x2Builder(gegede.builder.Builder):
                                 'dz':   self.Flange_builder.halfDimension['dz']}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
-        print('Module_2x2Builder::construct()')
+        print('ModuleBuilder::construct()')
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
