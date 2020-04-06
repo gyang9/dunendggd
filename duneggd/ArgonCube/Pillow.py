@@ -44,6 +44,7 @@ class PillowBuilder(gegede.builder.Builder):
 
         # Material definitons
         self.Pillow_Material    = 'Steel'
+        self.Vacuum_Material    = 'Vacuum'
 
         self.Material           = 'GAr'
 
@@ -90,7 +91,7 @@ class PillowBuilder(gegede.builder.Builder):
                                         dz = self.PillowSide_dz-2*self.PillowSide_dd)
 
         PillowCavity_lv = geom.structure.Volume('volPillowCavity',
-                                        material=self.Material,
+                                        material=self.Vacuum_Material,
                                         shape=PillowCavity_shape)
 
         # Place Pillow Cavity Volume inside Module Top volume

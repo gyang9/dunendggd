@@ -20,7 +20,7 @@ class DetectorBuilder(gegede.builder.Builder):
 
         # Material definitons
 
-        self.Material   = 'LAr'
+        self.Material   = 'Air'
         self.N_ModuleX  = N_ModuleX
         self.N_ModuleZ  = N_ModuleZ
 

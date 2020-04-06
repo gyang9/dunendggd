@@ -20,11 +20,14 @@ class ModuleBuilder(gegede.builder.Builder):
 
         # Material definitons
 
-        self.Material   = 'LAr'
+        self.Material   = 'GAr'
 
         # Subbuilders
         self.Flange_builder         = self.get_builder('Flange')
         self.Bucket_builder         = self.get_builder('Bucket')
+        self.Feedthrough_builder    = self.get_builder('Feedthrough')
+        self.Pillow_builder         = self.Flange_builder.get_builder('Pillow')
+        self.HVFeedThrough_builder  = self.get_builder('HVFeedThrough')
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -67,4 +70,38 @@ class ModuleBuilder(gegede.builder.Builder):
                                                 pos=Bucket_pos)
 
         main_lv.placements.append(Bucket_pla.name)
+
+        # Build Feedthrough
+        pos = [Q('0cm'),self.halfDimension['dy']+self.Feedthrough_builder.halfDimension['dy']-2*self.Pillow_builder.PillowSide_dy-2*self.Flange_builder.halfDimension['dy'],Q('0cm')]
+
+        Feedthrough_lv = self.Feedthrough_builder.get_volume()
+
+        Feedthrough_pos = geom.structure.Position(self.Feedthrough_builder.name+'_pos',
+                                                pos[0],pos[1],pos[2])
+
+        Feedthrough_pla = geom.structure.Placement(self.Feedthrough_builder.name+'_pla',
+                                                volume=Feedthrough_lv,
+                                                pos=Feedthrough_pos)
+
+        main_lv.placements.append(Feedthrough_pla.name)
+
+        # Build HVFeedThrough
+        pos = [Q('0cm'),self.halfDimension['dy'],Q('0cm')]
+
+        rot_x = Q('90.0deg')
+
+        HVFeedThrough_lv = self.HVFeedThrough_builder.get_volume()
+
+        HVFeedThrough_pos = geom.structure.Position(self.HVFeedThrough_builder.name+'_pos',
+                                                pos[0],pos[1],pos[2])
+
+        HVFeedThrough_rot = geom.structure.Rotation(self.HVFeedThrough_builder.name+'_rot',
+                                                rot_x)
+
+        HVFeedThrough_pla = geom.structure.Placement(self.HVFeedThrough_builder.name+'_pla',
+                                                volume=HVFeedThrough_lv,
+                                                pos=HVFeedThrough_pos,
+                                                rot=HVFeedThrough_rot)
+
+        main_lv.placements.append(HVFeedThrough_pla.name)
 

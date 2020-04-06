@@ -14,20 +14,20 @@ class FlangeBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Flange_dimension,FlangeBtm_dimension,**kwargs):
+    def configure(self,FlangeTop_dimension,FlangeBtm_dimension,**kwargs):
 
         # Read dimensions form config file
-        self.Flange_dx          = Flange_dimension['dx']
-        self.Flange_dy          = Flange_dimension['dy']
-        self.Flange_dz          = Flange_dimension['dz']
+        self.FlangeTop_dx       = FlangeTop_dimension['dx']
+        self.FlangeTop_dy       = FlangeTop_dimension['dy']
+        self.FlangeTop_dz       = FlangeTop_dimension['dz']
 
         self.FlangeBtm_dx       = FlangeBtm_dimension['dx']
         self.FlangeBtm_dy       = FlangeBtm_dimension['dy']
         self.FlangeBtm_dz       = FlangeBtm_dimension['dz']
 
-        self.FlangeTop_dx       = self.Flange_dx
-        self.FlangeTop_dy       = self.Flange_dy-self.FlangeBtm_dy
-        self.FlangeTop_dz       = self.Flange_dz
+        self.Flange_dx          = self.FlangeTop_dx
+        self.Flange_dy          = self.FlangeTop_dy+self.FlangeBtm_dy
+        self.Flange_dz          = self.FlangeTop_dz
 
         # Material definitons
         self.Flange_Material    = 'Steel'
@@ -59,7 +59,7 @@ class FlangeBuilder(gegede.builder.Builder):
                                         shape=FlangeTop_shape)
 
         # Place FlangeTop Volume inside Flange volume
-        pos = [Q('0cm'),-self.Flange_dy+2*self.FlangeBtm_dy+self.FlangeTop_dy,Q('0cm')]
+        pos = [Q('0cm'),-self.halfDimension['dy']+2*self.FlangeBtm_dy+self.FlangeTop_dy,Q('0cm')]
 
         FlangeTop_pos = geom.structure.Position('FlangeTop_pos',
                                                 pos[0],pos[1],pos[2])
@@ -81,7 +81,7 @@ class FlangeBuilder(gegede.builder.Builder):
                                         shape=FlangeBtm_shape)
 
         # Place FlangeBtm Volume inside Flange volume
-        pos = [Q('0cm'),-self.Flange_dy+self.FlangeBtm_dy,Q('0cm')]
+        pos = [Q('0cm'),-self.halfDimension['dy']+self.FlangeBtm_dy,Q('0cm')]
 
         FlangeBtm_pos = geom.structure.Position('FlangeBtm_pos',
                                                 pos[0],pos[1],pos[2])
