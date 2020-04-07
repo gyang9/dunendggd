@@ -21,7 +21,7 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.WLS_dy             = WLS_dimension['dy']
         self.WLS_dz             = WLS_dimension['dz']
 
-        self.Mirror_d           = WLS_dimension['mirror_d']
+        self.Mirror_dd          = WLS_dimension['mirror_dd']
 
         self.TPB_dz             = WLS_dimension['tpb_dz']
 
@@ -57,13 +57,13 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.Mirror             = Mirror
 
         if not self.Mirror:
-            self.WLS_dx = self.WLS_dx + 2*self.Mirror_d
-            self.WLS_dy = self.WLS_dy + 2*self.Mirror_d
-            self.WLS_dz = self.WLS_dz + self.Mirror_d
-            self.Mirror_d = 0
+            self.WLS_dx = self.WLS_dx + 2*self.Mirror_dd
+            self.WLS_dy = self.WLS_dy + 2*self.Mirror_dd
+            self.WLS_dz = self.WLS_dz + self.Mirror_dd
+            self.Mirror_dd = 0
 
         # Force the SiPMs to stick out by 10um from the Mask to ensure seamless coupling of optical photons
-        self.SiPM_Couple        = self.Mirror_d+Q('10um')
+        self.SiPM_Couple        = self.Mirror_dd+Q('10um')
         self.SiPM_dx            = self.SiPM_Mask_dx+self.SiPM_Couple
 
     def construct(self,geom):
@@ -72,7 +72,7 @@ class ArCLightBuilder(gegede.builder.Builder):
         """
 
         self.halfDimension      = { 'dx':   self.WLS_dx
-                                            +2*self.Mirror_d
+                                            +2*self.Mirror_dd
                                             +self.SiPM_Mask_dx
                                             +self.SiPM_PCB_dx,
 
@@ -80,7 +80,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             +(self.N_Mask-1)*self.SiPM_PCB_gap,
 
                                     'dz':   self.WLS_dz
-                                            +self.Mirror_d
+                                            +self.Mirror_dd
                                             +self.TPB_dz}
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
@@ -91,9 +91,9 @@ class ArCLightBuilder(gegede.builder.Builder):
         if self.Mirror:
             # Construct Mirror LV
             Mirror_shape = geom.shapes.Box('Mirror_LAr_shape',
-                                           dx = self.WLS_dx+2*self.Mirror_d,
-                                           dy = self.WLS_dy+2*self.Mirror_d,
-                                           dz = self.WLS_dz+self.Mirror_d)
+                                           dx = self.WLS_dx+2*self.Mirror_dd,
+                                           dy = self.WLS_dy+2*self.Mirror_dd,
+                                           dz = self.WLS_dz+self.Mirror_dd)
 
             Mirror_lv = geom.structure.Volume('volMirror_LAr',
                                                 material=self.Mirror_Material,
@@ -122,7 +122,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             shape=WLS_shape)
 
         # Place WLS panel into main LV
-        pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),-self.TPB_dz+self.Mirror_d]
+        pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),-self.TPB_dz+self.Mirror_dd]
 
         WLS_pos = geom.structure.Position('WLS_pos',
                                                 pos[0],pos[1],pos[2])
@@ -145,7 +145,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             shape=TPB_shape)
 
         # Place TPB LV next to WLS plane
-        pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),self.WLS_dz+self.Mirror_d]
+        pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),self.WLS_dz+self.Mirror_dd]
 
         TPB_pos = geom.structure.Position('TPB_pos',
                                                 pos[0],pos[1],pos[2])
@@ -169,7 +169,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                 shape=SiPM_Mask_shape)
 
             # Place Mask LV next to WLS plane
-            pos = [-self.WLS_dx-2*self.Mirror_d+self.SiPM_PCB_dx,-(self.N_Mask-1)*self.SiPM_Mask_dy-(self.N_Mask-1)*self.SiPM_Mask_gap+(2*n)*self.SiPM_Mask_dy+(2*n)*self.SiPM_Mask_gap,-self.TPB_dz+self.Mirror_d]
+            pos = [-self.WLS_dx-2*self.Mirror_dd+self.SiPM_PCB_dx,-(self.N_Mask-1)*self.SiPM_Mask_dy-(self.N_Mask-1)*self.SiPM_Mask_gap+(2*n)*self.SiPM_Mask_dy+(2*n)*self.SiPM_Mask_gap,-self.TPB_dz+self.Mirror_dd]
 
             SiPM_Mask_pos = geom.structure.Position('SiPM_Mask_pos_'+str(n),
                                                     pos[0],pos[1],pos[2])
@@ -192,7 +192,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                     shape=SiPM_shape)
 
                 # Place SiPMs next to WLS plane
-                posipm = [-self.WLS_dx-2*self.Mirror_d+self.SiPM_PCB_dx+self.SiPM_Couple,pos[1]-(self.N_SiPM/self.N_Mask-1)*self.SiPM_dy-(self.N_SiPM/self.N_Mask-1)*self.SiPM_gap+(2*m)*self.SiPM_dy+(2*m)*self.SiPM_gap,-self.TPB_dz+self.Mirror_d]
+                posipm = [-self.WLS_dx-2*self.Mirror_dd+self.SiPM_PCB_dx+self.SiPM_Couple,pos[1]-(self.N_SiPM/self.N_Mask-1)*self.SiPM_dy-(self.N_SiPM/self.N_Mask-1)*self.SiPM_gap+(2*m)*self.SiPM_dy+(2*m)*self.SiPM_gap,-self.TPB_dz+self.Mirror_dd]
 
                 SiPM_pos = geom.structure.Position('SiPM_pos_'+str(2*n+m),
                                                         posipm[0],posipm[1],posipm[2])
@@ -216,7 +216,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                                 shape=SiPM_PCB_shape)
 
             # Place SiPM PCBs next to SiPM Masks
-            pos = [-self.WLS_dx-2*self.Mirror_d-self.SiPM_Mask_dx,-(self.N_Mask-1)*self.SiPM_PCB_dy-(self.N_Mask-1)*self.SiPM_PCB_gap+(2*n)*self.SiPM_PCB_dy+(2*n)*self.SiPM_PCB_gap,-self.TPB_dz+self.Mirror_d]
+            pos = [-self.WLS_dx-2*self.Mirror_dd-self.SiPM_Mask_dx,-(self.N_Mask-1)*self.SiPM_PCB_dy-(self.N_Mask-1)*self.SiPM_PCB_gap+(2*n)*self.SiPM_PCB_dy+(2*n)*self.SiPM_PCB_gap,-self.TPB_dz+self.Mirror_dd]
 
             SiPM_PCB_pos = geom.structure.Position('SiPM_PCB_pos_'+str(n),
                                                     pos[0],pos[1],pos[2])

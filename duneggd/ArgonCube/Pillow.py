@@ -44,7 +44,8 @@ class PillowBuilder(gegede.builder.Builder):
 
         # Material definitons
         self.Pillow_Material    = 'Steel'
-        self.Vacuum_Material    = 'Vacuum'
+        self.Vacuum_Material    = 'GAr' #'Vacuum' CHANGE !!!!!
+        self.G10_Material       = 'G10'
 
         self.Material           = 'GAr'
 
@@ -216,4 +217,27 @@ class PillowBuilder(gegede.builder.Builder):
                                                     pos=AngleBarSide_pos)
 
             main_lv.placements.append(AngleBarSide_pla.name)
+
+        # Construct Angle Bar Side Volume
+        G10_shape = geom.shapes.Box('G10_shape',
+                                        dx = self.AngleBarSide_dx,
+                                        dy = self.AngleBarSide_dy,
+                                        dz = self.AngleBarSide_dz)
+
+        G10_lv = geom.structure.Volume('volG10',
+                                        material=self.G10_Material,
+                                        shape=G10_shape)
+
+        # Place Angle Bar Side Volume Module Top volume
+        for i in range(2):
+            pos = [(-1)**i*(self.AngleBarTop_gap+2*self.AngleBarTop_dx+self.AngleBarSide_dx),self.Pillow_dy-2*self.PillowSide_dy-2*self.AngleBarTop_dy-2*self.Angle_dd-2*AngleSide_shape[2]+self.AngleBarSide_dy,Q('0cm')]
+
+            G10_pos = geom.structure.Position('G10_pos_'+str(i*self.N_Angle+j),
+                                                    pos[0],pos[1],pos[2])
+
+            G10_pla = geom.structure.Placement('G10_pla_'+str(i*self.N_Angle+j),
+                                                    volume=G10_lv,
+                                                    pos=G10_pos)
+
+            #main_lv.placements.append(G10_pla.name)
 

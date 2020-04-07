@@ -22,12 +22,12 @@ class OpticalDetBuilder(gegede.builder.Builder):
         self.N_TilesY                   = N_TilesY
 
         # Material definitons
-        self.Material       = 'LAr'
+        self.Material                   = 'LAr'
 
         # Subbuilders
-        self.ArCLight_builder       = self.get_builder('ArCLight')
-        self.TPCPlane_builder       = self.get_builder('TPCPlane')
-        self.PixelPlane_builder     = self.TPCPlane_builder.get_builder('PixelPlane')
+        self.ArCLight_builder           = self.get_builder('ArCLight')
+        self.TPCPlane_builder           = self.get_builder('TPCPlane')
+        self.PixelPlane_builder         = self.TPCPlane_builder.get_builder('PixelPlane')
 
     def construct(self,geom):
         """ Construct the geometry.

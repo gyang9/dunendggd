@@ -17,27 +17,27 @@ class PixelPlaneBuilder(gegede.builder.Builder):
     def configure(self,PCB_dimension,Pixel_dimension,Asic_dimension,N_Pixel,N_Asic,**kwargs):
 
         # Read dimensions form config file
-        self.PCB_dx     = PCB_dimension['dx']
-        self.PCB_dy     = PCB_dimension['dy']
-        self.PCB_dz     = PCB_dimension['dz']
+        self.PCB_dx             = PCB_dimension['dx']
+        self.PCB_dy             = PCB_dimension['dy']
+        self.PCB_dz             = PCB_dimension['dz']
 
-        self.Pixel_dx   = Pixel_dimension['dx']
-        self.Pixel_dy   = Pixel_dimension['dy']
-        self.Pixel_dz   = Pixel_dimension['dz']
+        self.Pixel_dx           = Pixel_dimension['dx']
+        self.Pixel_dy           = Pixel_dimension['dy']
+        self.Pixel_dz           = Pixel_dimension['dz']
 
-        self.Asic_dx    = Asic_dimension['dx']
-        self.Asic_dy    = Asic_dimension['dy']
-        self.Asic_dz    = Asic_dimension['dz']
+        self.Asic_dx            = Asic_dimension['dx']
+        self.Asic_dy            = Asic_dimension['dy']
+        self.Asic_dz            = Asic_dimension['dz']
 
-        self.N_Pixel         = N_Pixel
-        self.N_Asic          = N_Asic
+        self.N_Pixel            = N_Pixel
+        self.N_Asic             = N_Asic
 
         # Material definitons
-        self.PCB_Material   = 'FR4'
-        self.Pixel_Material = 'Gold'
-        self.Asic_Material  = 'Silicon'
+        self.PCB_Material       = 'FR4'
+        self.Pixel_Material     = 'Gold'
+        self.Asic_Material      = 'Silicon'
 
-        self.Material       = 'LAr'
+        self.Material           = 'LAr'
 
     def construct(self,geom):
         """ Construct the geometry.

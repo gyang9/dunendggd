@@ -14,7 +14,7 @@ class BucketBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,G10Side_dimension,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,LAr_Level_Bucket,G10Side_Offset,Backplate_Offset,InnerDetector_Offset,**kwargs):
+    def configure(self,G10Side_dimension,G10Bottom_dimension,LArVol1_dimension,LArVol2_dimension,LAr_Level_Bucket,**kwargs):
 
         # Read dimensions form config file
         self.G10Side_dx             = G10Side_dimension['dx']
@@ -37,10 +37,6 @@ class BucketBuilder(gegede.builder.Builder):
         self.LAr_dy                 = LAr_Level_Bucket
         self.GAr_dy                 = self.G10Side_dy-self.LAr_dy
 
-        self.G10Side_Offset         = G10Side_Offset
-        self.Backplate_Offset       = Backplate_Offset
-        self.InnerDetector_Offset   = InnerDetector_Offset
-
         # Material definitons
         self.G10_Material           = 'G10'
         self.LArPhase_Material      = 'LAr'
@@ -49,13 +45,8 @@ class BucketBuilder(gegede.builder.Builder):
         self.Material               = 'GAr'
 
         self.Bucket_dx              = self.G10Side_dx
-        self.Bucket_dy              = self.G10Side_dy+self.G10Side_Offset
+        self.Bucket_dy              = self.G10Side_dy
         self.Bucket_dz              = self.G10Side_dz
-
-        # Subbuilders
-        self.Pillow_builder         = self.get_builder('Pillow')
-        self.Backplate_builder      = self.get_builder('Backplate')
-        self.InnerDetector_builder  = self.get_builder('InnerDetector')
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -202,60 +193,4 @@ class BucketBuilder(gegede.builder.Builder):
                                                 pos=LArVol2_pos)
 
         main_lv.placements.append(LArVol2_pla.name)
-
-        # Build Pillow
-        pos = [Q('0cm'),self.halfDimension['dy']-self.Pillow_builder.halfDimension['dy'],Q('0cm')]
-
-        Pillow_lv = self.Pillow_builder.get_volume()
-
-        Pillow_pos = geom.structure.Position(self.Pillow_builder.name+'_pos',
-                                                pos[0],pos[1],pos[2])
-
-        Pillow_pla = geom.structure.Placement(self.Pillow_builder.name+'_pla',
-                                                volume=Pillow_lv,
-                                                pos=Pillow_pos)
-
-        main_lv.placements.append(Pillow_pla.name)
-
-        # Build Backplate L
-        pos = [-self.InnerDetector_builder.halfDimension['dx']-self.Backplate_builder.halfDimension['dx'],self.halfDimension['dy']-self.Backplate_builder.halfDimension['dy']-2*self.Backplate_Offset,Q('0cm')]
-
-        Backplate_lv = self.Backplate_builder.get_volume()
-
-        Backplate_pos = geom.structure.Position(self.Backplate_builder.name+'_pos_L',
-                                                pos[0],pos[1],pos[2])
-
-        Backplate_pla = geom.structure.Placement(self.Backplate_builder.name+'_pla_L',
-                                                volume=Backplate_lv,
-                                                pos=Backplate_pos)
-
-        main_lv.placements.append(Backplate_pla.name)
-
-        # Build Backplate R
-        pos = [self.InnerDetector_builder.halfDimension['dx']+self.Backplate_builder.halfDimension['dx'],self.halfDimension['dy']-self.Backplate_builder.halfDimension['dy']-2*self.Backplate_Offset,Q('0cm')]
-
-        Backplate_lv = self.Backplate_builder.get_volume()
-
-        Backplate_pos = geom.structure.Position(self.Backplate_builder.name+'_pos_R',
-                                                pos[0],pos[1],pos[2])
-
-        Backplate_pla = geom.structure.Placement(self.Backplate_builder.name+'_pla_R',
-                                                volume=Backplate_lv,
-                                                pos=Backplate_pos)
-
-        main_lv.placements.append(Backplate_pla.name)
-
-        # Build Inner Detector
-        pos = [Q('0cm'),self.halfDimension['dy']-self.InnerDetector_builder.halfDimension['dy']-2*self.InnerDetector_Offset,Q('0cm')]
-
-        InnerDetector_lv = self.InnerDetector_builder.get_volume()
-
-        InnerDetector_pos = geom.structure.Position(self.InnerDetector_builder.name+'_pos',
-                                                pos[0],pos[1],pos[2])
-
-        InnerDetector_pla = geom.structure.Placement(self.InnerDetector_builder.name+'_pla',
-                                                volume=InnerDetector_lv,
-                                                pos=InnerDetector_pos)
-
-        main_lv.placements.append(InnerDetector_pla.name)
 
