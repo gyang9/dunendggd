@@ -14,18 +14,25 @@ class FeedthroughBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,TubeCenter_dimension,TubeSide_dimension,**kwargs):
+    def configure(self,TubeCenter_dimension,TubeSide_dimension,TubeCenterFlange_dimension,TubeSideFlange_dimension,**kwargs):
 
         # Read dimensions form config file
-        self.TubeCenter_rmin    = TubeCenter_dimension['rmin']
-        self.TubeCenter_rmax    = TubeCenter_dimension['rmax']
-        self.TubeCenter_dz      = TubeCenter_dimension['dz']
+        self.TubeCenter_rmin        = TubeCenter_dimension['rmin']
+        self.TubeCenter_rmax        = TubeCenter_dimension['rmax']
+        self.TubeCenter_dz          = TubeCenter_dimension['dz']
 
-        self.TubeSide_rmin      = TubeSide_dimension['rmin']
-        self.TubeSide_rmax      = TubeSide_dimension['rmax']
-        self.TubeSide_dz_long   = TubeSide_dimension['dz_long']
-        self.TubeSide_dz_short  = TubeSide_dimension['dz_short']
-        self.TubeSide_Offset    = TubeSide_dimension['offset']
+        self.TubeSide_rmin          = TubeSide_dimension['rmin']
+        self.TubeSide_rmax          = TubeSide_dimension['rmax']
+        self.TubeSide_dz            = TubeSide_dimension['dz']
+        self.TubeSide_Offset        = TubeSide_dimension['offset']
+
+        self.TubeSideFlange_rmin    = TubeSideFlange_dimension['rmin']
+        self.TubeSideFlange_rmax    = TubeSideFlange_dimension['rmax']
+        self.TubeSideFlange_dz      = TubeSideFlange_dimension['dz']
+
+        self.TubeCenterFlange_rmin  = TubeCenterFlange_dimension['rmin']
+        self.TubeCenterFlange_rmax  = TubeCenterFlange_dimension['rmax']
+        self.TubeCenterFlange_dz    = TubeCenterFlange_dimension['dz']
 
         # Material definitons
         self.Flange_Material    = 'Steel'
@@ -45,7 +52,7 @@ class FeedthroughBuilder(gegede.builder.Builder):
         """
 
         self.Feedthrough_dx     = self.Pillow_builder.PillowSide_dx-2*self.Pillow_builder.PillowSide_dd
-        self.Feedthrough_dy     = self.TubeSide_dz_long
+        self.Feedthrough_dy     = self.TubeCenter_dz
         self.Feedthrough_dz     = self.Pillow_builder.PillowSide_dz-2*self.Pillow_builder.PillowSide_dd
 
         self.halfDimension  = { 'dx':   self.Feedthrough_dx,
@@ -133,6 +140,16 @@ class FeedthroughBuilder(gegede.builder.Builder):
                                         material=self.Tube_Material,
                                         shape=TubeCenter_shape)
 
+        # Construct TubeCenterFlange Volume
+        TubeCenterFlange_shape = geom.shapes.Tubs('TubeCenterFlange_shape',
+                                        rmin = Q('0cm'),
+                                        rmax = self.TubeCenterFlange_rmax,
+                                        dz = self.TubeCenterFlange_dz)
+
+        TubeCenterFlange_lv = geom.structure.Volume('volTubeCenterFlange',
+                                        material=self.Tube_Material,
+                                        shape=TubeCenterFlange_shape)
+
         # Construct TubeCenterGAr Volume
         TubeCenterGAr_shape = geom.shapes.Tubs('TubeCenterGAr_shape',
                                         rmin = Q('0cm'),
@@ -142,6 +159,18 @@ class FeedthroughBuilder(gegede.builder.Builder):
         TubeCenterGAr_lv = geom.structure.Volume('volTubeCenterGAr',
                                         material=self.GAr_Material,
                                         shape=TubeCenterGAr_shape)
+
+        # Place TubeCenterFlange Volume inside TubeCenter volume
+        pos = [Q('0cm'),Q('0cm'),self.TubeCenter_dz-self.TubeCenterFlange_dz]
+
+        TubeCenterFlange_pos = geom.structure.Position('TubeCenterFlange_pos',
+                                                pos[0],pos[1],pos[2])
+
+        TubeCenterFlange_pla = geom.structure.Placement('TubeCenterFlange_pla',
+                                                volume=TubeCenterFlange_lv,
+                                                pos=TubeCenterFlange_pos)
+
+        TubeCenter_lv.placements.append(TubeCenterFlange_pla.name)
 
         # Place TubeCenterGAr Volume inside TubeCenter volume
         pos = [Q('0cm'),Q('0cm'),Q('0cm')]
@@ -173,105 +202,93 @@ class FeedthroughBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(TubeCenter_pla.name)
 
-        # Construct TubeSideLong Volume
-        TubeSideLong_shape = geom.shapes.Tubs('TubeSideLong_shape',
+        # Construct TubeSide Volume
+        TubeSide_shape = geom.shapes.Tubs('TubeSide_shape',
                                         rmin = Q('0cm'),
                                         rmax = self.TubeSide_rmax,
-                                        dz = self.TubeSide_dz_long)
+                                        dz = self.TubeSide_dz)
 
-        TubeSideLong_lv = geom.structure.Volume('volTubeSideLong',
+        TubeSide_lv = geom.structure.Volume('volTubeSide',
                                         material=self.Tube_Material,
-                                        shape=TubeSideLong_shape)
+                                        shape=TubeSide_shape)
 
-        # Construct TubeSideLongGAr Volume
-        TubeSideLongGAr_shape = geom.shapes.Tubs('TubeSideLongGAr_shape',
+        # Construct TubeSideFlange Volume
+        TubeSideFlange_shape = geom.shapes.Tubs('TubeSideFlange_shape',
+                                        rmin = Q('0cm'),
+                                        rmax = self.TubeSideFlange_rmax,
+                                        dz = self.TubeSideFlange_dz)
+
+        TubeSideFlange_lv = geom.structure.Volume('volTubeSideFlange',
+                                        material=self.Tube_Material,
+                                        shape=TubeSideFlange_shape)
+
+        # Construct TubeSideGAr Volume
+        TubeSideGAr_shape = geom.shapes.Tubs('TubeSideGAr_shape',
                                         rmin = Q('0cm'),
                                         rmax = self.TubeSide_rmin,
-                                        dz = self.TubeSide_dz_long)
+                                        dz = self.TubeSide_dz)
 
-        TubeSideLongGAr_lv = geom.structure.Volume('volTubeSideLongGAr',
+        TubeSideGAr_lv = geom.structure.Volume('volTubeSideGAr',
                                         material=self.GAr_Material,
-                                        shape=TubeSideLongGAr_shape)
+                                        shape=TubeSideGAr_shape)
 
-        # Place TubeSideLongGAr Volume inside TubeSideLong volume
-        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
+        # Place TubeSideFlange Volume inside TubeSide volume
+        pos = [Q('0cm'),Q('0cm'),self.TubeSide_dz-self.TubeSideFlange_dz]
 
-        TubeSideLongGAr_pos = geom.structure.Position('TubeSideLongGAr_pos',
+        TubeSideFlange_pos = geom.structure.Position('TubeSideFlange_pos',
                                                 pos[0],pos[1],pos[2])
 
-        TubeSideLongGAr_pla = geom.structure.Placement('TubeSideLongGAr_pla',
-                                                volume=TubeSideLongGAr_lv,
-                                                pos=TubeSideLongGAr_pos)
+        TubeSideFlange_pla = geom.structure.Placement('TubeSideFlange_pla',
+                                                volume=TubeSideFlange_lv,
+                                                pos=TubeSideFlange_pos)
 
-        TubeSideLong_lv.placements.append(TubeSideLongGAr_pla.name)
+        TubeSide_lv.placements.append(TubeSideFlange_pla.name)
 
-        # Place TubeSideLong Volume inside Feedthrough volume
+        # Place TubeSideGAr Volume inside TubeSide volume
+        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
+
+        TubeSideGAr_pos = geom.structure.Position('TubeSideGAr_pos',
+                                                pos[0],pos[1],pos[2])
+
+        TubeSideGAr_pla = geom.structure.Placement('TubeSideGAr_pla',
+                                                volume=TubeSideGAr_lv,
+                                                pos=TubeSideGAr_pos)
+
+        TubeSide_lv.placements.append(TubeSideGAr_pla.name)
+
+        # Place TubeSide Volume inside Feedthrough volume
         for i in range(2):
-            pos = [Q('0cm'),-self.halfDimension['dy']+self.TubeSide_dz_long,(-1)**i*2*self.TubeSide_Offset]
+            pos = [(-1)**i*2*self.TubeSide_Offset,-self.halfDimension['dy']+self.TubeSide_dz,Q('0cm')]
 
             rot_x = Q('90.0deg')
 
-            TubeSideLong_pos = geom.structure.Position('TubeSideLong_pos_'+str(i),
+            TubeSide_pos = geom.structure.Position('TubeSide_pos_'+str(2*i),
                                                     pos[0],pos[1],pos[2])
 
-            TubeSideLong_rot = geom.structure.Rotation('TubeSideLong_rot_'+str(i),
+            TubeSide_rot = geom.structure.Rotation('TubeSide_rot_'+str(2*i),
                                                     rot_x)
 
-            TubeSideLong_pla = geom.structure.Placement('TubeSideLong_pla_'+str(i),
-                                                    volume=TubeSideLong_lv,
-                                                    pos=TubeSideLong_pos,
-                                                    rot=TubeSideLong_rot)
+            TubeSide_pla = geom.structure.Placement('TubeSide_pla_'+str(2*i),
+                                                    volume=TubeSide_lv,
+                                                    pos=TubeSide_pos,
+                                                    rot=TubeSide_rot)
 
-            main_lv.placements.append(TubeSideLong_pla.name)
+            main_lv.placements.append(TubeSide_pla.name)
 
-        # Construct TubeSideShort Volume
-        TubeSideShort_shape = geom.shapes.Tubs('TubeSideShort_shape',
-                                        rmin = Q('0cm'),
-                                        rmax = self.TubeSide_rmax,
-                                        dz = self.TubeSide_dz_short)
-
-        TubeSideShort_lv = geom.structure.Volume('volTubeSideShort',
-                                        material=self.Tube_Material,
-                                        shape=TubeSideShort_shape)
-
-        # Construct TubeSideShortGAr Volume
-        TubeSideShortGAr_shape = geom.shapes.Tubs('TubeSideShortGAr_shape',
-                                        rmin = Q('0cm'),
-                                        rmax = self.TubeSide_rmin,
-                                        dz = self.TubeSide_dz_short)
-
-        TubeSideShortGAr_lv = geom.structure.Volume('volTubeSideShortGAr',
-                                        material=self.GAr_Material,
-                                        shape=TubeSideShortGAr_shape)
-
-        # Place TubeSideShortGAr Volume inside TubeSideShort volume
-        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
-
-        TubeSideShortGAr_pos = geom.structure.Position('TubeSideShortGAr_pos',
-                                                pos[0],pos[1],pos[2])
-
-        TubeSideShortGAr_pla = geom.structure.Placement('TubeSideShortGAr_pla',
-                                                volume=TubeSideShortGAr_lv,
-                                                pos=TubeSideShortGAr_pos)
-
-        TubeSideShort_lv.placements.append(TubeSideShortGAr_pla.name)
-
-        # Place TubeSideShort Volume inside Feedthrough volume
-        for i in range(2):
-            pos = [(-1)**i*2*self.TubeSide_Offset,-self.halfDimension['dy']+self.TubeSide_dz_short,Q('0cm')]
+            pos = [Q('0cm'),-self.halfDimension['dy']+self.TubeSide_dz,(-1)**i*2*self.TubeSide_Offset]
 
             rot_x = Q('90.0deg')
 
-            TubeSideShort_pos = geom.structure.Position('TubeSideShort_pos_'+str(i),
+            TubeSide_pos = geom.structure.Position('TubeSide_pos_'+str(2*i+1),
                                                     pos[0],pos[1],pos[2])
 
-            TubeSideShort_rot = geom.structure.Rotation('TubeSideShort_rot_'+str(i),
+            TubeSide_rot = geom.structure.Rotation('TubeSide_rot_'+str(2*i+1),
                                                     rot_x)
 
-            TubeSideShort_pla = geom.structure.Placement('TubeSideShort_pla_'+str(i),
-                                                    volume=TubeSideShort_lv,
-                                                    pos=TubeSideShort_pos,
-                                                    rot=TubeSideShort_rot)
+            TubeSide_pla = geom.structure.Placement('TubeSide_pla_'+str(2*i+1),
+                                                    volume=TubeSide_lv,
+                                                    pos=TubeSide_pos,
+                                                    rot=TubeSide_rot)
 
-            main_lv.placements.append(TubeSideShort_pla.name)
+            main_lv.placements.append(TubeSide_pla.name)
 
