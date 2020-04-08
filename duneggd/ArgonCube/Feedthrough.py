@@ -21,6 +21,10 @@ class FeedthroughBuilder(gegede.builder.Builder):
         self.TubeCenter_rmax        = TubeCenter_dimension['rmax']
         self.TubeCenter_dz          = TubeCenter_dimension['dz']
 
+        self.TubeCenterFlange_rmin  = TubeCenterFlange_dimension['rmin']
+        self.TubeCenterFlange_rmax  = TubeCenterFlange_dimension['rmax']
+        self.TubeCenterFlange_dz    = TubeCenterFlange_dimension['dz']
+
         self.TubeSide_rmin          = TubeSide_dimension['rmin']
         self.TubeSide_rmax          = TubeSide_dimension['rmax']
         self.TubeSide_dz            = TubeSide_dimension['dz']
@@ -29,10 +33,6 @@ class FeedthroughBuilder(gegede.builder.Builder):
         self.TubeSideFlange_rmin    = TubeSideFlange_dimension['rmin']
         self.TubeSideFlange_rmax    = TubeSideFlange_dimension['rmax']
         self.TubeSideFlange_dz      = TubeSideFlange_dimension['dz']
-
-        self.TubeCenterFlange_rmin  = TubeCenterFlange_dimension['rmin']
-        self.TubeCenterFlange_rmax  = TubeCenterFlange_dimension['rmax']
-        self.TubeCenterFlange_dz    = TubeCenterFlange_dimension['dz']
 
         # Material definitons
         self.Flange_Material    = 'Steel'
@@ -52,7 +52,7 @@ class FeedthroughBuilder(gegede.builder.Builder):
         """
 
         self.Feedthrough_dx     = self.Pillow_builder.PillowSide_dx-2*self.Pillow_builder.PillowSide_dd
-        self.Feedthrough_dy     = self.TubeCenter_dz
+        self.Feedthrough_dy     = self.TubeCenter_dz+self.TubeCenterFlange_dz
         self.Feedthrough_dz     = self.Pillow_builder.PillowSide_dz-2*self.Pillow_builder.PillowSide_dd
 
         self.halfDimension  = { 'dx':   self.Feedthrough_dx,
@@ -134,7 +134,7 @@ class FeedthroughBuilder(gegede.builder.Builder):
         TubeCenter_shape = geom.shapes.Tubs('TubeCenter_shape',
                                         rmin = Q('0cm'),
                                         rmax = self.TubeCenter_rmax,
-                                        dz = self.TubeCenter_dz)
+                                        dz = self.TubeCenter_dz+self.TubeCenterFlange_dz)
 
         TubeCenter_lv = geom.structure.Volume('volTubeCenter',
                                         material=self.Tube_Material,
@@ -161,19 +161,30 @@ class FeedthroughBuilder(gegede.builder.Builder):
                                         shape=TubeCenterGAr_shape)
 
         # Place TubeCenterFlange Volume inside TubeCenter volume
-        pos = [Q('0cm'),Q('0cm'),self.TubeCenter_dz-self.TubeCenterFlange_dz]
+        pos = [Q('0cm'),Q('0cm'),self.TubeCenter_dz-2*self.TubeCenterFlange_dz]
 
-        TubeCenterFlange_pos = geom.structure.Position('TubeCenterFlange_pos',
+        TubeCenterFlange_pos = geom.structure.Position('TubeCenterFlange_pos_A',
                                                 pos[0],pos[1],pos[2])
 
-        TubeCenterFlange_pla = geom.structure.Placement('TubeCenterFlange_pla',
+        TubeCenterFlange_pla = geom.structure.Placement('TubeCenterFlange_pla_A',
+                                                volume=TubeCenterFlange_lv,
+                                                pos=TubeCenterFlange_pos)
+
+        TubeCenter_lv.placements.append(TubeCenterFlange_pla.name)
+
+        pos = [Q('0cm'),Q('0cm'),self.TubeCenter_dz]
+
+        TubeCenterFlange_pos = geom.structure.Position('TubeCenterFlange_pos_B',
+                                                pos[0],pos[1],pos[2])
+
+        TubeCenterFlange_pla = geom.structure.Placement('TubeCenterFlange_pla_B',
                                                 volume=TubeCenterFlange_lv,
                                                 pos=TubeCenterFlange_pos)
 
         TubeCenter_lv.placements.append(TubeCenterFlange_pla.name)
 
         # Place TubeCenterGAr Volume inside TubeCenter volume
-        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
+        pos = [Q('0cm'),Q('0cm'),-self.TubeCenterFlange_dz]
 
         TubeCenterGAr_pos = geom.structure.Position('TubeCenterGAr_pos',
                                                 pos[0],pos[1],pos[2])
@@ -185,7 +196,7 @@ class FeedthroughBuilder(gegede.builder.Builder):
         TubeCenter_lv.placements.append(TubeCenterGAr_pla.name)
 
         # Place TubeCenter Volume inside Feedthrough volume
-        pos = [Q('0cm'),-self.halfDimension['dy']+self.TubeCenter_dz,Q('0cm')]
+        pos = [Q('0cm'),-self.halfDimension['dy']+self.TubeCenter_dz+self.TubeCenterFlange_dz,Q('0cm')]
 
         rot_x = Q('90.0deg')
 

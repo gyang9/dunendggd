@@ -30,6 +30,7 @@ class ModuleBuilder(gegede.builder.Builder):
         self.Backplate_builder      = self.get_builder('Backplate')
         self.InnerDetector_builder  = self.get_builder('InnerDetector')
         self.Feedthrough_builder    = self.get_builder('Feedthrough')
+        self.TPiece_builder         = self.get_builder('TPiece')
         self.HVFeedThrough_builder  = self.get_builder('HVFeedThrough')
         self.Flange_builder         = self.Feedthrough_builder.get_builder('Flange')
         self.Pillow_builder         = self.Feedthrough_builder.get_builder('Pillow')
@@ -145,6 +146,39 @@ class ModuleBuilder(gegede.builder.Builder):
                                                 pos=Feedthrough_pos)
 
         main_lv.placements.append(Feedthrough_pla.name)
+
+        # Build TPieces
+        pos = [2*self.Feedthrough_builder.TubeSide_Offset,-self.halfDimension['dy']+2*self.Pillow_Offset+2*self.Pillow_builder.halfDimension['dy']-2*self.Pillow_builder.PillowSide_dy+2*self.Feedthrough_builder.TubeSide_dz+self.TPiece_builder.halfDimension['dy'],2*self.TPiece_builder.TPiece_dz_h-self.TPiece_builder.halfDimension['dz']]
+
+        TPiece_lv = self.TPiece_builder.get_volume()
+
+        TPiece_pos = geom.structure.Position(self.TPiece_builder.name+'_pos_A',
+                                                pos[0],pos[1],pos[2])
+
+        TPiece_pla = geom.structure.Placement(self.TPiece_builder.name+'_pla_A',
+                                                volume=TPiece_lv,
+                                                pos=TPiece_pos)
+
+        main_lv.placements.append(TPiece_pla.name)
+
+        pos = [-2*self.Feedthrough_builder.TubeSide_Offset,-self.halfDimension['dy']+2*self.Pillow_Offset+2*self.Pillow_builder.halfDimension['dy']-2*self.Pillow_builder.PillowSide_dy+2*self.Feedthrough_builder.TubeSide_dz+self.TPiece_builder.halfDimension['dy'],-2*self.TPiece_builder.TPiece_dz_h+self.TPiece_builder.halfDimension['dz']]
+
+        rot = Q('180.0deg')
+
+        TPiece_lv = self.TPiece_builder.get_volume()
+
+        TPiece_pos = geom.structure.Position(self.TPiece_builder.name+'_pos_B',
+                                                pos[0],pos[1],pos[2])
+
+        TPiece_rot = geom.structure.Rotation(self.TPiece_builder.name+'_rot_B',
+                                                rot)
+
+        TPiece_pla = geom.structure.Placement(self.TPiece_builder.name+'_pla_B',
+                                                volume=TPiece_lv,
+                                                pos=TPiece_pos,
+                                                rot=TPiece_rot)
+
+        main_lv.placements.append(TPiece_pla.name)
 
         # Build HVFeedThrough
         pos = [Q('0cm'),-self.halfDimension['dy']+self.HVFeedThrough_builder.halfDimension['dz']+2*self.InnerDetector_Offset+2*self.InnerDetector_builder.halfDimension['dy'],Q('0cm')]
