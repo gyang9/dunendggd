@@ -19,7 +19,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
         # Read dimensions form config file
         self.Gap_LightTile              = Gap_LightTile
         self.Gap_LightTile_PixelPlane   = Gap_LightTile_PixelPlane
-        self.N_TilesY                   = N_TilesY
+        self.N_TilesY                   = int(N_TilesY)
 
         # Material definitons
         self.Material                   = 'LAr'

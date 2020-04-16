@@ -40,8 +40,8 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.SiPM_PCB_dz        = SiPM_PCB['dz']
         self.SiPM_PCB_gap       = SiPM_PCB['gap']
 
-        self.N_SiPM             = N_SiPM
-        self.N_Mask             = N_Mask
+        self.N_SiPM             = int(N_SiPM)
+        self.N_Mask             = int(N_Mask)
 
         # Material definitons
         self.WLS_Material       = 'EJ280WLS'
@@ -90,12 +90,12 @@ class ArCLightBuilder(gegede.builder.Builder):
 
         if self.Mirror:
             # Construct Mirror LV
-            Mirror_shape = geom.shapes.Box('Mirror_LAr_shape',
+            Mirror_shape = geom.shapes.Box('Mirror_shape',
                                            dx = self.WLS_dx+2*self.Mirror_dd,
                                            dy = self.WLS_dy+2*self.Mirror_dd,
                                            dz = self.WLS_dz+self.Mirror_dd)
 
-            Mirror_lv = geom.structure.Volume('volMirror_LAr',
+            Mirror_lv = geom.structure.Volume('volMirror',
                                                 material=self.Mirror_Material,
                                                 shape=Mirror_shape)
 
@@ -180,7 +180,7 @@ class ArCLightBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(SiPM_Mask_pla.name)
 
-            for m in range(self.N_SiPM/self.N_Mask):
+            for m in range(int(self.N_SiPM/self.N_Mask)):
                 # Construct SiPM LV
                 SiPM_shape = geom.shapes.Box('SiPM_shape_'+str(2*n+m),
                                                dx = self.SiPM_dx,

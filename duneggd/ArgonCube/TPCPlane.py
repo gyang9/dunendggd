@@ -18,7 +18,7 @@ class TPCPlaneBuilder(gegede.builder.Builder):
 
         # Read dimensions form config file
         self.Gap_PixelTile  = Gap_PixelTile
-        self.N_UnitsY       = N_UnitsY
+        self.N_UnitsY       = int(N_UnitsY)
 
         # Material definitons
         self.Material       = 'LAr'

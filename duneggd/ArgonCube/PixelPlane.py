@@ -29,8 +29,8 @@ class PixelPlaneBuilder(gegede.builder.Builder):
         self.Asic_dy            = Asic_dimension['dy']
         self.Asic_dz            = Asic_dimension['dz']
 
-        self.N_Pixel            = N_Pixel
-        self.N_Asic             = N_Asic
+        self.N_Pixel            = int(N_Pixel)
+        self.N_Asic             = int(N_Asic)
 
         # Material definitons
         self.PCB_Material       = 'FR4'
