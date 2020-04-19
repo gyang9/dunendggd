@@ -135,13 +135,13 @@ class TPieceBuilder(gegede.builder.Builder):
         # Place TubeV Volume inside TPiece volume
         pos = [Q('0cm'),Q('0cm'),-self.halfDimension['dz']+self.Feedthrough_builder.TubeSideFlange_rmax]
 
-        rot_x = Q('90.0deg')
+        rot = [Q('90.0deg'),Q('0.0deg'),Q('0.0deg')]
 
         TubeV_pos = geom.structure.Position('TubeV_pos',
                                                 pos[0],pos[1],pos[2])
 
         TubeV_rot = geom.structure.Rotation('TubeV_rot',
-                                                rot_x)
+                                                rot[0],rot[1],rot[2])
 
         TubeV_pla = geom.structure.Placement('TubeV_pla',
                                                 volume=TubeV_lv,
@@ -153,18 +153,12 @@ class TPieceBuilder(gegede.builder.Builder):
         # Place TubeH Volume inside TPiece volume
         pos = [Q('0cm'),Q('0cm'),self.halfDimension['dz']-self.TPiece_dz_h]
 
-        rot_x = Q('0.0deg')
-
         TubeH_pos = geom.structure.Position('TubeH_pos',
                                                 pos[0],pos[1],pos[2])
 
-        TubeH_rot = geom.structure.Rotation('TubeH_rot',
-                                                rot_x)
-
         TubeH_pla = geom.structure.Placement('TubeH_pla',
                                                 volume=TubeH_lv,
-                                                pos=TubeH_pos,
-                                                rot=TubeH_rot)
+                                                pos=TubeH_pos)
 
         main_lv.placements.append(TubeH_pla.name)
 

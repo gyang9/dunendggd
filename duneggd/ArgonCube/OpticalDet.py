@@ -26,6 +26,7 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
         # Subbuilders
         self.ArCLight_builder           = self.get_builder('ArCLight')
+        self.LCM_builder                = self.get_builder('LCM')
         self.TPCPlane_builder           = self.get_builder('TPCPlane')
         self.PixelPlane_builder         = self.TPCPlane_builder.get_builder('PixelPlane')
 
@@ -48,18 +49,32 @@ class OpticalDetBuilder(gegede.builder.Builder):
 
         # Build ArCLight Array
         for i in range(self.N_TilesY):
-            pos = [self.TPCPlane_builder.halfDimension['dx']+self.Gap_LightTile_PixelPlane,(-self.N_TilesY+1+2*i)*(self.ArCLight_builder.halfDimension['dy']+self.Gap_LightTile),Q('0cm')]
+            if i%2:
+                pos = [self.TPCPlane_builder.halfDimension['dx']+self.Gap_LightTile_PixelPlane,(-self.N_TilesY+1+2*i)*(self.ArCLight_builder.halfDimension['dy']+self.Gap_LightTile),Q('0cm')]
 
-            ArCLight_lv = self.ArCLight_builder.get_volume()
+                ArCLight_lv = self.ArCLight_builder.get_volume()
 
-            ArCLight_pos = geom.structure.Position(self.ArCLight_builder.name+'_pos_'+str(i),
-                                                pos[0],pos[1],pos[2])
+                ArCLight_pos = geom.structure.Position(self.ArCLight_builder.name+'_pos_'+str(i),
+                                                    pos[0],pos[1],pos[2])
 
-            ArCLight_pla = geom.structure.Placement(self.ArCLight_builder.name+'_pla_'+str(i),
-                                                    volume=ArCLight_lv,
-                                                    pos=ArCLight_pos)
+                ArCLight_pla = geom.structure.Placement(self.ArCLight_builder.name+'_pla_'+str(i),
+                                                        volume=ArCLight_lv,
+                                                        pos=ArCLight_pos)
 
-            main_lv.placements.append(ArCLight_pla.name)
+                main_lv.placements.append(ArCLight_pla.name)
+            else:
+                pos = [self.TPCPlane_builder.halfDimension['dx']+self.Gap_LightTile_PixelPlane,(-self.N_TilesY+1+2*i)*(self.LCM_builder.halfDimension['dy']+self.Gap_LightTile),Q('0cm')]
+
+                LCM_lv = self.LCM_builder.get_volume()
+
+                LCM_pos = geom.structure.Position(self.LCM_builder.name+'_pos_'+str(i),
+                                                    pos[0],pos[1],pos[2])
+
+                LCM_pla = geom.structure.Placement(self.LCM_builder.name+'_pla_'+str(i),
+                                                        volume=LCM_lv,
+                                                        pos=LCM_pos)
+
+                main_lv.placements.append(LCM_pla.name)
 
         # Construct PCB Bar
         PCBBar_shape = geom.shapes.Box('PCBBar_shape',

@@ -157,17 +157,16 @@ class ArCLightBuilder(gegede.builder.Builder):
         main_lv.placements.append(TPB_pla.name)
 
         # Construct and place SiPMs and the corresponding Masks
+        SiPM_Mask_shape = geom.shapes.Box('SiPM_Mask_shape',
+                                       dx = self.SiPM_Mask_dx,
+                                       dy = self.SiPM_Mask_dy,
+                                       dz = self.SiPM_Mask_dz)
+
+        SiPM_Mask_lv = geom.structure.Volume('volSiPM_Mask',
+                                            material=self.SiPM_Mask_Material,
+                                            shape=SiPM_Mask_shape)
+
         for n in range(self.N_Mask):
-            # Construct Mask LV
-            SiPM_Mask_shape = geom.shapes.Box('SiPM_Mask_shape_'+str(n),
-                                           dx = self.SiPM_Mask_dx,
-                                           dy = self.SiPM_Mask_dy,
-                                           dz = self.SiPM_Mask_dz)
-
-            SiPM_Mask_lv = geom.structure.Volume('volSiPM_Mask_'+str(n),
-                                                material=self.SiPM_Mask_Material,
-                                                shape=SiPM_Mask_shape)
-
             # Place Mask LV next to WLS plane
             pos = [-self.WLS_dx-2*self.Mirror_dd+self.SiPM_PCB_dx,-(self.N_Mask-1)*self.SiPM_Mask_dy-(self.N_Mask-1)*self.SiPM_Mask_gap+(2*n)*self.SiPM_Mask_dy+(2*n)*self.SiPM_Mask_gap,-self.TPB_dz+self.Mirror_dd]
 
@@ -204,17 +203,16 @@ class ArCLightBuilder(gegede.builder.Builder):
                 main_lv.placements.append(SiPM_pla.name)
 
         # Construct and place SiPM PCBs
+        SiPM_PCB_shape = geom.shapes.Box('SiPM_PCB_shape',
+                                       dx = self.SiPM_PCB_dx,
+                                       dy = self.SiPM_PCB_dy,
+                                       dz = self.SiPM_PCB_dz)
+
+        SiPM_PCB_lv = geom.structure.Volume('volSiPM_PCB',
+                                            material=self.SiPM_PCB_Material,
+                                            shape=SiPM_PCB_shape)
+
         for n in range(self.N_Mask):
-            # Construct PCB LV
-            SiPM_PCB_shape = geom.shapes.Box('SiPM_PCB_shape_'+str(n),
-                                           dx = self.SiPM_PCB_dx,
-                                           dy = self.SiPM_PCB_dy,
-                                           dz = self.SiPM_PCB_dz)
-
-            SiPM_PCB_lv = geom.structure.Volume('volSiPM_PCB_'+str(n),
-                                                material=self.SiPM_PCB_Material,
-                                                shape=SiPM_PCB_shape)
-
             # Place SiPM PCBs next to SiPM Masks
             pos = [-self.WLS_dx-2*self.Mirror_dd-self.SiPM_Mask_dx,-(self.N_Mask-1)*self.SiPM_PCB_dy-(self.N_Mask-1)*self.SiPM_PCB_gap+(2*n)*self.SiPM_PCB_dy+(2*n)*self.SiPM_PCB_gap,-self.TPB_dz+self.Mirror_dd]
 

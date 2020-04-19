@@ -132,10 +132,10 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         OpticalDet_pos = geom.structure.Position(self.OpticalDet_builder.name+'_pos_R',
                                                 pos[0],pos[1],pos[2])
 
-        rot_x = Q('180.0deg')
+        rot = [Q('180.0deg'),Q('0.0deg'),Q('0.0deg')]
 
         OpticalDet_rot = geom.structure.Rotation(self.OpticalDet_builder.name+'_rot',
-                                                x=rot_x)
+                                                rot[0],rot[1],rot[2])
 
         OpticalDet_pla = geom.structure.Placement(self.OpticalDet_builder.name+'_pla_R',
                                                 volume=OpticalDet_lv,

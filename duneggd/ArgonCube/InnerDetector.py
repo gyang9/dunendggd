@@ -58,10 +58,10 @@ class InnerDetectorBuilder(gegede.builder.Builder):
         HalfDetector_pos = geom.structure.Position(self.HalfDetector_builder.name+'_pos_R',
                                                 pos[0],pos[1],pos[2])
 
-        rot_y = Q('180.0deg')
+        rot = [Q('0.0deg'),Q('180.0deg'),Q('0.0deg')]
 
         HalfDetector_rot = geom.structure.Rotation(self.HalfDetector_builder.name+'_rot',
-                                                y=rot_y)
+                                                rot[0],rot[1],rot[2])
 
         HalfDetector_pla = geom.structure.Placement(self.HalfDetector_builder.name+'_pla_R',
                                                 volume=HalfDetector_lv,

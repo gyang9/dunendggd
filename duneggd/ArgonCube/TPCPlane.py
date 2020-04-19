@@ -64,10 +64,10 @@ class TPCPlaneBuilder(gegede.builder.Builder):
             PixelPlane_pos = geom.structure.Position(self.PixelPlane_builder.name+'_pos_'+str(i)+'_L',
                                                 pos[0],pos[1],pos[2])
 
-            rot_x = Q('180.0deg')
+            rot =[Q('180.0deg'),Q('0.0deg'),Q('0.0deg')]
 
             PixelPlane_rot = geom.structure.Rotation(self.PixelPlane_builder.name+'_rot_'+str(i)+'_L',
-                                                x=rot_x)
+                                                rot[0],rot[1],rot[2])
 
             PixelPlane_pla = geom.structure.Placement(self.PixelPlane_builder.name+'_pla_'+str(i)+'_L',
                                                     volume=PixelPlane_lv,

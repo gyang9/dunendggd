@@ -132,10 +132,10 @@ class PillowBuilder(gegede.builder.Builder):
         # Place Angle Bar Top R Volume inside Module Top volume
         pos = [self.AngleBarTop_gap+self.AngleBarTop_dx,self.Pillow_dy-2*self.PillowSide_dy-self.AngleBarTop_dy,Q('0cm')]
 
-        rot_y = Q('180.0deg')
+        rot = [Q('0.0deg'),Q('180.0deg'),Q('0.0deg')]
 
         AngleBarTop_R_rot = geom.structure.Rotation('AngleBarTop_R_rot',
-                                                y=rot_y)
+                                                rot[0],rot[1],rot[2])
 
         AngleBarTop_R_pos = geom.structure.Position('AngleBarTop_R_pos',
                                                 pos[0],pos[1],pos[2])

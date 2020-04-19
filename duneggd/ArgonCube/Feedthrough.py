@@ -198,13 +198,13 @@ class FeedthroughBuilder(gegede.builder.Builder):
         # Place TubeCenter Volume inside Feedthrough volume
         pos = [Q('0cm'),-self.halfDimension['dy']+self.TubeCenter_dz+self.TubeCenterFlange_dz,Q('0cm')]
 
-        rot_x = Q('90.0deg')
+        rot = [Q('90.0deg'),Q('0.0deg'),Q('0.0deg')]
 
         TubeCenter_pos = geom.structure.Position('TubeCenter_pos',
                                                 pos[0],pos[1],pos[2])
 
         TubeCenter_rot = geom.structure.Rotation('TubeCenter_rot',
-                                                rot_x)
+                                                rot[0],rot[1],rot[2])
 
         TubeCenter_pla = geom.structure.Placement('TubeCenter_pla',
                                                 volume=TubeCenter_lv,
@@ -271,13 +271,13 @@ class FeedthroughBuilder(gegede.builder.Builder):
         for i in range(2):
             pos = [(-1)**i*2*self.TubeSide_Offset,-self.halfDimension['dy']+self.TubeSide_dz,Q('0cm')]
 
-            rot_x = Q('90.0deg')
+            rot = [Q('90.0deg'),Q('0.0deg'),Q('0.0deg')]
 
             TubeSide_pos = geom.structure.Position('TubeSide_pos_'+str(2*i),
                                                     pos[0],pos[1],pos[2])
 
             TubeSide_rot = geom.structure.Rotation('TubeSide_rot_'+str(2*i),
-                                                    rot_x)
+                                                    rot[0],rot[1],rot[2])
 
             TubeSide_pla = geom.structure.Placement('TubeSide_pla_'+str(2*i),
                                                     volume=TubeSide_lv,
@@ -288,13 +288,13 @@ class FeedthroughBuilder(gegede.builder.Builder):
 
             pos = [Q('0cm'),-self.halfDimension['dy']+self.TubeSide_dz,(-1)**i*2*self.TubeSide_Offset]
 
-            rot_x = Q('90.0deg')
+            rot = [Q('90.0deg'),Q('0.0deg'),Q('0.0deg')]
 
             TubeSide_pos = geom.structure.Position('TubeSide_pos_'+str(2*i+1),
                                                     pos[0],pos[1],pos[2])
 
             TubeSide_rot = geom.structure.Rotation('TubeSide_rot_'+str(2*i+1),
-                                                    rot_x)
+                                                    rot[0],rot[1],rot[2])
 
             TubeSide_pla = geom.structure.Placement('TubeSide_pla_'+str(2*i+1),
                                                     volume=TubeSide_lv,

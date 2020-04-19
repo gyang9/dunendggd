@@ -163,7 +163,7 @@ class ModuleBuilder(gegede.builder.Builder):
 
         pos = [-2*self.Feedthrough_builder.TubeSide_Offset,-self.halfDimension['dy']+2*self.Pillow_Offset+2*self.Pillow_builder.halfDimension['dy']-2*self.Pillow_builder.PillowSide_dy+2*self.Feedthrough_builder.TubeSide_dz+self.TPiece_builder.halfDimension['dy'],-2*self.TPiece_builder.TPiece_dz_h+self.TPiece_builder.halfDimension['dz']]
 
-        rot = Q('180.0deg')
+        rot = [Q('180.0deg'),Q('0.0deg'),Q('0.0deg')]
 
         TPiece_lv = self.TPiece_builder.get_volume()
 
@@ -171,7 +171,7 @@ class ModuleBuilder(gegede.builder.Builder):
                                                 pos[0],pos[1],pos[2])
 
         TPiece_rot = geom.structure.Rotation(self.TPiece_builder.name+'_rot_B',
-                                                rot)
+                                                rot[0],rot[1],rot[2])
 
         TPiece_pla = geom.structure.Placement(self.TPiece_builder.name+'_pla_B',
                                                 volume=TPiece_lv,
@@ -183,7 +183,7 @@ class ModuleBuilder(gegede.builder.Builder):
         # Build HVFeedThrough
         pos = [Q('0cm'),-self.halfDimension['dy']+self.HVFeedThrough_builder.halfDimension['dz']+2*self.InnerDetector_Offset+2*self.InnerDetector_builder.halfDimension['dy'],Q('0cm')]
 
-        rot_x = Q('90.0deg')
+        rot = [Q('90.0deg'),Q('0.0deg'),Q('0.0deg')]
 
         HVFeedThrough_lv = self.HVFeedThrough_builder.get_volume()
 
@@ -191,7 +191,7 @@ class ModuleBuilder(gegede.builder.Builder):
                                                 pos[0],pos[1],pos[2])
 
         HVFeedThrough_rot = geom.structure.Rotation(self.HVFeedThrough_builder.name+'_rot',
-                                                rot_x)
+                                                rot[0],rot[1],rot[2])
 
         HVFeedThrough_pla = geom.structure.Placement(self.HVFeedThrough_builder.name+'_pla',
                                                 volume=HVFeedThrough_lv,
