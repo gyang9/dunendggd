@@ -84,7 +84,7 @@ class LCMBuilder(gegede.builder.Builder):
                                             shape=Fibre_shape)
 
         # Place bottom LCM Fibres
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_dy-2*self.SiPM_LCM_Mask_gap-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,+self.halfDimension['dz']/2]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_dy-2*self.SiPM_LCM_Mask_gap-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,Q('0cm')]
         for i in range(self.N_Fibre_LCM):
             pos[1] = pos[1] + 2*self.Fibre_dd
 
@@ -103,7 +103,7 @@ class LCMBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(Fibre_pla.name)
 
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_dy-2*self.SiPM_LCM_Mask_gap+self.Fibre_gap-2*self.Fibre_dd,+self.halfDimension['dz']/2]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_dy-2*self.SiPM_LCM_Mask_gap+self.Fibre_gap-2*self.Fibre_dd,Q('0cm')]
         for i in range(self.N_Fibre_LCM,2*self.N_Fibre_LCM):
             pos[1] = pos[1] + 2*self.Fibre_dd
 
@@ -123,7 +123,7 @@ class LCMBuilder(gegede.builder.Builder):
             main_lv.placements.append(Fibre_pla.name)
 
         # Place center LCM Fibres
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,+self.halfDimension['dz']/2]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,Q('0cm')]
         for i in range(self.N_Fibre_LCM):
             pos[1] = pos[1] + 2*self.Fibre_dd
 
@@ -142,7 +142,7 @@ class LCMBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(Fibre_pla.name)
 
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+self.Fibre_gap-2*self.Fibre_dd,+self.halfDimension['dz']/2]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+self.Fibre_gap-2*self.Fibre_dd,Q('0cm')]
         for i in range(self.N_Fibre_LCM,2*self.N_Fibre_LCM):
             pos[1] = pos[1] + 2*self.Fibre_dd
 
@@ -162,7 +162,7 @@ class LCMBuilder(gegede.builder.Builder):
             main_lv.placements.append(Fibre_pla.name)
 
         # Place top LCM Fibres
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+2*self.SiPM_LCM_Mask_dy+2*self.SiPM_LCM_Mask_gap-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,+self.halfDimension['dz']/2]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+2*self.SiPM_LCM_Mask_dy+2*self.SiPM_LCM_Mask_gap-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,Q('0cm')]
         for i in range(self.N_Fibre_LCM):
             pos[1] = pos[1] + 2*self.Fibre_dd
 
@@ -181,7 +181,7 @@ class LCMBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(Fibre_pla.name)
 
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+2*self.SiPM_LCM_Mask_dy+2*self.SiPM_LCM_Mask_gap+self.Fibre_gap-2*self.Fibre_dd,+self.halfDimension['dz']/2]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+2*self.SiPM_LCM_Mask_dy+2*self.SiPM_LCM_Mask_gap+self.Fibre_gap-2*self.Fibre_dd,Q('0cm')]
         for i in range(self.N_Fibre_LCM,2*self.N_Fibre_LCM):
             pos[1] = pos[1] + 2*self.Fibre_dd
 
