@@ -580,13 +580,13 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 this_module_z_offset *= -1
 
             this_module_rotY = 0.;
-            # if iend == 0:
-            #     this_module_rotY = pi;
+            if iend == 0:
+                this_module_rotY = pi;
             # this_module_rotY = pi;
 
             rotZ_offset = (pi/8. + 3.*pi/4.)
-            # if iend == 0:
-            #     rotZ_offset = (pi/8. - pi/2.)
+            if iend == 0:
+                rotZ_offset = (pi/8. - pi/2.)
             # rotZ_offset = (pi/8. - pi/2.)
 
             for iquad in range(4):
