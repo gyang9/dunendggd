@@ -14,29 +14,29 @@ class LCMBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,Fibre_dimension,SiPM_LCM_dimension,SiPM_LCM_Mask,SiPM_LCM_PCB,N_Fibre_LCM,N_SiPM_LCM,N_Mask_LCM,**kwargs):
+    def configure(self,Fibre_dimension,SiPM_LCM_dimension,SiPM_LCM_Mask,SiPM_LCM_PCB,N_Fibre_LCM,N_SiPM_LCM,N_Mask_LCM,OptSim,**kwargs):
 
         # Read dimensions form config file
         self.Fibre_rmin             = Fibre_dimension['rmin']
         self.Fibre_rmax             = Fibre_dimension['rmax']
         self.Fibre_dz               = Fibre_dimension['dz']
+        self.Fibre_pitch            = Fibre_dimension['pitch']
         self.Fibre_dd               = Fibre_dimension['dd']
-        self.Fibre_gap              = Fibre_dimension['gap']
 
         self.SiPM_LCM_dx            = SiPM_LCM_dimension['dx']
         self.SiPM_LCM_dy            = SiPM_LCM_dimension['dy']
         self.SiPM_LCM_dz            = SiPM_LCM_dimension['dz']
-        self.SiPM_LCM_gap           = SiPM_LCM_dimension['gap']
+        self.SiPM_LCM_pitch           = SiPM_LCM_dimension['pitch']
 
         self.SiPM_LCM_Mask_dx       = SiPM_LCM_Mask['dx']
         self.SiPM_LCM_Mask_dy       = SiPM_LCM_Mask['dy']
         self.SiPM_LCM_Mask_dz       = SiPM_LCM_Mask['dz']
-        self.SiPM_LCM_Mask_gap      = SiPM_LCM_Mask['gap']
+        self.SiPM_LCM_Mask_pitch    = SiPM_LCM_Mask['pitch']
 
         self.SiPM_LCM_PCB_dx        = SiPM_LCM_PCB['dx']
         self.SiPM_LCM_PCB_dy        = SiPM_LCM_PCB['dy']
         self.SiPM_LCM_PCB_dz        = SiPM_LCM_PCB['dz']
-        self.SiPM_LCM_PCB_gap       = SiPM_LCM_PCB['gap']
+        self.SiPM_LCM_PCB_pitch       = SiPM_LCM_PCB['pitch']
 
         self.N_Fibre_LCM            = int(N_Fibre_LCM)
         self.N_SiPM_LCM             = int(N_SiPM_LCM)
@@ -50,9 +50,13 @@ class LCMBuilder(gegede.builder.Builder):
 
         self.Material               = 'LAr'
 
-        # Force the SiPMs to stick out by 10um from the Mask to ensure seamless coupling of optical photons
-        self.SiPM_LCM_Couple        = Q('10um')
-        self.SiPM_LCM_dx            = self.SiPM_LCM_Mask_dx+self.SiPM_LCM_Couple
+        # Toggle optical simulation settings ON/OFF
+        self.OptSim             = OptSim
+
+        if self.OptSim:
+            # Force the SiPMs to stick out by 10um from the Mask to ensure seamless coupling of optical photons
+            self.SiPM_LCM_Couple        = Q('10um')
+            self.SiPM_LCM_dx            = self.SiPM_LCM_Mask_dx+self.SiPM_LCM_Couple
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -63,8 +67,8 @@ class LCMBuilder(gegede.builder.Builder):
                                             +self.SiPM_LCM_Mask_dx
                                             +self.SiPM_LCM_PCB_dx,
 
-                                    'dy':   self.N_Mask_LCM*self.SiPM_LCM_PCB_dy
-                                            +(self.N_Mask_LCM-1)*self.SiPM_LCM_PCB_gap,
+                                    'dy':   self.SiPM_LCM_PCB_dy
+                                            +(self.N_Mask_LCM-1)*self.SiPM_LCM_PCB_pitch,
 
                                     'dz':   self.SiPM_LCM_PCB_dz}
 
@@ -84,9 +88,9 @@ class LCMBuilder(gegede.builder.Builder):
                                             shape=Fibre_shape)
 
         # Place bottom LCM Fibres
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_dy-2*self.SiPM_LCM_Mask_gap-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,Q('0cm')]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_pitch-self.Fibre_dd-2*self.N_Fibre_LCM*self.Fibre_pitch,Q('0cm')]
         for i in range(self.N_Fibre_LCM):
-            pos[1] = pos[1] + 2*self.Fibre_dd
+            pos[1] = pos[1] + 2*self.Fibre_pitch
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
@@ -103,9 +107,9 @@ class LCMBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(Fibre_pla.name)
 
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_dy-2*self.SiPM_LCM_Mask_gap+self.Fibre_gap-2*self.Fibre_dd,Q('0cm')]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-2*self.SiPM_LCM_Mask_pitch+self.Fibre_dd-2*self.Fibre_pitch,Q('0cm')]
         for i in range(self.N_Fibre_LCM,2*self.N_Fibre_LCM):
-            pos[1] = pos[1] + 2*self.Fibre_dd
+            pos[1] = pos[1] + 2*self.Fibre_pitch
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
@@ -123,9 +127,9 @@ class LCMBuilder(gegede.builder.Builder):
             main_lv.placements.append(Fibre_pla.name)
 
         # Place center LCM Fibres
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,Q('0cm')]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-self.Fibre_dd-2*self.N_Fibre_LCM*self.Fibre_pitch,Q('0cm')]
         for i in range(self.N_Fibre_LCM):
-            pos[1] = pos[1] + 2*self.Fibre_dd
+            pos[1] = pos[1] + 2*self.Fibre_pitch
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
@@ -142,9 +146,9 @@ class LCMBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(Fibre_pla.name)
 
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+self.Fibre_gap-2*self.Fibre_dd,Q('0cm')]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+self.Fibre_dd-2*self.Fibre_pitch,Q('0cm')]
         for i in range(self.N_Fibre_LCM,2*self.N_Fibre_LCM):
-            pos[1] = pos[1] + 2*self.Fibre_dd
+            pos[1] = pos[1] + 2*self.Fibre_pitch
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
@@ -162,9 +166,9 @@ class LCMBuilder(gegede.builder.Builder):
             main_lv.placements.append(Fibre_pla.name)
 
         # Place top LCM Fibres
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+2*self.SiPM_LCM_Mask_dy+2*self.SiPM_LCM_Mask_gap-self.Fibre_gap-2*self.N_Fibre_LCM*self.Fibre_dd,Q('0cm')]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,2*self.SiPM_LCM_Mask_pitch-self.Fibre_dd-2*self.N_Fibre_LCM*self.Fibre_pitch,Q('0cm')]
         for i in range(self.N_Fibre_LCM):
-            pos[1] = pos[1] + 2*self.Fibre_dd
+            pos[1] = pos[1] + 2*self.Fibre_pitch
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
@@ -181,9 +185,9 @@ class LCMBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(Fibre_pla.name)
 
-        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+2*self.SiPM_LCM_Mask_dy+2*self.SiPM_LCM_Mask_gap+self.Fibre_gap-2*self.Fibre_dd,Q('0cm')]
+        pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,2*self.SiPM_LCM_Mask_pitch+self.Fibre_dd-2*self.Fibre_pitch,Q('0cm')]
         for i in range(self.N_Fibre_LCM,2*self.N_Fibre_LCM):
-            pos[1] = pos[1] + 2*self.Fibre_dd
+            pos[1] = pos[1] + 2*self.Fibre_pitch
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
@@ -212,7 +216,7 @@ class LCMBuilder(gegede.builder.Builder):
 
         for n in range(self.N_Mask_LCM):
             # Place Mask LV next to Fibre plane
-            pos = [-self.Fibre_dz+self.SiPM_LCM_PCB_dx,-(self.N_Mask_LCM-1)*self.SiPM_LCM_Mask_dy-(self.N_Mask_LCM-1)*self.SiPM_LCM_Mask_gap+(2*n)*self.SiPM_LCM_Mask_dy+(2*n)*self.SiPM_LCM_Mask_gap,Q('0mm')]
+            pos = [-self.Fibre_dz+self.SiPM_LCM_PCB_dx,-(self.N_Mask_LCM-1)*self.SiPM_LCM_Mask_pitch+(2*n)*self.SiPM_LCM_Mask_pitch,Q('0mm')]
 
             SiPM_LCM_Mask_pos = geom.structure.Position('SiPM_LCM_Mask_pos_'+str(n),
                                                     pos[0],pos[1],pos[2])
@@ -235,7 +239,7 @@ class LCMBuilder(gegede.builder.Builder):
                                                     shape=SiPM_LCM_shape)
 
                 # Place SiPMs next to Fibre plane
-                posipm = [-self.Fibre_dz+self.SiPM_LCM_PCB_dx+self.SiPM_LCM_Couple,pos[1]-(self.N_SiPM_LCM/self.N_Mask_LCM-1)*self.SiPM_LCM_dy-(self.N_SiPM_LCM/self.N_Mask_LCM-1)*self.SiPM_LCM_gap+(2*m)*self.SiPM_LCM_dy+(2*m)*self.SiPM_LCM_gap,Q('0cm')]
+                posipm = [Q('0cm'),-(self.N_SiPM_LCM/self.N_Mask_LCM-1)*self.SiPM_LCM_pitch+(2*m)*self.SiPM_LCM_pitch,Q('0cm')]
 
                 SiPM_LCM_pos = geom.structure.Position('SiPM_LCM_pos_'+str(2*n+m),
                                                         posipm[0],posipm[1],posipm[2])
@@ -244,7 +248,7 @@ class LCMBuilder(gegede.builder.Builder):
                                                         volume=SiPM_LCM_lv,
                                                         pos=SiPM_LCM_pos)
 
-                main_lv.placements.append(SiPM_LCM_pla.name)
+                SiPM_LCM_Mask_lv.placements.append(SiPM_LCM_pla.name)
 
         # Construct and place SiPM PCBs
         SiPM_LCM_PCB_shape = geom.shapes.Box('SiPM_LCM_PCB_shape',
@@ -258,7 +262,7 @@ class LCMBuilder(gegede.builder.Builder):
 
         for n in range(self.N_Mask_LCM):
             # Place SiPM PCBs next to SiPM Masks
-            pos = [-self.Fibre_dz-self.SiPM_LCM_Mask_dx,-(self.N_Mask_LCM-1)*self.SiPM_LCM_PCB_dy-(self.N_Mask_LCM-1)*self.SiPM_LCM_PCB_gap+(2*n)*self.SiPM_LCM_PCB_dy+(2*n)*self.SiPM_LCM_PCB_gap,Q('0cm')]
+            pos = [-self.Fibre_dz-self.SiPM_LCM_Mask_dx,-(self.N_Mask_LCM-1)*self.SiPM_LCM_PCB_pitch+(2*n)*self.SiPM_LCM_PCB_pitch,Q('0cm')]
 
             SiPM_LCM_PCB_pos = geom.structure.Position('SiPM_LCM_PCB_pos_'+str(n),
                                                     pos[0],pos[1],pos[2])

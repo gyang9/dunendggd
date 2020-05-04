@@ -24,7 +24,6 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
         self.Bracket_dx     = Bracket_dimension['dx']
         self.Bracket_dy     = Bracket_dimension['dy']
-        self.Bracket_dz     = Bracket_dimension['dz']
 
         self.Cathode_dx     = Cathode_dx
 
@@ -148,14 +147,14 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         Bracket_shape = geom.shapes.Box('Bracket_shape',
                                         dx = self.Bracket_dx,
                                         dy = self.Bracket_dy,
-                                        dz = self.Bracket_dz)
+                                        dz = self.OpticalDet_builder.halfDimension['dz'])
 
         Bracket_lv = geom.structure.Volume('volBracket',
                                         material=self.Bracket_Material,
                                         shape=Bracket_shape)
 
         # Place Bracket Volume L inside Fieldcage volume
-        pos = [self.Fieldcage_dx-self.Cathode_dx-self.Bracket_dx,Q('0cm'),-self.Fieldcage_dz+self.Fieldcage_dd*2+self.Bracket_dz]
+        pos = [self.Fieldcage_dx-self.Cathode_dx/2-self.Bracket_dx,Q('0cm'),-self.Fieldcage_dz+self.Fieldcage_dd*2+self.OpticalDet_builder.halfDimension['dz']]
 
         Bracket_pos = geom.structure.Position('Bracket_pos_L',
                                                 pos[0],pos[1],pos[2])
@@ -164,10 +163,10 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                                 volume=Bracket_lv,
                                                 pos=Bracket_pos)
 
-        Fieldcage_lv.placements.append(Bracket_pla.name)
+        LAr_lv.placements.append(Bracket_pla.name)
 
         # Place Bracket Volume R inside Fieldcage volume
-        pos = [self.Fieldcage_dx-self.Cathode_dx-self.Bracket_dx,Q('0cm'),self.Fieldcage_dz-self.Fieldcage_dd*2-self.Bracket_dz]
+        pos = [self.Fieldcage_dx-self.Cathode_dx/2-self.Bracket_dx,Q('0cm'),self.Fieldcage_dz-self.Fieldcage_dd*2-self.OpticalDet_builder.halfDimension['dz']]
 
         Bracket_pos = geom.structure.Position('Bracket_pos_R',
                                                 pos[0],pos[1],pos[2])
@@ -176,5 +175,5 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                                 volume=Bracket_lv,
                                                 pos=Bracket_pos)
 
-        Fieldcage_lv.placements.append(Bracket_pla.name)
+        LAr_lv.placements.append(Bracket_pla.name)
 

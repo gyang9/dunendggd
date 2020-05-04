@@ -16,7 +16,8 @@ void materialDisplay(TString filename,Bool_t checkoverlaps=kFALSE,TString label=
   Kolor["LAr"]        = kAzure;
   Kolor["PVT"]        = kWhite;
   Kolor["SiO2"]       = kBlack;
-  Kolor["Steel"]      = kRed;
+  Kolor["Steel"]      = kGray;
+  Kolor["SSteel304"]  = kGray;
   Kolor["TPB"]        = kSpring;
 
   TGeoManager *geo2 = new TGeoManager("geo2","test");
