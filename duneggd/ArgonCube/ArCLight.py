@@ -14,7 +14,7 @@ class ArCLightBuilder(gegede.builder.Builder):
 
     """
 
-    def configure(self,WLS_dimension,SiPM_dimension,SiPM_Mask,SiPM_PCB,N_SiPM,N_Mask,OptSim,**kwargs):
+    def configure(self,WLS_dimension,SiPM_dimension,SiPM_Mask,SiPM_PCB,N_SiPM,N_Mask,**kwargs):
 
         # Read dimensions form config file
         self.WLS_dx             = WLS_dimension['dx']
@@ -28,12 +28,12 @@ class ArCLightBuilder(gegede.builder.Builder):
         self.SiPM_dx            = SiPM_dimension['dx']
         self.SiPM_dy            = SiPM_dimension['dy']
         self.SiPM_dz            = SiPM_dimension['dz']
-        self.SiPM_pitch           = SiPM_dimension['pitch']
+        self.SiPM_pitch         = SiPM_dimension['pitch']
 
         self.SiPM_Mask_dx       = SiPM_Mask['dx']
         self.SiPM_Mask_dy       = SiPM_Mask['dy']
         self.SiPM_Mask_dz       = SiPM_Mask['dz']
-        self.SiPM_Mask_pitch      = SiPM_Mask['pitch']
+        self.SiPM_Mask_pitch    = SiPM_Mask['pitch']
 
         self.SiPM_PCB_dx        = SiPM_PCB['dx']
         self.SiPM_PCB_dy        = SiPM_PCB['dy']
@@ -53,19 +53,12 @@ class ArCLightBuilder(gegede.builder.Builder):
 
         self.Material           = 'LAr'
 
-        # Toggle optical simulation settings ON/OFF
-        self.OptSim             = OptSim
-
-        if self.OptSim:
+        #if self.OptSim:
             # Fill mirror volume with WLS material
-            self.WLS_dx = self.WLS_dx + 2*self.Mirror_dd
-            self.WLS_dy = self.WLS_dy + 2*self.Mirror_dd
-            self.WLS_dz = self.WLS_dz + self.Mirror_dd
-            self.Mirror_dd = 0
-
-            # Force the SiPMs to stick out by 10um from the Mask to ensure seamless coupling of optical photons
-            self.SiPM_Couple        = self.Mirror_dd+Q('10um')
-            self.SiPM_dx            = self.SiPM_Mask_dx+self.SiPM_Couple
+            #self.WLS_dx = self.WLS_dx + 2*self.Mirror_dd
+            #self.WLS_dy = self.WLS_dy + 2*self.Mirror_dd
+            #self.WLS_dz = self.WLS_dz + self.Mirror_dd
+            #self.Mirror_dd = 0
 
     def construct(self,geom):
         """ Construct the geometry.
@@ -89,7 +82,7 @@ class ArCLightBuilder(gegede.builder.Builder):
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        if self.OptSim:
+        if False:
             # Construct WLS panel
             WLS_shape = geom.shapes.Box('WLS_panel_shape',
                                            dx = self.WLS_dx,
@@ -180,7 +173,7 @@ class ArCLightBuilder(gegede.builder.Builder):
 
         main_lv.placements.append(TPB_pla.name)
 
-        # Construct and place SiPMs and the corresponding Masks
+        # Construct SiPM Mask LV
         SiPM_Mask_shape = geom.shapes.Box('SiPM_Mask_shape',
                                        dx = self.SiPM_Mask_dx,
                                        dy = self.SiPM_Mask_dy,
@@ -190,8 +183,18 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             material=self.SiPM_Mask_Material,
                                             shape=SiPM_Mask_shape)
 
+        # Construct SiPM Sens LV
+        SiPM_Sens_shape = geom.shapes.Box('SiPM_Sens_shape',
+                                       dx = self.Mirror_dd,
+                                       dy = self.SiPM_dy,
+                                       dz = self.SiPM_dz)
+
+        SiPM_Sens_lv = geom.structure.Volume('volSiPM_Sens',
+                                            material=self.SiPM_Material,
+                                            shape=SiPM_Sens_shape)
+
+        # Place Mask LV next to WLS plane
         for n in range(self.N_Mask):
-            # Place Mask LV next to WLS plane
             pos = [-self.WLS_dx-2*self.Mirror_dd+self.SiPM_PCB_dx,-(self.N_Mask-1)*self.SiPM_Mask_pitch+(2*n)*self.SiPM_Mask_pitch,-self.TPB_dz+self.Mirror_dd]
 
             SiPM_Mask_pos = geom.structure.Position('SiPM_Mask_pos_'+str(n),
@@ -203,29 +206,41 @@ class ArCLightBuilder(gegede.builder.Builder):
 
             main_lv.placements.append(SiPM_Mask_pla.name)
 
+            # Place SiPM Sens LV next to WLS plane
             for m in range(int(self.N_SiPM/self.N_Mask)):
-                # Construct SiPM LV
-                SiPM_shape = geom.shapes.Box('SiPM_shape_'+str(2*n+m),
-                                               dx = self.SiPM_dx,
-                                               dy = self.SiPM_dy,
-                                               dz = self.SiPM_dz)
+                posipm = [-self.WLS_dx-self.Mirror_dd,-(self.N_Mask-1)*self.SiPM_Mask_pitch+(2*n)*self.SiPM_Mask_pitch-(self.N_SiPM/self.N_Mask-1)*self.SiPM_pitch+(2*m)*self.SiPM_pitch,self.Mirror_dd]
 
-                SiPM_lv = geom.structure.Volume('volSiPM_'+str(2*n+m),
-                                                    material=self.SiPM_Material,
-                                                    shape=SiPM_shape)
-
-
-                # Place SiPMs next to WLS plane
-                posipm = [Q('0cm'),-(self.N_SiPM/self.N_Mask-1)*self.SiPM_pitch+(2*m)*self.SiPM_pitch,Q('0cm')]
-
-                SiPM_pos = geom.structure.Position('SiPM_pos_'+str(2*n+m),
+                SiPM_Sens_pos = geom.structure.Position('SiPM_Sens_pos_'+str(2*n+m),
                                                         posipm[0],posipm[1],posipm[2])
 
-                SiPM_pla = geom.structure.Placement('SiPM_pla_'+str(2*n+m),
-                                                        volume=SiPM_lv,
-                                                        pos=SiPM_pos)
+                SiPM_Sens_pla = geom.structure.Placement('SiPM_Sens_pla_'+str(2*n+m),
+                                                        volume=SiPM_Sens_lv,
+                                                        pos=SiPM_Sens_pos)
 
-                SiPM_Mask_lv.placements.append(SiPM_pla.name)
+                Mirror_lv.placements.append(SiPM_Sens_pla.name)
+
+        # Construct SiPM LV
+        SiPM_shape = geom.shapes.Box('SiPM_shape',
+                                       dx = self.SiPM_dx,
+                                       dy = self.SiPM_dy,
+                                       dz = self.SiPM_dz)
+
+        SiPM_lv = geom.structure.Volume('volSiPM',
+                                            material=self.SiPM_Material,
+                                            shape=SiPM_shape)
+
+        # Place SiPMs next to WLS plane
+        for n in range(int(self.N_SiPM/self.N_Mask)):
+            posipm = [self.SiPM_Mask_dx-self.SiPM_dx,-(self.N_SiPM/self.N_Mask-1)*self.SiPM_pitch+(2*n)*self.SiPM_pitch,Q('0cm')]
+
+            SiPM_pos = geom.structure.Position('SiPM_pos_'+str(n),
+                                                    posipm[0],posipm[1],posipm[2])
+
+            SiPM_pla = geom.structure.Placement('SiPM_pla_'+str(n),
+                                                    volume=SiPM_lv,
+                                                    pos=SiPM_pos)
+
+            SiPM_Mask_lv.placements.append(SiPM_pla.name)
 
         # Construct and place SiPM PCBs
         SiPM_PCB_shape = geom.shapes.Box('SiPM_PCB_shape',
