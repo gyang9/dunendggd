@@ -484,6 +484,14 @@ def define_materials( g ):
 
 # ArCLight (https://arxiv.org/pdf/1711.11409.pdf)
 
+    # Vacuum Pillow (same as air with 1E8 times less density)
+    vacuum = g.matter.Mixture("Vac", density = "1E-8*0.001225*g/cc",
+                            components = (
+                                ("nitrogen", 0.781154),
+                                ("oxygen",   0.209476),
+                                ("argon",    0.00934)
+                            ))
+
     # G10 structure (same as FR4)
     g10 = g.matter.Mixture("G10", density="1.850*g/cc",
                             components = (
@@ -492,10 +500,10 @@ def define_materials( g ):
                             ))
 
     # Pixelboard pads
-    Gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
+    gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
 
     # Pixelboard ASICs
-    Silicon = g.matter.Molecule("Silicon",    density="19.32*g/cc",  elements=(("silicon",1),))
+    silicon = g.matter.Molecule("Silicon",    density="19.32*g/cc",  elements=(("silicon",1),))
 
     # Scintillator (PVT, polyvinyl toluene)
     # 'https://eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286'
