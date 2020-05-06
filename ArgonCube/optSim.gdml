@@ -439,23 +439,31 @@
     <position name="SiPM_LCM_PCB_pos_0" unit="cm" x="-14.0825" y="-10.495" z="0"/>
     <position name="SiPM_LCM_PCB_pos_1" unit="cm" x="-14.0825" y="0.0" z="0"/>
     <position name="SiPM_LCM_PCB_pos_2" unit="cm" x="-14.0825" y="10.495" z="0"/>
+    <position name="ArCLight_pos_0" unit="cm" x="0.49655" y="-46.56" z="0"/>
+    <position name="LCM_pos_1" unit="cm" x="0.49655" y="-15.52" z="0"/>
+    <position name="ArCLight_pos_2" unit="cm" x="0.49655" y="15.52" z="0"/>
+    <position name="LCM_pos_3" unit="cm" x="0.49655" y="46.56" z="0"/>
+    <position name="PCBBarL_pos_0" unit="cm" x="-14.4408" y="-46.56" z="0"/>
+    <position name="PCBBarL_pos_1" unit="cm" x="-14.4408" y="-15.52" z="0"/>
+    <position name="PCBBarL_pos_2" unit="cm" x="-14.4408" y="15.52" z="0"/>
+    <position name="PCBBarL_pos_3" unit="cm" x="-14.4408" y="46.56" z="0"/>
     <position name="LCM_pos_0" unit="cm" x="0.49655" y="-46.56" z="0"/>
     <position name="ArCLight_pos_1" unit="cm" x="0.49655" y="-15.52" z="0"/>
     <position name="LCM_pos_2" unit="cm" x="0.49655" y="15.52" z="0"/>
     <position name="ArCLight_pos_3" unit="cm" x="0.49655" y="46.56" z="0"/>
-    <position name="PCBBar_pos_0" unit="cm" x="-14.4408" y="-46.56" z="0"/>
-    <position name="PCBBar_pos_1" unit="cm" x="-14.4408" y="-15.52" z="0"/>
-    <position name="PCBBar_pos_2" unit="cm" x="-14.4408" y="15.52" z="0"/>
-    <position name="PCBBar_pos_3" unit="cm" x="-14.4408" y="46.56" z="0"/>
+    <position name="PCBBarR_pos_0" unit="cm" x="-14.4408" y="-46.56" z="0"/>
+    <position name="PCBBarR_pos_1" unit="cm" x="-14.4408" y="-15.52" z="0"/>
+    <position name="PCBBarR_pos_2" unit="cm" x="-14.4408" y="15.52" z="0"/>
+    <position name="PCBBarR_pos_3" unit="cm" x="-14.4408" y="46.56" z="0"/>
     <position name="TPCPlane_pos" unit="cm" x="-15.13615" y="0.0" z="0.0"/>
     <position name="TPCActive_pos" unit="cm" x="0.2324" y="0" z="0"/>
     <position name="Fieldcage_pos" unit="cm" x="0" y="0" z="0"/>
     <position name="KaptonVolume_pos" unit="cm" x="0.00125" y="0" z="0"/>
     <position name="LAr_pos" unit="cm" x="-0.00125" y="0" z="0"/>
     <position name="TPC_pos" unit="cm" x="0.352075" y="0" z="0"/>
-    <position name="OpticalDet_pos_L" unit="cm" x="-0.274725" y="0" z="-31.52635"/>
-    <position name="OpticalDet_pos_R" unit="cm" x="-0.274725" y="0" z="31.52635"/>
-    <rotation name="OpticalDet_rot" unit="degree" x="180.0" y="0.0" z="0.0"/>
+    <position name="OpticalDetR_pos_R" unit="cm" x="-0.274725" y="0" z="-31.52635"/>
+    <position name="OpticalDetL_pos_L" unit="cm" x="-0.274725" y="0" z="31.52635"/>
+    <rotation name="OpticalDetL_rot" unit="degree" x="180.0" y="0.0" z="0.0"/>
     <position name="Bracket_pos_L" unit="cm" x="15.187225" y="0" z="-31.546"/>
     <position name="Bracket_pos_R" unit="cm" x="15.187225" y="0" z="31.546"/>
     <position name="volOptSim_pos" unit="cm" x="0.0" y="0.0" z="0.0"/>
@@ -1030,8 +1038,10 @@
     <box lunit="cm" name="SiPM_LCM_Mask_shape" x="0.165" y="9.95" z="1.0"/>
     <box lunit="cm" name="SiPM_LCM_shape" x="0.147" y="4.975" z="0.6"/>
     <box lunit="cm" name="SiPM_LCM_PCB_shape" x="0.3" y="9.95" z="1.0"/>
-    <box lunit="cm" name="OpticalDet" x="29.4835" y="124.11" z="1.0227"/>
-    <box lunit="cm" name="PCBBar_shape" x="0.3175" y="30.99" z="1.0227"/>
+    <box lunit="cm" name="OpticalDetL" x="29.4835" y="124.11" z="1.0227"/>
+    <box lunit="cm" name="PCBBarL_shape" x="0.3175" y="30.99" z="1.0227"/>
+    <box lunit="cm" name="OpticalDetR" x="29.4835" y="124.11" z="1.0227"/>
+    <box lunit="cm" name="PCBBarR_shape" x="0.3175" y="30.99" z="1.0227"/>
     <box lunit="cm" name="TPC" x="30.7371" y="124.11" z="62.03"/>
     <box lunit="cm" name="TPCActive_shape" x="30.2723" y="124.11" z="62.03"/>
     <box lunit="cm" name="OptSim" x="31.75875" y="126.8222" z="64.7497"/>
@@ -2549,13 +2559,13 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="volPCBBar">
+    <volume name="volPCBBarR">
       <materialref ref="FR4"/>
-      <solidref ref="PCBBar_shape"/>
+      <solidref ref="PCBBarR_shape"/>
     </volume>
-    <volume name="volOpticalDet">
+    <volume name="volOpticalDetR">
       <materialref ref="LAr"/>
-      <solidref ref="OpticalDet"/>
+      <solidref ref="OpticalDetR"/>
       <physvol>
         <volumeref ref="volLCM"/>
         <positionref ref="LCM_pos_0"/>
@@ -2577,23 +2587,71 @@
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="PCBBar_pos_0"/>
+        <volumeref ref="volPCBBarR"/>
+        <positionref ref="PCBBarR_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="PCBBar_pos_1"/>
+        <volumeref ref="volPCBBarR"/>
+        <positionref ref="PCBBarR_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="PCBBar_pos_2"/>
+        <volumeref ref="volPCBBarR"/>
+        <positionref ref="PCBBarR_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="volPCBBar"/>
-        <positionref ref="PCBBar_pos_3"/>
+        <volumeref ref="volPCBBarR"/>
+        <positionref ref="PCBBarR_pos_3"/>
+        <rotationref ref="identity"/>
+      </physvol>
+    </volume>
+    <volume name="volPCBBarL">
+      <materialref ref="FR4"/>
+      <solidref ref="PCBBarL_shape"/>
+    </volume>
+    <volume name="volOpticalDetL">
+      <materialref ref="LAr"/>
+      <solidref ref="OpticalDetL"/>
+      <physvol>
+        <volumeref ref="volArCLight"/>
+        <positionref ref="ArCLight_pos_0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volLCM"/>
+        <positionref ref="LCM_pos_1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volArCLight"/>
+        <positionref ref="ArCLight_pos_2"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volLCM"/>
+        <positionref ref="LCM_pos_3"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volPCBBarL"/>
+        <positionref ref="PCBBarL_pos_0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volPCBBarL"/>
+        <positionref ref="PCBBarL_pos_1"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volPCBBarL"/>
+        <positionref ref="PCBBarL_pos_2"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol>
+        <volumeref ref="volPCBBarL"/>
+        <positionref ref="PCBBarL_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>
@@ -2610,14 +2668,14 @@
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="volOpticalDet"/>
-        <positionref ref="OpticalDet_pos_L"/>
+        <volumeref ref="volOpticalDetR"/>
+        <positionref ref="OpticalDetR_pos_R"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol>
-        <volumeref ref="volOpticalDet"/>
-        <positionref ref="OpticalDet_pos_R"/>
-        <rotationref ref="OpticalDet_rot"/>
+        <volumeref ref="volOpticalDetL"/>
+        <positionref ref="OpticalDetL_pos_L"/>
+        <rotationref ref="OpticalDetL_rot"/>
       </physvol>
       <physvol>
         <volumeref ref="volBracket"/>
