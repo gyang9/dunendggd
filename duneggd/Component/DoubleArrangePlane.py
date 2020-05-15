@@ -48,8 +48,8 @@ class DoubleArrangePlaneBuilder(gegede.builder.Builder):
         low_end_v1  = [-t*d+ed for t,d,ed in zip(self.TranspV1,main_hDim,sb_dim_v1)]
         low_end_v2  = [-t*d+ed for t,d,ed in zip(self.TranspV2,main_hDim,sb_dim_v2)]
 
-        for elem2 in xrange(self.NElements2):
-            for elem1 in xrange(self.NElements1):
+        for elem2 in range(self.NElements2):
+            for elem1 in range(self.NElements1):
                 # calculate the distance for n elements = i*2*halfdinemsion
                 temp_v = [elem1*2*d1+elem2*2*d2 for d1,d2 in zip(sb_dim_v1,sb_dim_v2)]
                 # define the position for the element based on edge

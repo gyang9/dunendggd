@@ -96,13 +96,13 @@ class GArTPCBuilder(gegede.builder.Builder):
         self.WallThickness = Q("1cm")
         self.ChamberMaterial = "Steel"
         self.BuildEmpty = False
-        if "EndCapThickness" in kwargs.keys():
+        if "EndCapThickness" in list(kwargs.keys()):
             self.EndCapThickness = kwargs['EndCapThickness']
-        if 'WallThickness' in kwargs.keys():
+        if 'WallThickness' in list(kwargs.keys()):
             self.WallThiciness = kwargs['WallThickness']
-        if 'ChamberMaterial' in kwargs.keys():
+        if 'ChamberMaterial' in list(kwargs.keys()):
             self.ChamberMaterial = kwargs['ChamberMaterial']
-        if 'BuildEmpty' in kwargs.keys():
+        if 'BuildEmpty' in list(kwargs.keys()):
             self.BuildEmpty = kwargs['BuildEmpty']
 
         # Should be a 3D array Quantity objects
@@ -161,20 +161,20 @@ class GArTPCBuilder(gegede.builder.Builder):
         self.PadFrameThickness = Q('1.5cm')
         self.PadFrameMaterial = 'Aluminum'
 
-        if 'PadThickness' in kwargs.keys():
+        if 'PadThickness' in list(kwargs.keys()):
             self.PadThickness = kwargs['PadThickness']
-        if 'PadMaterial' in kwargs.keys():
+        if 'PadMaterial' in list(kwargs.keys()):
             self.PadMaterial = kwargs['PadMaterial']
-        if 'PadFrameThickness' in kwargs.keys():
+        if 'PadFrameThickness' in list(kwargs.keys()):
             self.PadFrameThickness = kwargs['PadFrameThickness']
-        if 'PadFrameMaterial' in kwargs.keys():
+        if 'PadFrameMaterial' in list(kwargs.keys()):
             self.PadFrameMaterial = kwargs['PadFrameMaterial']
-        if 'PadOffset' in kwargs.keys():
+        if 'PadOffset' in list(kwargs.keys()):
             self.PadOffset = kwargs['PadOffset']
-        if 'CentElectrodeHCThickness' in kwargs.keys():
+        if 'CentElectrodeHCThickness' in list(kwargs.keys()):
             self.CentElectrodeHCThickness = \
                  kwargs['CentElectrodeHCThickness']
-        if 'CentElectrodeThickness' in kwargs.keys():
+        if 'CentElectrodeThickness' in list(kwargs.keys()):
             self.CentElectrodeThickness = \
                  kwargs['CentElectrodeThickness']
 

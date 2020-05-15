@@ -70,8 +70,8 @@ class KLOEBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
-        print( "KLOEBuilder::construct()")
-        print( "main_lv = "+ main_lv.name)
+        print("KLOEBuilder::construct()")
+        print("main_lv = "+ main_lv.name)
         self.add_volume( main_lv )
         self.build_yoke(main_lv, geom)
         self.build_solenoid(main_lv, geom)
@@ -136,7 +136,7 @@ class KLOEBuilder(gegede.builder.Builder):
         
 #        BField="(0.0 T, 0.0 T, %f T)"%(-BarrelBField/Q("1.0T"))
         BField="(%f T, 0.0 T, 0.0 T)"%(-BarrelBField/Q("1.0T"))
-        print( "Setting KLOE Barrel Bfield to "+str(BField))
+        print("Setting KLOE Barrel Bfield to "+str(BField)) 
         barrel_lv.params.append(("BField",BField))
 
 
@@ -146,7 +146,7 @@ class KLOEBuilder(gegede.builder.Builder):
         barrel_pla=geom.structure.Placement("KLOEYokeBarrel_pla",
                                             volume=barrel_lv,
                                             pos=barrel_pos)
-        print( "appending "+barrel_pla.name)
+        print("appending "+barrel_pla.name) 
         main_lv.placements.append(barrel_pla.name)
         
         # build endcap
@@ -177,7 +177,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 ec_pla=geom.structure.Placement(name+"_pla",
                                                 volume=ec_lv,
                                                 pos=ec_pos)
-                print( "appending "+ec_pla.name)
+                print("appending "+ec_pla.name)
                 main_lv.placements.append(ec_pla.name)
 
         
@@ -225,7 +225,7 @@ class KLOEBuilder(gegede.builder.Builder):
             ec_pla=geom.structure.Placement(name+"_pla",
                                             volume=ec_lv,
                                             pos=ec_pos)        
-            print( "appending "+ec_pla.name)
+            print("appending "+ec_pla.name)
             main_lv.placements.append(ec_pla.name)
 
         # cryostat inner and outer walls
@@ -256,7 +256,7 @@ class KLOEBuilder(gegede.builder.Builder):
             pla=geom.structure.Placement(name+"_pla",
                                             volume=lv,
                                             pos=pos)        
-            print( "appending "+pla.name)
+            print("appending "+pla.name)
             main_lv.placements.append(pla.name)
             
 
@@ -284,7 +284,7 @@ class KLOEBuilder(gegede.builder.Builder):
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
                                      pos=pos)        
-        print( "appending "+pla.name)
+        print("appending "+pla.name)
         main_lv.placements.append(pla.name)
         
         
@@ -312,13 +312,13 @@ class KLOEBuilder(gegede.builder.Builder):
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
                                      pos=pos)        
-        print( "appending "+pla.name)
+        print("appending "+pla.name)
         main_lv.placements.append(pla.name)
         
     def build_ecal(self, main_lv, geom):
         
-        if (self.builders.has_key("KLOEEMCALO") is False):
-            print "KLOEEMCALO builder not found"
+        if (("KLOEEMCALO" in self.builders) is False):
+            print("KLOEEMCALO builder not found")
             return            
 
         emcalo_builder=self.get_builder("KLOEEMCALO")
@@ -337,7 +337,7 @@ class KLOEBuilder(gegede.builder.Builder):
         main_lv.placements.append(emcalo_placement.name)
         
     def build_3DST(self, main_lv, geom):
-        if (self.builders.has_key("3DST") is False):
+        if (("3DST" in self.builders) is False):
             print("3DST have not been requested.")
             print("Therefore we will not build 3DST.")
             return
@@ -346,21 +346,21 @@ class KLOEBuilder(gegede.builder.Builder):
             if (a3dst_builder != None):
                 pos = [Q('0m'), Q('0m'), Q('0m')]
                 a3dst_lv = a3dst_builder.get_volume()
-                print("Working on ", a3dst_lv.name)
+                print(("Working on ", a3dst_lv.name))
                 pos_name = self.name + a3dst_lv.name + '_pos'
                 pla_name = self.name + a3dst_lv.name + '_pla'
-                print("Position name", pos_name)
-                print("Placement name", pla_name)
+                print(("Position name", pos_name))
+                print(("Placement name", pla_name))
                 sb_pos = geom.structure.Position(pos_name, pos[0], pos[1], pos[2])
                 sb_pla = geom.structure.Placement(pla_name,volume=a3dst_lv,
 					          pos=sb_pos)
-                print("Appending ", sb_pla.name, " to main_lv=", main_lv.name)
+                print(("Appending ", sb_pla.name, " to main_lv=", main_lv.name))
                 main_lv.placements.append(sb_pla.name)
 
     def build_sttfull(self, main_lv, geom):
-        if (self.builders.has_key("STTFULL") is False):
-            print("STTFULL have not been requested.")
-            print("Therefore we will not build  STTFULL")
+        if (("STTFULL" in self.builders) is False):
+            print("STTFULL have not been requested.") 
+            print("Therefore we will not build  STTFULL") 
             return
         else:
             stt_builder = self.get_builder("STTFULL")
@@ -371,8 +371,8 @@ class KLOEBuilder(gegede.builder.Builder):
                 main_lv.placements.append(stt_pla.name)
 
     def build_3DSTwithSTT(self,main_lv, geom):
-        if self.builders.has_key("3DST_STT")==False:
-            print "3DST_STT doesnot exist, return"
+        if ("3DST_STT" in self.builders)==False:
+            print("3DST_STT doesnot exist, return")
             return
         threeDSTwithSTT_builder=self.get_builder("3DST_STT")
         threeDSTwithSTT_lv=threeDSTwithSTT_builder.get_volume()
@@ -386,9 +386,9 @@ class KLOEBuilder(gegede.builder.Builder):
         # only build the tracker if we are
         # also building the STT or GArTPC
         # 3DST works differently
-        if self.builders.has_key("KLOEGAR")==False and self.builders.has_key("KLOESTT")==False :
-            print "KLOEGAR and KLOESTT have not been requested."
-            print "Therefore we will not build the tracking region."
+        if ("KLOEGAR" in self.builders)==False and ("KLOESTT" in self.builders)==False :
+            print("KLOEGAR and KLOESTT have not been requested.")
+            print("Therefore we will not build the tracking region.")
             return 
 
         
@@ -410,16 +410,16 @@ class KLOEBuilder(gegede.builder.Builder):
 
 #        BField="(0.0 T, 0.0 T, %f T)"%(self.CentralBField/Q("1.0T"))
         BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
-        print( "Setting KLOE Central Tracker Bfield to "+str(BField))
+        print("Setting KLOE Central Tracker Bfield to "+str(BField)) 
         lv.params.append(("BField",BField))
         
         
         # now build the STT inside
-        if self.builders.has_key("KLOESTT"):
-            print "we have a KLOESTT builder key"
+        if "KLOESTT" in self.builders:
+            print("we have a KLOESTT builder key")
             stt_builder=self.get_builder("KLOESTT")
-            print "self.BuildSTT==",self.BuildSTT
-            print "stt_builder: ",stt_builder
+            print("self.BuildSTT==",self.BuildSTT)
+            print("stt_builder: ",stt_builder)
             if (stt_builder!=None):
                 rot = [Q("0deg"),Q("90deg"),Q("0deg")]
                 loc = [Q('0m'),Q('0m'),Q('0m')]
@@ -434,11 +434,11 @@ class KLOEBuilder(gegede.builder.Builder):
                 lv.placements.append(stt_pla.name)
         
         # or, build the GArTPC
-        if self.builders.has_key("KLOEGAR"):
-            print "we have a KLOEGAR builder key"
+        if "KLOEGAR" in self.builders:
+            print("we have a KLOEGAR builder key")
             gar_builder=self.get_builder("KLOEGAR")
-            print "self.BuildGAR==",self.BuildGAR
-            print "gar_builder: ",gar_builder
+            print("self.BuildGAR==",self.BuildGAR)
+            print("gar_builder: ",gar_builder)
             if (gar_builder!=None) and (self.BuildGAR==True):
                 rot = [Q("0deg"),Q("0deg"),Q("0deg")]
                 loc = [Q('0m'),Q('0m'),Q('0m')]
@@ -461,7 +461,7 @@ class KLOEBuilder(gegede.builder.Builder):
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
                                      pos=pos)
-        print( "appending "+pla.name)
+        print("appending "+pla.name)
 
         main_lv.placements.append(pla.name)
 

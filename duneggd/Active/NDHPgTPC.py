@@ -155,7 +155,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def get_ecal_barrel_module_thickness(self, geom):
 
         ecal_barrel_module_thickness = Q("0mm")
-        print "Ecal Barrel thickness"
+        print("Ecal Barrel thickness")
         for nlayer, type in zip(self.nLayers_Barrel, self.layer_builder_name):
             # print "Builder name ", type
             Layer_builder = self.get_builder(type)
@@ -164,7 +164,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             Layer_shape = geom.store.shapes.get(Layer_lv.shape)
             layer_thickness = Layer_shape.dz * 2
 
-            print "nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness
+            print("nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness)
             ecal_barrel_module_thickness += nlayer * layer_thickness
 
         return ecal_barrel_module_thickness
@@ -172,7 +172,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def get_ecal_endcap_module_thickness(self, geom):
 
         ecal_endcap_module_thickness = Q("0mm")
-        print "Ecal Endcap thickness"
+        print("Ecal Endcap thickness")
         for nlayer, type in zip(self.nLayers_Endcap, self.layer_builder_name):
             # print "Builder name ", type
             Layer_builder = self.get_builder(type)
@@ -181,7 +181,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             Layer_shape = geom.store.shapes.get(Layer_lv.shape)
             layer_thickness = Layer_shape.dz * 2
 
-            print "nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness
+            print("nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness)
             ecal_endcap_module_thickness += nlayer * layer_thickness
 
         return ecal_endcap_module_thickness
@@ -205,7 +205,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
     def get_yoke_barrel_module_thickness(self, geom):
         yoke_barrel_module_thickness = Q("0mm")
-        print "Yoke barrel thickness"
+        print("Yoke barrel thickness")
         for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
             # print "Builder name ", type
             Layer_builder = self.get_builder(type)
@@ -214,7 +214,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             Layer_shape = geom.store.shapes.get(Layer_lv.shape)
             layer_thickness = Layer_shape.dz * 2
 
-            print "nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness
+            print("nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness)
             yoke_barrel_module_thickness += nlayer * layer_thickness
 
         return yoke_barrel_module_thickness
@@ -236,7 +236,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         elif self.geometry == 'Yoke':
             self.construct_yoke(geom)
         else:
-            print "Could not find the geometry asked!"
+            print("Could not find the geometry asked!")
             return
         return
 
@@ -252,17 +252,17 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             ''' total weight for the 5 coil design is around 93t '''
 
             if self.magnetType == "5Coils":
-                print "Construct Magnet - 5 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                print("Construct Magnet - 5 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
                 nCoils = 5
                 CoilWidth = [Q("27cm"), Q("61.6cm"), Q("27cm"), Q("61.6cm"), Q("27cm")]
                 CoilPos = [Q("-5.5m"), Q("-3m"), Q("0m"), Q("3m"), Q("5.5m")]
             if self.magnetType == "4Coils":
-                print "Construct Magnet - 4 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                print("Construct Magnet - 4 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
                 nCoils = 4
                 CoilWidth = [Q("27cm"), Q("61.6cm"), Q("61.6cm"), Q("27cm")]
                 CoilPos = [Q("-5.5m"), Q("-3m"), Q("3m"), Q("5.5m")]
             if self.magnetType == "2Coils":
-                print "Construct Magnet - 2 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                print("Construct Magnet - 2 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
                 nCoils = 2
                 CoilWidth = [Q("61.6cm"), Q("61.6cm")]
                 CoilPos = [Q("-3m"), Q("3m")]
@@ -272,7 +272,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
             magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material="Air")
 
-            for ncoil, coilw, coilp in zip(range(nCoils), CoilWidth, CoilPos):
+            for ncoil, coilw, coilp in zip(list(range(nCoils)), CoilWidth, CoilPos):
                 coil_name = self.output_name + "_Coil%01i" % ncoil
                 coil_shape = geom.shapes.Tubs(coil_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=coilw/2., sphi="0deg", dphi="360deg")
                 coil_vol = geom.structure.Volume("vol"+coil_name, shape=coil_shape, material=self.magnetMaterial)
@@ -292,7 +292,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             ''' The PRY covers only +/- 30 deg up and down the MPD and has a bore of 3.5m'''
             ''' Total weight is ~XXXt '''
 
-            print "Construct Magnet SPY - Solenoid made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+            print("Construct Magnet SPY - Solenoid made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
 
             nCoils = 4
             CoilWidth = Q("1496mm")
@@ -304,7 +304,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=Q("2.6m")+Q("1496mm")/2., sphi="0deg", dphi="360deg")
             magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material="Air")
 
-            for ncoil, coilp in zip(range(nCoils), CoilPos):
+            for ncoil, coilp in zip(list(range(nCoils)), CoilPos):
                 coil_name = self.output_name + "_Coil%01i" % ncoil
                 coil_shape = geom.shapes.Tubs(coil_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=CoilWidth/2., sphi="0deg", dphi="360deg")
                 coil_vol = geom.structure.Volume("vol"+coil_name, shape=coil_shape, material=self.magnetMaterial)
@@ -318,7 +318,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             self.add_volume(magnet_vol)
 
         elif self.magnetType == "Uniform":
-            print "Construct Magnet - Approximation to a magnet of 100t made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+            print("Construct Magnet - Approximation to a magnet of 100t made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
 
             magnet_name = self.output_name
             magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
@@ -326,13 +326,13 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
             self.add_volume(magnet_vol)
         else:
-            print "Magnet model unknown.... "
+            print("Magnet model unknown.... ")
             return
 
     def construct_pv(self, geom):
         ''' construct the Pressure Vessel '''
 
-        print "Construct PV Barrel"
+        print("Construct PV Barrel")
 
         nsides = self.nsides
         pv_rInner = self.rInnerTPC
@@ -347,7 +347,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         self.add_volume(pvb_vol)
 
-        print "Construct PV Endcap"
+        print("Construct PV Endcap")
 
         # build the pressure vessel endcaps
         # some euclidean geometry documented in my notebook
@@ -357,7 +357,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         R = q/(2*h/Q("1mm"))*Q("1mm")
         dtheta = asin( 2*(h/Q("1mm"))*(x/Q("1mm"))/q)
 
-        print "h, x, q, R, dtheta = ", h, x, q, R, dtheta
+        print("h, x, q, R, dtheta = ", h, x, q, R, dtheta)
 
         pvec_name = self.output_name + "Endcap"
         pvec_shape = geom.shapes.Sphere(pvec_name, rmin=R, rmax=R + self.pvThickness, sphi="0deg", dphi="360deg", stheta="0deg", dtheta=dtheta)
@@ -380,7 +380,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         #
         # need to create the layer based on the position in depth z -> different layer sizes
 
-        print "Construct ECAL Barrel"
+        print("Construct ECAL Barrel")
 
         # ECAL Barrel
         safety = Q("0.1mm")
@@ -393,20 +393,20 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         ecal_barrel_module_thickness_noSupport = ecal_barrel_module_thickness - safety
         #inner radius ecal (TPC + pv + safety)
         rInnerEcal = self.rInnerTPC + self.pvThickness
-        print "Ecal inner radius ", rInnerEcal
+        print("Ecal inner radius ", rInnerEcal)
         #barrel length (TPC + PV)
         Barrel_halfZ = self.get_pv_endcap_length(geom)
         #outer radius ecal (inner radius ecal + ecal module)
         rOuterEcal = rInnerEcal + ecal_barrel_module_thickness
-        print "Ecal outer radius ", rOuterEcal
+        print("Ecal outer radius ", rOuterEcal)
         #check that the ECAL thickness does not go over the magnet radius
         ecal_barrel_module_thickness_max = self.magnetInnerR * cos(pi/nsides) - rInnerEcal
 
-        print "Barrel Module thickness ", ecal_barrel_module_thickness
-        print "Maximum allowed thickness ", ecal_barrel_module_thickness_max
+        print("Barrel Module thickness ", ecal_barrel_module_thickness)
+        print("Maximum allowed thickness ", ecal_barrel_module_thickness_max)
 
         if ecal_barrel_module_thickness > ecal_barrel_module_thickness_max:
-            print "Will have overlaps if the magnet is present!"
+            print("Will have overlaps if the magnet is present!")
 
         #minimum dimension of the stave
         min_dim_stave = 2 * tan( pi/nsides ) * rInnerEcal
@@ -418,12 +418,12 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         #dimension of a module along the ND x direction
         Ecal_Barrel_module_dim = Ecal_Barrel_halfZ * 2 / Ecal_Barrel_n_modules
 
-        print "Large side of the stave", max_dim_stave
-        print "Small side of the stave", min_dim_stave
-        print "Barrel module dim in z", Ecal_Barrel_module_dim
-        print "Build Thinner Upstream ECAL", self.buildThinUpstream
+        print("Large side of the stave", max_dim_stave)
+        print("Small side of the stave", min_dim_stave)
+        print("Barrel module dim in z", Ecal_Barrel_module_dim)
+        print("Build Thinner Upstream ECAL", self.buildThinUpstream)
         if self.buildThinUpstream:
-            print "Number of layers for the Upstream ECAL", self.nLayers_Upstream
+            print("Number of layers for the Upstream ECAL", self.nLayers_Upstream)
 
         #Position of the stave in the Barrel (local coordinates)
         X = rInnerEcal + safety + ecal_barrel_module_thickness / 2.
@@ -447,11 +447,11 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             if placing_angle >= 360:
                 placing_angle = placing_angle - 360
 
-            print "Placing stave ", stave_id, " at angle ", placing_angle, " deg"
+            print("Placing stave ", stave_id, " at angle ", placing_angle, " deg")
 
             for imodule in range(Ecal_Barrel_n_modules):
                 module_id = imodule+1
-                print "Placing stave ", stave_id, " and module ", module_id
+                print("Placing stave ", stave_id, " and module ", module_id)
 
                 stave_name = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
                 stave_volname = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
@@ -536,7 +536,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def construct_ecal_endcap_staves(self, geom):
         ''' construct a set of ECAL staves for the Endcap '''
 
-        print "Construct ECAL Endcap"
+        print("Construct ECAL Endcap")
 
         # ECAL Endcap
         safety = Q("0.1mm")
@@ -556,8 +556,8 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         rmin = EcalEndcap_inner_radius
         rmax = EcalEndcap_outer_radius + 2*safety
 
-        print "Quadrant side ", rmax
-        print "Endcap thickness ", ecal_endcap_module_thickness
+        print("Quadrant side ", rmax)
+        print("Endcap thickness ", ecal_endcap_module_thickness)
 
         #Mother volume Endcap
         endcap_shape_min = geom.shapes.PolyhedraRegular("ECALEndcap_min", numsides=nsides, rmin=rmin, rmax=rmax, dz=EcalEndcap_min_z)
@@ -597,7 +597,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 else:
                     this_module_rotZ = rotZ_offset + (iquad+1) * pi/2.
 
-                print "Placing stave ", stave_id, " and module ", module_id
+                print("Placing stave ", stave_id, " and module ", module_id)
 
                 #Create a template module
                 stave_name = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
@@ -655,8 +655,8 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         YokeEndcap_min_z = self.get_pv_endcap_length(geom) + ecal_endcap_module_thickness + safety
         YokeEndcap_max_z = YokeEndcap_min_z + yoke_barrel_thickness + safety
 
-        print "Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", yoke_barrel_thickness, " and a length of ", self.magnetHalfLength*2
-        print "Build integrated Muon ID ", self.IntegratedMuID
+        print("Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", yoke_barrel_thickness, " and a length of ", self.magnetHalfLength*2)
+        print("Build integrated Muon ID ", self.IntegratedMuID)
 
         '''Barrel'''
         byoke_name = "YokeBarrel"
@@ -706,7 +706,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
             for imodule in range(Yoke_Barrel_n_modules):
                 module_id = imodule+1
-                print "Placing stave ", stave_id, " and module ", module_id
+                print("Placing stave ", stave_id, " and module ", module_id)
 
                 stave_name = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
                 stave_volname = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
@@ -761,7 +761,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
                             layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
 
-                            print "Adding ", layername
+                            print("Adding ", layername)
 
                             #Configure the layer length based on the zPos in the stave
                             Layer_builder = self.get_builder(type)
@@ -804,4 +804,3 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         yoke_endcap_vol = geom.structure.Volume( "vol"+eyoke_name, shape=yoke_endcap_shape, material=self.PRYMaterial)
 
         self.add_volume(yoke_endcap_vol)
-       

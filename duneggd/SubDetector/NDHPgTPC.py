@@ -51,7 +51,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         dy_main=r #dimension in height
         dz_main=dz #dimension perp to the beam
 
-        print "Dimension of the MPD in along the beam ", dx_main*2, " dimension in height ", dy_main*2, " and dimension perp to the beam ", dz_main*2
+        print("Dimension of the MPD in along the beam ", dx_main*2, " dimension in height ", dy_main*2, " and dimension perp to the beam ", dz_main*2)
 
         main_shape = geom.shapes.Box('MPD', dx=dx_main, dy=dy_main, dz=dz_main)
         main_lv = geom.structure.Volume('vol'+main_shape.name, material='Air', shape=main_shape)
@@ -66,7 +66,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # EndcapThickness, WallThickness, and ChamberMaterial
         # do that in the cfg file
         if self.buildGarTPC:
-            print "Adding TPC to main volume"
+            print("Adding TPC to main volume")
             self.build_gartpc(fake_lv, geom)
 
         ######### build the pressure vessel  ###################
@@ -74,7 +74,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # The PV consists of a cylinder for the Barrel and
         # the intersection of the cylinder and a sphere for the Endcaps
         if self.buildPV:
-            print "Adding PV to main volume"
+            print("Adding PV to main volume")
             self.build_pressure_vessel(fake_lv, geom)
 
         ######### build an ecal ##########################
@@ -87,14 +87,14 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # Build a simple magnet of Al to get the total mass
         # A description of the return magnetic field and the coils is not implemented
         if self.buildMagnet:
-            print "Adding Magnet to main volume"
+            print("Adding Magnet to main volume")
             self.build_magnet(main_lv, geom)
 
         ######### magnet yoke ##################################
         # Build the yoke Barrel and Endcaps
         # A description of the return magnetic field and the coils is not implemented
         if self.buildYoke:
-            print "Adding Yoke to main volume"
+            print("Adding Yoke to main volume")
             self.build_yoke(main_lv, geom)
 
         return
@@ -102,7 +102,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     def buildMagnetizedVolume(self, main_lv, geom):
         '''Magnetized volume (fake volume) for G4 that includes the TPC + ECAL only'''
 
-        print "Making fake magnetized volume and adding to main volume"
+        print("Making fake magnetized volume and adding to main volume")
 
         eECal_shape = geom.get_shape("ECALEndcap_max")
         fake_shape = geom.shapes.PolyhedraRegular('NDHPgTPC', numsides=eECal_shape.numsides, rmin=Q("0m"), rmax=eECal_shape.rmax, dz=eECal_shape.dz)
@@ -134,7 +134,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     def build_ecal(self, main_lv, geom):
 
         if self.buildEcalBarrel == True:
-            print "Adding ECAL Barrel to main volume"
+            print("Adding ECAL Barrel to main volume")
             # build the ecalbarrel
             ibb = self.get_builder('ECALBarrelBuilder')
             if ibb == None:
@@ -155,7 +155,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             main_lv.placements.append(ib_pla.name)
 
         if self.buildEcalEndcap == True:
-            print "Adding ECAL Endcap to main volume"
+            print("Adding ECAL Endcap to main volume")
             # build the ecal endcap
             iecb = self.get_builder("ECALEndcapBuilder")
             if iecb == None:
@@ -194,7 +194,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             yrot = "0deg" if side == 'L' else "180deg"
             if side == 'R':
                 xpos = -xpos
-            print "xpos = ", xpos
+            print("xpos = ", xpos)
             pvec_rot = geom.structure.Rotation("PVEndcap"+side+"_rot", y=yrot)
             pvec_pos = geom.structure.Position("PVEndcap"+side+"_pos", z=xpos)
             pvec_pla = geom.structure.Placement("PVEndcap"+side+"_pla", volume=pvec_vol, pos=pvec_pos, rot=pvec_rot)

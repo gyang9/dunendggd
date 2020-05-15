@@ -30,10 +30,10 @@ class Secondary2Builder(gegede.builder.Builder):
         self.ecalUpRot  = ecalUpRot
         self.ecalBarRot   = ecalBarRot
         
-	self.magPos       = list(magPos)
+        self.magPos       = list(magPos)
         self.ecalDnPos    = list(ecalDnPos)
         #self.ecalUpPos    = list(ecalUpPos)
-	self.ecalBaPos    = list(ecalBaPos)
+        self.ecalBaPos    = list(ecalBaPos)
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -42,11 +42,11 @@ class Secondary2Builder(gegede.builder.Builder):
         ecalDownDim    = list(self.ecalDownBldr.ecalModDim)
         ecalBarOutDim  = list(self.ecalBarBldr.ecalOutDim)
         ecalBarInDim   = list(self.ecalBarBldr.ecalInDim)
-	magBoxOutDim   = list(self.MagnetBldr.MagnetOutt)
-	magBoxInDim    = list(self.MagnetBldr.MagnetInn)
+        magBoxOutDim   = list(self.MagnetBldr.MagnetOutt)
+        magBoxInDim    = list(self.MagnetBldr.MagnetInn)
 
         magPos      = list(self.magPos) 
-	ecalBarPos  = list(self.ecalBaPos)
+        ecalBarPos  = list(self.ecalBaPos)
         ecalDnPos   = list(self.ecalDnPos)
         #ecalUpPos   = list(self.ecalUpPos)
 
@@ -60,7 +60,7 @@ class Secondary2Builder(gegede.builder.Builder):
         det_lv = geom.structure.Volume('vol'+self.name, material=self.defMat, shape=detBox)
         self.add_volume(det_lv)
 
-	magnet_lv = self.MagnetBldr.get_volume('volMagnet')
+        magnet_lv = self.MagnetBldr.get_volume('volMagnet')
         magnet_in_det = geom.structure.Position('magnet_in_det', magPos[0], magPos[1], magPos[2])
         pMagnet_in_det = geom.structure.Placement('placeMagnet_in_det',
                                                   volume = magnet_lv,

@@ -35,9 +35,9 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
 
         self.nRear2Mod=nRear2Mod_reg
         if useRegMod!=True:
-            print "NOTE-------------------- use nos mod instead of reg"
+            print("NOTE-------------------- use nos mod instead of reg")
             self.nRear2Mod=nRear2Mod_nos
-        print "self.nRear2Mod:",self.nRear2Mod
+        print("self.nRear2Mod:",self.nRear2Mod)
         self.nRear3Mod=nRear3Mod
         self.offset3DSTcenter=offset3DSTcenter
         self.strawRadius=strawRadius
@@ -152,7 +152,7 @@ class KLOE3DST_STT_builder(gegede.builder.Builder):
         
     def build_3DST(self,geom, main_lv):
         if self.get_builder("3DST")==None:
-            print "3DST  not found"
+            print("3DST  not found")
             return
         threeDST_builder=self.get_builder("3DST")
         threeDST_lv=threeDST_builder.get_volume()
