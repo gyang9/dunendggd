@@ -59,7 +59,8 @@ class OpticalDetRBuilder(gegede.builder.Builder):
 
                 ArCLight_pla = geom.structure.Placement(self.ArCLight_builder.name+'_pla_'+str(i),
                                                         volume=ArCLight_lv,
-                                                        pos=ArCLight_pos)
+                                                        pos=ArCLight_pos,
+                                                        copynumber=i/2)
 
                 main_lv.placements.append(ArCLight_pla.name)
             else:
@@ -72,7 +73,8 @@ class OpticalDetRBuilder(gegede.builder.Builder):
 
                 LCM_pla = geom.structure.Placement(self.LCM_builder.name+'_pla_'+str(i),
                                                         volume=LCM_lv,
-                                                        pos=LCM_pos)
+                                                        pos=LCM_pos,
+                                                        copynumber=(i-1)/2)
 
                 main_lv.placements.append(LCM_pla.name)
 

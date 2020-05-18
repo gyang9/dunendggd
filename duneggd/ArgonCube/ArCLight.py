@@ -202,7 +202,8 @@ class ArCLightBuilder(gegede.builder.Builder):
 
             SiPM_Mask_pla = geom.structure.Placement('SiPM_Mask_pla_'+str(n),
                                                     volume=SiPM_Mask_lv,
-                                                    pos=SiPM_Mask_pos)
+                                                    pos=SiPM_Mask_pos,
+                                                    copynumber=n)
 
             main_lv.placements.append(SiPM_Mask_pla.name)
 
@@ -215,7 +216,8 @@ class ArCLightBuilder(gegede.builder.Builder):
 
                 SiPM_Sens_pla = geom.structure.Placement('SiPM_Sens_pla_'+str(2*n+m),
                                                         volume=SiPM_Sens_lv,
-                                                        pos=SiPM_Sens_pos)
+                                                        pos=SiPM_Sens_pos,
+                                                        copynumber=2*n+m)
 
                 Mirror_lv.placements.append(SiPM_Sens_pla.name)
 
