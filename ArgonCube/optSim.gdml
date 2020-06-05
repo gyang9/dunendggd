@@ -257,7 +257,7 @@
     <position name="TPCPlane_pos" unit="cm" x="-15.13615" y="0.0" z="0.0"/>
     <position name="TPCActive_pos" unit="cm" x="0.2324" y="0" z="0"/>
     <position name="Fieldcage_pos" unit="cm" x="0" y="0" z="0"/>
-    <position name="KaptonVolume_pos" unit="cm" x="0.00125" y="0" z="0"/>
+    <position name="Kapton_pos" unit="cm" x="0.00125" y="0" z="0"/>
     <position name="LAr_pos" unit="cm" x="-0.00125" y="0" z="0"/>
     <position name="TPC_pos" unit="cm" x="0.352075" y="0" z="0"/>
     <position name="OpticalDetR_pos_R" unit="cm" x="-0.274725" y="0" z="-31.52635"/>
@@ -846,7 +846,7 @@
     <box lunit="cm" name="TPCActive_shape" x="30.2723" y="124.11" z="62.03"/>
     <box lunit="cm" name="OptSim" x="31.75875" y="126.8222" z="64.7497"/>
     <box lunit="cm" name="Fieldcage_shape" x="31.75875" y="126.8222" z="64.7497"/>
-    <box lunit="cm" name="KaptonVolume_shape" x="31.44375" y="126.1922" z="64.1197"/>
+    <box lunit="cm" name="Kapton_shape" x="31.44375" y="126.1922" z="64.1197"/>
     <box lunit="cm" name="LAr_shape" x="31.44125" y="126.1872" z="64.1147"/>
     <box lunit="cm" name="Bracket_shape" x="1.0668" y="126.0856" z="1.0227"/>
     <box lunit="cm" name="DetEnclosure" x="100.0" y="200.0" z="100.0"/>
@@ -1987,9 +1987,9 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="volKaptonVolume">
+    <volume name="volKapton">
       <materialref ref="Kapton"/>
-      <solidref ref="KaptonVolume_shape"/>
+      <solidref ref="Kapton_shape"/>
       <physvol copynumber="0">
         <volumeref ref="volLAr"/>
         <positionref ref="LAr_pos"/>
@@ -2000,8 +2000,8 @@
       <materialref ref="G10"/>
       <solidref ref="Fieldcage_shape"/>
       <physvol copynumber="0">
-        <volumeref ref="volKaptonVolume"/>
-        <positionref ref="KaptonVolume_pos"/>
+        <volumeref ref="volKapton"/>
+        <positionref ref="Kapton_pos"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>

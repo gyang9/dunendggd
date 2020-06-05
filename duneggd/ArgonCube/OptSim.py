@@ -30,7 +30,7 @@ class OptSimBuilder(gegede.builder.Builder):
 
         self.LAr_Material           = 'LAr'
         self.Bracket_Material       = 'G10'
-        self.KaptonVolume_Material  = 'Kapton'
+        self.Kapton_Material        = 'Kapton'
 
         # Material definitons
         self.Material               = 'G10'
@@ -77,26 +77,26 @@ class OptSimBuilder(gegede.builder.Builder):
         main_lv.placements.append(Fieldcage_pla.name)
 
         # Construct Capton Volume
-        KaptonVolume_shape = geom.shapes.Box('KaptonVolume_shape',
+        Kapton_shape = geom.shapes.Box('Kapton_shape',
                                         dx = self.Fieldcage_dx-self.Cathode_dx/2+self.Kapton_dd,
                                         dy = self.Fieldcage_dy-self.Fieldcage_dd*2+self.Kapton_dd*2,
                                         dz = self.Fieldcage_dz-self.Fieldcage_dd*2+self.Kapton_dd*2)
 
-        KaptonVolume_lv = geom.structure.Volume('volKaptonVolume',
-                                        material=self.KaptonVolume_Material,
-                                        shape=KaptonVolume_shape)
+        Kapton_lv = geom.structure.Volume('volKapton',
+                                        material=self.Kapton_Material,
+                                        shape=Kapton_shape)
 
         # Place Capton Volume inside Fieldcage volume
         pos = [self.Kapton_dd,Q('0cm'),Q('0cm')]
 
-        KaptonVolume_pos = geom.structure.Position('KaptonVolume_pos',
+        Kapton_pos = geom.structure.Position('Kapton_pos',
                                                 pos[0],pos[1],pos[2])
 
-        KaptonVolume_pla = geom.structure.Placement('KaptonVolume_pla',
-                                                volume=KaptonVolume_lv,
-                                                pos=KaptonVolume_pos)
+        Kapton_pla = geom.structure.Placement('Kapton_pla',
+                                                volume=Kapton_lv,
+                                                pos=Kapton_pos)
 
-        Fieldcage_lv.placements.append(KaptonVolume_pla.name)
+        Fieldcage_lv.placements.append(Kapton_pla.name)
 
         # Construct LAr Volume
         LAr_shape = geom.shapes.Box('LAr_shape',
@@ -118,7 +118,7 @@ class OptSimBuilder(gegede.builder.Builder):
                                                 volume=LAr_lv,
                                                 pos=LAr_pos)
 
-        KaptonVolume_lv.placements.append(LAr_pla.name)
+        Kapton_lv.placements.append(LAr_pla.name)
 
         # Build TPC
         pos = [self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
