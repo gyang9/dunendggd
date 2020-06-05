@@ -503,7 +503,7 @@ def define_materials( g ):
     gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
 
     # Pixelboard ASICs
-    silicon = g.matter.Molecule("Silicon",    density="19.32*g/cc",  elements=(("silicon",1),))
+    silicon = g.matter.Molecule("Silicon",    density="2.33*g/cc",  elements=(("silicon",1),))
 
     # Scintillator (PVT, polyvinyl toluene)
     # 'https://eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286'
