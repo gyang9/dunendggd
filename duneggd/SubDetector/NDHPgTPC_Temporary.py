@@ -77,6 +77,7 @@ class NDHPgTPC_Temporary_Builder(gegede.builder.Builder):
             return
 
         tracker_vol = tracker_builder.get_volume("volTracker")
+        tracker_vol.params.append(("BField", self.innerBField))
         tracker_pla = geom.structure.Placement("Tracker"+"_pla", volume=tracker_vol)
         # Place it in the main lv
         main_lv.placements.append(tracker_pla.name)

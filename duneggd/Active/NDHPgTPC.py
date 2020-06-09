@@ -235,7 +235,7 @@ class NDHPgTPCTempDetElementBuilder(gegede.builder.Builder):
 
         ''' Normal stave '''
         for istave in range(self.nsides):
-            if istave == 3: #remove the stave in front of the LAr
+            if istave == 7: #remove the stave in front of the LAr
                 continue
 
             X = rmin_barrel + yoke_barrel_thickness / 2.
@@ -324,7 +324,7 @@ class NDHPgTPCTempDetElementBuilder(gegede.builder.Builder):
         nlayer = len(self.PosLayer)
         sensname = "Tracker_vol"
         for ilayer, layerp in zip(list(range(nlayer)), self.PosLayer):
-            layername = self.output_name + "_layer%01i" % ilayer
+            layername = self.output_name + "_layer%02i" % ilayer
             layer_builder = self.get_builder('MinervaPlane')
             l_dim_x = self.dX
             l_dim_y = self.dY
@@ -338,7 +338,7 @@ class NDHPgTPCTempDetElementBuilder(gegede.builder.Builder):
             layer_rot = geom.structure.Rotation(layername+"_rot", y=Q('90deg'))
             layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos, rot=layer_rot)
 
-            print( "placing layer", ilayer, "at position", layerp, "with dimension dX=", layer_shape.dx, "dY=", layer_shape.dy, "and dZ=", layer_shape.dz)
+            print( "placing layer", layername, "at position", layerp, "with dimension dX=", layer_shape.dx, "dY=", layer_shape.dy, "and dZ=", layer_shape.dz)
 
             tracker_vol.placements.append(layer_pla.name)
 
@@ -915,7 +915,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         ''' Normal stave '''
         for istave in range(self.nsides):
-            if istave == 3: #remove the stave in front of the LAr
+            if istave == 7: #remove the stave in front of the LAr
                 continue
 
             X = rmin_barrel + yoke_barrel_thickness / 2.
@@ -929,18 +929,6 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             xpos = X*cos(phirot2)-Y*sin(phirot2)
             ypos = X*sin(phirot2)+Y*cos(phirot2)
 
-            #Need correction.... calculate correctly the position...
-            # if istave == 2:
-            #     phirot22 = phirot2 - hphi/2.0
-            #     X += Q("15.5cm")
-            #     xpos = X*cos(phirot22)-Y*sin(phirot22)
-            #     ypos = X*sin(phirot22)+Y*cos(phirot22)
-            # if istave == 4:
-            #     phirot22 = phirot2 + hphi/2.0
-            #     X += Q("15.5cm")
-            #     xpos = X*cos(phirot22)-Y*sin(phirot22)
-            #     ypos = X*sin(phirot22)+Y*cos(phirot22)
-
             for imodule in range(Yoke_Barrel_n_modules):
                 module_id = imodule+1
                 print("Placing stave ", stave_id, " and module ", module_id)
@@ -948,42 +936,6 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                 stave_name = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
                 stave_volname = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
 
-                # if istave == 2 or istave == 4:
-                #     stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/4.0, dx2=max_dim_stave/4.0,
-                #     dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
-                #     dz=self.PRYThickness/2.0)
-                #     stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.PRYMaterial)
-                #
-                #     if self.IntegratedMuID == True:
-                #         zPos = Q("0mm")
-                #         layer_id = 1
-                #
-                #         for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
-                #             for ilayer in range(nlayer):
-                #
-                #                 layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
-                #
-                #                 print "Adding ", layername
-                #
-                #                 #Configure the layer length based on the zPos in the stave
-                #                 Layer_builder = self.get_builder(type)
-                #                 layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
-                #                 l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides )
-                #                 l_dim_y = Yoke_Barrel_module_dim - safety
-                #
-                #                 NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x/2., l_dim_y, layername, sensname, "Box")
-                #                 NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
-                #                 layer_lv = Layer_builder.get_volume(layername+"_vol")
-                #
-                #                 #Placement layer in stave
-                #                 layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - self.PRYThickness/2.0)
-                #                 layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
-                #
-                #                 stave_lv.placements.append(layer_pla.name)
-                #
-                #                 zPos += layer_thickness+spacing_muID;
-                #                 layer_id += 1
-                # else:
                 stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/2.0, dx2=max_dim_stave/2.0,
                 dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
                 dz=yoke_barrel_thickness/2.0)
@@ -1021,8 +973,6 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
                 #Placement staves in Barrel
                 name = stave_lv.name
-                #print "Placing stave at x= ", (X*cos(phirot2)-Y*sin(phirot2))
-                #print "Placing stave at y= ", (X*sin(phirot2)+Y*cos(phirot2))
                 pos = geom.structure.Position(name + "_pos", x=xpos, y=ypos, z=( imodule+0.5 )*Yoke_Barrel_module_dim - YokeEndcap_min_z )
                 rot = geom.structure.Rotation(name + "_rot", x=pi/2.0, y=phirot+pi, z=Q("0deg"))
                 pla = geom.structure.Placement(name + "_pla", volume=stave_lv, pos=pos, rot=rot)
