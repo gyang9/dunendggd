@@ -770,7 +770,7 @@
       <composite n="1" ref="gold"/>
     </material>
     <material formula="" name="Silicon">
-      <D value="19.32"/>
+      <D value="2.33"/>
       <composite n="1" ref="silicon"/>
     </material>
     <material formula="" name="EJ280WLS">
@@ -867,12 +867,12 @@
     <volume name="volG10Bottom">
       <materialref ref="G10"/>
       <solidref ref="G10Bottom_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volLArVol1"/>
         <positionref ref="LArVol1_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volLArVol2"/>
         <positionref ref="LArVol2_pos"/>
         <rotationref ref="identity"/>
@@ -889,507 +889,507 @@
     <volume name="volPixelPlane">
       <materialref ref="LAr"/>
       <solidref ref="PixelPlane"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCPCB"/>
         <positionref ref="PCB_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.9"/>
         <rotationref ref="identity"/>
@@ -1398,42 +1398,42 @@
     <volume name="volTPCPlane">
       <materialref ref="LAr"/>
       <solidref ref="TPCPlane"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_0_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_1_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_2_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_3_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_0_L"/>
         <rotationref ref="PixelPlane_rot_0_L"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_1_L"/>
         <rotationref ref="PixelPlane_rot_1_L"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_2_L"/>
         <rotationref ref="PixelPlane_rot_2_L"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_3_L"/>
         <rotationref ref="PixelPlane_rot_3_L"/>
@@ -1446,12 +1446,12 @@
     <volume name="volTPC">
       <materialref ref="LAr"/>
       <solidref ref="TPC"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCPlane"/>
         <positionref ref="TPCPlane_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPCActive"/>
         <positionref ref="TPCActive_pos"/>
         <rotationref ref="identity"/>
@@ -1468,37 +1468,37 @@
     <volume name="volMirror">
       <materialref ref="ESR"/>
       <solidref ref="Mirror_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volWLS"/>
         <positionref ref="WLS_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="1">
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="2">
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="3">
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="4">
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="5">
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_5"/>
         <rotationref ref="identity"/>
@@ -1515,12 +1515,12 @@
     <volume name="volSiPM_Mask">
       <materialref ref="PVT"/>
       <solidref ref="SiPM_Mask_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volSiPM"/>
         <positionref ref="SiPM_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volSiPM"/>
         <positionref ref="SiPM_pos_1"/>
         <rotationref ref="identity"/>
@@ -1533,42 +1533,42 @@
     <volume name="volArCLight">
       <materialref ref="LAr"/>
       <solidref ref="ArCLight"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volMirror"/>
         <positionref ref="Mirror_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPB_LAr"/>
         <positionref ref="TPB_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volSiPM_Mask"/>
         <positionref ref="SiPM_Mask_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="1">
         <volumeref ref="volSiPM_Mask"/>
         <positionref ref="SiPM_Mask_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="2">
         <volumeref ref="volSiPM_Mask"/>
         <positionref ref="SiPM_Mask_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volSiPM_PCB"/>
         <positionref ref="SiPM_PCB_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volSiPM_PCB"/>
         <positionref ref="SiPM_PCB_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volSiPM_PCB"/>
         <positionref ref="SiPM_PCB_pos_2"/>
         <rotationref ref="identity"/>
@@ -1581,42 +1581,42 @@
     <volume name="volOpticalDet">
       <materialref ref="LAr"/>
       <solidref ref="OpticalDet"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volArCLight"/>
         <positionref ref="ArCLight_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volArCLight"/>
         <positionref ref="ArCLight_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volArCLight"/>
         <positionref ref="ArCLight_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volArCLight"/>
         <positionref ref="ArCLight_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPCBBar"/>
         <positionref ref="PCBBar_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPCBBar"/>
         <positionref ref="PCBBar_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPCBBar"/>
         <positionref ref="PCBBar_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPCBBar"/>
         <positionref ref="PCBBar_pos_3"/>
         <rotationref ref="identity"/>
@@ -1629,27 +1629,27 @@
     <volume name="volLAr">
       <materialref ref="LAr"/>
       <solidref ref="LAr_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPC"/>
         <positionref ref="TPC_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volOpticalDet"/>
         <positionref ref="OpticalDet_pos_L"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volOpticalDet"/>
         <positionref ref="OpticalDet_pos_R"/>
         <rotationref ref="OpticalDet_rot"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBracket"/>
         <positionref ref="Bracket_pos_L"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBracket"/>
         <positionref ref="Bracket_pos_R"/>
         <rotationref ref="identity"/>
@@ -1658,7 +1658,7 @@
     <volume name="volFieldcage">
       <materialref ref="G10"/>
       <solidref ref="Fieldcage_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volLAr"/>
         <positionref ref="LAr_pos"/>
         <rotationref ref="identity"/>
@@ -1667,7 +1667,7 @@
     <volume name="volHalfDetector">
       <materialref ref="G10"/>
       <solidref ref="HalfDetector"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volFieldcage"/>
         <positionref ref="Fieldcage_pos"/>
         <rotationref ref="identity"/>
@@ -1676,12 +1676,12 @@
     <volume name="volInnerDetector">
       <materialref ref="G10"/>
       <solidref ref="InnerDetector"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volHalfDetector"/>
         <positionref ref="HalfDetector_pos_L"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volHalfDetector"/>
         <positionref ref="HalfDetector_pos_R"/>
         <rotationref ref="HalfDetector_rot"/>
@@ -1694,42 +1694,42 @@
     <volume name="volBackplate">
       <materialref ref="G10"/>
       <solidref ref="Backplate"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplateGap"/>
         <positionref ref="BackplateGap_pos_7"/>
         <rotationref ref="identity"/>
@@ -1738,22 +1738,22 @@
     <volume name="volLArPhaseG10Side">
       <materialref ref="LAr"/>
       <solidref ref="LArPhaseG10Side_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volG10Bottom"/>
         <positionref ref="G10Bottom_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volInnerDetector"/>
         <positionref ref="InnerDetector_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplate"/>
         <positionref ref="Backplate_pos_L"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplate"/>
         <positionref ref="Backplate_pos_R"/>
         <rotationref ref="identity"/>
@@ -1770,7 +1770,7 @@
     <volume name="volPillowSide">
       <materialref ref="Steel"/>
       <solidref ref="PillowSide_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPillowCavity"/>
         <positionref ref="PillowCavity_pos"/>
         <rotationref ref="identity"/>
@@ -1799,97 +1799,97 @@
     <volume name="volPillow">
       <materialref ref="GAr"/>
       <solidref ref="Pillow"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPillowSide"/>
         <positionref ref="PillowSide_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBarTop"/>
         <positionref ref="AngleBarTop_L_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBarTop"/>
         <positionref ref="AngleBarTop_R_pos"/>
         <rotationref ref="AngleBarTop_R_rot"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBase"/>
         <positionref ref="AngleBase_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBase"/>
         <positionref ref="AngleBase_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBase"/>
         <positionref ref="AngleBase_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBase"/>
         <positionref ref="AngleBase_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBase"/>
         <positionref ref="AngleBase_pos_4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBase"/>
         <positionref ref="AngleBase_pos_5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleSide"/>
         <positionref ref="AngleSide_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleSide"/>
         <positionref ref="AngleSide_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleSide"/>
         <positionref ref="AngleSide_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleSide"/>
         <positionref ref="AngleSide_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleSide"/>
         <positionref ref="AngleSide_pos_4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleSide"/>
         <positionref ref="AngleSide_pos_5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBarSide"/>
         <positionref ref="AngleBarSide_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volAngleBarSide"/>
         <positionref ref="AngleBarSide_pos_5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volG10"/>
         <positionref ref="G10_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volG10"/>
         <positionref ref="G10_pos_5"/>
         <rotationref ref="identity"/>
@@ -1898,17 +1898,17 @@
     <volume name="volGArPhaseG10Side">
       <materialref ref="GAr"/>
       <solidref ref="GArPhaseG10Side_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplate_GAr"/>
         <positionref ref="Backplate_GAr_L_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBackplate_GAr"/>
         <positionref ref="Backplate_GAr_R_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volPillow"/>
         <positionref ref="Pillow_pos"/>
         <rotationref ref="identity"/>
@@ -1917,12 +1917,12 @@
     <volume name="volG10Side">
       <materialref ref="G10"/>
       <solidref ref="G10Side_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volLArPhaseG10Side"/>
         <positionref ref="LArPhaseG10Side_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volGArPhaseG10Side"/>
         <positionref ref="GArPhaseG10Side_pos"/>
         <rotationref ref="identity"/>
@@ -1931,7 +1931,7 @@
     <volume name="volBucket">
       <materialref ref="GAr"/>
       <solidref ref="Bucket"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volG10Side"/>
         <positionref ref="G10Side_pos"/>
         <rotationref ref="identity"/>
@@ -1952,7 +1952,7 @@
     <volume name="volTubeCenter">
       <materialref ref="Steel"/>
       <solidref ref="TubeCenter_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeCenterGAr"/>
         <positionref ref="TubeCenterGAr_pos"/>
         <rotationref ref="identity"/>
@@ -1969,7 +1969,7 @@
     <volume name="volTubeSide">
       <materialref ref="Steel"/>
       <solidref ref="TubeSide_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSideGAr"/>
         <positionref ref="TubeSideGAr_pos"/>
         <rotationref ref="identity"/>
@@ -1986,7 +1986,7 @@
     <volume name="volTubeV">
       <materialref ref="Steel"/>
       <solidref ref="TubeV_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeVGAr"/>
         <positionref ref="TubeVGAr_pos"/>
         <rotationref ref="identity"/>
@@ -2003,7 +2003,7 @@
     <volume name="volTubeH">
       <materialref ref="Steel"/>
       <solidref ref="TubeH_shape"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeHGAr"/>
         <positionref ref="TubeHGAr_pos"/>
         <rotationref ref="identity"/>
@@ -2016,27 +2016,27 @@
     <volume name="volTPiece">
       <materialref ref="Air"/>
       <solidref ref="TPiece"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeV"/>
         <positionref ref="TubeV_pos"/>
         <rotationref ref="TubeV_rot"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeVFlange"/>
         <positionref ref="TubeVFlange_pos_0"/>
         <rotationref ref="TubeVFlange_rot_0"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeVFlange"/>
         <positionref ref="TubeVFlange_pos_1"/>
         <rotationref ref="TubeVFlange_rot_1"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeH"/>
         <positionref ref="TubeH_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeHFlange"/>
         <positionref ref="TubeHFlange_pos"/>
         <rotationref ref="TubeHFlange_rot"/>
@@ -2045,77 +2045,77 @@
     <volume name="volFlange">
       <materialref ref="Air"/>
       <solidref ref="Flange"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volFlangeTop"/>
         <positionref ref="FlangeTop_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volFlangeBtm"/>
         <positionref ref="FlangeBtm_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeCenter"/>
         <positionref ref="TubeCenter_pos"/>
         <rotationref ref="TubeCenter_rot"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeCenterFlange"/>
         <positionref ref="TubeCenterFlange_pos_A"/>
         <rotationref ref="TubeCenter_rot"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeCenterFlange"/>
         <positionref ref="TubeCenterFlange_pos_B"/>
         <rotationref ref="TubeCenter_rot"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSide"/>
         <positionref ref="TubeSide_pos_0"/>
         <rotationref ref="TubeSide_rot_0"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSideFlange"/>
         <positionref ref="TubeSideFlange_pos_0"/>
         <rotationref ref="TubeSide_rot_0"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSide"/>
         <positionref ref="TubeSide_pos_1"/>
         <rotationref ref="TubeSide_rot_1"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSideFlange"/>
         <positionref ref="TubeSideFlange_pos_1"/>
         <rotationref ref="TubeSide_rot_1"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSide"/>
         <positionref ref="TubeSide_pos_2"/>
         <rotationref ref="TubeSide_rot_2"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSideFlange"/>
         <positionref ref="TubeSideFlange_pos_2"/>
         <rotationref ref="TubeSide_rot_2"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSide"/>
         <positionref ref="TubeSide_pos_3"/>
         <rotationref ref="TubeSide_rot_3"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTubeSideFlange"/>
         <positionref ref="TubeSideFlange_pos_3"/>
         <rotationref ref="TubeSide_rot_3"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPiece"/>
         <positionref ref="TPiece_pos_A"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volTPiece"/>
         <positionref ref="TPiece_pos_B"/>
         <rotationref ref="TPiece_rot_B"/>
@@ -2124,12 +2124,12 @@
     <volume name="volModule">
       <materialref ref="Air"/>
       <solidref ref="Module"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volBucket"/>
         <positionref ref="Bucket_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volFlange"/>
         <positionref ref="Flange_pos"/>
         <rotationref ref="identity"/>
@@ -2138,22 +2138,22 @@
     <volume name="volDetector">
       <materialref ref="Air"/>
       <solidref ref="Detector"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_0.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_0.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_1.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_1.1"/>
         <rotationref ref="identity"/>
@@ -2162,7 +2162,7 @@
     <volume name="volDetEnclosure">
       <materialref ref="Air"/>
       <solidref ref="DetEnclosure"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volDetector"/>
         <positionref ref="volDetector_pos"/>
         <rotationref ref="volDetector_rot"/>
@@ -2171,7 +2171,7 @@
     <volume name="volWorld">
       <materialref ref="Rock"/>
       <solidref ref="World"/>
-      <physvol>
+      <physvol copynumber="0">
         <volumeref ref="volDetEnclosure"/>
         <positionref ref="volDetEnclosure_pos"/>
         <rotationref ref="volDetEnclosure_rot"/>

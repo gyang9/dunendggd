@@ -23,6 +23,8 @@ class LCMBuilder(gegede.builder.Builder):
         self.Fiber_pitch            = Fiber_dimension['pitch']
         self.Fiber_dd               = Fiber_dimension['dd']
 
+        self.TPB_dr                 = Fiber_dimension['tpb_dr']
+
         self.SiPM_LCM_dx            = SiPM_LCM_dimension['dx']
         self.SiPM_LCM_dy            = SiPM_LCM_dimension['dy']
         self.SiPM_LCM_dz            = SiPM_LCM_dimension['dz']
@@ -41,6 +43,7 @@ class LCMBuilder(gegede.builder.Builder):
         self.N_SiPM_LCM             = int(N_SiPM_LCM)
 
         # Material definitons
+        self.TPB_Material           = 'TPB'
         self.Fiber_Material         = 'EJ280WLS'
         self.SiPM_LCM_Material      = 'Silicon'
         self.SiPM_LCM_Mask_Material = 'PVT'
@@ -66,15 +69,36 @@ class LCMBuilder(gegede.builder.Builder):
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        # Construct fibre panel
-        Fiber_shape = geom.shapes.Tubs('Fiber_panel_shape',
+        # Construct Fiber TPB layer
+        TPB_Fiber_shape = geom.shapes.Tubs('TPB_Fiber_panel_shape',
                                        rmin = self.Fiber_rmin,
                                        rmax = self.Fiber_rmax,
+                                       dz = self.Fiber_dz)
+
+        TPB_Fiber_lv = geom.structure.Volume('volTPB_Fiber',
+                                            material=self.TPB_Material,
+                                            shape=TPB_Fiber_shape)
+
+        # Construct Fiber Core
+        Fiber_shape = geom.shapes.Tubs('Fiber_panel_shape',
+                                       rmin = self.Fiber_rmin,
+                                       rmax = self.Fiber_rmax-self.TPB_dr,
                                        dz = self.Fiber_dz)
 
         Fiber_lv = geom.structure.Volume('volFiber',
                                             material=self.Fiber_Material,
                                             shape=Fiber_shape)
+
+        pos = [Q('0cm'),Q('0cm'),Q('0cm')]
+
+        Fiber_pos = geom.structure.Position('Fiber_pos',
+                                                pos[0],pos[1],pos[2])
+
+        Fiber_pla = geom.structure.Placement('Fiber_pla',
+                                                volume=Fiber_lv,
+                                                pos=Fiber_pos)
+
+        TPB_Fiber_lv.placements.append(Fiber_pla.name)
 
         # Place LCM Fibers
         pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,-self.Fiber_dd-2*self.N_Fiber_LCM*self.Fiber_pitch,Q('0cm')]
@@ -83,19 +107,19 @@ class LCMBuilder(gegede.builder.Builder):
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
-            Fiber_pos = geom.structure.Position('Fiber_pos_center_'+str(i),
+            TPB_Fiber_pos = geom.structure.Position('TPB_Fiber_pos_center_'+str(i),
                                                     pos[0],pos[1],pos[2])
 
-            Fiber_rot = geom.structure.Rotation('Fiber_rot_center_'+str(i),
+            TPB_Fiber_rot = geom.structure.Rotation('TPB_Fiber_rot_center_'+str(i),
                                                     rot[0],rot[1],rot[2])
 
-            Fiber_pla = geom.structure.Placement('Fiber_pla_center_'+str(i),
-                                                    volume=Fiber_lv,
-                                                    pos=Fiber_pos,
-                                                    rot=Fiber_rot,
+            TPB_Fiber_pla = geom.structure.Placement('TPB_Fiber_pla_center_'+str(i),
+                                                    volume=TPB_Fiber_lv,
+                                                    pos=TPB_Fiber_pos,
+                                                    rot=TPB_Fiber_rot,
                                                     copynumber=i)
 
-            main_lv.placements.append(Fiber_pla.name)
+            main_lv.placements.append(TPB_Fiber_pla.name)
 
         pos = [self.SiPM_LCM_Mask_dx+self.SiPM_LCM_PCB_dx,+self.Fiber_dd-2*self.Fiber_pitch,Q('0cm')]
         for i in range(self.N_Fiber_LCM,2*self.N_Fiber_LCM):
@@ -103,19 +127,19 @@ class LCMBuilder(gegede.builder.Builder):
 
             rot = [Q('0.0deg'),Q('90.0deg'),Q('0.0deg')]
 
-            Fiber_pos = geom.structure.Position('Fiber_pos_center_'+str(i),
+            TPB_Fiber_pos = geom.structure.Position('TPB_Fiber_pos_center_'+str(i),
                                                     pos[0],pos[1],pos[2])
 
-            Fiber_rot = geom.structure.Rotation('Fiber_rot_center_'+str(i),
+            TPB_Fiber_rot = geom.structure.Rotation('TPB_Fiber_rot_center_'+str(i),
                                                     rot[0],rot[1],rot[2])
 
-            Fiber_pla = geom.structure.Placement('Fiber_pla_center_'+str(i),
-                                                    volume=Fiber_lv,
-                                                    pos=Fiber_pos,
-                                                    rot=Fiber_rot,
+            TPB_Fiber_pla = geom.structure.Placement('TPB_Fiber_pla_center_'+str(i),
+                                                    volume=TPB_Fiber_lv,
+                                                    pos=TPB_Fiber_pos,
+                                                    rot=TPB_Fiber_rot,
                                                     copynumber=i)
 
-            main_lv.placements.append(Fiber_pla.name)
+            main_lv.placements.append(TPB_Fiber_pla.name)
 
         # Construct SiPM Mask LV
         SiPM_LCM_Mask_shape = geom.shapes.Box('SiPM_LCM_Mask_shape',

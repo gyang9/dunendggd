@@ -45,7 +45,8 @@ class ArCLightBuilder(gegede.builder.Builder):
 
         # Material definitons
         self.WLS_Material       = 'EJ280WLS'
-        self.Mirror_Material    = 'ESR'
+        #self.Mirror_Material    = 'ESR'
+        self.Mirror_Material    = 'LAr'
         self.TPB_Material       = 'TPB'
         self.SiPM_Material      = 'Silicon'
         self.SiPM_Mask_Material = 'PVT'

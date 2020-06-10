@@ -798,7 +798,7 @@
       <composite n="1" ref="gold"/>
     </material>
     <material formula="" name="Silicon">
-      <D value="19.32"/>
+      <D value="2.33"/>
       <composite n="1" ref="silicon"/>
     </material>
     <material formula="" name="EJ280WLS">
