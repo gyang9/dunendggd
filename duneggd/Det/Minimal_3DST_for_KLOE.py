@@ -121,7 +121,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         a3dstBox = geom.shapes.Box( '3dst',                 dx=0.5*self.cubeDim[0]*nCubeX,
                               dy=0.5*self.cubeDim[1]*nCubeY, dz=0.5*self.cubeDim[2]*nCubeZ)
         a3dst_lv = geom.structure.Volume('vol3DST', material='Air', shape=a3dstBox)
-
+        
         a3dstPlane = geom.shapes.Box( '3dstplane',                 dx=0.5*self.cubeDim[0]*nCubeX,
                               dy=0.5*self.cubeDim[1]*nCubeY, dz=0.5*self.cubeDim[2])
         a3dstPlane_lv = geom.structure.Volume('vol3DSTPlane', material='Air', shape=a3dstPlane)
