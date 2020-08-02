@@ -17,6 +17,7 @@ class KLOEBuilder(gegede.builder.Builder):
                   Build3DST=False,
                   BuildSTTFULL=False,
                   Build3DSTwithSTT=False,
+                  STTRotations=None,
                   **kwds):
         del BField
         self.halfDimension = halfDimension
@@ -65,8 +66,8 @@ class KLOEBuilder(gegede.builder.Builder):
         self.EndcapDRmax=Q("1.73m")
         self.EndcapDRmin=Q("0.51m")
 
-
-
+        self.STTRotations=STTRotations
+        
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
@@ -366,8 +367,9 @@ class KLOEBuilder(gegede.builder.Builder):
             stt_builder = self.get_builder("STTFULL")
             if (stt_builder != None):
                 stt_lv = stt_builder.get_volume()
+                stt_rot= geom.structure.Rotation("rot_stttracker", self.STTRotations[0], self.STTRotations[1], self.STTRotations[2])
                 stt_pla = geom.structure.Placement("KLOESTTFULL_pla",
-                                                   volume=stt_lv)
+                                                   volume=stt_lv, rot=stt_rot)
                 main_lv.placements.append(stt_pla.name)
 
     def build_3DSTwithSTT(self,main_lv, geom):
