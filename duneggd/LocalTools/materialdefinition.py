@@ -536,7 +536,7 @@ def define_materials( g ):
                             ))
 
     # SiPM (Hamamatsu S13360-6025PE)
-    # 'https://www.hamamatsu.com/eu/en/product/type/S13360-6025PE/index.html'
+    # 'https://www.hamamatsu.com/eu/en/product/type/S13360-6050VE/index.html'
     # Using Silicon
 
     # SiPM plastic spacer
