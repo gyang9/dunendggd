@@ -329,7 +329,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 'emcalo_position', Q('0m'), Q('0m'), Q('0m'))
 
         emcalo_rotation = geom.structure.Rotation(
-                'emcalo_rotation', Q('0deg'), Q('0deg'), Q('0deg'))
+                'emcalo_rotation', Q('0deg'), Q('0deg'), Q('7.5deg'))
 
         emcalo_placement = geom.structure.Placement('emcalo_place',
                                                   volume=emcalo_lv,
@@ -367,7 +367,8 @@ class KLOEBuilder(gegede.builder.Builder):
             stt_builder = self.get_builder("STTFULL")
             if (stt_builder != None):
                 stt_lv = stt_builder.get_volume()
-                stt_rot= geom.structure.Rotation("rot_stttracker", self.STTRotations[0], self.STTRotations[1], self.STTRotations[2])
+                #                stt_rot= geom.structure.Rotation("rot_stttracker", self.STTRotations[0], self.STTRotations[1], self.STTRotations[2])
+                stt_rot= geom.structure.Rotation("rot_stttracker", Q('0deg'), Q('0deg'), Q('7.5deg'))
                 stt_pla = geom.structure.Placement("KLOESTTFULL_pla",
                                                    volume=stt_lv, rot=stt_rot)
                 main_lv.placements.append(stt_pla.name)

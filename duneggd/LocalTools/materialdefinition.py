@@ -147,7 +147,11 @@ def define_materials( g ):
                                 ("CO2",    fracCO2),
                                 ("argon",  1-fracCO2)
                             ))
-
+    straw_avg_ArXe = g.matter.Mixture("straw_avg_ArXe", density = "0.020918592*g/cc",
+                                       components = (
+                                           ("CO2",    0.3),
+                                           ("argon",  0.7)                                    
+                                       ))
     # Materials for the targets and st planes following
     H2O      = g.matter.Molecule("Water",       density="1.0*kg/l",   elements=(("oxygen",1),("hydrogen",2)))
     ArTarget = g.matter.Molecule("ArgonTarget", density="0.2297*g/cc", elements=(("argon",1),))
@@ -170,6 +174,12 @@ def define_materials( g ):
                                 ("CO2",    fracCO2),
                                 ("argon",  1-fracCO2)
                             ))
+
+    carbonComposite = g.matter.Mixture("carbonComposite", density = "0.65*g/cc",
+                                       components=(
+                                           ("carbon",0.99),
+                                           ("hydrogen",0.01)
+                                       ))
 
     Kapton   = g.matter.Molecule("Kapton",   density="1.4*g/cc",   elements=(("carbon",22), ("oxygen",5), ("nitrogen",2)))
 

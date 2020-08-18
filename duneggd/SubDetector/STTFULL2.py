@@ -119,8 +119,8 @@ class STTFULLBuilder(gegede.builder.Builder):
             self.foilPositionsInFive.append(geom.structure.Position("pos_foilInFive_"+str(i), (self.foilThickness+self.foilGap)*(i-2), Q('0m'), Q('0m')))
             
         
-        self.horizontalST_Xe=self.construct_strawtube(geom,"horizontalST_Xe" , self.kloeTrkRegHalfDx, "C3H6")
-        self.horizontalST_Ar=self.construct_strawtube(geom,"horizontalST_Ar" , self.kloeTrkRegHalfDx, "gra")
+        self.horizontalST_Xe=self.construct_strawtube(geom,"horizontalST_Xe" , self.kloeTrkRegHalfDx, "C3H6Mod")
+        self.horizontalST_Ar=self.construct_strawtube(geom,"horizontalST_Ar" , self.kloeTrkRegHalfDx, "CMod")
         
 
         ########################################  Front ST  #################################
@@ -190,7 +190,7 @@ class STTFULLBuilder(gegede.builder.Builder):
         main_lv.placements.append(foil_pla.name)
 
         names=name+"_ST"
-        strawplane_lv=self.construct_strawplane(geom,names, construct_strawplane, "nos")
+        strawplane_lv=self.construct_strawplane(geom,names, construct_strawplane, "NoSlabMod")
         strawplane_pla=geom.structure.Placement("pla_"+names, volume=strawplane_lv, pos="pos_ST_in_NoSlabMod")
         main_lv.placements.append(strawplane_pla.name)
         return main_lv
@@ -212,7 +212,7 @@ class STTFULLBuilder(gegede.builder.Builder):
         main_lv.placements.append(foil_pla.name)
             
         names=name+"_ST"
-        strawplane_lv=self.construct_strawplane(geom, names, halfDimension['dy'],"C3H6")
+        strawplane_lv=self.construct_strawplane(geom, names, halfDimension['dy'],"C3H6Mod")
         strawplane_pla=geom.structure.Placement("pla_"+names, volume=strawplane_lv, pos="pos_ST_in_C3H6Mod")
         main_lv.placements.append(strawplane_pla.name)
         
@@ -228,7 +228,7 @@ class STTFULLBuilder(gegede.builder.Builder):
         graphite_pla=geom.structure.Placement("pla_"+name+"_graph", volume=graphite_lv, pos="pos_Graphite_in_Cmod")
         main_lv.placements.append(graphite_pla.name)
 
-        strawplane_lv=self.construct_strawplane(geom,name+"_ST", halfDimension['dy'], "gra")
+        strawplane_lv=self.construct_strawplane(geom,name+"_ST", halfDimension['dy'], "CMod")
         strawplane_pla=geom.structure.Placement("pla_"+name+"_ST", volume=strawplane_lv, pos="pos_ST_in_Cmod")
         main_lv.placements.append(strawplane_pla.name)
         return main_lv
