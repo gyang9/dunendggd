@@ -75,7 +75,7 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
 
 
         if self.get_builder("KLOEEMCALOBARRELMOD") == None:
-            print "KLOEEMCALOBARRELMOD builder not found"
+            print("KLOEEMCALOBARRELMOD builder not found")
             return 
 
         emcalo_module_builder=self.get_builder("KLOEEMCALOBARRELMOD")
@@ -127,7 +127,7 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
         # segmentation is the same as for the barrel modules
 
         if self.get_builder("KLOEEMCALOENDCAP") == None:
-            print "KLOEEMCALOENDCAP builder not found"
+            print("KLOEEMCALOENDCAP builder not found")
             return 
 
         emcalo_endcap_builder=self.get_builder("KLOEEMCALOENDCAP")
