@@ -1876,7 +1876,7 @@
     <volume name="volOpticalDetR">
       <materialref ref="LAr"/>
       <solidref ref="OpticalDetR"/>
-      <physvol copynumber="-1">
+      <physvol copynumber="0">
         <volumeref ref="volLCMPlane"/>
         <positionref ref="LCMPlane_pos_0"/>
         <rotationref ref="identity"/>
@@ -1886,7 +1886,7 @@
         <positionref ref="ArCLight_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol copynumber="1">
         <volumeref ref="volLCMPlane"/>
         <positionref ref="LCMPlane_pos_2"/>
         <rotationref ref="identity"/>
@@ -1982,7 +1982,7 @@
         <positionref ref="OpticalDetR_pos_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol copynumber="1">
         <volumeref ref="volOpticalDetL"/>
         <positionref ref="OpticalDetL_pos_L"/>
         <rotationref ref="OpticalDetL_rot"/>

@@ -144,7 +144,8 @@ class OptSimBuilder(gegede.builder.Builder):
 
         OpticalDetR_pla = geom.structure.Placement(self.OpticalDetR_builder.name+'_pla_R',
                                                 volume=OpticalDetR_lv,
-                                                pos=OpticalDetR_pos)
+                                                pos=OpticalDetR_pos,
+                                                copynumber=0)
 
         LAr_lv.placements.append(OpticalDetR_pla.name)
 
@@ -164,7 +165,8 @@ class OptSimBuilder(gegede.builder.Builder):
         OpticalDetL_pla = geom.structure.Placement(self.OpticalDetL_builder.name+'_pla_L',
                                                 volume=OpticalDetL_lv,
                                                 pos=OpticalDetL_pos,
-                                                rot=OpticalDetL_rot)
+                                                rot=OpticalDetL_rot,
+                                                copynumber=1)
 
         LAr_lv.placements.append(OpticalDetL_pla.name)
 
