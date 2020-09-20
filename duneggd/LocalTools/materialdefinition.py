@@ -512,6 +512,11 @@ def define_materials( g ):
                                 ("carbon", 9),
                                 ("hydrogen", 10)
                             ))
+    y11 = g.matter.Molecule("Y11", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
 
     # Mirror film (Vikuiti Enhanced Specular Reflector (ESR), 3M Inc)
     # 'http://multimedia.3m.com/mws/media/380802O/vikuititm-esr-msds.pdf?fn=ESR.pdf'

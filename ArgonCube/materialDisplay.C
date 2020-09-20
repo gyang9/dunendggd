@@ -7,6 +7,7 @@ void materialDisplay(TString filename,Bool_t checkoverlaps=kFALSE,TString label=
   Kolor["Copper"]     = kOrange;
   Kolor["DC"]         = kViolet;
   Kolor["EJ280WLS"]   = kSpring;
+  Kolor["Y11"]   = kSpring;
   Kolor["ESR"]        = kGray;
   Kolor["FR4"]        = kGreen;
   Kolor["GAr"]        = kWhite;

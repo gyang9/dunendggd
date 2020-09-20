@@ -807,6 +807,11 @@
       <composite n="9" ref="carbon"/>
       <composite n="10" ref="hydrogen"/>
     </material>
+    <material formula="" name="Y11">
+      <D value="1.023"/>
+      <composite n="9" ref="carbon"/>
+      <composite n="10" ref="hydrogen"/>
+    </material>
     <material formula="" name="ESR">
       <D value="1.38"/>
       <composite n="10" ref="carbon"/>
@@ -837,7 +842,7 @@
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="TPB_Fiber_panel_shape" rmax="0.06" rmin="0.0" startphi="0.0" z="28.0254"/>
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="Fiber_panel_shape" rmax="0.0599" rmin="0.0" startphi="0.0" z="28.0254"/>
     <box lunit="cm" name="SiPM_LCM_Mask_shape" x="0.165" y="9.95" z="1.0"/>
-    <box lunit="cm" name="SiPM_LCM_shape" x="0.147" y="4.975" z="0.6"/>
+    <box lunit="cm" name="SiPM_LCM_shape" x="0.147" y="4.95" z="0.12"/>
     <box lunit="cm" name="SiPM_LCM_PCB_shape" x="0.3" y="9.95" z="1.0"/>
     <box lunit="cm" name="LCMPlane" x="28.4904" y="30.94" z="1.0"/>
     <box lunit="cm" name="OpticalDetL" x="29.4835" y="124.11" z="1.0227"/>
@@ -1435,7 +1440,7 @@
       </physvol>
     </volume>
     <volume name="volFiber">
-      <materialref ref="EJ280WLS"/>
+      <materialref ref="Y11"/>
       <solidref ref="Fiber_panel_shape"/>
     </volume>
     <volume name="volTPB_Fiber">

@@ -44,7 +44,7 @@ class LCMBuilder(gegede.builder.Builder):
 
         # Material definitons
         self.TPB_Material           = 'TPB'
-        self.Fiber_Material         = 'EJ280WLS'
+        self.Fiber_Material         = 'Y11'
         self.SiPM_LCM_Material      = 'Silicon'
         self.SiPM_LCM_Mask_Material = 'PVT'
         self.SiPM_LCM_PCB_Material  = 'FR4'
