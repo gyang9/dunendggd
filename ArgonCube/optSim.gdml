@@ -115,17 +115,17 @@
     <position name="PixelPlane_pos_3_L" unit="cm" x="0" y="46.56" z="15.52"/>
     <rotation name="PixelPlane_rot_3_L" unit="degree" x="180.0" y="0.0" z="0.0"/>
     <position name="Mirror_pos" unit="cm" x="0.2325" y="0.0" z="-0.005"/>
-    <position name="WLS_pos" unit="cm" x="0.0" y="0.0" z="0.00635"/>
+    <position name="WLS_pos" unit="cm" x="0.2325" y="0.0" z="0.00135"/>
     <position name="TPB_pos" unit="cm" x="0.2325" y="0.0" z="0.50635"/>
     <position name="SiPM_Mask_pos_0" unit="cm" x="-13.8627" y="-10.495" z="0.00135"/>
-    <position name="SiPM_Sens_pos_0" unit="cm" x="-14.00635" y="-12.845" z="0.00635"/>
-    <position name="SiPM_Sens_pos_1" unit="cm" x="-14.00635" y="-8.145" z="0.00635"/>
+    <position name="SiPM_Sens_pos_0" unit="cm" x="-14.0001" y="-12.845" z="0"/>
+    <position name="SiPM_Sens_pos_1" unit="cm" x="-14.0001" y="-8.145" z="0"/>
     <position name="SiPM_Mask_pos_1" unit="cm" x="-13.8627" y="0.0" z="0.00135"/>
-    <position name="SiPM_Sens_pos_2" unit="cm" x="-14.00635" y="-2.35" z="0.00635"/>
-    <position name="SiPM_Sens_pos_3" unit="cm" x="-14.00635" y="2.35" z="0.00635"/>
+    <position name="SiPM_Sens_pos_2" unit="cm" x="-14.0001" y="-2.35" z="0"/>
+    <position name="SiPM_Sens_pos_3" unit="cm" x="-14.0001" y="2.35" z="0"/>
     <position name="SiPM_Mask_pos_2" unit="cm" x="-13.8627" y="10.495" z="0.00135"/>
-    <position name="SiPM_Sens_pos_4" unit="cm" x="-14.00635" y="8.145" z="0.00635"/>
-    <position name="SiPM_Sens_pos_5" unit="cm" x="-14.00635" y="12.845" z="0.00635"/>
+    <position name="SiPM_Sens_pos_4" unit="cm" x="-14.0001" y="8.145" z="0"/>
+    <position name="SiPM_Sens_pos_5" unit="cm" x="-14.0001" y="12.845" z="0"/>
     <position name="SiPM_pos_0" unit="cm" x="0.009" y="-2.35" z="0"/>
     <position name="SiPM_pos_1" unit="cm" x="0.009" y="2.35" z="0"/>
     <position name="SiPM_PCB_pos_0" unit="cm" x="-14.0952" y="-10.495" z="0.00135"/>
@@ -835,7 +835,7 @@
     <box lunit="cm" name="WLS_panel_shape" x="28.0" y="30.0" z="1.0"/>
     <box lunit="cm" name="TPB_LAr_shape" x="28.0" y="30.0" z="0.01"/>
     <box lunit="cm" name="SiPM_Mask_shape" x="0.165" y="7.825" z="1.0"/>
-    <box lunit="cm" name="SiPM_Sens_shape" x="0.0127" y="0.6" z="0.6"/>
+    <box lunit="cm" name="SiPM_Sens_shape" x="0.0002" y="0.6" z="0.6"/>
     <box lunit="cm" name="SiPM_shape" x="0.147" y="0.6" z="0.6"/>
     <box lunit="cm" name="SiPM_PCB_shape" x="0.3" y="9.95" z="1.0"/>
     <box lunit="cm" name="LCM" x="28.4904" y="9.95" z="1.0"/>
@@ -1757,22 +1757,13 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
-    <volume name="volWLS">
-      <materialref ref="EJ280WLS"/>
-      <solidref ref="WLS_panel_shape"/>
-    </volume>
     <volume name="volSiPM_Sens">
       <materialref ref="Silicon"/>
       <solidref ref="SiPM_Sens_shape"/>
     </volume>
-    <volume name="volMirror">
-      <materialref ref="LAr"/>
-      <solidref ref="Mirror_shape"/>
-      <physvol copynumber="0">
-        <volumeref ref="volWLS"/>
-        <positionref ref="WLS_pos"/>
-        <rotationref ref="identity"/>
-      </physvol>
+    <volume name="volWLS">
+      <materialref ref="EJ280WLS"/>
+      <solidref ref="WLS_panel_shape"/>
       <physvol copynumber="0">
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_0"/>
@@ -1834,8 +1825,8 @@
       <materialref ref="LAr"/>
       <solidref ref="ArCLight"/>
       <physvol copynumber="0">
-        <volumeref ref="volMirror"/>
-        <positionref ref="Mirror_pos"/>
+        <volumeref ref="volWLS"/>
+        <positionref ref="WLS_pos"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol copynumber="0">
