@@ -28,7 +28,8 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
                    buildEcalEndcap=True,
                    buildPV=True,
                    buildYoke=False,
-                   buildMagnet=False
+                   buildMagnet=False,
+                   space=Q("10cm")
                    )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -47,9 +48,9 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             if dz < eyoke_shape.dz:
                 dz = eyoke_shape.dz
 
-        dx_main=r #dimension along the beam
-        dy_main=r #dimension in height
-        dz_main=dz #dimension perp to the beam
+        dx_main=r+self.space #dimension along the beam
+        dy_main=r+self.space #dimension in height
+        dz_main=dz+self.space #dimension perp to the beam
 
         print("Dimension of the MPD in along the beam ", dx_main*2, " dimension in height ", dy_main*2, " and dimension perp to the beam ", dz_main*2)
 
@@ -59,7 +60,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         self.add_volume(main_lv)
 
         ##### build a fake volume that contains the MPD without the magnet to define the magnetized volume correctly ###
-        fake_lv = self.buildMagnetizedVolume(main_lv, geom)
+        # fake_lv = self.buildMagnetizedVolume(main_lv, geom)
 
         ######### build the TPC       ##########################
         # use GArTPC Builder, but "disable" the cyrostat by tweaking
@@ -67,7 +68,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # do that in the cfg file
         if self.buildGarTPC:
             print("Adding TPC to main volume")
-            self.build_gartpc(fake_lv, geom)
+            self.build_gartpc(main_lv, geom)
 
         ######### build the pressure vessel  ###################
         # Build the Pressure Vessel using the parameters in the cfg file
@@ -75,12 +76,12 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         # the intersection of the cylinder and a sphere for the Endcaps
         if self.buildPV:
             print("Adding PV to main volume")
-            self.build_pressure_vessel(fake_lv, geom)
+            self.build_pressure_vessel(main_lv, geom)
 
         ######### build an ecal ##########################
         # Build the Barrel and Endcaps using the ECALBarrelBuilder and
         # ECALEndcapBuilder in the cfg file
-        self.build_ecal(fake_lv, geom)
+        self.build_ecal(main_lv, geom)
 
 
         ######### magnet ##################################
@@ -146,11 +147,11 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
 
             ecal_shape = geom.store.shapes.get(ib_vol.shape)
             nsides = ecal_shape.numsides
-            # rot_z = Q("90.0deg")-Q("180.0deg")/nsides
-            #
-            # ib_rot = geom.structure.Rotation(ibb.name+"_rot", z=rot_z)
-            # ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol, rot=ib_rot)
-            ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol)
+            rot_z = Q("90.0deg")-Q("180.0deg")/nsides
+
+            ib_rot = geom.structure.Rotation(ibb.name+"_rot", z=rot_z)
+            ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol, rot=ib_rot)
+            # ib_pla = geom.structure.Placement(ibb.name+"_pla", volume=ib_vol)
             # Place it in the main lv
             main_lv.placements.append(ib_pla.name)
 
@@ -165,9 +166,9 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             # Add the magnetic field to the volume
             iec_vol.params.append(("BField", self.innerBField))
 
-            # iec_rot = geom.structure.Rotation(iecb.name+"_rot", z=rot_z)
-            # iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol, rot=iec_rot)
-            iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol)
+            iec_rot = geom.structure.Rotation(iecb.name+"_rot", z=rot_z)
+            iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol, rot=iec_rot)
+            # iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol)
             # Place it in the main lv
             main_lv.placements.append(iec_pla.name)
 
@@ -194,7 +195,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             yrot = "0deg" if side == 'L' else "180deg"
             if side == 'R':
                 xpos = -xpos
-            print("xpos = ", xpos)
+            # print("xpos = ", xpos)
             pvec_rot = geom.structure.Rotation("PVEndcap"+side+"_rot", y=yrot)
             pvec_pos = geom.structure.Position("PVEndcap"+side+"_pos", z=xpos)
             pvec_pla = geom.structure.Placement("PVEndcap"+side+"_pla", volume=pvec_vol, pos=pvec_pos, rot=pvec_rot)
@@ -219,15 +220,23 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             return
 
         byoke_vol = yoke_builder.get_volume("volYokeBarrel")
-        nsides = yoke_builder.nsides
+        yoke_shape = geom.store.shapes.get(byoke_vol.shape)
+        nsides = yoke_shape.numsides
+        print("Number of yoke sides", nsides)
+
         rot_z = Q("90.0deg")-Q("180.0deg")/nsides
+        if nsides == 16:
+            rot_z = rot_z + Q("22.5deg")
+
         byoke_rot = geom.structure.Rotation(byoke_vol.name+"_rot", z=rot_z)
         byoke_pla = geom.structure.Placement("YokeBarrel"+"_pla", volume=byoke_vol, rot=byoke_rot)
+
         # Place it in the main lv
         main_lv.placements.append(byoke_pla.name)
 
         eyoke_vol = yoke_builder.get_volume("volYokeEndcap")
         eyoke_rot = geom.structure.Rotation(eyoke_vol.name+"_rot", z=rot_z)
         eyoke_pla = geom.structure.Placement("YokeEndcap"+"_pla", volume=eyoke_vol, rot=eyoke_rot)
+
         # Place it in the main lv
         main_lv.placements.append(eyoke_pla.name)

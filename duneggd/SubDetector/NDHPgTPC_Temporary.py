@@ -21,7 +21,8 @@ class NDHPgTPC_Temporary_Builder(gegede.builder.Builder):
 
     defaults=dict( innerBField="0.5 T, 0.0 T, 0.0 T",
                   BuildMagnet = True,
-                  BuildYoke = True
+                  BuildYoke = True,
+                  space = Q("10cm")
                   )
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -33,15 +34,27 @@ class NDHPgTPC_Temporary_Builder(gegede.builder.Builder):
         r = magnet_shape.rmax
         dz = magnet_shape.dz
 
-        eyoke_shape = geom.get_shape("YokeEndcap_max")
-        if r < eyoke_shape.rmax:
-            r = eyoke_shape.rmax
-        if dz < eyoke_shape.dz:
-            dz = eyoke_shape.dz
+        try:
+            byoke_shape = geom.get_shape("YokeBarrel")
+            if r < byoke_shape.rmax:
+                r = byoke_shape.rmax
+            if dz < byoke_shape.dz:
+                dz = byoke_shape.dz
+        except IndexError:
+            pass
 
-        dx_main=r #dimension along the beam
-        dy_main=r #dimension in height
-        dz_main=dz #dimension perp to the beam
+        try:
+            eyoke_shape = geom.get_shape("YokeEndcap_max")
+            if r < eyoke_shape.rmax:
+                r = eyoke_shape.rmax
+            if dz < eyoke_shape.dz:
+                dz = eyoke_shape.dz
+        except IndexError:
+            pass
+
+        dx_main=r+self.space #dimension along the beam
+        dy_main=r+self.space #dimension in height
+        dz_main=dz+self.space #dimension perp to the beam
 
         print("Dimension of the Temporary MPD in along the beam ", dx_main*2, " dimension in height ", dy_main*2, " and dimension perp to the beam ", dz_main*2)
 
@@ -101,15 +114,25 @@ class NDHPgTPC_Temporary_Builder(gegede.builder.Builder):
             return
 
         byoke_vol = yoke_builder.get_volume("volYokeBarrel")
-        nsides = yoke_builder.nsides
+        yoke_shape = geom.store.shapes.get(byoke_vol.shape)
+        nsides = yoke_shape.numsides
+        print("Number of yoke sides", nsides)
+
         rot_z = Q("90.0deg")-Q("180.0deg")/nsides
+        if nsides == 16:
+            rot_z = rot_z + Q("22.5deg")
+
         byoke_rot = geom.structure.Rotation(byoke_vol.name+"_rot", z=rot_z)
         byoke_pla = geom.structure.Placement("YokeBarrel"+"_pla", volume=byoke_vol, rot=byoke_rot)
+
         # Place it in the main lv
         main_lv.placements.append(byoke_pla.name)
 
-        eyoke_vol = yoke_builder.get_volume("volYokeEndcap")
-        eyoke_rot = geom.structure.Rotation(eyoke_vol.name+"_rot", z=rot_z)
-        eyoke_pla = geom.structure.Placement("YokeEndcap"+"_pla", volume=eyoke_vol, rot=eyoke_rot)
-        # Place it in the main lv
-        main_lv.placements.append(eyoke_pla.name)
+        try:
+            eyoke_vol = yoke_builder.get_volume("volYokeEndcap")
+            eyoke_rot = geom.structure.Rotation(eyoke_vol.name+"_rot", z=rot_z)
+            eyoke_pla = geom.structure.Placement("YokeEndcap"+"_pla", volume=eyoke_vol, rot=eyoke_rot)
+            # Place it in the main lv
+            main_lv.placements.append(eyoke_pla.name)
+        except IndexError:
+            pass
