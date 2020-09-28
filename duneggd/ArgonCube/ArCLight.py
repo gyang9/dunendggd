@@ -85,75 +85,27 @@ class ArCLightBuilder(gegede.builder.Builder):
         print('main_lv = '+main_lv.name)
         self.add_volume(main_lv)
 
-        if False:
-            # Construct WLS panel
-            WLS_shape = geom.shapes.Box('WLS_panel_shape',
-                                           dx = self.WLS_dx,
-                                           dy = self.WLS_dy,
-                                           dz = self.WLS_dz)
+        # Construct WLS panel
+        WLS_shape = geom.shapes.Box('WLS_panel_shape',
+                                       dx = self.WLS_dx,
+                                       dy = self.WLS_dy,
+                                       dz = self.WLS_dz)
 
-            WLS_lv = geom.structure.Volume('volWLS',
-                                                material=self.WLS_Material,
-                                                shape=WLS_shape)
+        WLS_lv = geom.structure.Volume('volWLS',
+                                            material=self.WLS_Material,
+                                            shape=WLS_shape)
 
-            # Place WLS panel into main LV
-            pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),-self.TPB_dz+self.Mirror_dd]
+        # Place WLS panel into main LV
+        pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx-2*self.Mirror_dd,Q('0mm'),-self.TPB_dz+self.Mirror_dd]
 
-            WLS_pos = geom.structure.Position('WLS_pos',
-                                                    pos[0],pos[1],pos[2])
+        WLS_pos = geom.structure.Position('WLS_pos',
+                                                pos[0],pos[1],pos[2])
 
-            WLS_pla = geom.structure.Placement('WLS_pla',
-                                                    volume=WLS_lv,
-                                                    pos=WLS_pos)
+        WLS_pla = geom.structure.Placement('WLS_pla',
+                                                volume=WLS_lv,
+                                                pos=WLS_pos)
 
-            main_lv.placements.append(WLS_pla.name)
-
-        else:
-            # Construct Mirror LV
-            Mirror_shape = geom.shapes.Box('Mirror_shape',
-                                           dx = self.WLS_dx+2*self.Mirror_dd,
-                                           dy = self.WLS_dy+2*self.Mirror_dd,
-                                           dz = self.WLS_dz+self.Mirror_dd)
-
-            Mirror_lv = geom.structure.Volume('volMirror',
-                                                material=self.Mirror_Material,
-                                                shape=Mirror_shape)
-
-            # Place Mirror into main LV
-            pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),-self.TPB_dz]
-
-            Mirror_pos = geom.structure.Position('Mirror_pos',
-                                                    pos[0],pos[1],pos[2])
-
-            Mirror_pla = geom.structure.Placement('Mirror_pla',
-                                                    volume=Mirror_lv,
-                                                    pos=Mirror_pos)
-
-            #main_lv.placements.append(Mirror_pla.name)
-
-            # Construct WLS panel
-            WLS_shape = geom.shapes.Box('WLS_panel_shape',
-                                           dx = self.WLS_dx,
-                                           dy = self.WLS_dy,
-                                           dz = self.WLS_dz)
-
-            WLS_lv = geom.structure.Volume('volWLS',
-                                                material=self.WLS_Material,
-                                                shape=WLS_shape)
-
-            # Place WLS panel into mirror LV
-            #pos = [Q('0mm'),Q('0mm'),self.Mirror_dd]
-            pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),-self.TPB_dz+self.Mirror_dd]
-
-            WLS_pos = geom.structure.Position('WLS_pos',
-                                                    pos[0],pos[1],pos[2])
-
-            WLS_pla = geom.structure.Placement('WLS_pla',
-                                                    volume=WLS_lv,
-                                                    pos=WLS_pos)
-
-            #Mirror_lv.placements.append(WLS_pla.name)
-            main_lv.placements.append(WLS_pla.name)
+        main_lv.placements.append(WLS_pla.name)
 
         # Construct TPB LV
         TPB_shape = geom.shapes.Box('TPB_LAr_shape',
@@ -167,7 +119,7 @@ class ArCLightBuilder(gegede.builder.Builder):
                                             shape=TPB_shape)
 
         # Place TPB LV next to WLS plane
-        pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx,Q('0mm'),self.WLS_dz+self.Mirror_dd]
+        pos = [self.SiPM_Mask_dx+self.SiPM_PCB_dx-2*self.Mirror_dd,Q('0mm'),self.WLS_dz+self.Mirror_dd]
 
         TPB_pos = geom.structure.Position('TPB_pos',
                                                 pos[0],pos[1],pos[2])
@@ -214,7 +166,7 @@ class ArCLightBuilder(gegede.builder.Builder):
 
             # Place SiPM Sens LV next to WLS plane
             for m in range(int(self.N_SiPM/self.N_Mask)):
-                posipm = [-self.WLS_dx-self.Sens_dd,-(self.N_Mask-1)*self.SiPM_Mask_pitch+(2*n)*self.SiPM_Mask_pitch-(self.N_SiPM/self.N_Mask-1)*self.SiPM_pitch+(2*m)*self.SiPM_pitch,Q('0cm')]
+                posipm = [-self.WLS_dx+self.Sens_dd,-(self.N_Mask-1)*self.SiPM_Mask_pitch+(2*n)*self.SiPM_Mask_pitch-(self.N_SiPM/self.N_Mask-1)*self.SiPM_pitch+(2*m)*self.SiPM_pitch,Q('0cm')]
 
                 SiPM_Sens_pos = geom.structure.Position('SiPM_Sens_pos_'+str(2*n+m),
                                                         posipm[0],posipm[1],posipm[2])

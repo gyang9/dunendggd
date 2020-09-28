@@ -114,123 +114,122 @@
     <rotation name="PixelPlane_rot_2_L" unit="degree" x="180.0" y="0.0" z="0.0"/>
     <position name="PixelPlane_pos_3_L" unit="cm" x="0" y="46.56" z="15.52"/>
     <rotation name="PixelPlane_rot_3_L" unit="degree" x="180.0" y="0.0" z="0.0"/>
-    <position name="Mirror_pos" unit="cm" x="0.2325" y="0.0" z="-0.005"/>
-    <position name="WLS_pos" unit="cm" x="0.2325" y="0.0" z="0.00135"/>
-    <position name="TPB_pos" unit="cm" x="0.2325" y="0.0" z="0.50635"/>
+    <position name="WLS_pos" unit="cm" x="0.2198" y="0.0" z="0.00135"/>
+    <position name="TPB_pos" unit="cm" x="0.2198" y="0.0" z="0.50635"/>
     <position name="SiPM_Mask_pos_0" unit="cm" x="-13.8627" y="-10.495" z="0.00135"/>
-    <position name="SiPM_Sens_pos_0" unit="cm" x="-14.0001" y="-12.845" z="0"/>
-    <position name="SiPM_Sens_pos_1" unit="cm" x="-14.0001" y="-8.145" z="0"/>
+    <position name="SiPM_Sens_pos_0" unit="cm" x="-13.9999" y="-12.845" z="0"/>
+    <position name="SiPM_Sens_pos_1" unit="cm" x="-13.9999" y="-8.145" z="0"/>
     <position name="SiPM_Mask_pos_1" unit="cm" x="-13.8627" y="0.0" z="0.00135"/>
-    <position name="SiPM_Sens_pos_2" unit="cm" x="-14.0001" y="-2.35" z="0"/>
-    <position name="SiPM_Sens_pos_3" unit="cm" x="-14.0001" y="2.35" z="0"/>
+    <position name="SiPM_Sens_pos_2" unit="cm" x="-13.9999" y="-2.35" z="0"/>
+    <position name="SiPM_Sens_pos_3" unit="cm" x="-13.9999" y="2.35" z="0"/>
     <position name="SiPM_Mask_pos_2" unit="cm" x="-13.8627" y="10.495" z="0.00135"/>
-    <position name="SiPM_Sens_pos_4" unit="cm" x="-14.0001" y="8.145" z="0"/>
-    <position name="SiPM_Sens_pos_5" unit="cm" x="-14.0001" y="12.845" z="0"/>
+    <position name="SiPM_Sens_pos_4" unit="cm" x="-13.9999" y="8.145" z="0"/>
+    <position name="SiPM_Sens_pos_5" unit="cm" x="-13.9999" y="12.845" z="0"/>
     <position name="SiPM_pos_0" unit="cm" x="0.009" y="-2.35" z="0"/>
     <position name="SiPM_pos_1" unit="cm" x="0.009" y="2.35" z="0"/>
     <position name="SiPM_PCB_pos_0" unit="cm" x="-14.0952" y="-10.495" z="0.00135"/>
     <position name="SiPM_PCB_pos_1" unit="cm" x="-14.0952" y="0.0" z="0.00135"/>
     <position name="SiPM_PCB_pos_2" unit="cm" x="-14.0952" y="10.495" z="0.00135"/>
     <position name="Fiber_pos" unit="cm" x="0" y="0" z="0"/>
-    <position name="TPB_Fiber_pos_center_0" unit="cm" x="0.2325" y="-4.51" z="0"/>
+    <position name="TPB_Fiber_pos_center_0" unit="cm" x="0.1825" y="-4.51" z="0"/>
     <rotation name="TPB_Fiber_rot_center_0" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_1" unit="cm" x="0.2325" y="-4.33" z="0"/>
+    <position name="TPB_Fiber_pos_center_1" unit="cm" x="0.1825" y="-4.33" z="0"/>
     <rotation name="TPB_Fiber_rot_center_1" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_2" unit="cm" x="0.2325" y="-4.15" z="0"/>
+    <position name="TPB_Fiber_pos_center_2" unit="cm" x="0.1825" y="-4.15" z="0"/>
     <rotation name="TPB_Fiber_rot_center_2" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_3" unit="cm" x="0.2325" y="-3.97" z="0"/>
+    <position name="TPB_Fiber_pos_center_3" unit="cm" x="0.1825" y="-3.97" z="0"/>
     <rotation name="TPB_Fiber_rot_center_3" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_4" unit="cm" x="0.2325" y="-3.79" z="0"/>
+    <position name="TPB_Fiber_pos_center_4" unit="cm" x="0.1825" y="-3.79" z="0"/>
     <rotation name="TPB_Fiber_rot_center_4" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_5" unit="cm" x="0.2325" y="-3.61" z="0"/>
+    <position name="TPB_Fiber_pos_center_5" unit="cm" x="0.1825" y="-3.61" z="0"/>
     <rotation name="TPB_Fiber_rot_center_5" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_6" unit="cm" x="0.2325" y="-3.43" z="0"/>
+    <position name="TPB_Fiber_pos_center_6" unit="cm" x="0.1825" y="-3.43" z="0"/>
     <rotation name="TPB_Fiber_rot_center_6" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_7" unit="cm" x="0.2325" y="-3.25" z="0"/>
+    <position name="TPB_Fiber_pos_center_7" unit="cm" x="0.1825" y="-3.25" z="0"/>
     <rotation name="TPB_Fiber_rot_center_7" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_8" unit="cm" x="0.2325" y="-3.07" z="0"/>
+    <position name="TPB_Fiber_pos_center_8" unit="cm" x="0.1825" y="-3.07" z="0"/>
     <rotation name="TPB_Fiber_rot_center_8" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_9" unit="cm" x="0.2325" y="-2.89" z="0"/>
+    <position name="TPB_Fiber_pos_center_9" unit="cm" x="0.1825" y="-2.89" z="0"/>
     <rotation name="TPB_Fiber_rot_center_9" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_10" unit="cm" x="0.2325" y="-2.71" z="0"/>
+    <position name="TPB_Fiber_pos_center_10" unit="cm" x="0.1825" y="-2.71" z="0"/>
     <rotation name="TPB_Fiber_rot_center_10" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_11" unit="cm" x="0.2325" y="-2.53" z="0"/>
+    <position name="TPB_Fiber_pos_center_11" unit="cm" x="0.1825" y="-2.53" z="0"/>
     <rotation name="TPB_Fiber_rot_center_11" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_12" unit="cm" x="0.2325" y="-2.35" z="0"/>
+    <position name="TPB_Fiber_pos_center_12" unit="cm" x="0.1825" y="-2.35" z="0"/>
     <rotation name="TPB_Fiber_rot_center_12" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_13" unit="cm" x="0.2325" y="-2.17" z="0"/>
+    <position name="TPB_Fiber_pos_center_13" unit="cm" x="0.1825" y="-2.17" z="0"/>
     <rotation name="TPB_Fiber_rot_center_13" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_14" unit="cm" x="0.2325" y="-1.99" z="0"/>
+    <position name="TPB_Fiber_pos_center_14" unit="cm" x="0.1825" y="-1.99" z="0"/>
     <rotation name="TPB_Fiber_rot_center_14" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_15" unit="cm" x="0.2325" y="-1.81" z="0"/>
+    <position name="TPB_Fiber_pos_center_15" unit="cm" x="0.1825" y="-1.81" z="0"/>
     <rotation name="TPB_Fiber_rot_center_15" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_16" unit="cm" x="0.2325" y="-1.63" z="0"/>
+    <position name="TPB_Fiber_pos_center_16" unit="cm" x="0.1825" y="-1.63" z="0"/>
     <rotation name="TPB_Fiber_rot_center_16" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_17" unit="cm" x="0.2325" y="-1.45" z="0"/>
+    <position name="TPB_Fiber_pos_center_17" unit="cm" x="0.1825" y="-1.45" z="0"/>
     <rotation name="TPB_Fiber_rot_center_17" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_18" unit="cm" x="0.2325" y="-1.27" z="0"/>
+    <position name="TPB_Fiber_pos_center_18" unit="cm" x="0.1825" y="-1.27" z="0"/>
     <rotation name="TPB_Fiber_rot_center_18" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_19" unit="cm" x="0.2325" y="-1.09" z="0"/>
+    <position name="TPB_Fiber_pos_center_19" unit="cm" x="0.1825" y="-1.09" z="0"/>
     <rotation name="TPB_Fiber_rot_center_19" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_20" unit="cm" x="0.2325" y="-0.91" z="0"/>
+    <position name="TPB_Fiber_pos_center_20" unit="cm" x="0.1825" y="-0.91" z="0"/>
     <rotation name="TPB_Fiber_rot_center_20" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_21" unit="cm" x="0.2325" y="-0.73" z="0"/>
+    <position name="TPB_Fiber_pos_center_21" unit="cm" x="0.1825" y="-0.73" z="0"/>
     <rotation name="TPB_Fiber_rot_center_21" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_22" unit="cm" x="0.2325" y="-0.55" z="0"/>
+    <position name="TPB_Fiber_pos_center_22" unit="cm" x="0.1825" y="-0.55" z="0"/>
     <rotation name="TPB_Fiber_rot_center_22" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_23" unit="cm" x="0.2325" y="-0.37" z="0"/>
+    <position name="TPB_Fiber_pos_center_23" unit="cm" x="0.1825" y="-0.37" z="0"/>
     <rotation name="TPB_Fiber_rot_center_23" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_24" unit="cm" x="0.2325" y="-0.19" z="0"/>
+    <position name="TPB_Fiber_pos_center_24" unit="cm" x="0.1825" y="-0.19" z="0"/>
     <rotation name="TPB_Fiber_rot_center_24" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_25" unit="cm" x="0.2325" y="0.19" z="0"/>
+    <position name="TPB_Fiber_pos_center_25" unit="cm" x="0.1825" y="0.19" z="0"/>
     <rotation name="TPB_Fiber_rot_center_25" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_26" unit="cm" x="0.2325" y="0.37" z="0"/>
+    <position name="TPB_Fiber_pos_center_26" unit="cm" x="0.1825" y="0.37" z="0"/>
     <rotation name="TPB_Fiber_rot_center_26" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_27" unit="cm" x="0.2325" y="0.55" z="0"/>
+    <position name="TPB_Fiber_pos_center_27" unit="cm" x="0.1825" y="0.55" z="0"/>
     <rotation name="TPB_Fiber_rot_center_27" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_28" unit="cm" x="0.2325" y="0.73" z="0"/>
+    <position name="TPB_Fiber_pos_center_28" unit="cm" x="0.1825" y="0.73" z="0"/>
     <rotation name="TPB_Fiber_rot_center_28" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_29" unit="cm" x="0.2325" y="0.91" z="0"/>
+    <position name="TPB_Fiber_pos_center_29" unit="cm" x="0.1825" y="0.91" z="0"/>
     <rotation name="TPB_Fiber_rot_center_29" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_30" unit="cm" x="0.2325" y="1.09" z="0"/>
+    <position name="TPB_Fiber_pos_center_30" unit="cm" x="0.1825" y="1.09" z="0"/>
     <rotation name="TPB_Fiber_rot_center_30" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_31" unit="cm" x="0.2325" y="1.27" z="0"/>
+    <position name="TPB_Fiber_pos_center_31" unit="cm" x="0.1825" y="1.27" z="0"/>
     <rotation name="TPB_Fiber_rot_center_31" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_32" unit="cm" x="0.2325" y="1.45" z="0"/>
+    <position name="TPB_Fiber_pos_center_32" unit="cm" x="0.1825" y="1.45" z="0"/>
     <rotation name="TPB_Fiber_rot_center_32" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_33" unit="cm" x="0.2325" y="1.63" z="0"/>
+    <position name="TPB_Fiber_pos_center_33" unit="cm" x="0.1825" y="1.63" z="0"/>
     <rotation name="TPB_Fiber_rot_center_33" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_34" unit="cm" x="0.2325" y="1.81" z="0"/>
+    <position name="TPB_Fiber_pos_center_34" unit="cm" x="0.1825" y="1.81" z="0"/>
     <rotation name="TPB_Fiber_rot_center_34" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_35" unit="cm" x="0.2325" y="1.99" z="0"/>
+    <position name="TPB_Fiber_pos_center_35" unit="cm" x="0.1825" y="1.99" z="0"/>
     <rotation name="TPB_Fiber_rot_center_35" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_36" unit="cm" x="0.2325" y="2.17" z="0"/>
+    <position name="TPB_Fiber_pos_center_36" unit="cm" x="0.1825" y="2.17" z="0"/>
     <rotation name="TPB_Fiber_rot_center_36" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_37" unit="cm" x="0.2325" y="2.35" z="0"/>
+    <position name="TPB_Fiber_pos_center_37" unit="cm" x="0.1825" y="2.35" z="0"/>
     <rotation name="TPB_Fiber_rot_center_37" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_38" unit="cm" x="0.2325" y="2.53" z="0"/>
+    <position name="TPB_Fiber_pos_center_38" unit="cm" x="0.1825" y="2.53" z="0"/>
     <rotation name="TPB_Fiber_rot_center_38" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_39" unit="cm" x="0.2325" y="2.71" z="0"/>
+    <position name="TPB_Fiber_pos_center_39" unit="cm" x="0.1825" y="2.71" z="0"/>
     <rotation name="TPB_Fiber_rot_center_39" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_40" unit="cm" x="0.2325" y="2.89" z="0"/>
+    <position name="TPB_Fiber_pos_center_40" unit="cm" x="0.1825" y="2.89" z="0"/>
     <rotation name="TPB_Fiber_rot_center_40" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_41" unit="cm" x="0.2325" y="3.07" z="0"/>
+    <position name="TPB_Fiber_pos_center_41" unit="cm" x="0.1825" y="3.07" z="0"/>
     <rotation name="TPB_Fiber_rot_center_41" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_42" unit="cm" x="0.2325" y="3.25" z="0"/>
+    <position name="TPB_Fiber_pos_center_42" unit="cm" x="0.1825" y="3.25" z="0"/>
     <rotation name="TPB_Fiber_rot_center_42" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_43" unit="cm" x="0.2325" y="3.43" z="0"/>
+    <position name="TPB_Fiber_pos_center_43" unit="cm" x="0.1825" y="3.43" z="0"/>
     <rotation name="TPB_Fiber_rot_center_43" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_44" unit="cm" x="0.2325" y="3.61" z="0"/>
+    <position name="TPB_Fiber_pos_center_44" unit="cm" x="0.1825" y="3.61" z="0"/>
     <rotation name="TPB_Fiber_rot_center_44" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_45" unit="cm" x="0.2325" y="3.79" z="0"/>
+    <position name="TPB_Fiber_pos_center_45" unit="cm" x="0.1825" y="3.79" z="0"/>
     <rotation name="TPB_Fiber_rot_center_45" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_46" unit="cm" x="0.2325" y="3.97" z="0"/>
+    <position name="TPB_Fiber_pos_center_46" unit="cm" x="0.1825" y="3.97" z="0"/>
     <rotation name="TPB_Fiber_rot_center_46" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_47" unit="cm" x="0.2325" y="4.15" z="0"/>
+    <position name="TPB_Fiber_pos_center_47" unit="cm" x="0.1825" y="4.15" z="0"/>
     <rotation name="TPB_Fiber_rot_center_47" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_48" unit="cm" x="0.2325" y="4.33" z="0"/>
+    <position name="TPB_Fiber_pos_center_48" unit="cm" x="0.1825" y="4.33" z="0"/>
     <rotation name="TPB_Fiber_rot_center_48" unit="degree" x="0.0" y="90.0" z="0.0"/>
-    <position name="TPB_Fiber_pos_center_49" unit="cm" x="0.2325" y="4.51" z="0"/>
+    <position name="TPB_Fiber_pos_center_49" unit="cm" x="0.1825" y="4.51" z="0"/>
     <rotation name="TPB_Fiber_rot_center_49" unit="degree" x="0.0" y="90.0" z="0.0"/>
     <position name="SiPM_LCM_Mask_pos_" unit="cm" x="-13.8627" y="0.0" z="0.0"/>
     <position name="SiPM_LCM_pos_0" unit="cm" x="0.009" y="-2.4875" z="0"/>
@@ -831,7 +830,6 @@
     <box lunit="cm" name="Asic_shape" x="0.1422" y="1.6" z="1.6"/>
     <box lunit="cm" name="TPCPlane" x="0.4648" y="124.11" z="62.03"/>
     <box lunit="cm" name="ArCLight" x="28.4904" y="30.94" z="1.0227"/>
-    <box lunit="cm" name="Mirror_shape" x="28.0254" y="30.0254" z="1.0127"/>
     <box lunit="cm" name="WLS_panel_shape" x="28.0" y="30.0" z="1.0"/>
     <box lunit="cm" name="TPB_LAr_shape" x="28.0" y="30.0" z="0.01"/>
     <box lunit="cm" name="SiPM_Mask_shape" x="0.165" y="7.825" z="1.0"/>
@@ -839,8 +837,8 @@
     <box lunit="cm" name="SiPM_shape" x="0.147" y="0.6" z="0.6"/>
     <box lunit="cm" name="SiPM_PCB_shape" x="0.3" y="9.95" z="1.0"/>
     <box lunit="cm" name="LCM" x="28.4904" y="9.95" z="1.0"/>
-    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="TPB_Fiber_panel_shape" rmax="0.06" rmin="0.0" startphi="0.0" z="28.0254"/>
-    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="Fiber_panel_shape" rmax="0.0599" rmin="0.0" startphi="0.0" z="28.0254"/>
+    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="TPB_Fiber_panel_shape" rmax="0.06" rmin="0.0" startphi="0.0" z="27.9254"/>
+    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="Fiber_panel_shape" rmax="0.0599" rmin="0.0" startphi="0.0" z="27.9254"/>
     <box lunit="cm" name="SiPM_LCM_Mask_shape" x="0.165" y="9.95" z="1.0"/>
     <box lunit="cm" name="SiPM_LCM_shape" x="0.147" y="4.95" z="0.12"/>
     <box lunit="cm" name="SiPM_LCM_PCB_shape" x="0.3" y="9.95" z="1.0"/>
@@ -871,507 +869,507 @@
     <volume name="volPixelPlane">
       <materialref ref="LAr"/>
       <solidref ref="PixelPlane"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCPCB"/>
         <positionref ref="PCB_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_0.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_1.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_2.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_3.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_4.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_5.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_6.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_7.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_8.9"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.4"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.5"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.6"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.7"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.8"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCAsic"/>
         <positionref ref="Asic_pos_9.9"/>
         <rotationref ref="identity"/>
@@ -1380,42 +1378,42 @@
     <volume name="volTPCPlane">
       <materialref ref="LAr"/>
       <solidref ref="TPCPlane"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_0_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_1_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_2_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_3_R"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_0_L"/>
         <rotationref ref="PixelPlane_rot_0_L"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_1_L"/>
         <rotationref ref="PixelPlane_rot_1_L"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_2_L"/>
         <rotationref ref="PixelPlane_rot_2_L"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPixelPlane"/>
         <positionref ref="PixelPlane_pos_3_L"/>
         <rotationref ref="PixelPlane_rot_3_L"/>
@@ -1428,12 +1426,12 @@
     <volume name="volTPC">
       <materialref ref="LAr"/>
       <solidref ref="TPC"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCPlane"/>
         <positionref ref="TPCPlane_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPCActive"/>
         <positionref ref="TPCActive_pos"/>
         <rotationref ref="identity"/>
@@ -1446,7 +1444,7 @@
     <volume name="volTPB_Fiber">
       <materialref ref="TPB"/>
       <solidref ref="TPB_Fiber_panel_shape"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volFiber"/>
         <positionref ref="Fiber_pos"/>
         <rotationref ref="identity"/>
@@ -1459,7 +1457,7 @@
     <volume name="volSiPM_LCM_Mask">
       <materialref ref="PVT"/>
       <solidref ref="SiPM_LCM_Mask_shape"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_LCM"/>
         <positionref ref="SiPM_LCM_pos_0"/>
         <rotationref ref="identity"/>
@@ -1477,7 +1475,7 @@
     <volume name="volLCM">
       <materialref ref="LAr"/>
       <solidref ref="LCM"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPB_Fiber"/>
         <positionref ref="TPB_Fiber_pos_center_0"/>
         <rotationref ref="TPB_Fiber_rot_center_0"/>
@@ -1727,12 +1725,12 @@
         <positionref ref="TPB_Fiber_pos_center_49"/>
         <rotationref ref="TPB_Fiber_rot_center_49"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_LCM_Mask"/>
         <positionref ref="SiPM_LCM_Mask_pos_"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_LCM_PCB"/>
         <positionref ref="SiPM_LCM_PCB_pos"/>
         <rotationref ref="identity"/>
@@ -1741,7 +1739,7 @@
     <volume name="volLCMPlane">
       <materialref ref="LAr"/>
       <solidref ref="LCMPlane"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volLCM"/>
         <positionref ref="LCM_pos_0"/>
         <rotationref ref="identity"/>
@@ -1764,7 +1762,7 @@
     <volume name="volWLS">
       <materialref ref="EJ280WLS"/>
       <solidref ref="WLS_panel_shape"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_Sens"/>
         <positionref ref="SiPM_Sens_pos_0"/>
         <rotationref ref="identity"/>
@@ -1806,12 +1804,12 @@
     <volume name="volSiPM_Mask">
       <materialref ref="PVT"/>
       <solidref ref="SiPM_Mask_shape"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM"/>
         <positionref ref="SiPM_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM"/>
         <positionref ref="SiPM_pos_1"/>
         <rotationref ref="identity"/>
@@ -1824,17 +1822,17 @@
     <volume name="volArCLight">
       <materialref ref="LAr"/>
       <solidref ref="ArCLight"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volWLS"/>
         <positionref ref="WLS_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPB_LAr"/>
         <positionref ref="TPB_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_Mask"/>
         <positionref ref="SiPM_Mask_pos_0"/>
         <rotationref ref="identity"/>
@@ -1849,17 +1847,17 @@
         <positionref ref="SiPM_Mask_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_PCB"/>
         <positionref ref="SiPM_PCB_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_PCB"/>
         <positionref ref="SiPM_PCB_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volSiPM_PCB"/>
         <positionref ref="SiPM_PCB_pos_2"/>
         <rotationref ref="identity"/>
@@ -1872,12 +1870,12 @@
     <volume name="volOpticalDetR">
       <materialref ref="LAr"/>
       <solidref ref="OpticalDetR"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volLCMPlane"/>
         <positionref ref="LCMPlane_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volArCLight"/>
         <positionref ref="ArCLight_pos_1"/>
         <rotationref ref="identity"/>
@@ -1892,22 +1890,22 @@
         <positionref ref="ArCLight_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarR"/>
         <positionref ref="PCBBarR_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarR"/>
         <positionref ref="PCBBarR_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarR"/>
         <positionref ref="PCBBarR_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarR"/>
         <positionref ref="PCBBarR_pos_3"/>
         <rotationref ref="identity"/>
@@ -1920,12 +1918,12 @@
     <volume name="volOpticalDetL">
       <materialref ref="LAr"/>
       <solidref ref="OpticalDetL"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volArCLight"/>
         <positionref ref="ArCLight_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volLCMPlane"/>
         <positionref ref="LCMPlane_pos_1"/>
         <rotationref ref="identity"/>
@@ -1940,22 +1938,22 @@
         <positionref ref="LCMPlane_pos_3"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarL"/>
         <positionref ref="PCBBarL_pos_0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarL"/>
         <positionref ref="PCBBarL_pos_1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarL"/>
         <positionref ref="PCBBarL_pos_2"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volPCBBarL"/>
         <positionref ref="PCBBarL_pos_3"/>
         <rotationref ref="identity"/>
@@ -1968,12 +1966,12 @@
     <volume name="volLAr">
       <materialref ref="LAr"/>
       <solidref ref="LAr_shape"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volTPC"/>
         <positionref ref="TPC_pos"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volOpticalDetR"/>
         <positionref ref="OpticalDetR_pos_R"/>
         <rotationref ref="identity"/>
@@ -1983,12 +1981,12 @@
         <positionref ref="OpticalDetL_pos_L"/>
         <rotationref ref="OpticalDetL_rot"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volBracket"/>
         <positionref ref="Bracket_pos_L"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volBracket"/>
         <positionref ref="Bracket_pos_R"/>
         <rotationref ref="identity"/>
@@ -1997,7 +1995,7 @@
     <volume name="volKapton">
       <materialref ref="Kapton"/>
       <solidref ref="Kapton_shape"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volLAr"/>
         <positionref ref="LAr_pos"/>
         <rotationref ref="identity"/>
@@ -2006,7 +2004,7 @@
     <volume name="volFieldcage">
       <materialref ref="G10"/>
       <solidref ref="Fieldcage_shape"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volKapton"/>
         <positionref ref="Kapton_pos"/>
         <rotationref ref="identity"/>
@@ -2015,7 +2013,7 @@
     <volume name="volOptSim">
       <materialref ref="G10"/>
       <solidref ref="OptSim"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volFieldcage"/>
         <positionref ref="Fieldcage_pos"/>
         <rotationref ref="identity"/>
@@ -2024,7 +2022,7 @@
     <volume name="volDetEnclosure">
       <materialref ref="Air"/>
       <solidref ref="DetEnclosure"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volOptSim"/>
         <positionref ref="volOptSim_pos"/>
         <rotationref ref="volOptSim_rot"/>
@@ -2033,7 +2031,7 @@
     <volume name="volWorld">
       <materialref ref="Rock"/>
       <solidref ref="World"/>
-      <physvol copynumber="0">
+      <physvol>
         <volumeref ref="volDetEnclosure"/>
         <positionref ref="volDetEnclosure_pos"/>
         <rotationref ref="volDetEnclosure_rot"/>
