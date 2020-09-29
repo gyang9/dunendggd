@@ -1440,6 +1440,7 @@
     <volume name="volTPCActive">
       <materialref ref="LAr"/>
       <solidref ref="TPCActive_shape"/>
+      <auxiliary auxtype="SensDet" auxvalue="TPCActive"/>
     </volume>
     <volume name="volTPC">
       <materialref ref="LAr"/>
