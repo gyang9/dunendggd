@@ -1445,7 +1445,6 @@
     <volume name="volTPCActive">
       <materialref ref="LAr"/>
       <solidref ref="TPCActive_shape"/>
-      <auxiliary auxtype="SensDet" auxvalue="TPCActive"/>
     </volume>
     <volume name="volTPC">
       <materialref ref="LAr"/>
@@ -1676,7 +1675,7 @@
         <positionref ref="HalfDetector_pos_L"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="1">
         <volumeref ref="volHalfDetector"/>
         <positionref ref="HalfDetector_pos_R"/>
         <rotationref ref="HalfDetector_rot"/>
@@ -1748,7 +1747,7 @@
         <positionref ref="Backplate_pos_L"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="1">
         <volumeref ref="volBackplate"/>
         <positionref ref="Backplate_pos_R"/>
         <rotationref ref="identity"/>
@@ -2138,17 +2137,17 @@
         <positionref ref="Module_pos_0.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="1">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_0.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="2">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_1.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol>
+      <physvol copynumber="3">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_1.1"/>
         <rotationref ref="identity"/>
