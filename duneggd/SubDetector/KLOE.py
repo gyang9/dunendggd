@@ -317,7 +317,7 @@ class KLOEBuilder(gegede.builder.Builder):
         main_lv.placements.append(pla.name)
 
     def build_ecal(self, main_lv, geom):
-        
+
         if (("KLOEEMCALO" in self.builders) is False):
             print("KLOEEMCALO builder not found")
             return
@@ -338,11 +338,8 @@ class KLOEBuilder(gegede.builder.Builder):
         main_lv.placements.append(emcalo_placement.name)
 
     def build_3DST(self, main_lv, geom):
-<<<<<<< HEAD
+
         if (("3DST" in self.builders) is False):
-=======
-        if '3DST' not in self.builders:
->>>>>>> origin
             print("3DST have not been requested.")
             print("Therefore we will not build 3DST.")
             return
@@ -378,11 +375,8 @@ class KLOEBuilder(gegede.builder.Builder):
                 main_lv.placements.append(stt_pla.name)
 
     def build_3DSTwithSTT(self,main_lv, geom):
-<<<<<<< HEAD
+
         if ("3DST_STT" in self.builders)==False:
-=======
-        if self.builders.has_key("3DST_STT")==False:
->>>>>>> origin
             print("3DST_STT doesnot exist, return")
             return
         threeDSTwithSTT_builder=self.get_builder("3DST_STT")
@@ -397,11 +391,7 @@ class KLOEBuilder(gegede.builder.Builder):
         # only build the tracker if we are
         # also building the STT or GArTPC
         # 3DST works differently
-<<<<<<< HEAD
         if ("KLOEGAR" in self.builders)==False and ("KLOESTT" in self.builders)==False :
-=======
-        if self.builders.has_key("KLOEGAR")==False and self.builders.has_key("KLOESTT")==False :
->>>>>>> origin
             print("KLOEGAR and KLOESTT have not been requested.")
             print("Therefore we will not build the tracking region.")
             return
@@ -430,11 +420,7 @@ class KLOEBuilder(gegede.builder.Builder):
 
 
         # now build the STT inside
-<<<<<<< HEAD
         if "KLOESTT" in self.builders:
-=======
-        if self.builders.has_key("KLOESTT"):
->>>>>>> origin
             print("we have a KLOESTT builder key")
             stt_builder=self.get_builder("KLOESTT")
             print("self.BuildSTT==",self.BuildSTT)
@@ -453,11 +439,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 lv.placements.append(stt_pla.name)
 
         # or, build the GArTPC
-<<<<<<< HEAD
         if "KLOEGAR" in self.builders:
-=======
-        if self.builders.has_key("KLOEGAR"):
->>>>>>> origin
             print("we have a KLOEGAR builder key")
             gar_builder=self.get_builder("KLOEGAR")
             print("self.BuildGAR==",self.BuildGAR)
