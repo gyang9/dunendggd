@@ -23,6 +23,8 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     '''
 
     defaults=dict( innerBField="0.5 T, 0.0 T, 0.0 T",
+                   TPCStepLimit = "1 mm",
+                   ECALStepLimit = "5 mm",
                    buildGarTPC=True,
                    buildEcalBarrel=True,
                    buildEcalEndcap=True,
@@ -127,6 +129,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         tpc_vol = tpc_builder.get_volume()
         # Add the magnetic field to the volume
         tpc_vol.params.append(("BField", self.innerBField))
+        tpc_vol.params.append(("StepLimit", self.TPCStepLimit))
 
         tpc_pla = geom.structure.Placement("GArTPC"+"_pla", volume=tpc_vol)
         # Place it in the main lv
@@ -144,6 +147,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             ib_vol = ibb.get_volume()
             # Add the magnetic field to the volume
             ib_vol.params.append(("BField", self.innerBField))
+            ib_vol.params.append(("StepLimit", self.ECALStepLimit))
 
             ecal_shape = geom.store.shapes.get(ib_vol.shape)
             nsides = ecal_shape.numsides
@@ -165,6 +169,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             iec_vol = iecb.get_volume()
             # Add the magnetic field to the volume
             iec_vol.params.append(("BField", self.innerBField))
+            iec_vol.params.append(("StepLimit", self.ECALStepLimit))
 
             iec_rot = geom.structure.Rotation(iecb.name+"_rot", z=rot_z)
             iec_pla = geom.structure.Placement(iecb.name+"_pla", volume=iec_vol, rot=iec_rot)
