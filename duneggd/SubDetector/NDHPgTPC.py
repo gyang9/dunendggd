@@ -23,7 +23,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
     '''
 
     defaults=dict( innerBField="0.5 T, 0.0 T, 0.0 T",
-                   TPCStepLimit = "1 mm",
+                   TPCStepLimit = "10 mm",
                    ECALStepLimit = "5 mm",
                    buildGarTPC=True,
                    buildEcalBarrel=True,

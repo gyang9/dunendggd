@@ -110,6 +110,7 @@ class GArTPCBuilder(gegede.builder.Builder):
         # Really should be set with a magnet builder but here for testing
         # Not currently used
         self.BField = BField
+        self.TPCStepLimit = "10 mm"
         self.Material = 'Air'
         if self.BuildEmpty:
             self.Material='NoGas'
@@ -403,6 +404,9 @@ class GArTPCBuilder(gegede.builder.Builder):
 
         # The gas volumes are sensitive detectors
         tpc_lv.params.append(('SensDet',name))
+
+        # Add the step limit size for the TPC sensitive volume
+        tpc_lv.params.append(('StepLimit', self.TPCStepLimit))
 
         # Place in the main gas volume
         lv.placements.append(tpc_pla.name)
