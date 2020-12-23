@@ -334,6 +334,11 @@
     <rotation name="egressHallway_lv_rot" unit="degree" x="0" y="-90" z="0"/>
     <position name="volfullCryoTubeBox_pos" unit="cm" x="5.089" y="-353.667" z="-784.26"/>
     <rotation name="volfullCryoTubeBox_rot" unit="degree" x="0" y="-90" z="0"/>
+    <position name="rockBoxUpstreamPosition" unit="cm" x="0.0" y="0.0" z="-1477.5"/>
+    <position name="rockBoxSubtPosition" unit="cm" x="0.0" y="1027.0" z="13460.0"/>
+    <position name="rockTubPosition" unit="cm" x="-2179.5" y="139.5" z="11982.5"/>
+    <position name="volDetEnclosure_pos" unit="cm" x="289.5" y="-320.0" z="11982.5"/>
+    <rotation name="volDetEnclosure_rot" unit="degree" x="0" y="0" z="0"/>
     <rotation name="noRotate" unit="degree" x="0" y="0" z="0"/>
     <rotation name="r90aboutX" unit="degree" x="90" y="0" z="0"/>
     <rotation name="rminus90aboutX" unit="degree" x="-90" y="0" z="0"/>
@@ -348,9 +353,8 @@
     <rotation name="r90aboutYminusZ" unit="degree" x="0" y="-90" z="90"/>
     <rotation name="r90aboutX90aboutY" unit="degree" x="90" y="90" z="0"/>
     <rotation name="r90aboutX180aboutY" unit="degree" x="90" y="180" z="0"/>
-    <position name="volDetEnclosure_pos" unit="cm" x="-2137.9" y="420.527" z="-11022.5"/>
-    <rotation name="volDetEnclosure_rot" unit="degree" x="0" y="0" z="0"/>
-    <position name="a3dstPosition_000" unit="cm" x="50.0" y="100.0" z="100.0"/>
+    <position name="rockBox_lv_pos" unit="cm" x="-2137.9" y="420.527" z="-11022.5"/>
+    <rotation name="rockBox_lv_rot" unit="degree" x="0" y="0" z="0"/>
     <position name="center"/>
     <rotation name="identity"/>
   </define>
@@ -417,6 +421,12 @@
     </element>
     <element Z="28" formula="Ni" name="nickel">
       <atom value="58.6934"/>
+    </element>
+    <element Z="74" formula="W" name="tungsten">
+      <atom value="183.84"/>
+    </element>
+    <element Z="79" formula="Au" name="gold">
+      <atom value="196.966"/>
     </element>
     <isotope N="63" Z="29" name="copper63">
       <atom type="A" value="62.93"/>
@@ -522,6 +532,12 @@
       <fraction n="0.209476" ref="oxygen"/>
       <fraction n="0.00934" ref="argon"/>
     </material>
+    <material formula="" name="Air35C">
+      <D value="0.00115"/>
+      <fraction n="0.781154" ref="nitrogen"/>
+      <fraction n="0.209476" ref="oxygen"/>
+      <fraction n="0.00934" ref="argon"/>
+    </material>
     <material formula="" name="Bakelite">
       <D value="1.25"/>
       <fraction n="0.057441" ref="hydrogen"/>
@@ -545,6 +561,16 @@
     </material>
     <material formula="" name="stGas_Xe">
       <D value="0.00469254464286"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="stGas_Xe19">
+      <D value="0.00891583482143"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="straw_avg_ArXe">
+      <D value="0.020918592"/>
       <fraction n="0.3" ref="CO2"/>
       <fraction n="0.7" ref="argon"/>
     </material>
@@ -579,11 +605,29 @@
       <fraction n="0.3" ref="CO2"/>
       <fraction n="0.7" ref="argon"/>
     </material>
+    <material formula="" name="stGas_Ar19">
+      <D value="0.00349192857143"/>
+      <fraction n="0.3" ref="CO2"/>
+      <fraction n="0.7" ref="argon"/>
+    </material>
+    <material formula="" name="carbonComposite">
+      <D value="0.65"/>
+      <fraction n="0.99" ref="carbon"/>
+      <fraction n="0.01" ref="hydrogen"/>
+    </material>
     <material formula="" name="Kapton">
       <D value="1.4"/>
       <composite n="22" ref="carbon"/>
       <composite n="5" ref="oxygen"/>
       <composite n="2" ref="nitrogen"/>
+    </material>
+    <material formula="" name="Tungsten">
+      <D value="19.3"/>
+      <composite n="1" ref="tungsten"/>
+    </material>
+    <material formula="" name="Gold">
+      <D value="19.3"/>
+      <composite n="1" ref="gold"/>
     </material>
     <material formula="" name="Iron">
       <D value="7.874"/>
@@ -1004,8 +1048,29 @@
       <positionref ref="NDHallAirVolSpace7Position"/>
       <rotationref ref="identity"/>
     </union>
+    <box lunit="cm" name="RockBoxMain" x="6517.0" y="3164.0" z="27955.0"/>
+    <box lunit="cm" name="RockBoxUpstream" x="16917.0" y="13564.0" z="25000.0"/>
+    <box lunit="cm" name="RockBoxSubt" x="6517.001" y="1110.01" z="1035.001"/>
+    <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="rockTub" rmax="579.0" rmin="0.0" startphi="0.0" z="3443.0"/>
+    <union name="rockBoxTemp1">
+      <first ref="RockBoxMain"/>
+      <second ref="RockBoxUpstream"/>
+      <positionref ref="rockBoxUpstreamPosition"/>
+      <rotationref ref="identity"/>
+    </union>
+    <subtraction name="rockBoxTemp2">
+      <first ref="rockBoxTemp1"/>
+      <second ref="RockBoxSubt"/>
+      <positionref ref="rockBoxSubtPosition"/>
+      <rotationref ref="identity"/>
+    </subtraction>
+    <union name="rockBox">
+      <first ref="rockBoxTemp2"/>
+      <second ref="rockTub"/>
+      <positionref ref="rockTubPosition"/>
+      <rotationref ref="r90aboutX"/>
+    </union>
     <box lunit="cm" name="World" x="60000.0" y="60000.0" z="60000.0"/>
-    <eltube aunit="radian" dx="25.0" dy="50.0" dz="50.0" lunit="cm" name="ellShape"/>
   </solids>
   <structure>
     <volume name="volLArService">
@@ -2909,23 +2974,22 @@
         <rotationref ref="volfullCryoTubeBox_rot"/>
       </physvol>
     </volume>
-    <volume name="_ellShape">
-      <materialref ref="Scintillator"/>
-      <solidref ref="ellShape"/>
-      <auxiliary auxtype="SensDet" auxvalue="testShape"/>
-    </volume>
-    <volume name="volWorld">
-      <materialref ref="NoGas"/>
-      <solidref ref="World"/>
+    <volume name="rockBox_lv">
+      <materialref ref="Rock"/>
+      <solidref ref="rockBox"/>
       <physvol>
         <volumeref ref="volDetEnclosure"/>
         <positionref ref="volDetEnclosure_pos"/>
         <rotationref ref="volDetEnclosure_rot"/>
       </physvol>
+    </volume>
+    <volume name="volWorld">
+      <materialref ref="NoGas"/>
+      <solidref ref="World"/>
       <physvol>
-        <volumeref ref="_ellShape"/>
-        <positionref ref="a3dstPosition_000"/>
-        <rotationref ref="r90aboutY"/>
+        <volumeref ref="rockBox_lv"/>
+        <positionref ref="rockBox_lv_pos"/>
+        <rotationref ref="rockBox_lv_rot"/>
       </physvol>
     </volume>
   </structure>

@@ -88,7 +88,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         #        dy = 0.5*self.fullDetDim[1],
         #        dz = 0.5*self.fullDetDim[2])
 
-        full3dst_lv = geom.structure.Volume('volMainDet_3DST', material='Scintillator', shape=full3dstBox)
+        full3dst_lv = geom.structure.Volume('volMainDet_innerTracker', material='Scintillator', shape=full3dstBox)
         self.add_volume(full3dst_lv)
 
         a3dstPos = self.a3dstPos
