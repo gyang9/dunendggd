@@ -28,9 +28,8 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
         dz_ec = 0.5*self.caloThickness
         zpos_ec = self.EndcapZ + 0.5*self.caloThickness
         
-        #        barrel_shape = geom.shapes.Tubs("kloe_calo_barrel_shape", rmin=self.BarrelRmin, rmax=rmax_barrel, dz=self.BarrelDZ)
-        barrel_shape=geom.shapes.PolyhedraRegular("kloe_calo_barrel_shape",numsides=24, rmin=self.BarrelRmin, rmax=self.BarrelRmin+self.caloThickness, dz=self.BarrelDZ)
-        endcap_shape = geom.shapes.Tubs("kloe_calo_endcap_shape", rmin=Q('0m'), rmax=rmax_ec, dz=dz_ec)
+        barrel_shape = geom.shapes.Tubs("kloe_calo_barrel_shape", rmin=self.BarrelRmin, rmax=rmax_barrel, dz=self.BarrelDZ)
+        endcap_shape = geom.shapes.Tubs("kloe_calo_endcap_shape", rmin=self.EndcapRmin, rmax=rmax_ec, dz=dz_ec)
         
         calo_ec_R_pos = geom.structure.Position("calo_ec_R_pos", Q('0m'), Q('0m'),zpos_ec)
         
@@ -75,7 +74,7 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
 
 
         if self.get_builder("KLOEEMCALOBARRELMOD") == None:
-            print("KLOEEMCALOBARRELMOD builder not found")
+            print "KLOEEMCALOBARRELMOD builder not found"
             return 
 
         emcalo_module_builder=self.get_builder("KLOEEMCALOBARRELMOD")
@@ -87,7 +86,7 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
             axisy = (0, 1, 0)
             axisz = (1, 0, 0)
             ang = 360 / self.NCaloModBarrel
-            theta = j * ang + ang/2.
+            theta = j * ang
             ModPosition = [Q('0mm'), Q('0mm'), self.BarrelRmin + 0.5*self.caloThickness]
             ModPositionNew = ltools.rotation(
                 axisy, theta, ModPosition
@@ -100,7 +99,7 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
                 ModPositionNew[1], ModPositionNew[2])
 
             ECAL_rotation = geom.structure.Rotation(
-                'ECAL_rotation' + '_' + str(j), Q('90deg'), - theta * Q('1deg'),
+                'ECAL_rotation' + '_' + str(j), Q('90deg'), -j * ang * Q('1deg'),
                 Q('0deg'))  #Rotating the module on its axis accordingly
 
             print("Building Kloe ECAL module " + str(j)) # keep compatibility with Python3 pylint: disable=superfluous-parens
@@ -127,7 +126,7 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
         # segmentation is the same as for the barrel modules
 
         if self.get_builder("KLOEEMCALOENDCAP") == None:
-            print("KLOEEMCALOENDCAP builder not found")
+            print "KLOEEMCALOENDCAP builder not found"
             return 
 
         emcalo_endcap_builder=self.get_builder("KLOEEMCALOENDCAP")
