@@ -36,9 +36,9 @@
     <position name="volfullCryoTubeBox_pos" unit="cm" x="5.089" y="-353.667" z="-784.26"/>
     <rotation name="volfullCryoTubeBox_rot" unit="degree" x="0" y="-90" z="0"/>
     <position name="rockBoxUpstreamPosition" unit="cm" x="0.0" y="0.0" z="-1477.5"/>
-    <position name="rockBoxSubtPosition" unit="cm" x="0.0" y="1027.0" z="13460.0"/>
-    <position name="rockTubPosition" unit="cm" x="-2179.5" y="139.5" z="11982.5"/>
-    <position name="volDetEnclosure_pos" unit="cm" x="289.5" y="-320.0" z="11982.5"/>
+    <position name="rockBoxSubtPosition" unit="cm" x="0.0" y="1027.0" z="1210.0"/>
+    <position name="rockTubPosition" unit="cm" x="-2179.5" y="139.5" z="-267.5"/>
+    <position name="volDetEnclosure_pos" unit="cm" x="289.5" y="-320.0" z="-267.5"/>
     <rotation name="volDetEnclosure_rot" unit="degree" x="0" y="0" z="0"/>
     <rotation name="noRotate" unit="degree" x="0" y="0" z="0"/>
     <rotation name="r90aboutX" unit="degree" x="90" y="0" z="0"/>
@@ -699,8 +699,8 @@
       <positionref ref="NDHallAirVolSpace7Position"/>
       <rotationref ref="identity"/>
     </union>
-    <box lunit="cm" name="RockBoxMain" x="6517.0" y="3164.0" z="27955.0"/>
-    <box lunit="cm" name="RockBoxUpstream" x="16917.0" y="13564.0" z="25000.0"/>
+    <box lunit="cm" name="RockBoxMain" x="6517.0" y="3164.0" z="3455.0"/>
+    <box lunit="cm" name="RockBoxUpstream" x="16917.0" y="13564.0" z="500.0"/>
     <box lunit="cm" name="RockBoxSubt" x="6517.001" y="1110.01" z="1035.001"/>
     <tube aunit="radian" deltaphi="6.28318530718" lunit="cm" name="rockTub" rmax="579.0" rmin="0.0" startphi="0.0" z="3443.0"/>
     <union name="rockBoxTemp1">

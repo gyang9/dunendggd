@@ -12579,6 +12579,7 @@
         <positionref ref="rockBox_lv_pos"/>
         <rotationref ref="rockBox_lv_rot"/>
       </physvol>
+      <auxiliary auxtype="SensDet" auxvalue="World"/>
     </volume>
   </structure>
   <setup name="Default" version="0">
