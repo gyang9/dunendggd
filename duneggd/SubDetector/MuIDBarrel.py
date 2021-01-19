@@ -30,7 +30,7 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         self.nTraysPerPlane = modNTraysPerPlane 
         self.nPlanes        = modNPlanes 
         self.muidRot        = modMuidRot 
-	self.nMuTracker     = nMuTracker
+        self.nMuTracker     = nMuTracker
         
         #print( self.builders)
         self.RPCTrayBldr = self.get_builder('RPCTray_End')
@@ -60,7 +60,7 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
         #   and leave spaces instead of placing explicit volumes
 	
         print( 'Abs pos for '+ str(self.name) +' along Z: '+ str(self.muidAbsPos[2]))
-	print( math.cos(math.radians(60)))
+        print( math.cos(math.radians(60)))
         EachAngle = int(360/self.nMuTracker)
 
  	#EachAngle = 0
@@ -69,24 +69,23 @@ class MuIDBarrelBuilder(gegede.builder.Builder):
 		print( 'rotating angle of '+str(ii)+' muon tracker: '+str(Zrot))
 		#rAboutXZ     = geom.structure.Rotation( 'rAboutXZ'+str(ii), '0deg',  '0deg', -Zrot+Q('90deg')  )	
 		rAboutXZ     = geom.structure.Rotation( 'rAboutXZ'+str(ii),  Zrot-Q('0deg') , '0deg', '0deg'  )
-        	for i in range(self.nPlanes):
-			#xpos = self.muidDim[1]*math.cos(Zrot)
-			#ypos = self.muidDim[1]*math.sin(Zrot)	
-            		#zpos = self.muidDim[2] + self.muidAbsPos[2]
-                        xpos = self.muidDim[0] + self.muidAbsPos[0]
-                        ypos = self.muidDim[1]*math.sin(Zrot) + self.muidAbsPos[1]
-                        zpos = self.muidDim[1]*math.cos(Zrot) + self.muidAbsPos[2]
-			print( 'position of tracker: '+str(xpos)+' '+str(ypos)+' '+str(zpos))
-            		for j in range(self.nTraysPerPlane):
 
-                		#xpos = -0.5*self.muidDim[0]+self.muidAbsPos[0]
-                		#ypos = -0.5*self.muidDim[1]+self.muidAbsPos[1]
-        
-                		rpct_in_muid  = geom.structure.Position( 'rpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name+'_'+str(ii),
-                        		                                 xpos,  ypos,  zpos)
-                		prpct_in_muid = geom.structure.Placement( 'prpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name+'_'+str(ii),
-                        		                                  volume = rpcTray_lv, pos = rpct_in_muid, rot='rAboutXZ'+str(ii) )
+        for i in range(self.nPlanes):
+            #xpos = self.muidDim[1]*math.cos(Zrot)
+            #ypos = self.muidDim[1]*math.sin(Zrot)	
+            #zpos = self.muidDim[2] + self.muidAbsPos[2]
+            xpos = self.muidDim[0] + self.muidAbsPos[0]
+            ypos = self.muidDim[1]*math.sin(Zrot) + self.muidAbsPos[1]
+            zpos = self.muidDim[1]*math.cos(Zrot) + self.muidAbsPos[2]
+            print( 'position of tracker: '+str(xpos)+' '+str(ypos)+' '+str(zpos))
 
-                		muid_lv.placements.append( prpct_in_muid.name )
+            for j in range(self.nTraysPerPlane):
+                #xpos = -0.5*self.muidDim[0]+self.muidAbsPos[0]
+        		#ypos = -0.5*self.muidDim[1]+self.muidAbsPos[1]
+        		rpct_in_muid  = geom.structure.Position( 'rpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name+'_'+str(ii),
+                		                                 xpos,  ypos,  zpos)
+        		prpct_in_muid = geom.structure.Placement( 'prpct-'+str(self.nTraysPerPlane*i+j)+'_in_'+self.name+'_'+str(ii),
+                		                                  volume = rpcTray_lv, pos = rpct_in_muid, rot='rAboutXZ'+str(ii) )
+        		muid_lv.placements.append( prpct_in_muid.name )
          
         return

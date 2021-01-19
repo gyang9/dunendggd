@@ -8,13 +8,13 @@ from gegede import Quantity as Q
 
 class KloeEmCaloBarrelModBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self, 
-		  trapezoidDim=None, 
-		  ScintMat=None, 
-		  PasMat=None, 
-		  PasSlabThickness=None, 
-		  ActiveSlabThickness=None, 
-		  nSlabs=None, 
+    def configure(self,
+		  trapezoidDim=None,
+		  ScintMat=None,
+		  PasMat=None,
+		  PasSlabThickness=None,
+		  ActiveSlabThickness=None,
+		  nSlabs=None,
 		  **kwds):
         self.trapezoidDim = trapezoidDim
         self.ScintMat = ScintMat
@@ -25,30 +25,30 @@ class KloeEmCaloBarrelModBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
 
-        ECAL_shape = geom.shapes.Trapezoid('ECAL_shape', 
-					   dx1=self.trapezoidDim[0], 
+        ECAL_shape = geom.shapes.Trapezoid('ECAL_shape',
+					   dx1=self.trapezoidDim[0],
 					   dx2=self.trapezoidDim[1],
-					   dy1=self.trapezoidDim[2], 
-					   dy2=self.trapezoidDim[2], 
+					   dy1=self.trapezoidDim[2],
+					   dy2=self.trapezoidDim[2],
 					   dz=self.trapezoidDim[3])
 
         ECAL_lv = geom.structure.Volume('ECAL_lv', material='Air', shape=ECAL_shape)
         self.add_volume(ECAL_lv)
-	#print(self.name)
+        #print(self.name)
 #       ECAL_position = geom.structure.Position('ECAL_position', Position[0], Position[1], Position[2])
 #       ECAL_place = geom.structure.Placement('ECAL_place', volume = ECAL_lv, pos=ECAL_position)
-        
+
         for i in range(self.nSlabs): #nSlabs
             #tan = math.tan(math.pi/self.Segmentation)
             tan = 0.5*(self.trapezoidDim[1] - self.trapezoidDim[0])/self.trapezoidDim[3]
             xposSlab=Q('0cm')
             yposSlab=Q('0cm')
-            zposSlabActive = (-self.trapezoidDim[3] + 
-		             (i+0.5)*self.ActiveSlabThickness + 
+            zposSlabActive = (-self.trapezoidDim[3] +
+		             (i+0.5)*self.ActiveSlabThickness +
                              i*self.PasSlabThickness)
             #print("active slab position= "+ str(zposSlabActive))
-            zposSlabPassive = (-self.trapezoidDim[3] + 
-                              (i+1.)*self.ActiveSlabThickness + 
+            zposSlabPassive = (-self.trapezoidDim[3] +
+                              (i+1.)*self.ActiveSlabThickness +
                               (i+0.5)*self.PasSlabThickness)
             #print("passive slab position= "+ str(zposSlabPassive))
             bhalfActive=(self.trapezoidDim[0]+
@@ -58,53 +58,52 @@ class KloeEmCaloBarrelModBuilder(gegede.builder.Builder):
             BhalfActive=bhalfActive+self.ActiveSlabThickness*tan
             BhalfPassive=BhalfActive+(self.PasSlabThickness*tan)
             #print("BhalfPassive= "+ str(BhalfPassive))
-            
+
             #creating and appending active slabs to the ECAL module
-            
-            aECALActiveSlab = geom.shapes.Trapezoid('ECALActiveSlab'+'_'+str(i), 
-						    dx1=bhalfActive, 
+
+            aECALActiveSlab = geom.shapes.Trapezoid('ECALActiveSlab'+'_'+str(i),
+						    dx1=bhalfActive,
 						    dx2=BhalfActive,
-						    dy1=self.trapezoidDim[2], 
-						    dy2=self.trapezoidDim[2], 
+						    dy1=self.trapezoidDim[2],
+						    dy2=self.trapezoidDim[2],
 						    dz=0.5*self.ActiveSlabThickness)
 
-            aECALActiveSlab_lv = geom.structure.Volume('volECALActiveSlab'+'_'+str(i), 
-						       material=self.ScintMat, 
+            aECALActiveSlab_lv = geom.structure.Volume('volECALActiveSlab'+'_'+str(i),
+						       material=self.ScintMat,
 						       shape=aECALActiveSlab)
             aECALActiveSlab_lv.params.append(("SensDet","ECAL"))
-            
+
             aECALActiveSlabPos = geom.structure.Position('ecalactiveslabpos'+'_'+str(i),
 							 xposSlab,
 							 yposSlab,
 							 zposSlabActive)
-            
+
             aECALActiveSlabPlace = geom.structure.Placement('ecalactiveslabpla'+'_'+str(i),
 							    volume = aECALActiveSlab_lv,
 							    pos = aECALActiveSlabPos)
 
             ECAL_lv.placements.append( aECALActiveSlabPlace.name )
-            
+
             #creating and appending passive slabs to the ECAL module
-            
-            aECALPassiveSlab = geom.shapes.Trapezoid('ECALPassiveSlab'+'_'+str(i), 
-						     dx1=bhalfPassive, 
+
+            aECALPassiveSlab = geom.shapes.Trapezoid('ECALPassiveSlab'+'_'+str(i),
+						     dx1=bhalfPassive,
 						     dx2=BhalfPassive,
-						     dy1=self.trapezoidDim[2], 
-						     dy2=self.trapezoidDim[2], 
+						     dy1=self.trapezoidDim[2],
+						     dy2=self.trapezoidDim[2],
 						     dz=0.5*self.PasSlabThickness)
 
-            aECALPassiveSlab_lv = geom.structure.Volume('volECALPassiveSlab'+'_'+str(i), 
-							material=self.PasMat, 
+            aECALPassiveSlab_lv = geom.structure.Volume('volECALPassiveSlab'+'_'+str(i),
+							material=self.PasMat,
 							shape=aECALPassiveSlab)
-            
+
             aECALPassiveSlabPos = geom.structure.Position('ecalpassiveslabpos'+'_'+str(i),
 							  xposSlab,
 							  yposSlab,
 							  zposSlabPassive)
-            
+
             aECALPassiveSlabPlace = geom.structure.Placement('ecalpassiveslabpla'+'_'+str(i),
 							     volume = aECALPassiveSlab_lv,
-							     pos = aECALPassiveSlabPos) 
+							     pos = aECALPassiveSlabPos)
 
             ECAL_lv.placements.append( aECALPassiveSlabPlace.name )
-

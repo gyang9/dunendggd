@@ -6,7 +6,7 @@ Builds compontents for the MPD
 import gegede.builder
 from duneggd.SubDetector import NDHPgTPC as NDHPgTPC
 from gegede import Quantity as Q
-from math import floor, atan, sin, cos, tan, sqrt, pi, asin
+from math import *
 
 class NDHPgTPCLayerBuilder(gegede.builder.Builder):
 
@@ -72,6 +72,12 @@ class NDHPgTPCLayerBuilder(gegede.builder.Builder):
             layer_quad_pos = geom.structure.Position(name+"_quadrant_pos", x=self.quadr, y=self.quadr)
             layer_shape = geom.shapes.Boolean(name, type='intersection', first=layer_shape_full, second=layer_quadrant, pos=layer_quad_pos)
             layer_lv = geom.structure.Volume(name +"_vol", shape=layer_shape, material=self.material)
+        elif self.type == "IntersectionInside":
+            layer_shape_full = geom.shapes.Tubs(name+"_full", sphi=Q("0deg"), dphi=Q("360deg"), rmin=self.rmin, rmax=self.rmax, dz=(self.depth()))
+            layer_quadrant = geom.shapes.Box(name+"_quadrant", dx=self.quadr, dy=self.quadr, dz=(self.depth()) /2.0)
+            layer_quad_pos = geom.structure.Position(name+"_quadrant_pos", x=self.quadr, y=self.quadr)
+            layer_shape = geom.shapes.Boolean(name, type='intersection', first=layer_shape_full, second=layer_quadrant, pos=layer_quad_pos)
+            layer_lv = geom.structure.Volume(name +"_vol", shape=layer_shape, material=self.material)
 
         # no skipped space before the first layer
         skip = Q("0mm")
@@ -87,6 +93,12 @@ class NDHPgTPCLayerBuilder(gegede.builder.Builder):
                 slice_lv = geom.structure.Volume(sname + "_vol", material=mat, shape=slice_shape)
             elif self.type == "Intersection":
                 slice_shape_full = geom.shapes.PolyhedraRegular(sname+"_full", numsides=self.nsides, sphi=pi/8, rmin=self.rmin, rmax=self.rmax, dz=dz)
+                slice_quadrant = geom.shapes.Box(sname+"_quadrant", dx=self.quadr, dy=self.quadr, dz=dz/2.0)
+                slice_quad_pos = geom.structure.Position(sname+"_quadrant_pos", x=self.quadr, y=self.quadr)
+                slice_shape = geom.shapes.Boolean(sname, type='intersection', first=slice_shape_full, second=slice_quadrant, pos=slice_quad_pos)
+                slice_lv = geom.structure.Volume(sname + "_vol", material=mat, shape=slice_shape)
+            elif self.type == "IntersectionInside":
+                slice_shape_full = geom.shapes.Tubs(sname+"_full", sphi=Q("0deg"), dphi=Q("360deg"), rmin=self.rmin, rmax=self.rmax, dz=dz)
                 slice_quadrant = geom.shapes.Box(sname+"_quadrant", dx=self.quadr, dy=self.quadr, dz=dz/2.0)
                 slice_quad_pos = geom.structure.Position(sname+"_quadrant_pos", x=self.quadr, y=self.quadr)
                 slice_shape = geom.shapes.Boolean(sname, type='intersection', first=slice_shape_full, second=slice_quadrant, pos=slice_quad_pos)
@@ -107,6 +119,277 @@ class NDHPgTPCLayerBuilder(gegede.builder.Builder):
             cntr += 1
 
         self.add_volume(layer_lv)
+
+class NDHPgTPCTempDetElementBuilder(gegede.builder.Builder):
+
+    """Builds the temporary tracking layers for the temporary MPD"""
+
+    defaults = dict(geometry = 'Barrel',
+                    material = 'Air',
+                    output_name = 'MPTECalDetElement',
+                    layer_builder_name = ["NDHPgTPCHGLayerBuilder", "NDHPgTPCLGLayerBuilder"],
+                    PosLayer = [Q('-500cm'), Q('-300cm'), Q('0cm'), Q('300cm'), Q('500cm')],
+                    dX = Q("3000mm"),
+                    dY = Q("2500mm"),
+                    magnetMaterial = "Aluminum",
+                    magnetThickness = Q("100mm"),
+                    magnetInnerR = Q("3250cm"),
+                    magnetHalfLength = Q("5m"),
+                    magnetType = "SPY",
+                    PRYMaterial = "Iron",
+                    IntegratedMuID = True,
+                    MuID_nLayers = [3],
+                    yokeHalfLength = Q("6000mm"),
+                    nsides = 8,
+                    nsides_yoke = 8,
+                    nModules_yoke = 1,
+                    rInnerYoke = Q("2740mm"),
+                    buildYokeEndcap = True,
+                    yoke_stave_to_remove = [7]
+                    )
+
+    def construct(self, geom):
+        if self.geometry == 'TrackerSc':
+            self.construct_tracker(geom)
+        elif self.geometry == 'Magnet':
+            self.construct_magnet(geom)
+        elif self.geometry == 'Yoke':
+            self.construct_yoke(geom)
+        else:
+            print("Could not find the geometry asked!")
+            return
+        return
+
+    def get_yoke_barrel_module_thickness(self, geom):
+        yoke_barrel_module_thickness = Q("0mm")
+        print("Yoke barrel thickness")
+        for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
+            # print "Builder name ", type
+            Layer_builder = self.get_builder(type)
+            Layer_lv = Layer_builder.get_volume()
+
+            Layer_shape = geom.store.shapes.get(Layer_lv.shape)
+            layer_thickness = Layer_shape.dz * 2
+
+            print("nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness)
+            yoke_barrel_module_thickness += nlayer * layer_thickness
+
+        return yoke_barrel_module_thickness
+
+    def construct_magnet(self, geom):
+        ''' construct the Magnet '''
+        safety = Q("1mm")
+        #Q("2.6m")+Q("1496mm")/2.
+
+        if self.magnetType == "SPY":
+            ''' construct a solenoid with partial return Yoke (SPY)'''
+            ''' The soleinoid tickness is 10 cm of Al'''
+            ''' The PRY fills the rest of the space available (up to 8.4m in diameter for the full MPD) '''
+            ''' The PRY covers only +/- 30 deg up and down the MPD and has a bore of 3.5m'''
+            ''' Total weight is ~XXXt '''
+
+            print("Construct Magnet SPY - Solenoid made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
+
+            nCoils = 4
+            CoilWidth = Q("1496mm")
+            CoilSpace = Q("304mm")
+            CoilPos = [Q("-2.6m"), Q("-0.8m"), Q("0.8m"), Q("2.6m")]
+
+            ''' Fake shape filled with Air to contain the coils '''
+            magnet_name = self.output_name
+            magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
+            magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material="Air")
+
+            for ncoil, coilp in zip(list(range(nCoils)), CoilPos):
+                coil_name = self.output_name + "_Coil%01i" % ncoil
+                coil_shape = geom.shapes.Tubs(coil_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=CoilWidth/2., sphi="0deg", dphi="360deg")
+                coil_vol = geom.structure.Volume("vol"+coil_name, shape=coil_shape, material=self.magnetMaterial)
+
+                '''Place the coils in the magnet volume'''
+                #Placement layer in stave
+                coil_pos = geom.structure.Position(coil_name+"_pos", z=coilp)
+                coil_pla = geom.structure.Placement(coil_name+"_pla", volume=coil_vol, pos=coil_pos)
+                magnet_vol.placements.append(coil_pla.name)
+
+            self.add_volume(magnet_vol)
+        else:
+            print("Magnet model unknown.... ")
+            return
+
+    def construct_yoke(self, geom):
+        '''Construct the Yoke'''
+
+        safety = Q("1mm")
+        space = Q("1cm")
+        yoke_barrel_thickness = self.get_yoke_barrel_module_thickness(geom)
+        rmin_barrel = self.magnetInnerR + self.magnetThickness + space
+        # rmax_endcap = self.rInnerTPC + Q("1400mm")
+        rmax_endcap = rmin_barrel + yoke_barrel_thickness + safety
+        YokeEndcap_min_z = self.yokeHalfLength + safety
+        YokeEndcap_max_z = YokeEndcap_min_z + yoke_barrel_thickness + safety
+
+        print("Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", yoke_barrel_thickness, " and a length of ", self.magnetHalfLength*2)
+        print("Build integrated Muon ID ", self.IntegratedMuID)
+
+        '''Barrel'''
+        byoke_name = "YokeBarrel"
+        yoke_barrel_shape = geom.shapes.PolyhedraRegular(byoke_name, numsides=self.nsides_yoke, rmin=rmin_barrel, rmax=rmax_endcap, dz=YokeEndcap_min_z)
+        yoke_barrel_vol = geom.structure.Volume("vol"+byoke_name, shape=yoke_barrel_shape, material="Air")
+
+        #minimum dimension of the stave
+        min_dim_stave = 2 * tan( pi/self.nsides_yoke ) * rmin_barrel
+        #maximum dimension of the stave
+        max_dim_stave = 2 * tan( pi/self.nsides_yoke ) * rmax_endcap
+        Yoke_Barrel_n_modules = self.nModules_yoke
+        Yoke_Barrel_module_dim = YokeEndcap_min_z * 2 / Yoke_Barrel_n_modules
+
+        #Position of the stave in the Barrel (local coordinates)
+        dphi = (2*pi/self.nsides_yoke)
+        hphi = dphi/2;
+        minus_deg = 0
+        if self.nsides_yoke == 16:
+            minus_deg = 11.25
+        sensname = "MuID" + "_vol"
+
+        ''' Normal stave '''
+        for istave in range(self.nsides_yoke):
+            X = rmin_barrel + yoke_barrel_thickness / 2.
+            Y = Q('0mm')
+            stave_id = istave+1
+            dstave = int( self.nsides_yoke/4.0 )
+            phirot =  hphi + pi/2.0
+            phirot += (istave - dstave)*dphi
+            phirot2 =  (istave - dstave) * dphi + hphi
+
+            placing_angle = phirot2*180/pi+292.5 + minus_deg
+            if placing_angle >= 360:
+                placing_angle = placing_angle - 360
+
+            xpos = X*cos(phirot2)-Y*sin(phirot2)
+            ypos = X*sin(phirot2)+Y*cos(phirot2)
+
+            #remove the stave(s) in front of the LAr
+            #nsides = 8 -> stave 8
+            #nsides = 16 -> stave 4,5,6
+            set_stave = set(self.yoke_stave_to_remove)
+            if stave_id in set_stave:
+                print("Ignoring stave", stave_id)
+                continue
+
+            print("Placing stave ", stave_id, " at angle ", placing_angle, " deg")
+
+            for imodule in range(Yoke_Barrel_n_modules):
+                module_id = imodule+1
+                print("Placing stave ", stave_id, " and module ", module_id)
+
+                stave_name = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
+                stave_volname = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
+
+                stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/2.0, dx2=max_dim_stave/2.0,
+                dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
+                dz=yoke_barrel_thickness/2.0)
+                stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.PRYMaterial)
+
+                if self.IntegratedMuID == True:
+                    zPos = Q("0mm")
+                    layer_id = 1
+
+                    for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
+                        for ilayer in range(nlayer):
+
+                            layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
+
+                            print("Adding ", layername)
+
+                            #Configure the layer length based on the zPos in the stave
+                            Layer_builder = self.get_builder(type)
+                            layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
+                            l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides_yoke )
+                            l_dim_y = Yoke_Barrel_module_dim - safety
+
+                            NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
+                            NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
+                            layer_lv = Layer_builder.get_volume(layername+"_vol")
+
+                            #Placement layer in stave
+                            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - yoke_barrel_thickness/2.0)
+                            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+
+                            stave_lv.placements.append(layer_pla.name)
+
+                            zPos += layer_thickness;
+                            layer_id += 1
+
+                #Placement staves in Barrel
+                name = stave_lv.name
+                #print "Placing stave at x= ", (X*cos(phirot2)-Y*sin(phirot2))
+                #print "Placing stave at y= ", (X*sin(phirot2)+Y*cos(phirot2))
+                pos = geom.structure.Position(name + "_pos", x=xpos, y=ypos, z=( imodule+0.5 )*Yoke_Barrel_module_dim - YokeEndcap_min_z )
+                rot = geom.structure.Rotation(name + "_rot", x=pi/2.0, y=phirot+pi, z=Q("0deg"))
+                pla = geom.structure.Placement(name + "_pla", volume=stave_lv, pos=pos, rot=rot)
+
+                yoke_barrel_vol.placements.append(pla.name)
+
+        self.add_volume(yoke_barrel_vol)
+
+        if self.buildYokeEndcap:
+            '''Endcaps'''
+            #Mother volume Endcap
+            yoke_endcap_shape_min = geom.shapes.PolyhedraRegular("YokeEndcap_min", numsides=self.nsides_yoke, rmin=self.rInnerYoke, rmax=rmax_endcap, dz=YokeEndcap_min_z)
+            yoke_endcap_shape_max = geom.shapes.PolyhedraRegular("YokeEndcap_max", numsides=self.nsides_yoke, rmin=self.rInnerYoke, rmax=rmax_endcap, dz=YokeEndcap_max_z)
+
+            eyoke_name = "YokeEndcap"
+            yoke_endcap_shape = geom.shapes.Boolean( eyoke_name, type='subtraction', first=yoke_endcap_shape_max, second=yoke_endcap_shape_min )
+            # yoke_endcap_vol = geom.structure.Volume( "vol"+eyoke_name, shape=yoke_endcap_shape, material=self.PRYMaterial)
+            yoke_endcap_vol = geom.structure.Volume( "vol"+eyoke_name, shape=yoke_endcap_shape, material="Air")
+
+            for side in ["L", "R"]:
+                #Create the volume for the endcaps
+                yoke_thickness = YokeEndcap_max_z - YokeEndcap_min_z
+                eyoke_name = eyoke_name + side
+                eyoke_volname = "vol"+ eyoke_name + side
+                yoke_endcap_shape_one = geom.shapes.PolyhedraRegular(eyoke_name, numsides=self.nsides_yoke, rmin=self.rInnerYoke, rmax=rmax_endcap,    dz=yoke_thickness/2.)
+                yoke_endcap_lv = geom.structure.Volume( eyoke_volname, shape=yoke_endcap_shape_one, material=self.PRYMaterial)
+                z_pos = YokeEndcap_max_z - yoke_thickness/2.
+                if side == 'R':
+                    z_pos = -z_pos
+                pos = geom.structure.Position(eyoke_name + side + "_pos", z=z_pos)
+                rot = geom.structure.Rotation(eyoke_name + side + "_rot", z=Q("0deg"))
+                pla = geom.structure.Placement(eyoke_name + side + "_pla", volume=yoke_endcap_lv, pos=pos, rot=rot)
+                yoke_endcap_vol.placements.append(pla.name)
+
+            self.add_volume(yoke_endcap_vol)
+
+    def construct_tracker(self, geom):
+
+        safety = Q('0.1cm')
+        tracker_name = self.output_name
+        tracker_shape = geom.shapes.Tubs(tracker_name, rmin=Q('0cm'), rmax=self.magnetInnerR - safety, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
+        tracker_vol = geom.structure.Volume("vol"+tracker_name, shape=tracker_shape, material="Air")
+
+        nlayer = len(self.PosLayer)
+        sensname = "Tracker_vol"
+        for ilayer, layerp in zip(list(range(nlayer)), self.PosLayer):
+            layername = self.output_name + "_layer%02i" % ilayer
+            layer_builder = self.get_builder('MinervaPlane')
+            l_dim_x = self.dX
+            l_dim_y = self.dY
+            NDHPgTPCLayerBuilder.BarrelConfigurationLayer(layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
+            NDHPgTPCLayerBuilder.construct(layer_builder, geom)
+            layer_lv = layer_builder.get_volume(layername+"_vol")
+            layer_shape = geom.store.shapes.get(layer_lv.shape)
+
+            #Placement layer in stave
+            layer_pos = geom.structure.Position(layername+"_pos", x=layerp)
+            layer_rot = geom.structure.Rotation(layername+"_rot", y=Q('90deg'))
+            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos, rot=layer_rot)
+
+            print( "placing layer", layername, "at position", layerp, "with dimension dX=", layer_shape.dx, "dY=", layer_shape.dy, "and dZ=", layer_shape.dz)
+
+            tracker_vol.placements.append(layer_pla.name)
+
+        self.add_volume(tracker_vol)
+
 
 class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
@@ -129,6 +412,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     TPC_halfZ = Q('2600mm'),
                     nLayers_Barrel = [8, 72],
                     nLayers_Endcap = [6, 54],
+                    Endcap_Inside = False,
                     magnetMaterial = "Aluminum",
                     magnetThickness = Q("130mm"),
                     magnetInnerR = Q("3250cm"),
@@ -137,8 +421,12 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
                     PRYMaterial = "Iron",
                     buildThinUpstream = False,
                     nLayers_Upstream = [8, 0],
+                    nsides_yoke = 8,
                     IntegratedMuID = False,
-                    MuID_nLayers = 3
+                    MuID_nLayers = 3,
+                    nModules_yoke = 1,
+                    buildYokeEndcap = True,
+                    yoke_stave_to_remove = [7]
                     )
 
     #def configure(self, **kwds):
@@ -155,7 +443,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def get_ecal_barrel_module_thickness(self, geom):
 
         ecal_barrel_module_thickness = Q("0mm")
-        print "Ecal Barrel thickness"
+        print("Ecal Barrel thickness")
         for nlayer, type in zip(self.nLayers_Barrel, self.layer_builder_name):
             # print "Builder name ", type
             Layer_builder = self.get_builder(type)
@@ -164,7 +452,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             Layer_shape = geom.store.shapes.get(Layer_lv.shape)
             layer_thickness = Layer_shape.dz * 2
 
-            print "nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness
+            print("nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness)
             ecal_barrel_module_thickness += nlayer * layer_thickness
 
         return ecal_barrel_module_thickness
@@ -172,7 +460,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def get_ecal_endcap_module_thickness(self, geom):
 
         ecal_endcap_module_thickness = Q("0mm")
-        print "Ecal Endcap thickness"
+        print("Ecal Endcap thickness")
         for nlayer, type in zip(self.nLayers_Endcap, self.layer_builder_name):
             # print "Builder name ", type
             Layer_builder = self.get_builder(type)
@@ -181,7 +469,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             Layer_shape = geom.store.shapes.get(Layer_lv.shape)
             layer_thickness = Layer_shape.dz * 2
 
-            print "nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness
+            print("nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness)
             ecal_endcap_module_thickness += nlayer * layer_thickness
 
         return ecal_endcap_module_thickness
@@ -193,19 +481,26 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         return length
 
     def get_pv_endcap_position(self, geom):
+        safety = Q("0.1mm")
         pv_rInner = self.rInnerTPC
         pv_rmin = sqrt((pv_rInner/Q("1mm"))**2)*Q("1mm")
         h = self.pvEndCapBulge
+        if self.Endcap_Inside == True:
+            h = self.pvEndCapBulge - self.get_ecal_endcap_module_thickness(geom)
         x = pv_rmin
         q = ((h/Q("1mm"))**2 + (x/Q("1mm"))**2)
         R = q/(2*h/Q("1mm"))*Q("1mm")
         xpos = self.TPC_halfZ-(R-h)
+        if self.Endcap_Inside == True:
+            xpos = self.TPC_halfZ+self.get_ecal_endcap_module_thickness(geom)-(R-h) + safety
+
+        print("PV Endcap put at xpos", xpos)
 
         return xpos
 
     def get_yoke_barrel_module_thickness(self, geom):
         yoke_barrel_module_thickness = Q("0mm")
-        print "Yoke barrel thickness"
+        print("Yoke barrel thickness")
         for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
             # print "Builder name ", type
             Layer_builder = self.get_builder(type)
@@ -214,7 +509,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             Layer_shape = geom.store.shapes.get(Layer_lv.shape)
             layer_thickness = Layer_shape.dz * 2
 
-            print "nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness
+            print("nLayer ", nlayer, " of type ", type, " have thickness ", layer_thickness)
             yoke_barrel_module_thickness += nlayer * layer_thickness
 
         return yoke_barrel_module_thickness
@@ -236,7 +531,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         elif self.geometry == 'Yoke':
             self.construct_yoke(geom)
         else:
-            print "Could not find the geometry asked!"
+            print("Could not find the geometry asked!")
             return
         return
 
@@ -252,17 +547,17 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             ''' total weight for the 5 coil design is around 93t '''
 
             if self.magnetType == "5Coils":
-                print "Construct Magnet - 5 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                print("Construct Magnet - 5 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
                 nCoils = 5
                 CoilWidth = [Q("27cm"), Q("61.6cm"), Q("27cm"), Q("61.6cm"), Q("27cm")]
                 CoilPos = [Q("-5.5m"), Q("-3m"), Q("0m"), Q("3m"), Q("5.5m")]
             if self.magnetType == "4Coils":
-                print "Construct Magnet - 4 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                print("Construct Magnet - 4 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
                 nCoils = 4
                 CoilWidth = [Q("27cm"), Q("61.6cm"), Q("61.6cm"), Q("27cm")]
                 CoilPos = [Q("-5.5m"), Q("-3m"), Q("3m"), Q("5.5m")]
             if self.magnetType == "2Coils":
-                print "Construct Magnet - 2 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+                print("Construct Magnet - 2 Coils type with ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
                 nCoils = 2
                 CoilWidth = [Q("61.6cm"), Q("61.6cm")]
                 CoilPos = [Q("-3m"), Q("3m")]
@@ -272,7 +567,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
             magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material="Air")
 
-            for ncoil, coilw, coilp in zip(range(nCoils), CoilWidth, CoilPos):
+            for ncoil, coilw, coilp in zip(list(range(nCoils)), CoilWidth, CoilPos):
                 coil_name = self.output_name + "_Coil%01i" % ncoil
                 coil_shape = geom.shapes.Tubs(coil_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=coilw/2., sphi="0deg", dphi="360deg")
                 coil_vol = geom.structure.Volume("vol"+coil_name, shape=coil_shape, material=self.magnetMaterial)
@@ -292,7 +587,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             ''' The PRY covers only +/- 30 deg up and down the MPD and has a bore of 3.5m'''
             ''' Total weight is ~XXXt '''
 
-            print "Construct Magnet SPY - Solenoid made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+            print("Construct Magnet SPY - Solenoid made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
 
             nCoils = 4
             CoilWidth = Q("1496mm")
@@ -304,7 +599,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=Q("2.6m")+Q("1496mm")/2., sphi="0deg", dphi="360deg")
             magnet_vol = geom.structure.Volume("vol"+magnet_name, shape=magnet_shape, material="Air")
 
-            for ncoil, coilp in zip(range(nCoils), CoilPos):
+            for ncoil, coilp in zip(list(range(nCoils)), CoilPos):
                 coil_name = self.output_name + "_Coil%01i" % ncoil
                 coil_shape = geom.shapes.Tubs(coil_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=CoilWidth/2., sphi="0deg", dphi="360deg")
                 coil_vol = geom.structure.Volume("vol"+coil_name, shape=coil_shape, material=self.magnetMaterial)
@@ -318,7 +613,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             self.add_volume(magnet_vol)
 
         elif self.magnetType == "Uniform":
-            print "Construct Magnet - Approximation to a magnet of 100t made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2
+            print("Construct Magnet - Approximation to a magnet of 100t made of ", self.magnetMaterial, " with a radius of ", self.magnetInnerR, " a thickness of ", self.magnetThickness, " and a length of ", self.magnetHalfLength*2)
 
             magnet_name = self.output_name
             magnet_shape = geom.shapes.Tubs(magnet_name, rmin=self.magnetInnerR, rmax=self.magnetInnerR+self.magnetThickness, dz=self.magnetHalfLength, sphi="0deg", dphi="360deg")
@@ -326,17 +621,20 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
             self.add_volume(magnet_vol)
         else:
-            print "Magnet model unknown.... "
+            print("Magnet model unknown.... ")
             return
 
     def construct_pv(self, geom):
         ''' construct the Pressure Vessel '''
 
-        print "Construct PV Barrel"
+        print("Construct PV Barrel")
 
+        safety = Q("0.1mm")
         nsides = self.nsides
         pv_rInner = self.rInnerTPC
         pvHalfLength = self.TPC_halfZ
+        if self.Endcap_Inside == True:
+            pvHalfLength = self.TPC_halfZ + self.get_ecal_endcap_module_thickness(geom) + safety
         pv_rmin = pv_rInner
         pv_rmax = pv_rmin + self.pvThickness
 
@@ -347,17 +645,19 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         self.add_volume(pvb_vol)
 
-        print "Construct PV Endcap"
+        print("Construct PV Endcap")
 
         # build the pressure vessel endcaps
         # some euclidean geometry documented in my notebook
         h = self.pvEndCapBulge
         x = pv_rmin
+        if self.Endcap_Inside == True:
+            h = self.pvEndCapBulge - self.get_ecal_endcap_module_thickness(geom)
         q = ((h/Q("1mm"))**2 + (x/Q("1mm"))**2)
         R = q/(2*h/Q("1mm"))*Q("1mm")
         dtheta = asin( 2*(h/Q("1mm"))*(x/Q("1mm"))/q)
 
-        print "h, x, q, R, dtheta = ", h, x, q, R, dtheta
+        print("h, x, q, R, dtheta = ", h, x, q, R, dtheta)
 
         pvec_name = self.output_name + "Endcap"
         pvec_shape = geom.shapes.Sphere(pvec_name, rmin=R, rmax=R + self.pvThickness, sphi="0deg", dphi="360deg", stheta="0deg", dtheta=dtheta)
@@ -380,7 +680,7 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         #
         # need to create the layer based on the position in depth z -> different layer sizes
 
-        print "Construct ECAL Barrel"
+        print("Construct ECAL Barrel")
 
         # ECAL Barrel
         safety = Q("0.1mm")
@@ -393,20 +693,22 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         ecal_barrel_module_thickness_noSupport = ecal_barrel_module_thickness - safety
         #inner radius ecal (TPC + pv + safety)
         rInnerEcal = self.rInnerTPC + self.pvThickness
-        print "Ecal inner radius ", rInnerEcal
+        print("Ecal inner radius ", rInnerEcal)
         #barrel length (TPC + PV)
         Barrel_halfZ = self.get_pv_endcap_length(geom)
+        if self.Endcap_Inside == True:
+            Barrel_halfZ = self.TPC_halfZ + self.get_ecal_endcap_module_thickness(geom)
         #outer radius ecal (inner radius ecal + ecal module)
         rOuterEcal = rInnerEcal + ecal_barrel_module_thickness
-        print "Ecal outer radius ", rOuterEcal
+        print("Ecal outer radius ", rOuterEcal)
         #check that the ECAL thickness does not go over the magnet radius
         ecal_barrel_module_thickness_max = self.magnetInnerR * cos(pi/nsides) - rInnerEcal
 
-        print "Barrel Module thickness ", ecal_barrel_module_thickness
-        print "Maximum allowed thickness ", ecal_barrel_module_thickness_max
+        print("Barrel Module thickness ", ecal_barrel_module_thickness)
+        print("Maximum allowed thickness ", ecal_barrel_module_thickness_max)
 
         if ecal_barrel_module_thickness > ecal_barrel_module_thickness_max:
-            print "Will have overlaps if the magnet is present!"
+            print("Will have overlaps if the magnet is present!")
 
         #minimum dimension of the stave
         min_dim_stave = 2 * tan( pi/nsides ) * rInnerEcal
@@ -418,12 +720,12 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         #dimension of a module along the ND x direction
         Ecal_Barrel_module_dim = Ecal_Barrel_halfZ * 2 / Ecal_Barrel_n_modules
 
-        print "Large side of the stave", max_dim_stave
-        print "Small side of the stave", min_dim_stave
-        print "Barrel module dim in z", Ecal_Barrel_module_dim
-        print "Build Thinner Upstream ECAL", self.buildThinUpstream
+        print("Large side of the stave", max_dim_stave)
+        print("Small side of the stave", min_dim_stave)
+        print("Barrel module dim in z", Ecal_Barrel_module_dim)
+        print("Build Thinner Upstream ECAL", self.buildThinUpstream)
         if self.buildThinUpstream:
-            print "Number of layers for the Upstream ECAL", self.nLayers_Upstream
+            print("Number of layers for the Upstream ECAL", self.nLayers_Upstream)
 
         #Position of the stave in the Barrel (local coordinates)
         X = rInnerEcal + safety + ecal_barrel_module_thickness / 2.
@@ -447,11 +749,11 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
             if placing_angle >= 360:
                 placing_angle = placing_angle - 360
 
-            print "Placing stave ", stave_id, " at angle ", placing_angle, " deg"
+            print("Placing stave ", stave_id, " at angle ", placing_angle, " deg")
 
             for imodule in range(Ecal_Barrel_n_modules):
                 module_id = imodule+1
-                print "Placing stave ", stave_id, " and module ", module_id
+                print("Placing stave ", stave_id, " and module ", module_id)
 
                 stave_name = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
                 stave_volname = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
@@ -536,111 +838,214 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
     def construct_ecal_endcap_staves(self, geom):
         ''' construct a set of ECAL staves for the Endcap '''
 
-        print "Construct ECAL Endcap"
+        if self.Endcap_Inside == False:
+            print("Construct ECAL Endcap outside the PV")
 
-        # ECAL Endcap
-        safety = Q("0.1mm")
-        nsides = self.nsides
-        ecal_barrel_module_thickness = self.get_ecal_barrel_module_thickness(geom)
-        ecal_endcap_module_thickness = self.get_ecal_endcap_module_thickness(geom)
-        rInnerEcal = self.rInnerTPC + self.pvThickness + safety
-        Barrel_halfZ = self.get_pv_endcap_length(geom) + safety
+            # ECAL Endcap
+            safety = Q("0.1mm")
+            nsides = self.nsides
+            ecal_barrel_module_thickness = self.get_ecal_barrel_module_thickness(geom)
+            ecal_endcap_module_thickness = self.get_ecal_endcap_module_thickness(geom)
+            rInnerEcal = self.rInnerTPC + self.pvThickness + safety
+            Barrel_halfZ = self.get_pv_endcap_length(geom) + safety
 
-        EcalEndcap_inner_radius = Q("0mm")
-        EcalEndcap_outer_radius = rInnerEcal + ecal_barrel_module_thickness
-        Ecal_Barrel_halfZ = Barrel_halfZ
-        EcalEndcap_min_z = Ecal_Barrel_halfZ
-        EcalEndcap_max_z = Ecal_Barrel_halfZ + ecal_endcap_module_thickness
-        Ecal_Barrel_n_modules = self.nModules
+            EcalEndcap_inner_radius = Q("0mm")
+            EcalEndcap_outer_radius = rInnerEcal + ecal_barrel_module_thickness
+            Ecal_Barrel_halfZ = Barrel_halfZ
+            EcalEndcap_min_z = Ecal_Barrel_halfZ
+            EcalEndcap_max_z = Ecal_Barrel_halfZ + ecal_endcap_module_thickness
+            Ecal_Barrel_n_modules = self.nModules
 
-        rmin = EcalEndcap_inner_radius
-        rmax = EcalEndcap_outer_radius + 2*safety
+            rmin = EcalEndcap_inner_radius
+            rmax = EcalEndcap_outer_radius + 2*safety
 
-        print "Quadrant side ", rmax
-        print "Endcap thickness ", ecal_endcap_module_thickness
+            print("Quadrant side ", rmax)
+            print("Endcap thickness ", ecal_endcap_module_thickness)
 
-        #Mother volume Endcap
-        endcap_shape_min = geom.shapes.PolyhedraRegular("ECALEndcap_min", numsides=nsides, rmin=rmin, rmax=rmax, dz=EcalEndcap_min_z)
-        endcap_shape_max = geom.shapes.PolyhedraRegular("ECALEndcap_max", numsides=nsides, rmin=rmin, rmax=rmax, dz=EcalEndcap_max_z)
+            #Mother volume Endcap
+            endcap_shape_min = geom.shapes.PolyhedraRegular("ECALEndcap_min", numsides=nsides, rmin=rmin, rmax=rmax, dz=EcalEndcap_min_z)
+            endcap_shape_max = geom.shapes.PolyhedraRegular("ECALEndcap_max", numsides=nsides, rmin=rmin, rmax=rmax, dz=EcalEndcap_max_z)
 
-        endcap_shape = geom.shapes.Boolean( self.output_name, type='subtraction', first=endcap_shape_max, second=endcap_shape_min )
-        endcap_lv = geom.structure.Volume( "vol"+self.output_name, shape=endcap_shape, material=self.material )
+            endcap_shape = geom.shapes.Boolean( self.output_name, type='subtraction', first=endcap_shape_max, second=endcap_shape_min )
+            endcap_lv = geom.structure.Volume( "vol"+self.output_name, shape=endcap_shape, material=self.material )
 
-        # Place staves in the Endcap Volume
-        sensname = self.output_name + "_vol"
-        module_id = -1
-        for iend in range(2):
-            if iend == 0:
-                module_id = 0
-            else:
-                module_id = Ecal_Barrel_n_modules + 1
-
-            this_module_z_offset = (EcalEndcap_min_z + EcalEndcap_max_z)/2.
-            if iend == 0:
-                this_module_z_offset *= -1
-
-            this_module_rotY = 0.;
-            if iend == 0:
-                this_module_rotY = pi;
-            # this_module_rotY = pi;
-
-            rotZ_offset = (pi/8. + 3.*pi/4.)
-            if iend == 0:
-                rotZ_offset = (pi/8. - pi/2.)
-            # rotZ_offset = (pi/8. - pi/2.)
-
-            for iquad in range(4):
-                stave_id = iquad+1
-                this_module_rotZ = 0
+            # Place staves in the Endcap Volume
+            sensname = self.output_name + "_vol"
+            module_id = -1
+            for iend in range(2):
                 if iend == 0:
-                    this_module_rotZ = rotZ_offset - (iquad-2) * pi/2.
+                    module_id = 0
                 else:
-                    this_module_rotZ = rotZ_offset + (iquad+1) * pi/2.
+                    module_id = Ecal_Barrel_n_modules + 1
 
-                print "Placing stave ", stave_id, " and module ", module_id
+                this_module_z_offset = (EcalEndcap_min_z + EcalEndcap_max_z)/2.
+                if iend == 0:
+                    this_module_z_offset *= -1
 
-                #Create a template module
-                stave_name = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
-                stave_volname = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
+                this_module_rotY = 0.;
+                if iend == 0:
+                    this_module_rotY = pi;
+                # this_module_rotY = pi;
 
-                endcap_stave_full = geom.shapes.PolyhedraRegular(stave_name+"_full", numsides=nsides, sphi=pi/8, dphi=Q("360deg"), rmin=rmin, rmax=rmax, dz=ecal_endcap_module_thickness)
-                quadr = rmax
-                quadrant = geom.shapes.Box(stave_name+"_quadrant", dx=quadr, dy=quadr, dz=ecal_endcap_module_thickness/2)
+                rotZ_offset = (pi/8. + 3.*pi/4.)
+                if iend == 0:
+                    rotZ_offset = (pi/8. - pi/2.)
+                # rotZ_offset = (pi/8. - pi/2.)
 
-                endcap_stave_pos = geom.structure.Position(stave_name+"_pos", x=quadr, y=quadr, z=Q("0mm"))
-                endcap_stave_shape = geom.shapes.Boolean(stave_name, type='intersection', first=endcap_stave_full, second=quadrant, pos=endcap_stave_pos)
-                endcap_stave_lv = geom.structure.Volume(stave_volname, shape=endcap_stave_shape, material=self.material)
+                for iquad in range(4):
+                    stave_id = iquad+1
+                    this_module_rotZ = 0
+                    if iend == 0:
+                        this_module_rotZ = rotZ_offset - (iquad-2) * pi/2.
+                    else:
+                        this_module_rotZ = rotZ_offset + (iquad+1) * pi/2.
 
-                zPos = Q("0mm")
-                layer_id = 1
+                    print("Placing stave ", stave_id, " and module ", module_id)
 
-                for nlayer, type in zip(self.nLayers_Endcap, self.layer_builder_name):
-                    for ilayer in range(nlayer):
-                        layername = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
+                    #Create a template module
+                    stave_name = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
+                    stave_volname = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
 
-                        Layer_builder = self.get_builder(type)
-                        layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
-                        NDHPgTPCLayerBuilder.EndcapConfigurationLayer(Layer_builder, nsides, rmin, rmax, quadr, layername, sensname, "Intersection")
-                        NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
-                        layer_lv = Layer_builder.get_volume(layername+"_vol")
+                    endcap_stave_full = geom.shapes.PolyhedraRegular(stave_name+"_full", numsides=nsides, sphi=pi/8, dphi=Q("360deg"), rmin=rmin, rmax=rmax, dz=ecal_endcap_module_thickness)
+                    quadr = rmax
+                    quadrant = geom.shapes.Box(stave_name+"_quadrant", dx=quadr, dy=quadr, dz=ecal_endcap_module_thickness/2)
 
-                        # Placement layer in stave
-                        layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - ecal_endcap_module_thickness/2.0)
-                        layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+                    endcap_stave_pos = geom.structure.Position(stave_name+"_pos", x=quadr, y=quadr, z=Q("0mm"))
+                    endcap_stave_shape = geom.shapes.Boolean(stave_name, type='intersection', first=endcap_stave_full, second=quadrant, pos=endcap_stave_pos)
+                    endcap_stave_lv = geom.structure.Volume(stave_volname, shape=endcap_stave_shape, material=self.material)
 
-                        endcap_stave_lv.placements.append(layer_pla.name)
+                    zPos = Q("0mm")
+                    layer_id = 1
 
-                        zPos += layer_thickness;
-                        layer_id += 1
+                    for nlayer, type in zip(self.nLayers_Endcap, self.layer_builder_name):
+                        for ilayer in range(nlayer):
+                            layername = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
 
-                #Placement staves in Endcap
-                name = endcap_stave_lv.name
-                endcap_stave_pos = geom.structure.Position(name + "_pos", z=this_module_z_offset )
-                endcap_stave_rot = geom.structure.Rotation(name + "_rot", x=Q("0deg"), y=this_module_rotY, z=this_module_rotZ+pi/4)
-                endcap_stave_pla = geom.structure.Placement(name + "_pla", volume=endcap_stave_lv, pos=endcap_stave_pos, rot=endcap_stave_rot)
-                endcap_lv.placements.append(endcap_stave_pla.name)
+                            Layer_builder = self.get_builder(type)
+                            layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
+                            NDHPgTPCLayerBuilder.EndcapConfigurationLayer(Layer_builder, nsides, rmin, rmax, quadr, layername, sensname, "Intersection")
+                            NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
+                            layer_lv = Layer_builder.get_volume(layername+"_vol")
 
-        self.add_volume(endcap_lv)
+                            # Placement layer in stave
+                            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - ecal_endcap_module_thickness/2.0)
+                            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+
+                            endcap_stave_lv.placements.append(layer_pla.name)
+
+                            zPos += layer_thickness;
+                            layer_id += 1
+
+                    #Placement staves in Endcap
+                    name = endcap_stave_lv.name
+                    endcap_stave_pos = geom.structure.Position(name + "_pos", z=this_module_z_offset )
+                    endcap_stave_rot = geom.structure.Rotation(name + "_rot", x=Q("0deg"), y=this_module_rotY, z=this_module_rotZ+pi/4)
+                    endcap_stave_pla = geom.structure.Placement(name + "_pla", volume=endcap_stave_lv, pos=endcap_stave_pos, rot=endcap_stave_rot)
+                    endcap_lv.placements.append(endcap_stave_pla.name)
+
+            self.add_volume(endcap_lv)
+        else:
+            #ECAL Endcap inside the PV
+            safety = Q("0.1mm")
+            ecal_endcap_module_thickness = self.get_ecal_endcap_module_thickness(geom)
+            rInnerEcal = self.rInnerTPC - safety
+            Barrel_halfZ = self.TPC_halfZ + safety
+
+            EcalEndcap_inner_radius = Q("0mm")
+            EcalEndcap_outer_radius = rInnerEcal
+            Ecal_Barrel_halfZ = Barrel_halfZ
+            EcalEndcap_min_z = Ecal_Barrel_halfZ
+            EcalEndcap_max_z = Ecal_Barrel_halfZ + ecal_endcap_module_thickness
+            Ecal_Barrel_n_modules = self.nModules
+
+            rmin = EcalEndcap_inner_radius
+            rmax = EcalEndcap_outer_radius
+
+            print("Quadrant side ", rmax)
+            print("Endcap thickness ", ecal_endcap_module_thickness)
+
+            #Mother volume Endcap
+            endcap_shape_min = geom.shapes.Tubs("ECALEndcap_min", rmin=rmin, rmax=rmax, dz=EcalEndcap_min_z, sphi="0deg", dphi="360deg")
+            endcap_shape_max = geom.shapes.Tubs("ECALEndcap_max", rmin=rmin, rmax=rmax, dz=EcalEndcap_max_z, sphi="0deg", dphi="360deg")
+
+            endcap_shape = geom.shapes.Boolean( self.output_name, type='subtraction', first=endcap_shape_max, second=endcap_shape_min )
+            endcap_lv = geom.structure.Volume( "vol"+self.output_name, shape=endcap_shape, material=self.material )
+
+            # Place staves in the Endcap Volume
+            sensname = self.output_name + "_vol"
+            module_id = -1
+            for iend in range(2):
+                if iend == 0:
+                    module_id = 0
+                else:
+                    module_id = Ecal_Barrel_n_modules + 1
+
+                this_module_z_offset = (EcalEndcap_min_z + EcalEndcap_max_z)/2.
+                if iend == 0:
+                    this_module_z_offset *= -1
+
+                this_module_rotY = 0.;
+                if iend == 0:
+                    this_module_rotY = pi;
+                # this_module_rotY = pi;
+
+                rotZ_offset = (pi/8. + 3.*pi/4.)
+                if iend == 0:
+                    rotZ_offset = (pi/8. - pi/2.)
+                # rotZ_offset = (pi/8. - pi/2.)
+
+                for iquad in range(4):
+                    stave_id = iquad+1
+                    this_module_rotZ = 0
+                    if iend == 0:
+                        this_module_rotZ = rotZ_offset - (iquad-2) * pi/2.
+                    else:
+                        this_module_rotZ = rotZ_offset + (iquad+1) * pi/2.
+
+                    print("Placing stave ", stave_id, " and module ", module_id)
+
+                    #Create a template module
+                    stave_name = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
+                    stave_volname = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
+
+                    endcap_stave_full = geom.shapes.Tubs(stave_name+"_full", sphi=Q("0deg"), dphi=Q("360deg"), rmin=rmin, rmax=rmax, dz=ecal_endcap_module_thickness)
+                    quadr = rmax
+                    quadrant = geom.shapes.Box(stave_name+"_quadrant", dx=quadr, dy=quadr, dz=ecal_endcap_module_thickness/2)
+
+                    endcap_stave_pos = geom.structure.Position(stave_name+"_pos", x=quadr, y=quadr, z=Q("0mm"))
+                    endcap_stave_shape = geom.shapes.Boolean(stave_name, type='intersection', first=endcap_stave_full, second=quadrant, pos=endcap_stave_pos)
+                    endcap_stave_lv = geom.structure.Volume(stave_volname, shape=endcap_stave_shape, material=self.material)
+
+                    zPos = Q("0mm")
+                    layer_id = 1
+
+                    for nlayer, type in zip(self.nLayers_Endcap, self.layer_builder_name):
+                        for ilayer in range(nlayer):
+                            layername = self.output_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
+
+                            Layer_builder = self.get_builder(type)
+                            layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
+                            NDHPgTPCLayerBuilder.EndcapConfigurationLayer(Layer_builder, 0, rmin, rmax, quadr, layername, sensname, "IntersectionInside")
+                            NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
+                            layer_lv = Layer_builder.get_volume(layername+"_vol")
+
+                            # Placement layer in stave
+                            layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - ecal_endcap_module_thickness/2.0)
+                            layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
+
+                            endcap_stave_lv.placements.append(layer_pla.name)
+
+                            zPos += layer_thickness;
+                            layer_id += 1
+
+                    #Placement staves in Endcap
+                    name = endcap_stave_lv.name
+                    endcap_stave_pos = geom.structure.Position(name + "_pos", z=this_module_z_offset )
+                    endcap_stave_rot = geom.structure.Rotation(name + "_rot", x=Q("0deg"), y=this_module_rotY, z=this_module_rotZ+pi/4)
+                    endcap_stave_pla = geom.structure.Placement(name + "_pla", volume=endcap_stave_lv, pos=endcap_stave_pos, rot=endcap_stave_rot)
+                    endcap_lv.placements.append(endcap_stave_pla.name)
+
+            self.add_volume(endcap_lv)
 
     def construct_yoke(self, geom):
         '''Construct the Yoke'''
@@ -655,98 +1060,70 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
         YokeEndcap_min_z = self.get_pv_endcap_length(geom) + ecal_endcap_module_thickness + safety
         YokeEndcap_max_z = YokeEndcap_min_z + yoke_barrel_thickness + safety
 
-        print "Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", yoke_barrel_thickness, " and a length of ", self.magnetHalfLength*2
-        print "Build integrated Muon ID ", self.IntegratedMuID
+        if self.Endcap_Inside == True:
+            YokeEndcap_min_z = self.TPC_halfZ + self.get_ecal_endcap_module_thickness(geom) + self.pvEndCapBulge + safety
+            YokeEndcap_max_z = YokeEndcap_min_z + yoke_barrel_thickness + safety
+
+        print("Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", yoke_barrel_thickness, " and a length of ", YokeEndcap_min_z*2)
+        print("Build integrated Muon ID ", self.IntegratedMuID)
 
         '''Barrel'''
         byoke_name = "YokeBarrel"
-        yoke_barrel_shape = geom.shapes.PolyhedraRegular(byoke_name, numsides=self.nsides, rmin=rmin_barrel, rmax=rmax_endcap, dz=YokeEndcap_min_z)
+        yoke_barrel_shape = geom.shapes.PolyhedraRegular(byoke_name, numsides=self.nsides_yoke, rmin=rmin_barrel, rmax=rmax_endcap, dz=YokeEndcap_min_z)
         yoke_barrel_vol = geom.structure.Volume("vol"+byoke_name, shape=yoke_barrel_shape, material="Air")
 
         #minimum dimension of the stave
-        min_dim_stave = 2 * tan( pi/self.nsides ) * rmin_barrel
+        min_dim_stave = 2 * tan( pi/self.nsides_yoke ) * rmin_barrel
         #maximum dimension of the stave
-        max_dim_stave = 2 * tan( pi/self.nsides ) * rmax_endcap
-        Yoke_Barrel_n_modules = 2
+        max_dim_stave = 2 * tan( pi/self.nsides_yoke ) * rmax_endcap
+        Yoke_Barrel_n_modules = self.nModules_yoke
         Yoke_Barrel_module_dim = YokeEndcap_min_z * 2 / Yoke_Barrel_n_modules
 
         #Position of the stave in the Barrel (local coordinates)
-        dphi = (2*pi/self.nsides)
+        dphi = (2*pi/self.nsides_yoke)
         hphi = dphi/2;
-
+        minus_deg = 0
+        if self.nsides_yoke == 16:
+            minus_deg = 11.25
         sensname = "MuID" + "_vol"
 
         ''' Normal stave '''
-        for istave in range(self.nsides):
-            if istave == 3: #remove the stave in front of the LAr
-                continue
+        for istave in range(self.nsides_yoke):
 
             X = rmin_barrel + yoke_barrel_thickness / 2.
             Y = Q('0mm')
             stave_id = istave+1
-            dstave = int( self.nsides/4.0 )
+            dstave = int( self.nsides_yoke/4.0 )
             phirot =  hphi + pi/2.0
             phirot += (istave - dstave)*dphi
             phirot2 =  (istave - dstave) * dphi + hphi
 
+            placing_angle = phirot2*180/pi+292.5 + minus_deg
+            if placing_angle >= 360:
+                placing_angle = placing_angle - 360
+
             xpos = X*cos(phirot2)-Y*sin(phirot2)
             ypos = X*sin(phirot2)+Y*cos(phirot2)
 
-            #Need correction.... calculate correctly the position...
-            # if istave == 2:
-            #     phirot22 = phirot2 - hphi/2.0
-            #     X += Q("15.5cm")
-            #     xpos = X*cos(phirot22)-Y*sin(phirot22)
-            #     ypos = X*sin(phirot22)+Y*cos(phirot22)
-            # if istave == 4:
-            #     phirot22 = phirot2 + hphi/2.0
-            #     X += Q("15.5cm")
-            #     xpos = X*cos(phirot22)-Y*sin(phirot22)
-            #     ypos = X*sin(phirot22)+Y*cos(phirot22)
+            #remove the stave(s) in front of the LAr
+            #nsides = 8 -> stave 8
+            #nsides = 16 -> stave 4,5,6
+            set_stave = set(self.yoke_stave_to_remove)
+            if stave_id in set_stave:
+                print("Ignoring stave", stave_id)
+                continue
+
+            # if stave_id > 2: continue
+
+            print("Placing stave ", stave_id, " at angle ", placing_angle, " deg")
 
             for imodule in range(Yoke_Barrel_n_modules):
                 module_id = imodule+1
-                print "Placing stave ", stave_id, " and module ", module_id
+                print("Placing stave ", stave_id, " and module ", module_id)
 
                 stave_name = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id)
                 stave_volname = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_vol"
 
-                # if istave == 2 or istave == 4:
-                #     stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/4.0, dx2=max_dim_stave/4.0,
-                #     dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
-                #     dz=self.PRYThickness/2.0)
-                #     stave_lv = geom.structure.Volume(stave_volname, shape=stave_shape, material=self.PRYMaterial)
-                #
-                #     if self.IntegratedMuID == True:
-                #         zPos = Q("0mm")
-                #         layer_id = 1
-                #
-                #         for nlayer, type in zip(self.MuID_nLayers, ['MuIDLayerBuilder']):
-                #             for ilayer in range(nlayer):
-                #
-                #                 layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
-                #
-                #                 print "Adding ", layername
-                #
-                #                 #Configure the layer length based on the zPos in the stave
-                #                 Layer_builder = self.get_builder(type)
-                #                 layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
-                #                 l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides )
-                #                 l_dim_y = Yoke_Barrel_module_dim - safety
-                #
-                #                 NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x/2., l_dim_y, layername, sensname, "Box")
-                #                 NDHPgTPCLayerBuilder.construct(Layer_builder, geom)
-                #                 layer_lv = Layer_builder.get_volume(layername+"_vol")
-                #
-                #                 #Placement layer in stave
-                #                 layer_pos = geom.structure.Position(layername+"_pos", z=zPos + layer_thickness/2.0 - self.PRYThickness/2.0)
-                #                 layer_pla = geom.structure.Placement(layername+"_pla", volume=layer_lv, pos=layer_pos)
-                #
-                #                 stave_lv.placements.append(layer_pla.name)
-                #
-                #                 zPos += layer_thickness+spacing_muID;
-                #                 layer_id += 1
-                # else:
                 stave_shape = geom.shapes.Trapezoid(stave_name, dx1=min_dim_stave/2.0, dx2=max_dim_stave/2.0,
                 dy1=(Yoke_Barrel_module_dim-safety)/2.0, dy2=(Yoke_Barrel_module_dim-safety)/2.0,
                 dz=yoke_barrel_thickness/2.0)
@@ -761,12 +1138,12 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
                             layername = byoke_name + "_stave%02i" % (stave_id) + "_module%02i" % (module_id) + "_layer_%02i" % (layer_id)
 
-                            print "Adding ", layername
+                            print("Adding ", layername)
 
                             #Configure the layer length based on the zPos in the stave
                             Layer_builder = self.get_builder(type)
                             layer_thickness = NDHPgTPCLayerBuilder.depth(Layer_builder)
-                            l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides )
+                            l_dim_x = min_dim_stave + 2 * zPos * tan( pi/self.nsides_yoke )
                             l_dim_y = Yoke_Barrel_module_dim - safety
 
                             NDHPgTPCLayerBuilder.BarrelConfigurationLayer(Layer_builder, l_dim_x, l_dim_y, layername, sensname, "Box")
@@ -784,8 +1161,6 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
                 #Placement staves in Barrel
                 name = stave_lv.name
-                #print "Placing stave at x= ", (X*cos(phirot2)-Y*sin(phirot2))
-                #print "Placing stave at y= ", (X*sin(phirot2)+Y*cos(phirot2))
                 pos = geom.structure.Position(name + "_pos", x=xpos, y=ypos, z=( imodule+0.5 )*Yoke_Barrel_module_dim - YokeEndcap_min_z )
                 rot = geom.structure.Rotation(name + "_rot", x=pi/2.0, y=phirot+pi, z=Q("0deg"))
                 pla = geom.structure.Placement(name + "_pla", volume=stave_lv, pos=pos, rot=rot)
@@ -794,14 +1169,30 @@ class NDHPgTPCDetElementBuilder(gegede.builder.Builder):
 
         self.add_volume(yoke_barrel_vol)
 
-        '''Endcaps'''
-        #Mother volume Endcap
-        yoke_endcap_shape_min = geom.shapes.PolyhedraRegular("YokeEndcap_min", numsides=self.nsides, rmin=self.rInnerTPC, rmax=rmax_endcap, dz=YokeEndcap_min_z)
-        yoke_endcap_shape_max = geom.shapes.PolyhedraRegular("YokeEndcap_max", numsides=self.nsides, rmin=self.rInnerTPC, rmax=rmax_endcap, dz=YokeEndcap_max_z)
+        if self.buildYokeEndcap:
+            '''Endcaps'''
+            #Mother volume Endcap
+            yoke_endcap_shape_min = geom.shapes.PolyhedraRegular("YokeEndcap_min", numsides=self.nsides_yoke, rmin=self.rInnerTPC, rmax=rmax_endcap, dz=YokeEndcap_min_z)
+            yoke_endcap_shape_max = geom.shapes.PolyhedraRegular("YokeEndcap_max", numsides=self.nsides_yoke, rmin=self.rInnerTPC, rmax=rmax_endcap, dz=YokeEndcap_max_z)
 
-        eyoke_name = "YokeEndcap"
-        yoke_endcap_shape = geom.shapes.Boolean( eyoke_name, type='subtraction', first=yoke_endcap_shape_max, second=yoke_endcap_shape_min )
-        yoke_endcap_vol = geom.structure.Volume( "vol"+eyoke_name, shape=yoke_endcap_shape, material=self.PRYMaterial)
+            eyoke_name = "YokeEndcap"
+            yoke_endcap_shape = geom.shapes.Boolean( eyoke_name, type='subtraction', first=yoke_endcap_shape_max, second=yoke_endcap_shape_min )
+            # yoke_endcap_vol = geom.structure.Volume( "vol"+eyoke_name, shape=yoke_endcap_shape, material=self.PRYMaterial)
+            yoke_endcap_vol = geom.structure.Volume( "vol"+eyoke_name, shape=yoke_endcap_shape, material="Air")
 
-        self.add_volume(yoke_endcap_vol)
-       
+            for side in ["L", "R"]:
+                #Create the volume for the endcaps
+                yoke_thickness = YokeEndcap_max_z - YokeEndcap_min_z
+                eyoke_name = eyoke_name + side
+                eyoke_volname = "vol"+ eyoke_name + side
+                yoke_endcap_shape_one = geom.shapes.PolyhedraRegular(eyoke_name, numsides=self.nsides_yoke, rmin=self.rInnerTPC, rmax=rmax_endcap,    dz=yoke_thickness/2.)
+                yoke_endcap_lv = geom.structure.Volume( eyoke_volname, shape=yoke_endcap_shape_one, material=self.PRYMaterial)
+                z_pos = YokeEndcap_max_z - yoke_thickness/2.
+                if side == 'R':
+                    z_pos = -z_pos
+                pos = geom.structure.Position(eyoke_name + side + "_pos", z=z_pos)
+                rot = geom.structure.Rotation(eyoke_name + side + "_rot", z=Q("0deg"))
+                pla = geom.structure.Placement(eyoke_name + side + "_pla", volume=yoke_endcap_lv, pos=pos, rot=rot)
+                yoke_endcap_vol.placements.append(pla.name)
+
+            self.add_volume(yoke_endcap_vol)
