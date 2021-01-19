@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 '''
-NDHPgTPC_Builder: Builds the multi purpose tracker
+NDHPgTPC_SPYv3_Builder: Builds the multi purpose tracker
 '''
 
 import gegede.builder
 from gegede import Quantity as Q
 from math import asin, sqrt
 
-class NDHPgTPC_Builder(gegede.builder.Builder):
+class NDHPgTPC_SPYv3_Builder(gegede.builder.Builder):
     '''
     Build a concept of the ND HPgTPC detector. This class directly
-    sub-builders for the GArTPC, the ECAL, the Pressure Vessel
-    and for the Yoke.
+    sub-builders for the GArTPC, the ECAL and for the Yoke.
 
     Arguments:
     innerBField: the magnetic field inside of the magnet
     buildGarTPC: Flag to build the GArTPC
     buildEcal: Flag to build the Ecal
-    buildPV: Flag to build the Pressure Vessel
     buildYoke: Flag to build the Yoke
 
     '''
@@ -28,9 +26,8 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
                    buildGarTPC=True,
                    buildEcalBarrel=True,
                    buildEcalEndcap=True,
-                   buildPV=True,
                    buildYoke=False,
-                   buildMagnet=False,
+                   buildCryostat=False,
                    space=Q("10cm")
                    )
 
@@ -39,7 +36,7 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
 
         ''' Top level volume (MPD) - It is rotated later in the cavern (x, y, z) -> (z, y, x)'''
 
-        magnet_shape = geom.get_shape("Magnet")
+        magnet_shape = geom.get_shape("Cryostat")
         r = magnet_shape.rmax
         dz = magnet_shape.dz
 
@@ -72,14 +69,6 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             print("Adding TPC to main volume")
             self.build_gartpc(main_lv, geom)
 
-        ######### build the pressure vessel  ###################
-        # Build the Pressure Vessel using the parameters in the cfg file
-        # The PV consists of a cylinder for the Barrel and
-        # the intersection of the cylinder and a sphere for the Endcaps
-        if self.buildPV:
-            print("Adding PV to main volume")
-            self.build_pressure_vessel(main_lv, geom)
-
         ######### build an ecal ##########################
         # Build the Barrel and Endcaps using the ECALBarrelBuilder and
         # ECALEndcapBuilder in the cfg file
@@ -89,9 +78,9 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
         ######### magnet ##################################
         # Build a simple magnet of Al to get the total mass
         # A description of the return magnetic field and the coils is not implemented
-        if self.buildMagnet:
-            print("Adding Magnet to main volume")
-            self.build_magnet(main_lv, geom)
+        if self.buildCryostat:
+            print("Adding Cryostat+Coils to main volume")
+            self.build_cryostat(main_lv, geom)
 
         ######### magnet yoke ##################################
         # Build the yoke Barrel and Endcaps
@@ -177,46 +166,25 @@ class NDHPgTPC_Builder(gegede.builder.Builder):
             # Place it in the main lv
             main_lv.placements.append(iec_pla.name)
 
-    def build_pressure_vessel(self, main_lv, geom):
+    def build_cryostat(self, main_lv, geom):
 
         #Build the PV Barrel
-        pv_builder = self.get_builder('PVBuilder')
-        if pv_builder == None:
+        cryostat_builder = self.get_builder('CryostatBuilder')
+        if cryostat_builder == None:
             return
 
-        pvb_vol = pv_builder.get_volume("volPVBarrel")
-        pvb_vol.params.append(("BField", self.innerBField))
-
-        pvb_pla = geom.structure.Placement("PVBarrel"+"_pla", volume=pvb_vol)
+        cryo_vol = cryostat_builder.get_volume("volCryostat")
+        cryo_pla = geom.structure.Placement("Cryostat"+"_pla", volume=cryo_vol)
         # Place it in the main lv
-        main_lv.placements.append(pvb_pla.name)
+        main_lv.placements.append(cryo_pla.name)
 
-        #Build the PV Endcap
-        pvec_vol = pv_builder.get_volume("volPVEndcap")
-        pvec_vol.params.append(("BField", self.innerBField))
-        xpos = pv_builder.get_pv_endcap_position(geom)
+        rot_z = Q("0.0deg")
+        ecryo_vol = cryostat_builder.get_volume("volCryostatEndcap")
+        ecryo_rot = geom.structure.Rotation(ecryo_vol.name+"_rot", z=rot_z)
+        ecryo_pla = geom.structure.Placement("CryostatEndcap"+"_pla", volume=ecryo_vol, rot=ecryo_rot)
 
-        for side in ["L", "R"]:
-            yrot = "0deg" if side == 'L' else "180deg"
-            if side == 'R':
-                xpos = -xpos
-            # print("xpos = ", xpos)
-            pvec_rot = geom.structure.Rotation("PVEndcap"+side+"_rot", y=yrot)
-            pvec_pos = geom.structure.Position("PVEndcap"+side+"_pos", z=xpos)
-            pvec_pla = geom.structure.Placement("PVEndcap"+side+"_pla", volume=pvec_vol, pos=pvec_pos, rot=pvec_rot)
-            main_lv.placements.append(pvec_pla.name)
-
-    def build_magnet(self, main_lv, geom):
-
-        #Build the PV Barrel
-        magnet_builder = self.get_builder('MagnetBuilder')
-        if magnet_builder == None:
-            return
-
-        magnet_vol = magnet_builder.get_volume("volMagnet")
-        magnet_pla = geom.structure.Placement("Magnet"+"_pla", volume=magnet_vol)
         # Place it in the main lv
-        main_lv.placements.append(magnet_pla.name)
+        main_lv.placements.append(ecryo_pla.name)
 
     def build_yoke(self,main_lv,geom):
 

@@ -50,7 +50,7 @@ class SecondaryBuilder(gegede.builder.Builder):
         self.magOutDim[1] += 2*magThickness
         self.magOutDim[2] += 2*magThickness
         self.magThickness = magThickness
-	self.sttDimension = sttDimension
+        self.sttDimension = sttDimension
 
         self.upMuIDtoMagnet   = upMuIDtoMagnet
         self.downMuIDtoMagnet = downMuIDtoMagnet

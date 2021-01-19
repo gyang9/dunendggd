@@ -70,7 +70,7 @@ class RockBuilder(gegede.builder.Builder):
             Rot = [Q("0deg"),Q("0deg"),Q("0deg")]
             if self.Positions!=None :
                 Pos=self.Positions[i]
-            if self.Positions!=None:
+            if self.Rotations!=None:
                 Rot=self.Rotations[i]
             sb_lv = sb.get_volume()
             sb_pos = geom.structure.Position( sb_lv.name+'_pos', Pos[0], Pos[1], Pos[2] )
