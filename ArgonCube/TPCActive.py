@@ -1,3 +1,13 @@
+import math
+
+### TPC Geometry [mm] - x: drift, y: vertical, z: beam ###
+
+n_mod = [2,1,2]
+n_tpc = [2,1,1]
+
+ModuleDimension = [670.,2022.414,670.]
+
+TPCActiveDimenson = [302.723,1241.1,620.3]
 
 TPCActiveCenter = {
         '00':[-487.949,-218.236,-335.],
@@ -26,4 +36,15 @@ def GetTPCActiveCenter(module_copynumber,halfDetector_copynumber):
 
 def GetTPCActiveID(module_copynumber,halfDetector_copynumber):
     return TPCActiveID[str(module_copynumber)+str(halfDetector_copynumber)]
+
+def GetModuleCopy(pos):
+    mod_x = (math.floor(pos[0]/(ModuleDimension[0]))+n_mod[0]/2)
+    mod_z = (math.floor(pos[2]/(ModuleDimension[2]))+n_mod[2]/2)
+
+    return int(mod_x+mod_z*n_mod[0])
+
+def GetHalfDetCopy(pos):
+    tpc_x = math.floor(pos[0]/(ModuleDimension[0]/2.))+n_mod[0]/2*n_tpc[0]
+
+    return int(tpc_x)%2
 
