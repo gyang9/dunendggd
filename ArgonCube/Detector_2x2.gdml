@@ -31543,12 +31543,12 @@
         <positionref ref="Module_pos_0.0"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="1">
+      <physvol copynumber="2">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_0.1"/>
         <rotationref ref="identity"/>
       </physvol>
-      <physvol copynumber="2">
+      <physvol copynumber="1">
         <volumeref ref="volModule"/>
         <positionref ref="Module_pos_1.0"/>
         <rotationref ref="identity"/>
