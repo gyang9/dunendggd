@@ -3,8 +3,7 @@ dunend.egg-info
 dunendggd.egg-info
 *.gdml
 *.swp
+ArgonCube/*.sh
 ArgonCube/geom-test.root
-!ArgonCube/OptSim.gdml
-!ArgonCube/OptSimPixels.gdml
-!ArgonCube/Module_2x2.gdml
-!ArgonCube/Detector_2x2.gdml
+!ArgonCube/*OptSim*
+!ArgonCube/*2x2*
