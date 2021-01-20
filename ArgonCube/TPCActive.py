@@ -7,7 +7,7 @@ n_tpc = [2,1,1]
 
 ModuleDimension = [670.,2022.414,670.]
 
-TPCActiveDimenson = [302.723,1241.1,620.3]
+TPCActiveDimension = [302.723,1241.1,620.3]
 
 TPCActiveCenter = {
         '00':[-487.949,-218.236,-335.],
@@ -30,6 +30,9 @@ TPCActiveID = {
         '30':6,
         '31':7
         }
+
+# (key/value)-swapped version of TPCActiveID
+TPCActiveCopyNo = {value:key for key, value in TPCActiveID.items()}
 
 def GetTPCActiveCenter(module_copynumber,halfDetector_copynumber):
     return TPCActiveCenter[str(module_copynumber)+str(halfDetector_copynumber)]
