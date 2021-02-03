@@ -517,6 +517,11 @@ def define_materials( g ):
                                 ("carbon", 9),
                                 ("hydrogen", 10)
                             ))
+    y11c = g.matter.Molecule("Y11C", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
 
     # Mirror film (Vikuiti Enhanced Specular Reflector (ESR), 3M Inc)
     # 'http://multimedia.3m.com/mws/media/380802O/vikuititm-esr-msds.pdf?fn=ESR.pdf'
@@ -529,8 +534,14 @@ def define_materials( g ):
                                 ("oxygen", 4)
                             ))
 
-    # Dichroic mirror (for the moment same as Mirror film)
-    # not yet used
+    # Dichroic mirror (using poly methacrylate)
+    # 'https://www.mdpi.com/1424-8220/20/18/5303'
+    psa = g.matter.Molecule("PSA", density="1.18g/cc",
+                            elements = (
+                                ("carbon", 4),
+                                ("hydrogen", 6),
+                                ("oxygen", 2)
+                            ))
 
     # TPB (Tetraphenyl butadiene (1,1,4,4-tetraphenyl-1,3-butadiene))
     # 'https://en.wikipedia.org/wiki/Tetraphenyl_butadiene'
