@@ -16,6 +16,7 @@ class KLOEBuilder(gegede.builder.Builder):
                   BuildGAR=False,
                   Build3DST=False,
                   BuildSTTFULL=False,
+                  BuildSTTLAR=False,
                   Build3DSTwithSTT=False,
                   **kwds):
         del BField
@@ -25,6 +26,7 @@ class KLOEBuilder(gegede.builder.Builder):
         self.BuildGAR      = BuildGAR
         self.Build3DST     = Build3DST
         self.BuildSTTFULL  = BuildSTTFULL
+        self.BuildSTTLAR   = BuildSTTLAR
         self.Build3DSTwithSTT = Build3DSTwithSTT
         # The overall logical volume
         self.LVHalfLength=Q("3.1m")
@@ -117,6 +119,8 @@ class KLOEBuilder(gegede.builder.Builder):
             self.build_tracker(MagIntVol_volume, geom)
         if(self.BuildSTTFULL is True):
             self.build_sttfull(MagIntVol_volume,geom)
+        if(self.BuildSTTLAR is True):
+            self.build_sttLAr(MagIntVol_volume,geom)
         if(self.Build3DST is True):
             self.build_3DST(MagIntVol_volume, geom)
         if(self.Build3DSTwithSTT is True):
@@ -411,6 +415,30 @@ class KLOEBuilder(gegede.builder.Builder):
             if (stt_builder != None):
                 stt_lv = stt_builder.get_volume()
         
+                #BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
+                #print( "Setting STT Bfield to "+str(BField))
+                #stt_lv.params.append(("BField",BField))
+
+                stt_pos_name = self.name + stt_lv.name + '_pos'
+                stt_rot_name = self.name + stt_lv.name + '_rot'
+                stt_pla_name = self.name + stt_lv.name + '_pla'
+
+                stt_pos = geom.structure.Position(stt_pos_name, Q('0m'), Q('0m'), Q('0m'))
+                stt_rot = geom.structure.Rotation(stt_rot_name, Q('0deg'), Q('180deg'), Q('0deg'))
+                stt_pla = geom.structure.Placement(stt_pla_name,volume=stt_lv, pos = stt_pos, rot = stt_rot)
+
+                main_lv.placements.append(stt_pla.name)
+
+    def build_sttLAr(self, main_lv, geom):
+        if (self.builders.has_key("STTLAR") is False):
+            print("STTLAR have not been requested.")
+            print("Therefore we will not build  STTLAR")
+            return
+        else:
+            stt_builder = self.get_builder("STTLAR")
+            if (stt_builder != None):
+                stt_lv = stt_builder.get_volume()
+
                 #BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
                 #print( "Setting STT Bfield to "+str(BField))
                 #stt_lv.params.append(("BField",BField))
