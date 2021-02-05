@@ -95,6 +95,12 @@ def define_materials( g ):
                                 ("argon",    0.00934)
                             ))
 
+    vacuum_cryo   = g.matter.Mixture( "Vacuum_cryo", density = "0.0000000115*g/cc",
+                            components = (
+                                ("nitrogen", 0.781154),
+                                ("oxygen",   0.209476),
+                                ("argon",    0.00934)
+                            ))
 
     bakelite = g.matter.Mixture( "Bakelite", density = "1.25*g/cc",
                             components = (
@@ -122,6 +128,15 @@ def define_materials( g ):
                                 ("Air",  1-fracC3H6),
                                 ("C3H6", fracC3H6)
                             ))
+
+    fracC3H6NewConf = (1.5*0.946)/(1.5*0.946+6*0.001225) # TODO get from spacing in RadiatorBldr cfg
+    dRadNewConf = "0.19018*g/cc"
+    RadBlendNewConf = g.matter.Mixture( "RadiatorBlendNewConf", density = dRadNewConf,
+                            components = (
+                                ("Air",  1-fracC3H6NewConf),
+                                ("C3H6", fracC3H6NewConf)
+                            ))
+
     densCO2 = 44.01/22.4*0.001 # molar mass / STP molar volume * conversion to g/cm3 from L
     densAr  = 39.95/22.4*0.001
     densXe  = 131.3/22.4*0.001
