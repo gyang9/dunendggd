@@ -5014,30 +5014,32 @@
     <rotation name="PixelPlane_rot_2_L" unit="degree" x="180.0" y="0.0" z="0.0"/>
     <position name="PixelPlane_pos_3_L" unit="cm" x="0" y="46.56" z="15.52"/>
     <rotation name="PixelPlane_rot_3_L" unit="degree" x="180.0" y="0.0" z="0.0"/>
-    <position name="WLS_pos" unit="cm" x="0.2198" y="0.0" z="0.00135"/>
-    <position name="TPB_pos" unit="cm" x="0.2198" y="0.0" z="0.50635"/>
-    <position name="SiPM_Mask_pos_0" unit="cm" x="-13.8627" y="-10.495" z="0.00135"/>
+    <position name="WLS_pos" unit="cm" x="0.2325" y="0.0" z="-0.005"/>
+    <position name="DCM_pos_inner" unit="cm" x="0.2325" y="0.0" z="0.5005"/>
+    <position name="DCM_pos_outer" unit="cm" x="0.2325" y="0.0" z="-0.5105"/>
+    <position name="TPB_pos" unit="cm" x="0.2325" y="0.0" z="0.511"/>
+    <position name="SiPM_Mask_pos_0" unit="cm" x="-13.85" y="-10.495" z="-0.005"/>
     <position name="SiPM_Sens_pos_0" unit="cm" x="-13.9999" y="-12.845" z="0"/>
     <position name="SiPM_Sens_pos_1" unit="cm" x="-13.9999" y="-8.145" z="0"/>
-    <position name="SiPM_Mask_pos_1" unit="cm" x="-13.8627" y="0.0" z="0.00135"/>
+    <position name="SiPM_Mask_pos_1" unit="cm" x="-13.85" y="0.0" z="-0.005"/>
     <position name="SiPM_Sens_pos_2" unit="cm" x="-13.9999" y="-2.35" z="0"/>
     <position name="SiPM_Sens_pos_3" unit="cm" x="-13.9999" y="2.35" z="0"/>
-    <position name="SiPM_Mask_pos_2" unit="cm" x="-13.8627" y="10.495" z="0.00135"/>
+    <position name="SiPM_Mask_pos_2" unit="cm" x="-13.85" y="10.495" z="-0.005"/>
     <position name="SiPM_Sens_pos_4" unit="cm" x="-13.9999" y="8.145" z="0"/>
     <position name="SiPM_Sens_pos_5" unit="cm" x="-13.9999" y="12.845" z="0"/>
     <position name="SiPM_pos_0" unit="cm" x="0.009" y="-2.35" z="0"/>
     <position name="SiPM_pos_1" unit="cm" x="0.009" y="2.35" z="0"/>
-    <position name="SiPM_PCB_pos_0" unit="cm" x="-14.0952" y="-10.495" z="0.00135"/>
-    <position name="SiPM_PCB_pos_1" unit="cm" x="-14.0952" y="0.0" z="0.00135"/>
-    <position name="SiPM_PCB_pos_2" unit="cm" x="-14.0952" y="10.495" z="0.00135"/>
+    <position name="SiPM_PCB_pos_0" unit="cm" x="-14.0825" y="-10.495" z="-0.005"/>
+    <position name="SiPM_PCB_pos_1" unit="cm" x="-14.0825" y="0.0" z="-0.005"/>
+    <position name="SiPM_PCB_pos_2" unit="cm" x="-14.0825" y="10.495" z="-0.005"/>
     <position name="ArCLight_pos_0" unit="cm" x="0.49655" y="-46.56" z="0"/>
     <position name="ArCLight_pos_1" unit="cm" x="0.49655" y="-15.52" z="0"/>
     <position name="ArCLight_pos_2" unit="cm" x="0.49655" y="15.52" z="0"/>
     <position name="ArCLight_pos_3" unit="cm" x="0.49655" y="46.56" z="0"/>
-    <position name="PCBBar_pos_0" unit="cm" x="-14.4408" y="-46.56" z="0"/>
-    <position name="PCBBar_pos_1" unit="cm" x="-14.4408" y="-15.52" z="0"/>
-    <position name="PCBBar_pos_2" unit="cm" x="-14.4408" y="15.52" z="0"/>
-    <position name="PCBBar_pos_3" unit="cm" x="-14.4408" y="46.56" z="0"/>
+    <position name="PCBBar_pos_0" unit="cm" x="-14.4281" y="-46.56" z="0"/>
+    <position name="PCBBar_pos_1" unit="cm" x="-14.4281" y="-15.52" z="0"/>
+    <position name="PCBBar_pos_2" unit="cm" x="-14.4281" y="15.52" z="0"/>
+    <position name="PCBBar_pos_3" unit="cm" x="-14.4281" y="46.56" z="0"/>
     <position name="TPCPlane_pos" unit="cm" x="-15.13615" y="0.0" z="0.0"/>
     <position name="TPCActive_pos" unit="cm" x="0.2324" y="0" z="0"/>
     <position name="BackplateGap_pos_0" unit="cm" x="0" y="44.3278" z="30.1498"/>
@@ -5051,11 +5053,11 @@
     <position name="Fieldcage_pos" unit="cm" x="0" y="0" z="0"/>
     <position name="LAr_pos" unit="cm" x="-0.079375" y="0" z="0"/>
     <position name="TPC_pos" unit="cm" x="0.352075" y="0" z="0"/>
-    <position name="OpticalDet_pos_L" unit="cm" x="-0.274725" y="0" z="-31.52635"/>
-    <position name="OpticalDet_pos_R" unit="cm" x="-0.274725" y="0" z="31.52635"/>
+    <position name="OpticalDet_pos_L" unit="cm" x="-0.287425" y="0" z="-31.531"/>
+    <position name="OpticalDet_pos_R" unit="cm" x="-0.287425" y="0" z="31.531"/>
     <rotation name="OpticalDet_rot" unit="degree" x="180.0" y="0.0" z="0.0"/>
-    <position name="Bracket_pos_L" unit="cm" x="15.187225" y="0" z="-31.546"/>
-    <position name="Bracket_pos_R" unit="cm" x="15.187225" y="0" z="31.546"/>
+    <position name="Bracket_pos_L" unit="cm" x="15.187225" y="0" z="-31.54135"/>
+    <position name="Bracket_pos_R" unit="cm" x="15.187225" y="0" z="31.54135"/>
     <position name="HalfDetector_pos_L" unit="cm" x="-15.8" y="0" z="0"/>
     <position name="HalfDetector_pos_R" unit="cm" x="15.8" y="0" z="0"/>
     <rotation name="HalfDetector_rot" unit="degree" x="0.0" y="180.0" z="0.0"/>
@@ -5682,11 +5684,22 @@
       <composite n="9" ref="carbon"/>
       <composite n="10" ref="hydrogen"/>
     </material>
+    <material formula="" name="Y11C">
+      <D value="1.023"/>
+      <composite n="9" ref="carbon"/>
+      <composite n="10" ref="hydrogen"/>
+    </material>
     <material formula="" name="ESR">
       <D value="1.38"/>
       <composite n="10" ref="carbon"/>
       <composite n="8" ref="hydrogen"/>
       <composite n="4" ref="oxygen"/>
+    </material>
+    <material formula="" name="PSA">
+      <D value="1.18"/>
+      <composite n="4" ref="carbon"/>
+      <composite n="6" ref="hydrogen"/>
+      <composite n="2" ref="oxygen"/>
     </material>
     <material formula="" name="TPB">
       <D value="1.079"/>
@@ -5700,15 +5713,16 @@
     <box lunit="cm" name="Pixel_shape" x="0.0051" y="0.4" z="0.4"/>
     <box lunit="cm" name="Asic_shape" x="0.1422" y="1.6" z="1.6"/>
     <box lunit="cm" name="TPCPlane" x="0.4648" y="124.11" z="62.03"/>
-    <box lunit="cm" name="ArCLight" x="28.4904" y="30.94" z="1.0227"/>
+    <box lunit="cm" name="ArCLight" x="28.465" y="30.94" z="1.032"/>
     <box lunit="cm" name="WLS_panel_shape" x="28.0" y="30.0" z="1.0"/>
+    <box lunit="cm" name="DCM_shape" x="28.0" y="30.0" z="0.011"/>
     <box lunit="cm" name="TPB_LAr_shape" x="28.0" y="30.0" z="0.01"/>
     <box lunit="cm" name="SiPM_Mask_shape" x="0.165" y="7.825" z="1.0"/>
     <box lunit="cm" name="SiPM_Sens_shape" x="0.0002" y="0.6" z="0.6"/>
     <box lunit="cm" name="SiPM_shape" x="0.147" y="0.6" z="0.6"/>
     <box lunit="cm" name="SiPM_PCB_shape" x="0.3" y="9.95" z="1.0"/>
-    <box lunit="cm" name="OpticalDet" x="29.4835" y="124.11" z="1.0227"/>
-    <box lunit="cm" name="PCBBar_shape" x="0.3175" y="30.99" z="1.0227"/>
+    <box lunit="cm" name="OpticalDet" x="29.4581" y="124.11" z="1.032"/>
+    <box lunit="cm" name="PCBBar_shape" x="0.3175" y="30.99" z="1.032"/>
     <box lunit="cm" name="TPC" x="30.7371" y="124.11" z="62.03"/>
     <box lunit="cm" name="TPCActive_shape" x="30.2723" y="124.11" z="62.03"/>
     <box lunit="cm" name="Backplate" x="0.3175" y="142.3881" z="64.7446"/>
@@ -5716,7 +5730,7 @@
     <box lunit="cm" name="HalfDetector" x="31.6" y="126.8222" z="64.7497"/>
     <box lunit="cm" name="Fieldcage_shape" x="31.6" y="126.8222" z="64.7497"/>
     <box lunit="cm" name="LAr_shape" x="31.44125" y="126.1872" z="64.1147"/>
-    <box lunit="cm" name="Bracket_shape" x="1.0668" y="126.0856" z="1.0227"/>
+    <box lunit="cm" name="Bracket_shape" x="1.0668" y="126.0856" z="1.032"/>
     <box lunit="cm" name="InnerDetector" x="63.2" y="126.8222" z="64.7497"/>
     <box lunit="cm" name="Pillow" x="65.53" y="13.3401" z="65.53"/>
     <box lunit="cm" name="PillowSide_shape" x="65.53" y="9.8476" z="65.53"/>
@@ -30904,6 +30918,10 @@
         <rotationref ref="identity"/>
       </physvol>
     </volume>
+    <volume name="volDCM">
+      <materialref ref="PSA"/>
+      <solidref ref="DCM_shape"/>
+    </volume>
     <volume name="volTPB_LAr">
       <materialref ref="LAr"/>
       <solidref ref="TPB_LAr_shape"/>
@@ -30936,6 +30954,16 @@
       <physvol copynumber="0">
         <volumeref ref="volWLS"/>
         <positionref ref="WLS_pos"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol copynumber="0">
+        <volumeref ref="volDCM"/>
+        <positionref ref="DCM_pos_inner"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol copynumber="0">
+        <volumeref ref="volDCM"/>
+        <positionref ref="DCM_pos_outer"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol copynumber="0">
