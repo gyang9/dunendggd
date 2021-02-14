@@ -209,7 +209,7 @@ class STTLARBuilder(gegede.builder.Builder):
                                          dz=self.ExternalVesselZ)
 
         Gr_ext_lv = geom.structure.Volume("Gr_ext_lv", 
-                                          material="Graphite", 
+                                          material="Carbon_fiber", 
                                           shape=Gr_ext_shape)
 
         #building the layer of empty (for the moment there is air in there)                                       

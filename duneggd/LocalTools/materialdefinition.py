@@ -204,6 +204,8 @@ def define_materials( g ):
     Iron     = g.matter.Molecule("Iron",     density="7.874*g/cc", elements=(("iron",1),))
     Graphite = g.matter.Molecule("Graphite", density="2.23*g/cc",  elements=(("carbon",1),))
     Calcium  = g.matter.Molecule("Calcium",  density="1.55*g/cc",  elements=(("calcium",1),))
+    
+    Carbon_fiber = g.matter.Molecule("Carbon_fiber", density="1.6*g/cc",  elements=(("carbon",1),))
 
     Steel    = g.matter.Mixture( "Steel", density = "7.9300*g/cc",
                             components = (
