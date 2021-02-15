@@ -253,7 +253,7 @@ class STTLARBuilder(gegede.builder.Builder):
         Lar_bulk_shape = geom.shapes.EllipticalTube("Lar_bulk_shape", 
                                          dx=self.InternalVesselX-self.BoxThickness, 
                                          dy=self.InternalVesselY-self.BoxThickness, 
-                                         dz=self.ExternalVesselZ-2*self.BoxThickness-self.VacuumThickness)
+                                         dz=self.InternalVesselZ-self.BoxThickness - Q("4mm"))
         
         Lar_bulk_lv = geom.structure.Volume("Lar_bulk_lv", 
                                             material="LAr", 
