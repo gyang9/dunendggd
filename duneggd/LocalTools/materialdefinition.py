@@ -498,6 +498,10 @@ def define_materials( g ):
                                 components=(
                                     ('HP_Ar',0.890),
                                     ('CO2',0.110)))
+        
+    hp_arco2 = g.matter.Mixture("HP_CO2",
+                                density='0.01896125*g/cc',
+                                components=(('CO2',1.0),))
 
     # P10
     hp_arch4 = g.matter.Mixture('HP_ArCH4',
