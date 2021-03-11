@@ -42,6 +42,7 @@ def define_materials( g ):
     br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
 #    sb = g.matter.Element("antimony",   "Sb", 51, "121.76*g/mole" )
     xe = g.matter.Element("xenon",      "Xe", 54, "131.293*g/mole")
+    au = g.matter.Element("gold",       "Au", 79, "196.9666*g/mole")
     pb = g.matter.Element("lead",       "Pb", 82, "207.20*g/mole" )
 
     # Molecules for Rock and fibrous_glass Mixtures
@@ -513,3 +514,80 @@ def define_materials( g ):
 
     nogas =  g.matter.Mixture('NoGas',
                               density='1.0E-25*g/cc',components=(('argon',1.0),) )
+
+
+# ArCLight (https://arxiv.org/pdf/1711.11409.pdf)
+
+    # Vacuum Pillow (same as air with 1E8 times less density)
+    vacuum = g.matter.Mixture("Vac", density = "1E-8*0.001225*g/cc",
+                            components = (
+                                ("nitrogen", 0.781154),
+                                ("oxygen",   0.209476),
+                                ("argon",    0.00934)
+                            ))
+
+    # G10 structure (same as FR4)
+    g10 = g.matter.Mixture("G10", density="1.850*g/cc",
+                            components = (
+                                    ("Epoxy",0.206),
+                                    ("Glass",0.794)
+                            ))
+
+    # Pixelboard pads
+    gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
+
+    # Pixelboard ASICs
+    silicon = g.matter.Molecule("Silicon",    density="2.33*g/cc",  elements=(("silicon",1),))
+
+    # Scintillator (PVT, polyvinyl toluene)
+    # 'https://eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286'
+    ej280wls = g.matter.Molecule("EJ280WLS", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
+    y11 = g.matter.Molecule("Y11", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
+    y11c = g.matter.Molecule("Y11C", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
+
+    # Mirror film (Vikuiti Enhanced Specular Reflector (ESR), 3M Inc)
+    # 'http://multimedia.3m.com/mws/media/380802O/vikuititm-esr-msds.pdf?fn=ESR.pdf'
+    # Mylar (Polyethylenterephthalat) ???
+    # 'https://de.wikipedia.org/wiki/Polyethylenterephthalat'
+    esr = g.matter.Molecule("ESR", density="1.38g/cc",
+                            elements = (
+                                ("carbon", 10),
+                                ("hydrogen", 8),
+                                ("oxygen", 4)
+                            ))
+
+    # Dichroic mirror (using poly methacrylate)
+    # 'https://www.mdpi.com/1424-8220/20/18/5303'
+    psa = g.matter.Molecule("PSA", density="1.18g/cc",
+                            elements = (
+                                ("carbon", 4),
+                                ("hydrogen", 6),
+                                ("oxygen", 2)
+                            ))
+
+    # TPB (Tetraphenyl butadiene (1,1,4,4-tetraphenyl-1,3-butadiene))
+    # 'https://en.wikipedia.org/wiki/Tetraphenyl_butadiene'
+    tpb = g.matter.Molecule("TPB", density="1.079g/cc",
+                            elements = (
+                                ("carbon", 28),
+                                ("hydrogen", 22)
+                            ))
+
+    # SiPM (Hamamatsu S13360-6025PE)
+    # 'https://www.hamamatsu.com/eu/en/product/type/S13360-6050VE/index.html'
+    # Using Silicon
+
+    # SiPM plastic spacer
+    # Using PVT
