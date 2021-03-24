@@ -96,7 +96,11 @@ class HalfDetectorBuilder(gegede.builder.Builder):
         Fieldcage_lv.placements.append(LAr_pla.name)
 
         # Build TPC
-        pos = [self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']-self.Cathode_dx/2,Q('0cm'),Q('0cm')]
+        pos = [
+            self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']-self.Cathode_dx/2,
+            Q('0cm'),
+            Q('0cm')
+        ]
 
         TPC_lv = self.TPC_builder.get_volume()
 
@@ -109,41 +113,11 @@ class HalfDetectorBuilder(gegede.builder.Builder):
 
         LAr_lv.placements.append(TPC_pla.name)
 
-        # Build OpticalDet L
-        pos = [self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']*2-self.Cathode_dx/2+self.OpticalDet_builder.halfDimension['dx'],Q('0cm'),-self.TPC_builder.halfDimension['dz']-self.OpticalDet_builder.halfDimension['dz']]
-
+        # Build OpticalDets and Brackets
         OpticalDet_lv = self.OpticalDet_builder.get_volume()
+        OpticalDet_rot_R = geom.structure.Rotation(self.OpticalDet_builder.name+'_rot',
+                                                 Q('180.0deg'),Q('0.0deg'),Q('0.0deg'))
 
-        OpticalDet_pos = geom.structure.Position(self.OpticalDet_builder.name+'_pos_L',
-                                                pos[0],pos[1],pos[2])
-
-        OpticalDet_pla = geom.structure.Placement(self.OpticalDet_builder.name+'_pla_L',
-                                                volume=OpticalDet_lv,
-                                                pos=OpticalDet_pos)
-
-        LAr_lv.placements.append(OpticalDet_pla.name)
-
-        # Build OpticalDet R
-        pos = [self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']*2-self.Cathode_dx/2+self.OpticalDet_builder.halfDimension['dx'],Q('0cm'),+self.TPC_builder.halfDimension['dz']+self.OpticalDet_builder.halfDimension['dz']]
-
-        OpticalDet_lv = self.OpticalDet_builder.get_volume()
-
-        OpticalDet_pos = geom.structure.Position(self.OpticalDet_builder.name+'_pos_R',
-                                                pos[0],pos[1],pos[2])
-
-        rot = [Q('180.0deg'),Q('0.0deg'),Q('0.0deg')]
-
-        OpticalDet_rot = geom.structure.Rotation(self.OpticalDet_builder.name+'_rot',
-                                                rot[0],rot[1],rot[2])
-
-        OpticalDet_pla = geom.structure.Placement(self.OpticalDet_builder.name+'_pla_R',
-                                                volume=OpticalDet_lv,
-                                                pos=OpticalDet_pos,
-                                                rot=OpticalDet_rot)
-
-        LAr_lv.placements.append(OpticalDet_pla.name)
-
-        # Construct Bracket Volume
         Bracket_shape = geom.shapes.Box('Bracket_shape',
                                         dx = self.Bracket_dx,
                                         dy = self.Bracket_dy,
@@ -153,27 +127,39 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                         material=self.Bracket_Material,
                                         shape=Bracket_shape)
 
-        # Place Bracket Volume L inside Fieldcage volume
-        pos = [self.Fieldcage_dx-self.Cathode_dx/2-self.Bracket_dx,Q('0cm'),-self.Fieldcage_dz+self.Fieldcage_dd*2+self.OpticalDet_builder.halfDimension['dz']]
+        for side, sign in (('L', -1), ('R', 1)):
+            # OpticalDet
+            pos = [
+                self.Fieldcage_dx-self.TPC_builder.halfDimension['dx']*2-self.Cathode_dx/2+self.OpticalDet_builder.halfDimension['dx'],
+                Q('0cm'),
+                sign*(self.TPC_builder.halfDimension['dz']+self.OpticalDet_builder.halfDimension['dz'])
+            ]
 
-        Bracket_pos = geom.structure.Position('Bracket_pos_L',
-                                                pos[0],pos[1],pos[2])
+            OpticalDet_pos = geom.structure.Position(self.OpticalDet_builder.name+'_pos_'+side,
+                                                    pos[0],pos[1],pos[2])
 
-        Bracket_pla = geom.structure.Placement('Bracket_pla_L',
-                                                volume=Bracket_lv,
-                                                pos=Bracket_pos)
+            OpticalDet_rot = OpticalDet_rot_R if side == 'R' else None
 
-        LAr_lv.placements.append(Bracket_pla.name)
+            OpticalDet_pla = geom.structure.Placement(self.OpticalDet_builder.name+'_pla_'+side,
+                                                    volume=OpticalDet_lv,
+                                                    pos=OpticalDet_pos,
+                                                    rot=OpticalDet_rot)
 
-        # Place Bracket Volume R inside Fieldcage volume
-        pos = [self.Fieldcage_dx-self.Cathode_dx/2-self.Bracket_dx,Q('0cm'),self.Fieldcage_dz-self.Fieldcage_dd*2-self.OpticalDet_builder.halfDimension['dz']]
+            LAr_lv.placements.append(OpticalDet_pla.name)
 
-        Bracket_pos = geom.structure.Position('Bracket_pos_R',
-                                                pos[0],pos[1],pos[2])
+            # Bracket
+            pos = [
+                self.Fieldcage_dx-self.Cathode_dx/2-self.Bracket_dx,
+                Q('0cm'),
+                sign*(self.Fieldcage_dz-self.Fieldcage_dd*2-self.OpticalDet_builder.halfDimension['dz'])
+            ]
 
-        Bracket_pla = geom.structure.Placement('Bracket_pla_R',
-                                                volume=Bracket_lv,
-                                                pos=Bracket_pos)
+            Bracket_pos = geom.structure.Position('Bracket_pos_'+side,
+                                                    pos[0],pos[1],pos[2])
 
-        LAr_lv.placements.append(Bracket_pla.name)
+            Bracket_pla = geom.structure.Placement('Bracket_pla_'+side,
+                                                    volume=Bracket_lv,
+                                                    pos=Bracket_pos)
+
+            LAr_lv.placements.append(Bracket_pla.name)
 

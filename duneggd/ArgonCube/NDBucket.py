@@ -1,21 +1,19 @@
-""" NDBucket.py
+"""NDBucket.py
 
 Original Author: A. Mastbaum, Rutgers
 
+Not really a bucket, but adds G10 structure surrounding the InnerDetector in
+the ND-LAr configuration.
 """
 
 import gegede.builder
 from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
-
 class NDBucketBuilder(gegede.builder.Builder):
-    """ Class to build NDBucket geometry.
-
-    """
+    """ Class to build NDBucket geometry."""
 
     def configure(self,Bucket_dimension,Backplate_dx,Backplate_OffsetX,Backplate_ExtraY,**kwargs):
-
         # Read dimensions form config file
         self.Bucket_dx = Bucket_dimension['dx']
         self.Bucket_dy = Bucket_dimension['dy']
@@ -23,7 +21,7 @@ class NDBucketBuilder(gegede.builder.Builder):
 
         self.Backplate_dx       = Backplate_dx
         self.Backplate_OffsetX  = Backplate_OffsetX
-        self.Backplate_ExtraY  = Backplate_ExtraY
+        self.Backplate_ExtraY   = Backplate_ExtraY
 
         # Material definitons
         self.G10_Material           = 'G10'
@@ -35,11 +33,13 @@ class NDBucketBuilder(gegede.builder.Builder):
         self.HalfDetector_builder   = self.get_builder('HalfDetector')
 
     def construct(self,geom):
-        """ Construct the geometry."""
+        """Construct the geometry."""
 
-        self.halfDimension  = { 'dx': self.Bucket_dx,
-                                'dy': self.Bucket_dy,
-                                'dz': self.Bucket_dz}
+        self.halfDimension  = {
+            'dx': self.Bucket_dx,
+            'dy': self.Bucket_dy,
+            'dz': self.Bucket_dz
+        }
 
         main_lv, main_hDim = ltools.main_lv(self,geom,'Box')
         print('NDBucketBuilder::construct()')
@@ -93,33 +93,24 @@ class NDBucketBuilder(gegede.builder.Builder):
 
         Backplate_y = -self.Bucket_dy + (self.InnerDetector_builder.halfDimension['dy'] + self.Backplate_ExtraY)
 
-        # Build Backplate L
-        pos = [-self.Bucket_dx+2*self.Backplate_OffsetX-self.Backplate_dx,Backplate_y,Q('0cm')]
+        for i, (side, sign) in enumerate((('L', -1), ('R', 1))):
+            pos = [
+                sign*(self.Bucket_dx-2*self.Backplate_OffsetX+self.Backplate_dx),
+                Backplate_y,
+                Q('0cm')
+            ]
+        
+            Backplate_pos = geom.structure.Position('Backplate_pos_'+side,
+                                                    pos[0],pos[1],pos[2])
 
-        Backplate_pos = geom.structure.Position('Backplate_pos_L',
-                                                pos[0],pos[1],pos[2])
+            Backplate_pla = geom.structure.Placement('Backplate_pla_'+side,
+                                                    volume=Backplate_lv,
+                                                    pos=Backplate_pos,
+                                                    copynumber=i)
 
-        Backplate_pla = geom.structure.Placement('Backplate_pla_L',
-                                                volume=Backplate_lv,
-                                                pos=Backplate_pos,
-                                                copynumber=0)
+            ArgonColumn_lv.placements.append(Backplate_pla.name)
 
-        ArgonColumn_lv.placements.append(Backplate_pla.name)
-
-        # Build Backplate R
-        pos = [self.Bucket_dx-2*self.Backplate_OffsetX+self.Backplate_dx,Backplate_y,Q('0cm')]
-
-        Backplate_pos = geom.structure.Position('Backplate_pos_R',
-                                                pos[0],pos[1],pos[2])
-
-        Backplate_pla = geom.structure.Placement('Backplate_pla_R',
-                                                volume=Backplate_lv,
-                                                pos=Backplate_pos,
-                                                copynumber=1)
-
-        ArgonColumn_lv.placements.append(Backplate_pla.name)
-
-        # Fieldcage top
+        # Extra G10 extending in y above the InnerDetector top
         FieldcageTop_shape = geom.shapes.Box('FieldcageTop_shape',
                                        dx=self.InnerDetector_builder.halfDimension['dx'],
                                        dy=self.Backplate_ExtraY,
@@ -129,36 +120,26 @@ class NDBucketBuilder(gegede.builder.Builder):
                                         material=self.G10_Material,
                                         shape=FieldcageTop_shape)
 
-        # Extra fieldcage extending in y beyond the InnerDetector top
         FieldcageTop_y = -self.Bucket_dy + (2*self.InnerDetector_builder.halfDimension['dy'] + self.Backplate_ExtraY)
 
-        # Build FC top US
-        pos = [Q('0cm'), FieldcageTop_y, -self.HalfDetector_builder.Fieldcage_dz+self.HalfDetector_builder.Fieldcage_dd]
+        for i, (side, sign) in enumerate((('US', -1),('DS', 1))):
+            pos = [
+                Q('0cm'),
+                FieldcageTop_y,
+                sign*(self.HalfDetector_builder.Fieldcage_dz-self.HalfDetector_builder.Fieldcage_dd)
+            ]
 
-        FieldcageTop_pos = geom.structure.Position('FieldcageTop_pos_US',
-                                                   pos[0],pos[1],pos[2])
+            FieldcageTop_pos = geom.structure.Position('FieldcageTop_pos_'+side,
+                                                       pos[0],pos[1],pos[2])
 
-        FieldcageTop_pla = geom.structure.Placement('FieldcageTop_pla_US',
-                                                    volume=FieldcageTop_lv,
-                                                    pos=FieldcageTop_pos,
-                                                    copynumber=0)
+            FieldcageTop_pla = geom.structure.Placement('FieldcageTop_pla_'+side,
+                                                        volume=FieldcageTop_lv,
+                                                        pos=FieldcageTop_pos,
+                                                        copynumber=i)
 
-        ArgonColumn_lv.placements.append(FieldcageTop_pla.name)
+            ArgonColumn_lv.placements.append(FieldcageTop_pla.name)
 
-        # Build FC top DS
-        pos = [Q('0cm'), FieldcageTop_y, self.HalfDetector_builder.Fieldcage_dz-self.HalfDetector_builder.Fieldcage_dd]
-
-        FieldcageTop_pos = geom.structure.Position('FieldcageTop_pos_DS',
-                                                   pos[0],pos[1],pos[2])
-
-        FieldcageTop_pla = geom.structure.Placement('FieldcageTop_pla_DS',
-                                                    volume=FieldcageTop_lv,
-                                                    pos=FieldcageTop_pos,
-                                                    copynumber=1)
-
-        ArgonColumn_lv.placements.append(FieldcageTop_pla.name)
-
-        # Fieldcage gap
+        # G10 gap fillers connecting backplate to fieldcage
         FieldcageGap = (self.Bucket_dx - self.InnerDetector_builder.halfDimension['dx']) / 2 - self.Backplate_dx * 3/2
 
         FieldcageGap_shape = geom.shapes.Box('FieldcageGap_shape',
