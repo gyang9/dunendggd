@@ -42,7 +42,6 @@ def define_materials( g ):
     br = g.matter.Element("bromine",    "Br", 35, "79.904*g/mole" )
 #    sb = g.matter.Element("antimony",   "Sb", 51, "121.76*g/mole" )
     xe = g.matter.Element("xenon",      "Xe", 54, "131.293*g/mole")
-    au = g.matter.Element("gold",       "Au", 79, "196.9666*g/mole")
     pb = g.matter.Element("lead",       "Pb", 82, "207.20*g/mole" )
 
     # Molecules for Rock and fibrous_glass Mixtures
@@ -532,9 +531,6 @@ def define_materials( g ):
                                     ("Epoxy",0.206),
                                     ("Glass",0.794)
                             ))
-
-    # Pixelboard pads
-    gold = g.matter.Molecule("Gold",    density="19.32*g/cc",  elements=(("gold",1),))
 
     # Pixelboard ASICs
     silicon = g.matter.Molecule("Silicon",    density="2.33*g/cc",  elements=(("silicon",1),))
