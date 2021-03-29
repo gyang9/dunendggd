@@ -93,11 +93,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
 	   duneggd/Config/ND_CryoStruct.cfg \
 	   duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
-	   duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
-	   duneggd/Config/ArgonCube/ArgonCubeModuleNoActive.cfg \
-	   duneggd/Config/ArgonCube/BottomStructure.cfg \
-	   duneggd/Config/ArgonCube/FrontStructure.cfg \
-	   duneggd/Config/ArgonCube/SideStructure.cfg \
+	   duneggd/Config/ArgonCube/ArgonCubeDetectorNoActive.cfg \
 	   -w World -o nd_hall_lar_antifid.gdml
 fi
 
