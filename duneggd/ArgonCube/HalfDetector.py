@@ -161,5 +161,5 @@ class HalfDetectorBuilder(gegede.builder.Builder):
                                                     volume=Bracket_lv,
                                                     pos=Bracket_pos)
 
-            LAr_lv.placements.append(Bracket_pla.name)
+            #LAr_lv.placements.append(Bracket_pla.name)
 
