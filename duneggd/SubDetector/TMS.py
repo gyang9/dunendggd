@@ -71,8 +71,8 @@ class rmmsBuilder(gegede.builder.Builder):
         #thickBox2_lv.params.append(('BField',self.BFieldDownLow))
             
 
-        thin_layer_lv = geom.structure.Volume( 'thinlayervol', material='air', shape=thin_layer )
-        thick_layer_lv = geom.structure.Volume( 'thicklayervol', material='air', shape=thick_layer )
+        thin_layer_lv = geom.structure.Volume( 'thinlayervol', material='Air', shape=thin_layer )
+        thick_layer_lv = geom.structure.Volume( 'thicklayervol', material='Air', shape=thick_layer )
         rmms_lv = geom.structure.Volume( 'vol'+self.name, material=self.mat, shape=rmmsbox )
             
         #Poition steel in layer volumes (Thin)
@@ -165,7 +165,7 @@ class rmmsBuilder(gegede.builder.Builder):
                                      dx = 0.5*Q("0.03542m")*48, # 0.04*42
                                      dy = 0.5*Q("3.096m"),
                                      dz = 0.5*Q("0.01m"))
-        ModuleBox_lv = geom.structure.Volume( 'ModuleBoxvol', material='air', shape=ModuleBox )
+        ModuleBox_lv = geom.structure.Volume( 'ModuleBoxvol', material='Air', shape=ModuleBox )
                                                                                                                                            
         sci_bars = 48
         sci_Bar_pos = [geom.structure.Position('e')]*sci_bars
@@ -190,7 +190,7 @@ class rmmsBuilder(gegede.builder.Builder):
                                       dy = 0.5*Q("5.022m"),
                                       dz = 0.5*Q("0.040m"))        
 
-        Module_layer_lv = geom.structure.Volume( 'modulelayervol', material='air', shape=Module_layer )
+        Module_layer_lv = geom.structure.Volume( 'modulelayervol', material='Air', shape=Module_layer )
 
          #Poition modules in layer volumes                                                                                                                         
          
