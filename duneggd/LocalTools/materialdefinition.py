@@ -201,9 +201,9 @@ def define_materials( g ):
     # TMS steel
     SteelTMS    = g.matter.Mixture( "SteelTMS", density = "7.8500*g/cc",
                             components = (
-                                ("iron",     0.99),
+                                ("iron",     0.9951),
                                 ("silicon", 0.0045),
-                                ("carbon",   0.0040)
+                                ("carbon",   0.0004)
                             ))
 
 
