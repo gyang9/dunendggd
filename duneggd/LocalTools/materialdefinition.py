@@ -198,6 +198,15 @@ def define_materials( g ):
                                 ("carbon",   0.0010)
                             ))
 
+    # TMS steel
+    SteelTMS    = g.matter.Mixture( "SteelTMS", density = "7.8500*g/cc",
+                            components = (
+                                ("iron",     0.99),
+                                ("silicon", 0.0045),
+                                ("carbon",   0.0040)
+                            ))
+
+
     Polycarbonate = g.matter.Molecule("polycarbonate", density="1.2*g/cc",
                             elements=(
                                 ("carbon",16),
