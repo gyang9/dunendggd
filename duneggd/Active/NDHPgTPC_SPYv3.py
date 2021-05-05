@@ -138,6 +138,8 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
                     yokePhiCutout = Q("90deg"),
                     rInnerTPC = Q("2780.2mm"),
                     TPC_halfZ = Q('2600mm'),
+                    ECALTPCSpace = Q('50cm'),
+                    ECALCryostatSpace = Q('15cm'),
                     nLayers_Barrel = [8, 72],
                     nLayers_Endcap = [6, 54],
                     CryostatInnerR = Q("3362.5mm"),
@@ -208,7 +210,7 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
 
     def get_pv_endcap_length(self, geom):
         safety = Q("0.1mm")
-        length = self.TPC_halfZ + self.get_ecal_endcap_module_thickness(geom) + safety
+        length = self.TPC_halfZ + self.ECALTPCSpace + self.get_ecal_endcap_module_thickness(geom) + safety
 
         return length
 
@@ -345,8 +347,8 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
         #inner radius ecal (TPC + pv + safety)
         rInnerEcal = self.rInnerTPC
         print("Ecal inner radius ", rInnerEcal)
-        #barrel length (TPC + PV)
-        Barrel_halfZ = self.get_pv_endcap_length(geom)
+        #barrel length (Up to the cryostat minus 15 cm)
+        Barrel_halfZ = self.CryostatHalfLength - self.ECALCryostatSpace
         
         #outer radius ecal (inner radius ecal + ecal module)
         rOuterEcal = rInnerEcal + ecal_barrel_module_thickness
@@ -492,13 +494,12 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
         safety = Q("0.1mm")
         ecal_endcap_module_thickness = self.get_ecal_endcap_module_thickness(geom)
         rInnerEcal = self.rInnerTPC - safety
-        Barrel_halfZ = self.TPC_halfZ + safety
+        Barrel_halfZ = self.CryostatHalfLength - self.ECALCryostatSpace
 
         EcalEndcap_inner_radius = Q("0mm")
         EcalEndcap_outer_radius = rInnerEcal
-        Ecal_Barrel_halfZ = Barrel_halfZ
-        EcalEndcap_min_z = Ecal_Barrel_halfZ
-        EcalEndcap_max_z = Ecal_Barrel_halfZ + ecal_endcap_module_thickness
+        EcalEndcap_min_z = Barrel_halfZ - ecal_endcap_module_thickness
+        EcalEndcap_max_z = EcalEndcap_min_z + ecal_endcap_module_thickness
         Ecal_Barrel_n_modules = self.nModules
 
         rmin = EcalEndcap_inner_radius
