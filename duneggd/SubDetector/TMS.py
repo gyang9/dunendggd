@@ -73,7 +73,7 @@ class rmmsBuilder(gegede.builder.Builder):
 
         thin_layer_lv = geom.structure.Volume( 'thinlayervol', material='Air', shape=thin_layer )
         thick_layer_lv = geom.structure.Volume( 'thicklayervol', material='Air', shape=thick_layer )
-        rmms_lv = geom.structure.Volume( 'vol'+self.name, material=self.mat, shape=rmmsbox )
+        rmms_lv = geom.structure.Volume( 'vol'+self.name, material='Air', shape=rmmsbox )
             
         #Poition steel in layer volumes (Thin)
             
