@@ -145,7 +145,9 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
                     CryostatInnerR = Q("3362.5mm"),
                     CryostatOuterR = Q("3756mm"),
                     CryostatHalfLength = Q("3894mm"),
-                    CryostatThickness = Q("45mm"),
+                    CryostatThicknessInner = Q("25mm"),
+                    CryostatThicknessOuter = Q("12mm"),
+                    CryostatThicknessEndcap = Q("45mm"),
                     CryostatMaterial = "Steel",
                     CoilsPos = [Q("-1900mm"), Q("-993.55mm"), Q("993.55mm"), Q("1900mm")],
                     CoilWidth = Q("1500mm"),
@@ -253,7 +255,7 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
         ''' construct the Cryostat hosting the coils '''
         safety = Q("1mm")
 
-        print("Construct Cryostat, Inner Radius: ", self.CryostatInnerR, " Outer Radius: ", self.CryostatOuterR, " Thickness ", self.CryostatThickness, " Length ", self.CryostatHalfLength*2)
+        print("Construct Cryostat, Inner Radius: ", self.CryostatInnerR, " Outer Radius: ", self.CryostatOuterR, " Thickness Inner ", self.CryostatThicknessInner, " Length ", self.CryostatHalfLength*2)
 
         ''' Fake shape filled with Air to contain the coils '''
         cryostat_name = self.output_name
@@ -275,14 +277,14 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
 
         ''' Barrel '''
         cryostat_name_inner_barrel = self.output_name+"InnerBarrelWall"
-        cryostat_shape_inner_barrel = geom.shapes.Tubs(cryostat_name_inner_barrel, rmin=self.CryostatInnerR, rmax=self.CryostatInnerR+self.CryostatThickness, dz=self.CryostatHalfLength, sphi="0deg", dphi="360deg")
+        cryostat_shape_inner_barrel = geom.shapes.Tubs(cryostat_name_inner_barrel, rmin=self.CryostatInnerR, rmax=self.CryostatInnerR+self.CryostatThicknessInner, dz=self.CryostatHalfLength, sphi="0deg", dphi="360deg")
         cryostat_inner_barrel_vol = geom.structure.Volume("vol"+cryostat_name_inner_barrel, shape=cryostat_shape_inner_barrel, material=self.CryostatMaterial)
         coil_inner_barrel_pos = geom.structure.Position(cryostat_name_inner_barrel+"_pos", z=Q("0mm"))
         coil_inner_barrel_pla = geom.structure.Placement(cryostat_name_inner_barrel+"_pla", volume=cryostat_inner_barrel_vol, pos=coil_inner_barrel_pos)
         cryostat_vol.placements.append(coil_inner_barrel_pla.name)
 
         cryostat_name_outer_barrel = self.output_name+"OuterBarrelWall"
-        cryostat_shape_outer_barrel = geom.shapes.Tubs(cryostat_name_outer_barrel, rmin=self.CryostatOuterR-self.CryostatThickness, rmax=self.CryostatOuterR, dz=self.CryostatHalfLength, sphi="0deg", dphi="360deg")
+        cryostat_shape_outer_barrel = geom.shapes.Tubs(cryostat_name_outer_barrel, rmin=self.CryostatOuterR-self.CryostatThicknessOuter, rmax=self.CryostatOuterR, dz=self.CryostatHalfLength, sphi="0deg", dphi="360deg")
         cryostat_outer_barrel_vol = geom.structure.Volume("vol"+cryostat_name_outer_barrel, shape=cryostat_shape_outer_barrel, material=self.CryostatMaterial)
         coil_outer_barrel_pos = geom.structure.Position(cryostat_name_outer_barrel+"_pos", z=Q("0mm"))
         coil_outer_barrel_pla = geom.structure.Placement(cryostat_name_outer_barrel+"_pla", volume=cryostat_outer_barrel_vol, pos=coil_outer_barrel_pos)
@@ -293,7 +295,7 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
         '''Endcaps'''
         #Mother volume Endcap
         CryostatEndcap_min_z = self.CryostatHalfLength
-        CryostatEndcap_max_z = self.CryostatHalfLength + self.CryostatThickness
+        CryostatEndcap_max_z = self.CryostatHalfLength + self.CryostatThicknessEndcap
         cryostat_endcap_shape_min = geom.shapes.Tubs("CryostatEndcap_min", rmin=Q("0cm"), rmax=self.CryostatOuterR, dz=CryostatEndcap_min_z, sphi="0deg", dphi="360deg")
         cryostat_endcap_shape_max = geom.shapes.Tubs("CryostatEndcap_max", rmin=Q("0cm"), rmax=self.CryostatOuterR, dz=CryostatEndcap_max_z, sphi="0deg", dphi="360deg")
 
@@ -305,9 +307,9 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
             #Create the volume for the endcaps
             ecryostat_name = ecryostat_name + side
             ecryostat_volname = "vol"+ ecryostat_name
-            cryostat_endcap_shape_one = geom.shapes.Tubs(ecryostat_name, rmin=Q("0cm"), rmax=self.CryostatOuterR, dz=self.CryostatThickness/2., sphi="0deg", dphi="360deg")
+            cryostat_endcap_shape_one = geom.shapes.Tubs(ecryostat_name, rmin=Q("0cm"), rmax=self.CryostatOuterR, dz=self.CryostatThicknessEndcap/2., sphi="0deg", dphi="360deg")
             cryostat_endcap_lv = geom.structure.Volume( ecryostat_volname, shape=cryostat_endcap_shape_one, material=self.CryostatMaterial)
-            z_pos = CryostatEndcap_max_z - self.CryostatThickness/2.
+            z_pos = CryostatEndcap_max_z - self.CryostatThicknessEndcap/2.
             if side == 'R':
                 z_pos = -z_pos
             pos = geom.structure.Position(ecryostat_name + side + "_pos", z=z_pos)
@@ -602,7 +604,7 @@ class NDHPgTPC_SPYv3_DetElementBuilder(gegede.builder.Builder):
         rmax_endcap = rmin_barrel + yoke_barrel_thickness + safety
         ecal_endcap_module_thickness = self.get_ecal_endcap_module_thickness(geom)
         # YokeEndcap_min_z = self.get_pv_endcap_length(geom) + ecal_endcap_module_thickness + safety
-        YokeEndcap_min_z = self.CryostatHalfLength + self.CryostatThickness + safety
+        YokeEndcap_min_z = self.CryostatHalfLength + self.CryostatThicknessEndcap + safety
         YokeEndcap_max_z = YokeEndcap_min_z + self.yokeThicknessEndcap + safety
 
         print("Construct PRY made of ", self.PRYMaterial, " with a radius of ", rmin_barrel, " a thickness of ", yoke_barrel_thickness, " and a length of ", YokeEndcap_min_z*2)
