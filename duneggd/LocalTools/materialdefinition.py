@@ -198,6 +198,15 @@ def define_materials( g ):
                                 ("carbon",   0.0010)
                             ))
 
+    # TMS steel
+    SteelTMS    = g.matter.Mixture( "SteelTMS", density = "7.8500*g/cc",
+                            components = (
+                                ("iron",     0.9951),
+                                ("silicon", 0.0045),
+                                ("carbon",   0.0004)
+                            ))
+
+
     Polycarbonate = g.matter.Molecule("polycarbonate", density="1.2*g/cc",
                             elements=(
                                 ("carbon",16),
@@ -216,6 +225,17 @@ def define_materials( g ):
 
     # for the straws -- density??
     fib_glass = g.matter.Mixture( "fibrous_glass", density = "1.0*g/cc",
+                            components = (
+                                ("SiO2",   0.600),
+                                ("CaO",    0.224),
+                                ("Al2O3",  0.118),
+                                ("MgO",    0.034),
+                                ("TiO2",   0.013),
+                                ("Na2O",   0.010),
+                                ("Fe2O3",  0.001)
+                            ))
+
+    fiber_glass = g.matter.Mixture( "Fiberglass", density = "0.7*g/cc",
                             components = (
                                 ("SiO2",   0.600),
                                 ("CaO",    0.224),
@@ -298,6 +318,17 @@ def define_materials( g ):
                                 ("sulfur",0.00050)
                             ))
 
+    lightCarbonSteel = g.matter.Mixture("LowDensityCarbonSteel", density="0.754*g/cc",
+                            components = (
+                                ("carbon",0.0030),
+                                ("copper",0.0025),
+                                ("iron",0.98),
+                                ("manganese",0.0103),
+                                ("phosphorus",0.00090),
+                                ("silicon",0.00280),
+                                ("sulfur",0.00050)
+                            ))
+
     # http://iti.northwestern.edu/cement/monograph/Monograph3_6.html
     # density based on Table 8 DUNE-doc-6652-v5, jp
     reifConcrete = g.matter.Mixture("ReifConcrete", density="2.5*g/cc",
@@ -314,6 +345,14 @@ def define_materials( g ):
     # LBNE 35 ton - Low Pressure Vessel Engineering Note Rev. 2 - Appendix O - 11/21/12
     # Foam grade C 65kg/m^3, jp
     polyurethane = g.matter.Molecule("Polyurethane", density="0.065*g/cc",
+                            elements=(
+                                ("carbon",27),
+                                ("hydrogen",36),
+                                ("nitrogen",2),
+                                ("oxygen",10)
+                            ))
+
+    polyurethanefoam = g.matter.Molecule("PolyurethaneFoam", density="0.090*g/cc",
                             elements=(
                                 ("carbon",27),
                                 ("hydrogen",36),
@@ -486,6 +525,9 @@ def define_materials( g ):
                            density='0.000625*g/cc',
                            elements=(('nitrogen',1),))
 
+    n2gas = g.matter.Molecule('NitrogenGas',
+                           density='0.0012*g/cc',
+                           elements=(('nitrogen',1),))
 
     # All at 10 atm
     # Mixes are 9 atm Ar, 1 atm quencher
@@ -517,3 +559,77 @@ def define_materials( g ):
 
     nogas =  g.matter.Mixture('NoGas',
                               density='1.0E-25*g/cc',components=(('argon',1.0),) )
+
+
+# ArCLight (https://arxiv.org/pdf/1711.11409.pdf)
+
+    # Vacuum Pillow (same as air with 1E8 times less density)
+    vacuum = g.matter.Mixture("Vac", density = "1E-8*0.001225*g/cc",
+                            components = (
+                                ("nitrogen", 0.781154),
+                                ("oxygen",   0.209476),
+                                ("argon",    0.00934)
+                            ))
+
+    # G10 structure (same as FR4)
+    g10 = g.matter.Mixture("G10", density="1.850*g/cc",
+                            components = (
+                                    ("Epoxy",0.206),
+                                    ("Glass",0.794)
+                            ))
+
+    # Pixelboard ASICs
+    silicon = g.matter.Molecule("Silicon",    density="2.33*g/cc",  elements=(("silicon",1),))
+
+    # Scintillator (PVT, polyvinyl toluene)
+    # 'https://eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286'
+    ej280wls = g.matter.Molecule("EJ280WLS", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
+    y11 = g.matter.Molecule("Y11", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
+    y11c = g.matter.Molecule("Y11C", density="1.023g/cc",
+                            elements = (
+                                ("carbon", 9),
+                                ("hydrogen", 10)
+                            ))
+
+    # Mirror film (Vikuiti Enhanced Specular Reflector (ESR), 3M Inc)
+    # 'http://multimedia.3m.com/mws/media/380802O/vikuititm-esr-msds.pdf?fn=ESR.pdf'
+    # Mylar (Polyethylenterephthalat) ???
+    # 'https://de.wikipedia.org/wiki/Polyethylenterephthalat'
+    esr = g.matter.Molecule("ESR", density="1.38g/cc",
+                            elements = (
+                                ("carbon", 10),
+                                ("hydrogen", 8),
+                                ("oxygen", 4)
+                            ))
+
+    # Dichroic mirror (using poly methacrylate)
+    # 'https://www.mdpi.com/1424-8220/20/18/5303'
+    psa = g.matter.Molecule("PSA", density="1.18g/cc",
+                            elements = (
+                                ("carbon", 4),
+                                ("hydrogen", 6),
+                                ("oxygen", 2)
+                            ))
+
+    # TPB (Tetraphenyl butadiene (1,1,4,4-tetraphenyl-1,3-butadiene))
+    # 'https://en.wikipedia.org/wiki/Tetraphenyl_butadiene'
+    tpb = g.matter.Molecule("TPB", density="1.079g/cc",
+                            elements = (
+                                ("carbon", 28),
+                                ("hydrogen", 22)
+                            ))
+
+    # SiPM (Hamamatsu S13360-6025PE)
+    # 'https://www.hamamatsu.com/eu/en/product/type/S13360-6050VE/index.html'
+    # Using Silicon
+
+    # SiPM plastic spacer
+    # Using PVT
