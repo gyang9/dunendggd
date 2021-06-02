@@ -35,7 +35,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
            duneggd/Config/KLOE_with_3DST_STT.cfg \
            duneggd/Config/KLOEEMCALO.cfg \
-           duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+           duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
            duneggd/Config/ND_CraneRailStruct1.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
@@ -69,7 +69,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
@@ -87,7 +87,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
@@ -106,7 +106,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
@@ -123,7 +123,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID_noTPC.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3_noTPC.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
@@ -143,7 +143,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
@@ -162,7 +162,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
            duneggd/Config/KLOE_STTFULL.cfg \
            duneggd/Config/KLOEEMCALO.cfg \
-           duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+		   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
            duneggd/Config/ND_CraneRailStruct1.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
@@ -181,7 +181,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_No_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
@@ -200,7 +200,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
@@ -219,7 +219,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
 	   duneggd/Config/ND_ElevatorStruct.cfg \
 	   duneggd/Config/KLOE_with_3DST.cfg \
 	   duneggd/Config/KLOEEMCALO.cfg \
-	   duneggd/Config/MPD_Concept_SPY_v2_IntegratedMuID_noTPC.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3_noTPC.cfg \
 	   duneggd/Config/ND_CraneRailStruct1.cfg \
 	   duneggd/Config/ND_CraneRailStruct2.cfg \
 	   duneggd/Config/ND_HallwayStruct.cfg \
