@@ -51,7 +51,7 @@ class rmmsBuilder(gegede.builder.Builder):
         rmmsbox = geom.shapes.Box( 'rmmsbox',
                                    dx = 0.5*Q("7.036m"),
                                    dy = 0.5*Q("8.825m"),
-                                   dz = 0.5*Q("7m"))
+                                   dz = 0.5*Q("7.1m"))
         
         
         thinBox1_lv = geom.structure.Volume( 'thinvol'+self.name, material=self.mat, shape=thinBox1 )
@@ -274,7 +274,7 @@ class rmmsBuilder(gegede.builder.Builder):
 
 
         #Place Layers into RMS vol between thick layers                                                                                 
-        Module_layers_thick = 59
+        Module_layers_thick = 60
         thickModlayer_pos = [geom.structure.Position('i')]*Module_layers_thick
 
         thick_Modlayer_pla = [geom.structure.Placement('j',volume=Module_layer_lv,pos=thickModlayer_pos[1])]*Module_layers_thick
