@@ -8,6 +8,68 @@ then
   option="all"
 fi
 
+####################################################################### start of miniProduction area
+
+# full hall with detectors for mini-production version 1. 
+#There are three versions : 
+#  1. LAr + GAr     + SAND, 
+#  2. LAr + GArLite + SAND, 
+#  3. LAr + TMS     + SAND
+
+if [ $option = "all" -o $option = "miniproduction1_gar" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/ND_ElevatorStruct.cfg \
+           duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
+           duneggd/Config/ND_CraneRailStruct1.cfg \
+           duneggd/Config/ND_CraneRailStruct2.cfg \
+           duneggd/Config/ND_HallwayStruct.cfg \
+           duneggd/Config/ND_CryoStruct.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3_noTPC.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
+	   duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
+	   duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
+           -w World -o nd_hall_with_lar_gar_sand.gdml
+fi
+
+if [ $option = "all" -o $option = "miniproduction1_garlite" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/ND_ElevatorStruct.cfg \
+           duneggd/Config/KLOE_with_3DST.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
+           duneggd/Config/ND_CraneRailStruct1.cfg \
+           duneggd/Config/ND_CraneRailStruct2.cfg \
+           duneggd/Config/ND_HallwayStruct.cfg \
+           duneggd/Config/ND_CryoStruct.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
+           duneggd/Config/ND-GAr-Lite/MPD_Temporary_SPY_v3_IntegratedMuID.cfg \
+           -w World -o nd_hall_with_lar_garlite_sand.gdml
+fi
+if [ $option = "all" -o $option = "miniproduction1_tms" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume_LAr_TMS.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/ND_ElevatorStruct.cfg \
+           duneggd/Config/ND_CraneRailStruct1.cfg \
+           duneggd/Config/ND_CraneRailStruct2.cfg \
+           duneggd/Config/ND_HallwayStruct.cfg \
+           duneggd/Config/ND_CryoStruct.cfg \
+	   duneggd/Config/TMS.cfg \
+	   duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
+	   duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
+	   -w World -o nd_hall_with_lar_tms_sand.gdml
+fi
+
+#################################################################### end of miniProduction area
+
 # build the full hall
 if [ $option = "all" -o $option = "full" ];
 then
@@ -162,7 +224,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
            duneggd/Config/KLOE_STTFULL.cfg \
            duneggd/Config/KLOEEMCALO.cfg \
-		   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
+	   duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
            duneggd/Config/ND_CraneRailStruct1.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
