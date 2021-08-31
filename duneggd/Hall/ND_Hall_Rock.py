@@ -58,11 +58,12 @@ class RockBuilder(gegede.builder.Builder):
                 self.rockTubPos[1],
                 self.rockTubPos[2])
 
-        rockBoxTemp1 = geom.shapes.Boolean( 'rockBoxTemp1', type='union', first=rockBoxMain, second=rockBoxUpstream, pos=rockBoxUpstreamPosition)
-        rockBoxTemp2 = geom.shapes.Boolean( 'rockBoxTemp2', type='subtraction', first=rockBoxTemp1, second=rockBoxSubt, pos=rockBoxSubtPosition)
+        #rockBoxTemp1 = geom.shapes.Boolean( 'rockBoxTemp1', type='union', first=rockBoxMain, second=rockBoxUpstream, pos=rockBoxUpstreamPosition)
+        #rockBoxTemp2 = geom.shapes.Boolean( 'rockBoxTemp2', type='subtraction', first=rockBoxTemp1, second=rockBoxSubt, pos=rockBoxSubtPosition)
+        rockBoxTemp2 = geom.shapes.Boolean( 'rockBoxTemp2', type='subtraction', first=rockBoxMain, second=rockBoxSubt, pos=rockBoxSubtPosition)
         rockBox = geom.shapes.Boolean( 'rockBox', type='union', first=rockBoxTemp2, second=rockTub, rot='r90aboutX', pos=rockTubPosition)
 
-        rockBox_lv = geom.structure.Volume( 'rockBox_lv', material=self.mat, shape=rockBox)
+        rockBox_lv = geom.structure.Volume( 'rockBox_lv', material=self.mat, shape=rockBoxMain)
         self.add_volume( rockBox_lv )
 
         for i,sb in enumerate(self.get_builders()):
