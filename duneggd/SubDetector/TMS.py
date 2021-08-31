@@ -121,7 +121,7 @@ class tmsBuilder(gegede.builder.Builder):
             zpos = -Q("3.4645m") + plane * Q("0.055m")                                                        
             thinlayer_pos[plane] = geom.structure.Position( 'thinlayerposition'+str(plane),
                                                            x = xpos_planes,
-                                                           y = xpos_planes,
+                                                           y = ypos_planes,
                                                            z = zpos)
             thin_layer_pla[plane] = geom.structure.Placement( 'thinlayerpla'+self.name+str(plane), volume=thin_layer_lv, pos=thinlayer_pos[plane] )
             tms_lv.placements.append(thin_layer_pla[plane].name)
