@@ -319,7 +319,7 @@ class KLOEBuilder(gegede.builder.Builder):
     def build_ecal(self, main_lv, geom):
         
         if (self.builders.has_key("KLOEEMCALO") is False):
-            print "KLOEEMCALO builder not found"
+            print("KLOEEMCALO builder not found")
             return            
 
         emcalo_builder=self.get_builder("KLOEEMCALO")
@@ -375,7 +375,7 @@ class KLOEBuilder(gegede.builder.Builder):
 
     def build_3DSTwithSTT(self,main_lv, geom):
         if self.builders.has_key("3DST_STT")==False:
-            print "3DST_STT doesnot exist, return"
+            print("3DST_STT doesnot exist, return")
             return
         threeDSTwithSTT_builder=self.get_builder("3DST_STT")
         threeDSTwithSTT_lv=threeDSTwithSTT_builder.get_volume()
@@ -390,8 +390,8 @@ class KLOEBuilder(gegede.builder.Builder):
         # also building the STT or GArTPC
         # 3DST works differently
         if self.builders.has_key("KLOEGAR")==False and self.builders.has_key("KLOESTT")==False :
-            print "KLOEGAR and KLOESTT have not been requested."
-            print "Therefore we will not build the tracking region."
+            print("KLOEGAR and KLOESTT have not been requested.")
+            print("Therefore we will not build the tracking region.")
             return 
 
         
@@ -419,10 +419,10 @@ class KLOEBuilder(gegede.builder.Builder):
         
         # now build the STT inside
         if self.builders.has_key("KLOESTT"):
-            print "we have a KLOESTT builder key"
+            print("we have a KLOESTT builder key")
             stt_builder=self.get_builder("KLOESTT")
-            print "self.BuildSTT==",self.BuildSTT
-            print "stt_builder: ",stt_builder
+            print("self.BuildSTT=={}".format(self.BuildSTT))
+            print("stt_builder: {}".format(stt_builder))
             if (stt_builder!=None):
                 rot = [Q("0deg"),Q("90deg"),Q("0deg")]
                 loc = [Q('0m'),Q('0m'),Q('0m')]
@@ -438,10 +438,10 @@ class KLOEBuilder(gegede.builder.Builder):
         
         # or, build the GArTPC
         if self.builders.has_key("KLOEGAR"):
-            print "we have a KLOEGAR builder key"
+            print("we have a KLOEGAR builder key")
             gar_builder=self.get_builder("KLOEGAR")
-            print "self.BuildGAR==",self.BuildGAR
-            print "gar_builder: ",gar_builder
+            print("self.BuildGAR=={}".format(self.BuildGAR))
+            print("gar_builder: {}".format(gar_builder))
             if (gar_builder!=None) and (self.BuildGAR==True):
                 rot = [Q("0deg"),Q("0deg"),Q("0deg")]
                 loc = [Q('0m'),Q('0m'),Q('0m')]
