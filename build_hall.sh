@@ -248,6 +248,7 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ArgonCube/FrontStructure.cfg \
            duneggd/Config/ArgonCube/SideStructure.cfg \
            -w World -o STTSAND_oct2021_sym.gdml
+fi
 
 # KLOE anti-fiducial
 if [ $option = "all" -o $option = "kloe_antifid" ];
