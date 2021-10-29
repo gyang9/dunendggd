@@ -98,7 +98,6 @@ class STTFULLBuilder(gegede.builder.Builder):
         pos_vv_in_ST=geom.structure.Position("pos_vv_in_ST", self.planeXXThickness/2.0 , "0cm","0cm")
         
         pos_straw2relative= geom.structure.Position("pos_straw2relative", self.strawRadius*self.sqrt3, self.strawRadius, Q('0m'))
-        rot_mod_relative2polygon=geom.structure.Rotation("rot_mod_relative2polygon", Q('0deg'), Q('0deg'), Q('-7.5deg'))
         #        pos_moveDownEachMod=geom.structure.Position("pos_moveDownEachMod", Q('0m'), -self.halfUpModGap,Q('0m'))
         
         self.batchFoilPositions=[]
@@ -143,7 +142,7 @@ class STTFULLBuilder(gegede.builder.Builder):
 
         ############################## the main tube    #######################################
         #        main_lv, main_hDim = ltools.main_lv( self, geom, "Tubs")
-        stt_shape=geom.shapes.PolyhedraRegular("shape_stt",numsides=24, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx)
+        stt_shape=geom.shapes.PolyhedraRegular("shape_stt",numsides=24, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx, sphi=Q('7.5deg'))
         main_lv = geom.structure.Volume('STTtracker',   material=self.Material, shape=stt_shape)
         print( "KLOESTTFULL::construct()")
         print( "  main_lv = "+ main_lv.name)
@@ -200,7 +199,7 @@ class STTFULLBuilder(gegede.builder.Builder):
             return self.kloeTrkRegRadius
         projectedDis=d
         HalfHeight=self.kloeTrkRegRadius
-        for i in range(1,nside/4):
+        for i in range(1,int(nside/4)):
             projectedDisPre=projectedDis
             projectedDis+=2*d*math.cos(i*theta)
             if dis2c<projectedDis:
@@ -228,11 +227,9 @@ class STTFULLBuilder(gegede.builder.Builder):
         mod_lv = construct_mod(geom, name, Material, halfDimension)
             
         #            module_pos=geom.structure.Position("pos_"+name,loc[0],loc[1],loc[2])
-
-        axisz = (0, 0, 1)
-        loc2 = ltools.rotation(axisz, 7.5, loc)
-        module_pos=geom.structure.Position("pos_"+name, loc2[0],loc2[1], loc2[2])
-        module_pla=geom.structure.Placement("pla_"+name,volume=mod_lv,pos=module_pos, rot="rot_mod_relative2polygon")
+        
+        module_pos=geom.structure.Position("pos_"+name, loc[0],loc[1], loc[2])
+        module_pla=geom.structure.Placement("pla_"+name,volume=mod_lv,pos=module_pos)
         main_lv.placements.append(module_pla.name)
         
     def construct_2sym_modules(self, main_lv, geom, name, Material, mod_type, left2c):
@@ -249,16 +246,13 @@ class STTFULLBuilder(gegede.builder.Builder):
         construct_mod = self.modBuilder[mod_type]
         mod_lv = construct_mod(geom, name, Material, halfDimension)
 
-        axisz = (0, 0, 1)
-        loc2 = ltools.rotation(axisz, 7.5, loc)
-        module_posUp=geom.structure.Position("posUp_"+name, loc2[0],loc2[1],loc2[2])
+        module_posUp=geom.structure.Position("posUp_"+name, loc[0],loc[1],loc[2])
 
         locDown=[-loc[0],loc[1],loc[2]]
-        locDown2 = ltools.rotation(axisz, 7.5, locDown)
-        module_posDown=geom.structure.Position("posDown_"+name, locDown2[0],locDown2[1] ,locDown2[2])
+        module_posDown=geom.structure.Position("posDown_"+name, locDown[0],locDown[1] ,locDown[2])
 
-        module_plaUp=geom.structure.Placement("plaUp_"+name,volume=mod_lv,pos=module_posUp, rot="rot_mod_relative2polygon")
-        module_plaDown=geom.structure.Placement("plaDown_"+name,volume=mod_lv,pos=module_posDown, rot="rot_mod_relative2polygon")
+        module_plaUp=geom.structure.Placement("plaUp_"+name,volume=mod_lv,pos=module_posUp)
+        module_plaDown=geom.structure.Placement("plaDown_"+name,volume=mod_lv,pos=module_posDown)
         main_lv.placements.append(module_plaUp.name)
         main_lv.placements.append(module_plaDown.name)
 
@@ -273,12 +267,10 @@ class STTFULLBuilder(gegede.builder.Builder):
         ArBox_pos = geom.structure.Position("pos_ArTube2Box", loc[0],loc[1], loc[2])
         #### for intersection, it rotate first, then move to the posive along rotated coordinates
         #### for placement, it move to the position first, then rotate 
-        rot_liqAr_relative2polygon=geom.structure.Rotation("rot_liqAr_relative2polygon", Q('0deg'), Q('0deg'), Q('7.5deg'))
         liqAr_shape  = geom.shapes.Boolean("liqAr_shape", type='intersection',
                                            first=main_shape_forLar,
                                            second=liqArBox_shape,
-                                           pos=ArBox_pos,
-                                           rot=rot_liqAr_relative2polygon)
+                                           pos=ArBox_pos)
         liqAr_lv=geom.structure.Volume('liqAr',material="LAr", shape=liqAr_shape)
         liqAr_pla=geom.structure.Placement("pla_liqAr",volume=liqAr_lv)
         main_lv.placements.append(liqAr_pla.name)
