@@ -79,9 +79,9 @@ class KLOEBuilder(gegede.builder.Builder):
         self.build_solenoid(main_lv, geom)
 
 	# Magnetized internal volume
-	MagIntVolRmax=Q("2.43m")
-	MagIntVolRmin=Q("2.0m")
-	MagIntVolHLmin=Q("1.96m")
+        MagIntVolRmax=Q("2.43m")
+        MagIntVolRmin=Q("2.0m")
+        MagIntVolHLmin=Q("1.96m")
         MagIntVolHLmax=Q("2.15m")
 
         vol1_shape = geom.shapes.Tubs("MagIntVol_vol1_shape", rmin=MagIntVolRmin, rmax=MagIntVolRmax, dz=MagIntVolHLmax)
@@ -109,7 +109,7 @@ class KLOEBuilder(gegede.builder.Builder):
         MagIntVol_pos=geom.structure.Position("MagIntVol_pos", pos[0],pos[1], pos[2])
         MagIntVol_pla=geom.structure.Placement("MagIntVol_pla", volume=MagIntVol_volume, pos=MagIntVol_pos)
         
-	main_lv.placements.append(MagIntVol_pla.name)
+        main_lv.placements.append(MagIntVol_pla.name)
 
 	# EM Calorimeter
         self.build_ecal(MagIntVol_volume,geom)
@@ -356,7 +356,7 @@ class KLOEBuilder(gegede.builder.Builder):
         
     def build_ecal(self, main_lv, geom):
         
-        if (self.builders.has_key("KLOEEMCALO") is False):
+        if "KLOEEMCALO" not in self.builders:
             print("KLOEEMCALO builder not found")
             return            
 
@@ -380,7 +380,7 @@ class KLOEBuilder(gegede.builder.Builder):
         main_lv.placements.append(emcalo_placement.name)
         
     def build_3DST(self, main_lv, geom):
-        if (self.builders.has_key("3DST") is False):
+        if "3DST" not in self.builders:
             print("3DST have not been requested.")
             print("Therefore we will not build 3DST.")
             return
@@ -406,7 +406,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 main_lv.placements.append(sb_pla.name)
 
     def build_sttfull(self, main_lv, geom):
-        if (self.builders.has_key("STTFULL") is False):
+        if "STTFULL" not in self.builders:
             print("STTFULL have not been requested.")
             print("Therefore we will not build  STTFULL")
             return
@@ -430,7 +430,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 main_lv.placements.append(stt_pla.name)
 
     def build_sttLAr(self, main_lv, geom):
-        if (self.builders.has_key("STTLAR") is False):
+        if "STTLAR" not in self.builders:
             print("STTLAR have not been requested.")
             print("Therefore we will not build  STTLAR")
             return
@@ -454,7 +454,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 main_lv.placements.append(stt_pla.name)
 
     def build_3DSTwithSTT(self,main_lv, geom):
-        if self.builders.has_key("3DST_STT")==False:
+        if "3DST_STT" not in self.builders:
             print("3DST_STT doesnot exist, return")
             return
         threeDSTwithSTT_builder=self.get_builder("3DST_STT")
@@ -474,7 +474,7 @@ class KLOEBuilder(gegede.builder.Builder):
         # only build the tracker if we are
         # also building the STT or GArTPC
         # 3DST works differently
-        if self.builders.has_key("KLOEGAR")==False and self.builders.has_key("KLOESTT")==False :
+        if ("KLOEGAR" not in self.builders) and ("KLOESTT" not in self.builders):
             print("KLOEGAR and KLOESTT have not been requested.")
             print("Therefore we will not build the tracking region.")
             return 
@@ -503,7 +503,7 @@ class KLOEBuilder(gegede.builder.Builder):
         
         
         # now build the STT inside
-        if self.builders.has_key("KLOESTT"):
+        if "KLOESTT" not in self.builders:
             print("we have a KLOESTT builder key")
             stt_builder=self.get_builder("KLOESTT")
             print("self.BuildSTT=={}".format(self.BuildSTT))
@@ -522,7 +522,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 lv.placements.append(stt_pla.name)
         
         # or, build the GArTPC
-        if self.builders.has_key("KLOEGAR"):
+        if "KLOEGAR" not in self.builders:
             print("we have a KLOEGAR builder key")
             gar_builder=self.get_builder("KLOEGAR")
             print("self.BuildGAR=={}".format(self.BuildGAR))
