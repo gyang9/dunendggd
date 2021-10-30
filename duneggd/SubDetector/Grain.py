@@ -3,7 +3,9 @@ from duneggd.LocalTools import localtools as ltools
 from gegede import Quantity as Q
 
 class GrainBuilder(gegede.builder.Builder):
-    def configure( self, **kwds):
+    def configure( self, configuration=None, **kwds):
+
+        self.configuration       = configuration
 
         # LAr target
         self.HoneycombThickness  = Q("50mm")
@@ -23,7 +25,7 @@ class GrainBuilder(gegede.builder.Builder):
         self.MinDistExtVesTrMod  = Q("50mm") #margin between LAr target and upstream traking module
         self.InterVesselHalfGap  = Q('30mm')
 
-    def construct(self,geom):
+    #def construct(self,geom):
         # whole_shape=geom.shapes.PolyhedraRegular("whole_shape_for_grain",numsides=self.nBarrelModules, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx, sphi=self.rotAngle)
         # upstream_shape=geom.shapes.Box("upstream_shape_for_grain", dx=0.5*self.liqArThickness, dy=self.kloeVesselRadius, dz=self.kloeVesselHalfDx )
         # upstream_shape_pos = geom.structure.Position("upstream_shape_pos_for_grain", 0.5*self.liqArThickness, Q('0m'), Q('0m'))
@@ -36,7 +38,13 @@ class GrainBuilder(gegede.builder.Builder):
 
         # main_lv = geom.structure.Volume('Grain_envelope',   material=self.Material, shape=grain_shape)
         #self.construct_GRAIN(geom, main_lv)
-        main_lv = self.construct_GRAIN(geom)
+    def construct(self, geom):
+        if self.configuration == "option_1":
+            main_lv = self.construct_GRAIN_option1(geom)
+        elif self.configuration == "option_2":
+            main_lv = self.construct_GRAIN_option2(geom)
+
+        #main_lv = self.construct_GRAIN(geom)
         print('building the LAr target')
         self.add_volume( main_lv )
 
@@ -46,7 +54,7 @@ class GrainBuilder(gegede.builder.Builder):
     
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     #def construct_GRAIN(self, geom, main_lv):
-    def construct_GRAIN(self, geom):
+    def construct_GRAIN_option2(self, geom):
     
         # build the external vessel envelop
         
@@ -211,3 +219,6 @@ class GrainBuilder(gegede.builder.Builder):
         
     
 ##############################################################        END GRAIN         ###################################################################
+
+    def construct_GRAIN_option1(self, geom):
+        return self.construct_GRAIN_option2(geom)
