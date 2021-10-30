@@ -32,7 +32,7 @@ class SandInnerVolumeBuilder(gegede.builder.Builder):
                 'stt_position', Q('0m'), Q('0m'), Q('0m'))
 
         stt_rotation = geom.structure.Rotation(
-                'stt_rotation', Q('0deg'), Q('0deg'), Q('0deg'))
+                'stt_rotation', Q('0deg'), Q('180deg'), Q('0deg'))
 
         stt_placement = geom.structure.Placement('stt_place',
                                                   volume=stt_lv,

@@ -168,12 +168,12 @@ class STTFULLBuilder(gegede.builder.Builder):
         #        main_lv, main_hDim = ltools.main_lv( self, geom, "Tubs")
         whole_shape=geom.shapes.PolyhedraRegular("whole_shape_for_stt",numsides=self.nBarrelModules, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx, sphi=self.rotAngle)
         upstream_shape=geom.shapes.Box("upstream_shape_for_stt", dx=0.5*self.liqArThickness, dy=self.kloeVesselRadius, dz=self.kloeVesselHalfDx )
-        upstream_shape_pos = geom.structure.Position("upstream_shape_pos_for_stt", self.kloeVesselRadius-0.5*self.liqArThickness, Q('0m'), Q('0m'))
+        upstream_shape_pos = geom.structure.Position("upstream_shape_pos_for_stt", -self.kloeVesselRadius+0.5*self.liqArThickness, Q('0m'), Q('0m'))
         stt_shape = geom.shapes.Boolean("stt_shape",
                                          type='subtraction',
                                          first=whole_shape,
                                          second=upstream_shape,
-                                         rot='r180aboutY',
+                                         rot='noRotate',
                                          pos=upstream_shape_pos)
 
         main_lv = geom.structure.Volume('STTtracker_envelope',   material=self.Material, shape=stt_shape)
