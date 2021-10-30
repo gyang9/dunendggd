@@ -44,21 +44,19 @@ class STTFULLBuilder(gegede.builder.Builder):
         self.TrModThickness      = self.planeXXThickness * 3 + self.TrModLatGap * 2 #=37.33 mm complete thickness
         
         # LAr target
-        self.ExtBoxThickness     = Q("50mm")
-        self.IntBoxThickness     = Q("12mm")
+        self.HoneycombThickness  = Q("50mm")
+        self.GraphiteThickness   = Q("6mm") #two layers of 6 mm for a total of 12
+        self.AluminumThickness   = Q("12mm")
         self.EndcapThickness     = Q("16mm")
         
-        self.ExternalVesselX     = Q("365mm") + self.ExtBoxThickness #minor semiaxis of external vessel
-        self.ExternalVesselY     = Q("900mm") + self.ExtBoxThickness #major semiaxis of external vessel
+        self.ExternalVesselX     = Q("365mm") + self.HoneycombThickness + self.GraphiteThickness*2 #minor semiaxis of external vessel
+        self.ExternalVesselY     = Q("900mm") + self.HoneycombThickness + self.GraphiteThickness*2 #major semiaxis of external vessel
         self.ExternalVesselZ     = Q("950mm") + self.EndcapThickness #half lenght of external vessel
         
-        self.VesselRelativeZPos  = Q("50mm") #no longer useful with 1 LAr target
-        
-        self.InternalVesselX     = Q("237.5mm") + self.IntBoxThickness #minor semiaxis of internal vessel
-        self.InternalVesselY     = Q("728mm") + self.IntBoxThickness #major semiaxis of internal vessel
+        self.InternalVesselX     = Q("237.5mm") + self.AluminumThickness #minor semiaxis of internal vessel
+        self.InternalVesselY     = Q("728mm") + self.AluminumThickness #major semiaxis of internal vessel
         self.InternalVesselZ     = Q("650mm") + self.EndcapThickness #half lenght of internal vessel
         
-        #self.VacuumThickness     = Q("50mm") #thickness of empty between the two vessels
         self.UpstreamVesselGap   = Q("30mm") #margin between kloe vessel and the LAr target
         self.MinDistExtVesTrMod  = Q("50mm") #margin between LAr target and upstream traking module
         self.InterVesselHalfGap  = Q('30mm')
@@ -79,19 +77,15 @@ class STTFULLBuilder(gegede.builder.Builder):
         print( "  main_lv = "+ main_lv.name)
         self.add_volume( main_lv )
        
-#------ Building LAr target in the upstram part of kloe ad distance self.UpstreamVesselGap from the barrels
+#------ Building GRAIN in the upstram part of kloe ad distance self.UpstreamVesselGap from the barrels
 
-        self.construct_LAr_Target(geom, main_lv)
+        
+        self.construct_GRAIN(geom, main_lv)
         
         print('building the LAr target')
 
        
-#------ Building LAr target Endcaps 
-
-        self.construct_Endcap_ExtVessel(geom, main_lv)
-        
-        print('building the LAr target endcaps')
-        
+###################################################################   STT   #####################################################################################
 
 ##------ Counting number of modules to be built
 #
@@ -186,7 +180,6 @@ class STTFULLBuilder(gegede.builder.Builder):
 #
 #        print('Xpos: ' + str(Xpos)) 
 #        
-##---------------------------------------------------------------------------------------------------------------------------------------
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct_STT(self, geom, name, X, module_type, volume): 
@@ -210,133 +203,180 @@ class STTFULLBuilder(gegede.builder.Builder):
         volume.placements.append(module_pla.name)
 
         return X + thickness
-
-    # construct Endcaps of the external vessel
-    def construct_Endcap_ExtVessel(self,geom,main_lv):
-    
-        EndCap_ExtVessel_shape = geom.shapes.EllipticalTube("EndCap_ExtVessel_shape", 
-                                         dx=self.ExternalVesselX, 
-                                         dy=self.ExternalVesselY, 
-                                         dz=self.EndcapThickness/2)
-                                         
-        EndCap1_ExtVessel_lv = geom.structure.Volume("EndCap1_ExtVessel_lv", 
-                                          material="Steel", 
-                                          shape=EndCap_ExtVessel_shape)
-                                          
-        EndCap1_ExtVessel_pos = geom.structure.Position("EndCap1_ExtVessel_pos",
-                                      - self.kloeVesselRadius + self.UpstreamVesselGap + self.ExternalVesselX,
-                                      Q("0mm"),
-                                      - self.ExternalVesselZ -  self.EndcapThickness/2)
-                                      
-        EndCap1_ExtVessel_pla = geom.structure.Placement("EndCap1_ExtVessel_pla",
-                                               volume=EndCap1_ExtVessel_lv,
-                                               pos=EndCap1_ExtVessel_pos)
         
-        main_lv.placements.append(EndCap1_ExtVessel_pla.name)
+##############################################################        END STT        ###################################################################
         
-        
-        EndCap2_ExtVessel_lv = geom.structure.Volume("EndCap2_ExtVessel_lv", 
-                                          material="Steel", 
-                                          shape=EndCap_ExtVessel_shape)
-        
-        EndCap2_ExtVessel_pos = geom.structure.Position("EndCap2_ExtVessel_pos",
-                                      - self.kloeVesselRadius + self.UpstreamVesselGap + self.ExternalVesselX,
-                                      Q("0mm"),
-                                      + self.ExternalVesselZ + self.EndcapThickness/2)
-                                      
-        EndCap2_ExtVessel_pla = geom.structure.Placement("EndCap2_ExtVessel_pla",
-                                               volume=EndCap2_ExtVessel_lv,
-                                               pos=EndCap2_ExtVessel_pos)        
-        
-        main_lv.placements.append(EndCap2_ExtVessel_pla.name)
+##############################################################         GRAIN         ###################################################################
     
     
-    # construct LAr Vessel
-    def construct_LAr_Vessel(self, geom):
-        
-        #building the outermost layer of carbon fiber
-        Gr_ext_shape = geom.shapes.EllipticalTube("Gr_ext_shape", 
-                                         dx=self.ExternalVesselX, 
-                                         dy=self.ExternalVesselY, 
-                                         dz=self.ExternalVesselZ-self.EndcapThickness)
-
-        Gr_ext_lv = geom.structure.Volume("Gr_ext_lv", 
-                                          material="Graphite", 
-                                          shape=Gr_ext_shape)
-
-        #building the layer of empty                                      
-        Empty_tgt_shape = geom.shapes.EllipticalTube("Empty_tgt_shape", 
-                                         dx=self.ExternalVesselX-self.ExtBoxThickness, 
-                                         dy=self.ExternalVesselY-self.ExtBoxThickness, 
-                                         dz=self.ExternalVesselZ-self.EndcapThickness) #endcap thickness of the external vessel is 16 mm
-
-        Empty_tgt_lv = geom.structure.Volume("Empty_tgt_lv", 
-                                           material="Vacuum_cryo", #to be change with empty
-                                           shape=Empty_tgt_shape)
-        
-        Empty_tgt_pla = geom.structure.Placement("Empty_tgt_pla", 
-                                                 volume=Empty_tgt_lv)
-
-        Gr_ext_lv.placements.append(Empty_tgt_pla.name)
-        
-        #building the internal vessel
-        Al_int_shape = geom.shapes.EllipticalTube("Al_int_shape", 
-                                         dx=self.InternalVesselX, 
-                                         dy=self.InternalVesselY, 
-                                         dz=self.InternalVesselZ) #self.ExternalVesselZ-self.BoxThickness-self.VacuumThickness) 
-       
-        Al_int_lv = geom.structure.Volume("Al_int_lv", 
-                                          material="Aluminum", 
-                                          shape=Al_int_shape)
-                                          
-        relative_pos = geom.structure.Position("relative_pos",
-                                      Q('0mm'),
-                                      Q('0mm'),
-                                      Q('0mm'))
-                                      #self.VesselRelativeZPos)
-        
-        Al_int_pla = geom.structure.Placement("Al_int_pla", 
-                                              volume=Al_int_lv,
-                                              pos=relative_pos)
-        
-        Empty_tgt_lv.placements.append(Al_int_pla.name)
-        
-        #building the bulk of the target made by liquid argon
-        Lar_bulk_shape = geom.shapes.EllipticalTube("Lar_bulk_shape", 
-                                         dx=self.InternalVesselX-self.IntBoxThickness, 
-                                         dy=self.InternalVesselY-self.IntBoxThickness, 
-                                         dz=self.InternalVesselZ-self.EndcapThickness)
-        
-        Lar_bulk_lv = geom.structure.Volume("Lar_bulk_lv", 
-                                            material="LAr", 
-                                            shape=Lar_bulk_shape)
-        
-        Lar_bulk_lv.params.append(("SensDet", 'LArHit'))
-        
-        Lar_bulk_pla = geom.structure.Placement("Lar_bulk_pla", 
-                                                 volume=Lar_bulk_lv)
-                                                 
-        Al_int_lv.placements.append(Lar_bulk_pla.name)
-        
-        return Gr_ext_lv
-
-        
-    # construct LAr target
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def construct_LAr_Target(self, geom, main_lv):
+    def construct_GRAIN(self, geom, main_lv):
+    
+        # build the external vessel envelop
         
-        LAr_tgt_lv = self.construct_LAr_Vessel(geom)
-        
-        pos = geom.structure.Position("Lar_target_position1",
+        Ext_vessel_outern_graphite_layer_shape = geom.shapes.EllipticalTube("Ext_vessel_outern_graphite_layer_shape", 
+                                                                            dx = self.ExternalVesselX, 
+                                                                            dy = self.ExternalVesselY, 
+                                                                            dz = self.ExternalVesselZ)
+
+        Ext_vessel_outern_graphite_layer_lv = geom.structure.Volume("Ext_vessel_outern_graphite_layer_lv", 
+                                                                    material = "Graphite", 
+                                                                    shape = Ext_vessel_outern_graphite_layer_shape)
+                                                                    
+        pos = geom.structure.Position("GRAI_position",
                                       -self.kloeVesselRadius + self.ExternalVesselX + self.UpstreamVesselGap,
                                       Q('0mm'),
                                       Q('0mm'))
-                                      
-        LAr_tgt_pla = geom.structure.Placement("LAr_tgt_pla",
-                                               volume=LAr_tgt_lv,
-                                               pos=pos)
+        
+        Ext_vessel_outern_graphite_layer_pla = geom.structure.Placement("Ext_vessel_outern_graphite_layer_pla",
+                                                                        volume = Ext_vessel_outern_graphite_layer_lv,
+                                                                        pos = pos)
                                                
-        main_lv.placements.append(LAr_tgt_pla.name)
+        main_lv.placements.append(Ext_vessel_outern_graphite_layer_pla.name)
+        
+        # build the layer of vacuum (in the real geometry honeycomb)
+        
+        Honeycomb_empty_layer_shape  = geom.shapes.EllipticalTube("Honeycomb_empty_layer_shape", 
+                                                                  dx = self.ExternalVesselX - self.GraphiteThickness, 
+                                                                  dy = self.ExternalVesselY - self.GraphiteThickness, 
+                                                                  dz = self.ExternalVesselZ - self.EndcapThickness) # self.EndcapThickness needed?
+                                                            
+                                                            
+        Honeycomb_empty_layer_lv = geom.structure.Volume("Honeycomb_empty_layer_lv", 
+                                                          material = "Vacuum_cryo", 
+                                                          shape = Honeycomb_empty_layer_shape)
+                                                                    
+        
+        Honeycomb_empty_layer_pla = geom.structure.Placement("Honeycomb_empty_layer_pla",
+                                                                volume = Honeycomb_empty_layer_lv)
+        
+        
+        Ext_vessel_outern_graphite_layer_lv.placements.append(Honeycomb_empty_layer_pla.name)
+        
+        
+        # build the inner layer og graphite of the external vessel
+        
+        Ext_vessel_inner_graphite_layer_shape = geom.shapes.EllipticalTube("Ext_vessel_inner_graphite_layer_shape", 
+                                                                            dx = self.ExternalVesselX - self.GraphiteThickness - self.HoneycombThickness, 
+                                                                            dy = self.ExternalVesselY - self.GraphiteThickness - self.HoneycombThickness, 
+                                                                            dz = self.ExternalVesselZ - self.EndcapThickness)
+
+        Ext_vessel_inner_graphite_layer_lv = geom.structure.Volume("Ext_vessel_inner_graphite_layer_lv", 
+                                                                    material = "Graphite", 
+                                                                    shape = Ext_vessel_inner_graphite_layer_shape)
+                                                                    
+                                                                    
+        Ext_vessel_inner_graphite_layer_pla = geom.structure.Placement("Ext_vessel_inner_graphite_layer_pla",
+                                                                       volume = Ext_vessel_inner_graphite_layer_lv)
+                                               
+        
+        Honeycomb_empty_layer_lv.placements.append(Ext_vessel_inner_graphite_layer_pla.name)
+        
+        
+        # build the layer of vacuum between the two vessels
+        
+        vacuum_gap_between_vessels_shape  = geom.shapes.EllipticalTube("vacuum_gap_between_vessels_shape", 
+                                                                       dx = self.ExternalVesselX - self.GraphiteThickness*2 - self.HoneycombThickness, 
+                                                                       dy = self.ExternalVesselY - self.GraphiteThickness*2 - self.HoneycombThickness, 
+                                                                       dz = self.ExternalVesselZ - self.EndcapThickness) # self.EndcapThickness needed?
+                                                            
+                                                            
+        vacuum_gap_between_vessels_lv = geom.structure.Volume("vacuum_gap_between_vessels_lv", 
+                                                              material = "Vacuum_cryo", 
+                                                              shape = vacuum_gap_between_vessels_shape)
+                                                                    
+        
+        vacuum_gap_between_vessels_pla = geom.structure.Placement("vacuum_gap_between_vessels_pla",
+                                                                  volume = vacuum_gap_between_vessels_lv)
+        
+        
+        Ext_vessel_inner_graphite_layer_lv.placements.append(vacuum_gap_between_vessels_pla.name)
+        
+        
+        # build the layer of aluminum of the inner vessel
+        
+        Aluminum_layer_inner_vessel_shape = geom.shapes.EllipticalTube("Aluminum_layer_inner_vessel_shape", 
+                                                                       dx = self.InternalVesselX, 
+                                                                       dy = self.InternalVesselY, 
+                                                                       dz = self.InternalVesselZ)
+
+        Aluminum_layer_inner_vessel_lv = geom.structure.Volume("Aluminum_layer_inner_vessel_lv", 
+                                                                material = "Aluminum", 
+                                                                shape = Aluminum_layer_inner_vessel_shape)
+
+        
+        Aluminum_layer_inner_vessel_pla = geom.structure.Placement("Aluminum_layer_inner_vessel_pla",
+                                                                   volume = Aluminum_layer_inner_vessel_lv)
+                                               
+        vacuum_gap_between_vessels_lv.placements.append(Aluminum_layer_inner_vessel_pla.name)
+        
+        
+        # build the inner volume of LAr
+        
+        LAr_volume_shape = geom.shapes.EllipticalTube("LAr_volume_shape", 
+                                                      dx = self.InternalVesselX - self.AluminumThickness, 
+                                                      dy = self.InternalVesselY - self.AluminumThickness, 
+                                                      dz = self.InternalVesselZ - self.EndcapThickness)
+
+        LAr_volume_lv = geom.structure.Volume("LAr_volume_lv", 
+                                              material = "LAr", 
+                                              shape = LAr_volume_shape)
+                                              
+        LAr_volume_lv.params.append(("SensDet", 'LArHit'))
+                                                                    
+        
+        LAr_volume_pla = geom.structure.Placement("LAr_volume_pla",
+                                                  volume = LAr_volume_lv)
+                                               
+        Aluminum_layer_inner_vessel_lv.placements.append(LAr_volume_pla.name)
+        
+       
+        # build external vessel endcaps
+        
+        EndCap_ExtVessel_shape = geom.shapes.EllipticalTube("EndCap_ExtVessel_shape", 
+                                                            dx = self.ExternalVesselX, 
+                                                            dy = self.ExternalVesselY, 
+                                                            dz = self.EndcapThickness/2)
+                                         
+        EndCap1_ExtVessel_lv = geom.structure.Volume("EndCap1_ExtVessel_lv", 
+                                                      material = "Steel", 
+                                                      shape = EndCap_ExtVessel_shape)
+                                          
+        EndCap1_ExtVessel_pos = geom.structure.Position("EndCap1_ExtVessel_pos",
+                                                        Q("0mm"),#- self.kloeVesselRadius + self.UpstreamVesselGap + self.ExternalVesselX,
+                                                        Q("0mm"),
+                                                        - self.ExternalVesselZ +  self.EndcapThickness/2)
+                                      
+        EndCap1_ExtVessel_pla = geom.structure.Placement("EndCap1_ExtVessel_pla",
+                                                          volume = EndCap1_ExtVessel_lv,
+                                                          pos = EndCap1_ExtVessel_pos)
+        
+        Ext_vessel_outern_graphite_layer_lv.placements.append(EndCap1_ExtVessel_pla.name)
+        
+        
+        EndCap2_ExtVessel_lv = geom.structure.Volume("EndCap2_ExtVessel_lv", 
+                                                      material = "Steel", 
+                                                      shape = EndCap_ExtVessel_shape)
+        
+        EndCap2_ExtVessel_pos = geom.structure.Position("EndCap2_ExtVessel_pos",
+                                                        Q("0mm"),#- self.kloeVesselRadius + self.UpstreamVesselGap + self.ExternalVesselX,
+                                                        Q("0mm"),
+                                                        + self.ExternalVesselZ - self.EndcapThickness/2)
+                                      
+        EndCap2_ExtVessel_pla = geom.structure.Placement("EndCap2_ExtVessel_pla",
+                                                         volume = EndCap2_ExtVessel_lv,
+                                                         pos = EndCap2_ExtVessel_pos)        
+        
+        Ext_vessel_outern_graphite_layer_lv.placements.append(EndCap2_ExtVessel_pla.name)
+        
+        
+        #return Ext_vessel_outern_graphite_layer_lv
+        
+        
+    
+##############################################################        END GRAIN         ###################################################################
+
+
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     # construct traking modules made of 1 XY strawplane + 1 additional X strawplane to be placed upstream (1 module) and downstream (4 modules)

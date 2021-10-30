@@ -11,7 +11,7 @@ from gegede import Quantity as Q
 import time
 
 class STTFULLBuilder(gegede.builder.Builder):
-    def configure( self, halfDimension=None, Material=None, nBarrelModules=None,  liqArThickness=None, **kwds):
+    def configure( self, halfDimension=None, Material=None, nBarrelModules=None, configuration=None, liqArThickness=None, **kwds):
         self.simpleStraw      	    = True
         self.sqrt3                  = 1.7320508
         #        self.start_time=time.time()
@@ -23,6 +23,7 @@ class STTFULLBuilder(gegede.builder.Builder):
         self.nBarrelModules         = nBarrelModules
         self.rotAngle               = 0.5 * Q('360deg') / self.nBarrelModules
         self.liqArThickness         = liqArThickness
+        self.configuration          = configuration
 
         self.strawRadius            = Q('2.5mm')
         self.strawWireWThickness    = Q('20um')
@@ -104,9 +105,15 @@ class STTFULLBuilder(gegede.builder.Builder):
         self.UpstreamVesselGap   = Q("30mm") #margin between kloe vessel and the LAr target
         self.MinDistExtVesTrMod  = Q("50mm") #margin between LAr target and upstream traking module
         self.InterVesselHalfGap  = Q('30mm')
-        
+    
+    def construct(self, geom):
+        if self.configuration == "option_1":
+            self.construct_option1(geom)
+        elif self.configuration == "option_2":
+            self.construct_option2(geom)
 
-    def construct(self,geom):
+
+    def construct_option1(self,geom):
 
         pos_Slab_in_C3H6Mod=geom.structure.Position("pos_Slab_in_C3H6Mod", -self.C3H6ModThickness/2.0 +self.slabThickness/2.0, "0cm","0cm")
         pos_foilchunk_in_C3H6Mod=geom.structure.Position("pos_foilchunk_in_C3H6Mod",-self.C3H6ModThickness/2.0+self.slabThickness+self.totfoilThickness/2.0,"0cm","0cm")
@@ -697,3 +704,7 @@ class STTFULLBuilder(gegede.builder.Builder):
         
     
 ##############################################################        END GRAIN         ###################################################################
+
+
+    def construct_option2(self,geom):
+        self.construct_option1(geom)
