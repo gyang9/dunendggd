@@ -11,12 +11,18 @@ from gegede import Quantity as Q
 import time
 
 class STTFULLBuilder(gegede.builder.Builder):
-    def configure( self, halfDimension=None, Material=None,  **kwds):
+    def configure( self, halfDimension=None, Material=None, nBarrelModules=None,  liqArThickness=None, **kwds):
         self.simpleStraw      	    = True
         self.sqrt3                  = 1.7320508
         #        self.start_time=time.time()
         #        print("start_time:",self.start_time)
         self.halfDimension, self.Material = ( halfDimension, Material )
+        
+        self.kloeVesselRadius       = self.halfDimension['rmax']
+        self.kloeVesselHalfDx       = self.halfDimension['dz']
+        self.nBarrelModules         = nBarrelModules
+        self.rotAngle               = 0.5 * Q('360deg') / self.nBarrelModules
+        self.liqArThickness         = liqArThickness
 
         self.strawRadius            = Q('2.5mm')
         self.strawWireWThickness    = Q('20um')
@@ -24,8 +30,8 @@ class STTFULLBuilder(gegede.builder.Builder):
         self.coatThickness          = Q("100nm")
         self.mylarThickness         = Q("12um")
         
-        self.kloeVesselRadius       = Q('2m')
-        self.kloeVesselHalfDx       = Q('1.69m')
+        #self.kloeVesselRadius       = Q('2m')
+        #self.kloeVesselHalfDx       = Q('1.69m')
         self.extRadialgap           = Q("0cm")
         self.extLateralgap          = Q("0cm")
         self.kloeTrkRegRadius       = self.kloeVesselRadius - self.extRadialgap
@@ -68,7 +74,7 @@ class STTFULLBuilder(gegede.builder.Builder):
 
         #        self.liqArThickness= self.kloeTrkRegRadius - self.trkModThickness - (self.cModThickness + 12*self.C3H6ModThickness)*3 + self.gap - self.cModThickness/2
         #        self.liqArThickness= Q("79.5cm")
-        self.liqArThickness= self.kloeTrkRegRadius -  self.C3H6ModThickness * 9 * 3 - self.cModThickness * 3.5 - self.trkModThickness*2
+        #self.liqArThickness= self.kloeTrkRegRadius -  self.C3H6ModThickness * 9 * 3 - self.cModThickness * 3.5 - self.trkModThickness*2
         self.endgap= self.kloeTrkRegRadius*2 - self.liqArThickness - self.totModsThickness
 
 
@@ -160,8 +166,17 @@ class STTFULLBuilder(gegede.builder.Builder):
 
         ############################## the main tube    #######################################
         #        main_lv, main_hDim = ltools.main_lv( self, geom, "Tubs")
-        stt_shape=geom.shapes.PolyhedraRegular("shape_stt",numsides=24, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx, sphi=Q('7.5deg'))
-        main_lv = geom.structure.Volume('STTtracker',   material=self.Material, shape=stt_shape)
+        whole_shape=geom.shapes.PolyhedraRegular("whole_shape_for_stt",numsides=self.nBarrelModules, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx, sphi=self.rotAngle)
+        upstream_shape=geom.shapes.Box("upstream_shape_for_stt", dx=0.5*self.liqArThickness, dy=self.kloeVesselRadius, dz=self.kloeVesselHalfDx )
+        upstream_shape_pos = geom.structure.Position("upstream_shape_pos_for_stt", -self.kloeVesselRadius+0.5*self.liqArThickness, Q('0m'), Q('0m'))
+        stt_shape = geom.shapes.Boolean("stt_shape",
+                                         type='subtraction',
+                                         first=whole_shape,
+                                         second=upstream_shape,
+                                         rot='noRotate',
+                                         pos=upstream_shape_pos)
+
+        main_lv = geom.structure.Volume('STTtracker_envelope',   material=self.Material, shape=stt_shape)
         print( "KLOESTTFULL::construct()")
         print( "  main_lv = "+ main_lv.name)
         self.add_volume( main_lv )
@@ -169,9 +184,9 @@ class STTFULLBuilder(gegede.builder.Builder):
 #------ Building GRAIN in the upstram part of kloe ad distance self.UpstreamVesselGap from the barrels
 
         
-        self.construct_GRAIN(geom, main_lv)
+        # self.construct_GRAIN(geom, main_lv)
         
-        print('building the LAr target')
+        # print('building the LAr target')
 
 #---------------------------------------------------------------------------------------------------#
 

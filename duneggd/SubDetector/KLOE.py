@@ -125,6 +125,8 @@ class KLOEBuilder(gegede.builder.Builder):
             self.build_3DST(MagIntVol_volume, geom)
         if(self.Build3DSTwithSTT is True):
             self.build_3DSTwithSTT(MagIntVol_volume, geom)
+        
+        self.build_inner_volume(MagIntVol_volume, geom)
 
         print("printing main_lv: " + str(main_lv))
             
@@ -378,6 +380,28 @@ class KLOEBuilder(gegede.builder.Builder):
                                                   pos=emcalo_position,
                                                   rot=emcalo_rotation)
         main_lv.placements.append(emcalo_placement.name)
+
+    def build_inner_volume(self, main_lv, geom):
+        
+        if "SANDINNERVOLUME" not in self.builders:
+            print("SANDINNERVOLUME builder not found")
+            return        
+        
+        inner_volume_builder=self.get_builder("SANDINNERVOLUME")
+        inner_volume_lv=inner_volume_builder.get_volume()
+        
+        inner_volume_position = geom.structure.Position(
+                'inner_volume_position', Q('0m'), Q('0m'), Q('0m'))
+
+        inner_volume_rotation = geom.structure.Rotation(
+                'inner_volume_rotation', Q('0deg'), Q('0deg'), Q('0deg'))
+
+        inner_volume_placement = geom.structure.Placement('inner_volume_place',
+                                                  volume=inner_volume_lv,
+                                                  pos=inner_volume_position,
+                                                  rot=inner_volume_rotation)
+        main_lv.placements.append(inner_volume_placement.name)
+
         
     def build_3DST(self, main_lv, geom):
         if "3DST" not in self.builders:

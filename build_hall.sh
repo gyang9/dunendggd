@@ -235,6 +235,8 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
            duneggd/Config/KLOE_STTFULL.cfg \
            duneggd/Config/KLOEEMCALO.cfg \
+           duneggd/Config/STT.cfg \
+           duneggd/Config/GRAIN.cfg \
            duneggd/Config/MPD_Concept.cfg \
            duneggd/Config/ND_CraneRailStruct1.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
