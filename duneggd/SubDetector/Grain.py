@@ -43,9 +43,9 @@ class GrainBuilder(gegede.builder.Builder):
         elif self.configuration == "option_2":
 
             ######################################### EXTERNAL VESSEL (endcap steel 12 mm)
-            #               Carbon_fiber 12 mm                                  ----> !!!!! needs to be changed to carbon fiber !!!!! Carbon_fiber
+            #               Carbon_fiber 12 mm                                  
             ######################################### END EXTERNAL VESSEL
-            #               vacuum gap 
+            #               vacuum gap                                          -----------> shal we put honeycomb? It is in the tool file
             ######################################### INTERNAL VESSEL (endcap aluminum 12 mm)
             #               Aluminum 12 mm 
             ######################################### END IINTERNAL VESSEL
@@ -92,7 +92,7 @@ class GrainBuilder(gegede.builder.Builder):
         self.add_volume( main_lv )
 
 
-##############################################################         GRAIN   1      ###################################################################
+##############################################################         GRAIN   2      ###################################################################
     
     
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
@@ -261,9 +261,9 @@ class GrainBuilder(gegede.builder.Builder):
         
         
     
-##############################################################        END GRAIN    1     ################################################################
+##############################################################        END GRAIN    2     ################################################################
 
-##############################################################         GRAIN   2      ###################################################################
+##############################################################         GRAIN   1      ###################################################################
 
     def construct_GRAIN_option1(self, geom):
 
@@ -337,9 +337,48 @@ class GrainBuilder(gegede.builder.Builder):
         Int_vessel_lv.placements.append(LAr_volume_pla.name)
 
 
+        # build external vessel endcaps
+        
+        EndCap_ExtVessel_shape = geom.shapes.EllipticalTube("EndCap_ExtVessel_shape", 
+                                                            dx = self.ExternalVesselX, 
+                                                            dy = self.ExternalVesselY, 
+                                                            dz = self.EndcapThickness/2)
+                                         
+        EndCap1_ExtVessel_lv = geom.structure.Volume("EndCap1_ExtVessel_lv", 
+                                                      material = "Steel", 
+                                                      shape = EndCap_ExtVessel_shape)
+                                          
+        EndCap1_ExtVessel_pos = geom.structure.Position("EndCap1_ExtVessel_pos",
+                                                        Q("0mm"),#- self.kloeVesselRadius + self.UpstreamVesselGap + self.ExternalVesselX,
+                                                        Q("0mm"),
+                                                        - self.ExternalVesselZ +  self.EndcapThickness/2)
+                                      
+        EndCap1_ExtVessel_pla = geom.structure.Placement("EndCap1_ExtVessel_pla",
+                                                          volume = EndCap1_ExtVessel_lv,
+                                                          pos = EndCap1_ExtVessel_pos)
+        
+        Ext_vessel_lv.placements.append(EndCap1_ExtVessel_pla.name)
+        
+        
+        EndCap2_ExtVessel_lv = geom.structure.Volume("EndCap2_ExtVessel_lv", 
+                                                      material = "Steel", 
+                                                      shape = EndCap_ExtVessel_shape)
+        
+        EndCap2_ExtVessel_pos = geom.structure.Position("EndCap2_ExtVessel_pos",
+                                                        Q("0mm"),#- self.kloeVesselRadius + self.UpstreamVesselGap + self.ExternalVesselX,
+                                                        Q("0mm"),
+                                                        + self.ExternalVesselZ - self.EndcapThickness/2)
+                                      
+        EndCap2_ExtVessel_pla = geom.structure.Placement("EndCap2_ExtVessel_pla",
+                                                         volume = EndCap2_ExtVessel_lv,
+                                                         pos = EndCap2_ExtVessel_pos)        
+        
+        Ext_vessel_lv.placements.append(EndCap2_ExtVessel_pla.name)
+
+
 
 
 
         #return self.construct_GRAIN_option2(geom)
 
-##############################################################        END GRAIN    2     ################################################################        
+##############################################################        END GRAIN    1     ################################################################        
