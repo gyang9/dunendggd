@@ -88,14 +88,14 @@ class STTFULLBuilder(gegede.builder.Builder):
         print("totModsThickness:",self.totModsThickness)
         print("liqArThickness:",self.liqArThickness)
 
-       # LAr target
+       # GRAIN
         self.HoneycombThickness  = Q("50mm")
-        self.GraphiteThickness   = Q("6mm") #two layers of 6 mm for a total of 12
+        self.Carbon_fiberThickness   = Q("6mm") #two layers of 6 mm for a total of 12
         self.AluminumThickness   = Q("12mm")
         self.EndcapThickness     = Q("16mm")
         
-        self.ExternalVesselX     = Q("365mm") + self.HoneycombThickness + self.GraphiteThickness*2 #minor semiaxis of external vessel
-        self.ExternalVesselY     = Q("900mm") + self.HoneycombThickness + self.GraphiteThickness*2 #major semiaxis of external vessel
+        self.ExternalVesselX     = Q("365mm") + self.HoneycombThickness + self.Carbon_fiberThickness*2 #minor semiaxis of external vessel
+        self.ExternalVesselY     = Q("900mm") + self.HoneycombThickness + self.Carbon_fiberThickness*2 #major semiaxis of external vessel
         self.ExternalVesselZ     = Q("950mm") + self.EndcapThickness #half lenght of external vessel
         
         self.InternalVesselX     = Q("237.5mm") + self.AluminumThickness #minor semiaxis of internal vessel
@@ -543,31 +543,31 @@ class STTFULLBuilder(gegede.builder.Builder):
     
         # build the external vessel envelop
         
-        Ext_vessel_outern_graphite_layer_shape = geom.shapes.EllipticalTube("Ext_vessel_outern_graphite_layer_shape", 
+        Ext_vessel_outern_Carbon_fiber_layer_shape = geom.shapes.EllipticalTube("Ext_vessel_outern_Carbon_fiber_layer_shape", 
                                                                             dx = self.ExternalVesselX, 
                                                                             dy = self.ExternalVesselY, 
                                                                             dz = self.ExternalVesselZ)
 
-        Ext_vessel_outern_graphite_layer_lv = geom.structure.Volume("Ext_vessel_outern_graphite_layer_lv", 
-                                                                    material = "Graphite", 
-                                                                    shape = Ext_vessel_outern_graphite_layer_shape)
+        Ext_vessel_outern_Carbon_fiber_layer_lv = geom.structure.Volume("Ext_vessel_outern_Carbon_fiber_layer_lv", 
+                                                                    material = "Carbon_fiber", 
+                                                                    shape = Ext_vessel_outern_Carbon_fiber_layer_shape)
                                                                     
         pos = geom.structure.Position("GRAI_position",
                                       -self.kloeVesselRadius + self.ExternalVesselX + self.UpstreamVesselGap,
                                       Q('0mm'),
                                       Q('0mm'))
         
-        Ext_vessel_outern_graphite_layer_pla = geom.structure.Placement("Ext_vessel_outern_graphite_layer_pla",
-                                                                        volume = Ext_vessel_outern_graphite_layer_lv,
+        Ext_vessel_outern_Carbon_fiber_layer_pla = geom.structure.Placement("Ext_vessel_outern_Carbon_fiber_layer_pla",
+                                                                        volume = Ext_vessel_outern_Carbon_fiber_layer_lv,
                                                                         pos = pos)
                                                
-        main_lv.placements.append(Ext_vessel_outern_graphite_layer_pla.name)
+        main_lv.placements.append(Ext_vessel_outern_Carbon_fiber_layer_pla.name)
         
         # build the layer of vacuum (in the real geometry honeycomb)
         
         Honeycomb_empty_layer_shape  = geom.shapes.EllipticalTube("Honeycomb_empty_layer_shape", 
-                                                                  dx = self.ExternalVesselX - self.GraphiteThickness, 
-                                                                  dy = self.ExternalVesselY - self.GraphiteThickness, 
+                                                                  dx = self.ExternalVesselX - self.Carbon_fiberThickness, 
+                                                                  dy = self.ExternalVesselY - self.Carbon_fiberThickness, 
                                                                   dz = self.ExternalVesselZ - self.EndcapThickness) # self.EndcapThickness needed?
                                                             
                                                             
@@ -580,33 +580,33 @@ class STTFULLBuilder(gegede.builder.Builder):
                                                                 volume = Honeycomb_empty_layer_lv)
         
         
-        Ext_vessel_outern_graphite_layer_lv.placements.append(Honeycomb_empty_layer_pla.name)
+        Ext_vessel_outern_Carbon_fiber_layer_lv.placements.append(Honeycomb_empty_layer_pla.name)
         
         
-        # build the inner layer og graphite of the external vessel
+        # build the inner layer of Carbon_fiber of the external vessel
         
-        Ext_vessel_inner_graphite_layer_shape = geom.shapes.EllipticalTube("Ext_vessel_inner_graphite_layer_shape", 
-                                                                            dx = self.ExternalVesselX - self.GraphiteThickness - self.HoneycombThickness, 
-                                                                            dy = self.ExternalVesselY - self.GraphiteThickness - self.HoneycombThickness, 
+        Ext_vessel_inner_Carbon_fiber_layer_shape = geom.shapes.EllipticalTube("Ext_vessel_inner_Carbon_fiber_layer_shape", 
+                                                                            dx = self.ExternalVesselX - self.Carbon_fiberThickness - self.HoneycombThickness, 
+                                                                            dy = self.ExternalVesselY - self.Carbon_fiberThickness - self.HoneycombThickness, 
                                                                             dz = self.ExternalVesselZ - self.EndcapThickness)
 
-        Ext_vessel_inner_graphite_layer_lv = geom.structure.Volume("Ext_vessel_inner_graphite_layer_lv", 
-                                                                    material = "Graphite", 
-                                                                    shape = Ext_vessel_inner_graphite_layer_shape)
+        Ext_vessel_inner_Carbon_fiber_layer_lv = geom.structure.Volume("Ext_vessel_inner_Carbon_fiber_layer_lv", 
+                                                                    material = "Carbon_fiber", 
+                                                                    shape = Ext_vessel_inner_Carbon_fiber_layer_shape)
                                                                     
                                                                     
-        Ext_vessel_inner_graphite_layer_pla = geom.structure.Placement("Ext_vessel_inner_graphite_layer_pla",
-                                                                       volume = Ext_vessel_inner_graphite_layer_lv)
+        Ext_vessel_inner_Carbon_fiber_layer_pla = geom.structure.Placement("Ext_vessel_inner_Carbon_fiber_layer_pla",
+                                                                       volume = Ext_vessel_inner_Carbon_fiber_layer_lv)
                                                
         
-        Honeycomb_empty_layer_lv.placements.append(Ext_vessel_inner_graphite_layer_pla.name)
+        Honeycomb_empty_layer_lv.placements.append(Ext_vessel_inner_Carbon_fiber_layer_pla.name)
         
         
         # build the layer of vacuum between the two vessels
         
         vacuum_gap_between_vessels_shape  = geom.shapes.EllipticalTube("vacuum_gap_between_vessels_shape", 
-                                                                       dx = self.ExternalVesselX - self.GraphiteThickness*2 - self.HoneycombThickness, 
-                                                                       dy = self.ExternalVesselY - self.GraphiteThickness*2 - self.HoneycombThickness, 
+                                                                       dx = self.ExternalVesselX - self.Carbon_fiberThickness*2 - self.HoneycombThickness, 
+                                                                       dy = self.ExternalVesselY - self.Carbon_fiberThickness*2 - self.HoneycombThickness, 
                                                                        dz = self.ExternalVesselZ - self.EndcapThickness) # self.EndcapThickness needed?
                                                             
                                                             
@@ -619,7 +619,7 @@ class STTFULLBuilder(gegede.builder.Builder):
                                                                   volume = vacuum_gap_between_vessels_lv)
         
         
-        Ext_vessel_inner_graphite_layer_lv.placements.append(vacuum_gap_between_vessels_pla.name)
+        Ext_vessel_inner_Carbon_fiber_layer_lv.placements.append(vacuum_gap_between_vessels_pla.name)
         
         
         # build the layer of aluminum of the inner vessel
@@ -680,7 +680,7 @@ class STTFULLBuilder(gegede.builder.Builder):
                                                           volume = EndCap1_ExtVessel_lv,
                                                           pos = EndCap1_ExtVessel_pos)
         
-        Ext_vessel_outern_graphite_layer_lv.placements.append(EndCap1_ExtVessel_pla.name)
+        Ext_vessel_outern_Carbon_fiber_layer_lv.placements.append(EndCap1_ExtVessel_pla.name)
         
         
         EndCap2_ExtVessel_lv = geom.structure.Volume("EndCap2_ExtVessel_lv", 
@@ -696,10 +696,10 @@ class STTFULLBuilder(gegede.builder.Builder):
                                                          volume = EndCap2_ExtVessel_lv,
                                                          pos = EndCap2_ExtVessel_pos)        
         
-        Ext_vessel_outern_graphite_layer_lv.placements.append(EndCap2_ExtVessel_pla.name)
+        Ext_vessel_outern_Carbon_fiber_layer_lv.placements.append(EndCap2_ExtVessel_pla.name)
         
         
-        #return Ext_vessel_outern_graphite_layer_lv
+        #return Ext_vessel_outern_Carbon_fiber_layer_lv
         
         
     
