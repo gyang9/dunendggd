@@ -12,7 +12,7 @@ import time
 
 class STTFULLBuilder(gegede.builder.Builder):
     def configure( self, halfDimension=None, Material=None, nBarrelModules=None, configuration=None, liqArThickness=None, **kwds):
-        self.simpleStraw      	    = True
+        self.simpleStraw      	    = False
         self.sqrt3                  = 1.7320508
         #        self.start_time=time.time()
         #        print("start_time:",self.start_time)
@@ -496,6 +496,7 @@ class STTFULLBuilder(gegede.builder.Builder):
         main_shape = geom.shapes.Tubs("shape_"+name, rmin=Q("0m"), rmax=self.strawRadius, dz=halflength)
         if self.simpleStraw:
             main_lv = geom.structure.Volume(name, material="straw_avg_ArXe", shape=main_shape )
+            main_lv.params.append(("SensDet","Straw"))
             return main_lv
 
         if airMaterial!="stGas_Ar19" and airMaterial!="stGas_Xe19":
