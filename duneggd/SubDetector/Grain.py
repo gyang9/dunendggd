@@ -17,20 +17,20 @@ class GrainBuilder(gegede.builder.Builder):
             #               Aluminum 12 mm 
             ######################################### END IINTERNAL VESSEL
 
-            self.Carbon_fiberThickness   = Q("12mm") #two layers of 6 mm for a total of 12
+            self.Carbon_fiberThickness   = Q("12mm")                                    # two layers of 6 mm for a total of 12
             self.AluminumThickness   = Q("12mm")
             self.EndcapThickness     = Q("16mm")
         
-            self.ExternalVesselX     = Q("297.5mm") + self.Carbon_fiberThickness #minor semiaxis of external vessel
-            self.ExternalVesselY     = Q("788mm") + self.Carbon_fiberThickness #major semiaxis of external vessel
-            self.ExternalVesselZ     = Q("816mm") + self.EndcapThickness #half lenght of external vessel
+            self.ExternalVesselX     = Q("297.5mm") + self.Carbon_fiberThickness        # minor semiaxis of external vessel
+            self.ExternalVesselY     = Q("788mm")   + self.Carbon_fiberThickness        # major semiaxis of external vessel
+            self.ExternalVesselZ     = Q("816mm")   + self.EndcapThickness              # half lenght of external vessel
         
-            self.InternalVesselX     = Q("237.5mm") + self.AluminumThickness #minor semiaxis of internal vessel
-            self.InternalVesselY     = Q("728mm") + self.AluminumThickness #major semiaxis of internal vessel
-            self.InternalVesselZ     = Q("600mm") + self.EndcapThickness #half lenght of internal vessel
+            self.InternalVesselX     = Q("237.5mm") + self.AluminumThickness            # minor semiaxis of internal vessel
+            self.InternalVesselY     = Q("728mm")   + self.AluminumThickness            # major semiaxis of internal vessel
+            self.InternalVesselZ     = Q("600mm")   + self.EndcapThickness              # half lenght of internal vessel
         
-            self.UpstreamVesselGap   = Q("30mm") #margin between kloe vessel and the LAr target
-            #self.MinDistExtVesTrMod  = Q("50mm") #margin between LAr target and upstream traking module
+            self.UpstreamVesselGap   = Q("30mm")                                        # margin between kloe vessel and the LAr target
+            #self.MinDistExtVesTrMod  = Q("50mm")                                       # margin between LAr target and upstream traking module
             self.InterVesselHalfGap  = Q('30mm')
 
 
@@ -55,13 +55,13 @@ class GrainBuilder(gegede.builder.Builder):
             self.AluminumThickness   = Q("12mm")
             self.EndcapThickness     = Q("16mm")
         
-            self.ExternalVesselX     = Q("365mm") + self.HoneycombThickness + self.Carbon_fiberThickness*2 #minor semiaxis of external vessel
-            self.ExternalVesselY     = Q("900mm") + self.HoneycombThickness + self.Carbon_fiberThickness*2 #major semiaxis of external vessel
-            self.ExternalVesselZ     = Q("950mm") + self.EndcapThickness #half lenght of external vessel
+            self.ExternalVesselX     = Q("365mm")   + self.HoneycombThickness + self.Carbon_fiberThickness*2 # minor semiaxis of external vessel
+            self.ExternalVesselY     = Q("900mm")   + self.HoneycombThickness + self.Carbon_fiberThickness*2 # major semiaxis of external vessel
+            self.ExternalVesselZ     = Q("950mm")   + self.EndcapThickness                                   # half lenght of external vessel
         
-            self.InternalVesselX     = Q("237.5mm") + self.AluminumThickness #minor semiaxis of internal vessel
-            self.InternalVesselY     = Q("728mm") + self.AluminumThickness #major semiaxis of internal vessel
-            self.InternalVesselZ     = Q("650mm") + self.EndcapThickness #half lenght of internal vessel
+            self.InternalVesselX     = Q("237.5mm") + self.AluminumThickness                                 # minor semiaxis of internal vessel
+            self.InternalVesselY     = Q("728mm")   + self.AluminumThickness                                 # major semiaxis of internal vessel
+            self.InternalVesselZ     = Q("650mm")   + self.EndcapThickness                                   # half lenght of internal vessel
         
             self.UpstreamVesselGap   = Q("30mm") #margin between kloe vessel and the LAr target
             #self.MinDistExtVesTrMod  = Q("50mm") #margin between LAr target and upstream traking module
@@ -131,7 +131,7 @@ class GrainBuilder(gegede.builder.Builder):
         GRAIN_gap_between_vessels_shape  = geom.shapes.EllipticalTube("GRAIN_gap_between_vessels_shape", 
                                                                        dx = self.ExternalVesselX - self.Carbon_fiberThickness, 
                                                                        dy = self.ExternalVesselY - self.Carbon_fiberThickness, 
-                                                                       dz = self.ExternalVesselZ - self.EndcapThickness) # self.EndcapThickness needed?
+                                                                       dz = self.ExternalVesselZ - self.EndcapThickness) 
                                                             
                                                             
         GRAIN_gap_between_vessels_lv = geom.structure.Volume("GRAIN_gap_between_vessels_lv", 
@@ -183,7 +183,7 @@ class GrainBuilder(gegede.builder.Builder):
                                                
         GRAIN_Int_vessel_lv.placements.append(GRAIN_LAr_pla.name)
 
-
+        
         # build external vessel endcaps
 
         # LEFT
@@ -224,7 +224,7 @@ class GrainBuilder(gegede.builder.Builder):
                                                          pos = GRAIN_EndCapRight_ExtVessel_pos)        
         
         GRAIN_lv.placements.append(GRAIN_EndCapRight_ExtVessel_pla.name)
-
+        
 
         return GRAIN_lv
 
@@ -260,7 +260,7 @@ class GrainBuilder(gegede.builder.Builder):
         GRAIN_Ext_vessel_outer_layer_shape = geom.shapes.EllipticalTube("GRAIN_Ext_vessel_outer_layer_shape", 
                                                                             dx = self.ExternalVesselX, 
                                                                             dy = self.ExternalVesselY, 
-                                                                            dz = self.ExternalVesselZ - self.EndcapThickness)
+                                                                            dz = self.ExternalVesselZ)# - self.EndcapThickness)
 
         GRAIN_Ext_vessel_outer_layer_lv = geom.structure.Volume("GRAIN_Ext_vessel_outer_layer_lv", 
                                                                     material = "Carbon_fiber", 
@@ -277,7 +277,7 @@ class GrainBuilder(gegede.builder.Builder):
         GRAIN_Honeycomb_layer_shape  = geom.shapes.EllipticalTube("GRAIN_Honeycomb_layer_shape", 
                                                                   dx = self.ExternalVesselX - self.Carbon_fiberThickness, 
                                                                   dy = self.ExternalVesselY - self.Carbon_fiberThickness, 
-                                                                  dz = self.ExternalVesselZ - self.EndcapThickness) # self.EndcapThickness needed?
+                                                                  dz = self.ExternalVesselZ - self.Carbon_fiberThickness) 
                                                             
                                                             
         GRAIN_Honeycomb_layer_lv = geom.structure.Volume("GRAIN_Honeycomb_layer_lv", 
@@ -297,7 +297,7 @@ class GrainBuilder(gegede.builder.Builder):
         GRAIN_Ext_vessel_inner_layer_shape = geom.shapes.EllipticalTube("GRAIN_Ext_vessel_inner_layer_shape", 
                                                                             dx = self.ExternalVesselX - self.Carbon_fiberThickness - self.HoneycombThickness, 
                                                                             dy = self.ExternalVesselY - self.Carbon_fiberThickness - self.HoneycombThickness, 
-                                                                            dz = self.ExternalVesselZ - self.EndcapThickness)
+                                                                            dz = self.ExternalVesselZ - self.Carbon_fiberThickness - self.HoneycombThickness)
 
         GRAIN_Ext_vessel_inner_layer_lv = geom.structure.Volume("GRAIN_Ext_vessel_inner_layer_lv", 
                                                                     material = "Carbon_fiber", 
@@ -316,7 +316,7 @@ class GrainBuilder(gegede.builder.Builder):
         GRAIN_gap_between_vessels_shape  = geom.shapes.EllipticalTube("GRAIN_gap_between_vessels_shape", 
                                                                        dx = self.ExternalVesselX - self.Carbon_fiberThickness*2 - self.HoneycombThickness, 
                                                                        dy = self.ExternalVesselY - self.Carbon_fiberThickness*2 - self.HoneycombThickness, 
-                                                                       dz = self.ExternalVesselZ - self.EndcapThickness) # self.EndcapThickness needed?
+                                                                       dz = self.ExternalVesselZ - self.Carbon_fiberThickness*2 - self.HoneycombThickness) 
                                                             
                                                             
         GRAIN_gap_between_vessels_lv = geom.structure.Volume("GRAIN_gap_between_vessels_lv", 
@@ -368,7 +368,7 @@ class GrainBuilder(gegede.builder.Builder):
                                                
         GRAIN_inner_vessel_lv.placements.append(GRIAN_LAr_pla.name)
         
-       
+        """
         # build external vessel endcaps
         
         GRAIN_EndCap_ExtVessel_shape = geom.shapes.EllipticalTube("GRAIN_EndCap_ExtVessel_shape", 
@@ -406,7 +406,7 @@ class GrainBuilder(gegede.builder.Builder):
                                                          pos = GRAIN_EndCapRight_ExtVessel_pos)        
         
         GRAIN_lv.placements.append(GRAIN_EndCapRight_ExtVessel_pla.name)
-        
+        """
         
         return GRAIN_lv
         
