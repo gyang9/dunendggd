@@ -30,7 +30,7 @@ class KloeEmCaloEndcapBuilder(gegede.builder.Builder):
         KLOEEndcapECALDepth = self.EndcapSize[2]
         
         ECAL_end_shape = geom.shapes.Tubs('ECAL_end_shape',
-                                     rmin=KLOEEndcapECALRmin,
+                                     rmin=Q('0m'),
                                      rmax=KLOEEndcapECALRmax,
                                      dz=KLOEEndcapECALDepth / 2.0)
 
