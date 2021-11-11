@@ -8,13 +8,13 @@ from gegede import Quantity as Q
 
 class KloeEmCaloEndcapBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
-    def configure(self,
-		  EndcapSize=None,
-		  ActiveMat=None,
-		  PasMat=None,
-		  PasSlabThickness=None,
-		  ActiveSlabThickness=None,
-		  nSlabs=None,
+    def configure(self, 
+		  EndcapSize=None, 
+		  ActiveMat=None, 
+		  PasMat=None, 
+		  PasSlabThickness=None, 
+		  ActiveSlabThickness=None, 
+		  nSlabs=None, 
 		  **kwds):
         self.EndcapSize = EndcapSize
         self.ActiveMat = ActiveMat
@@ -24,36 +24,36 @@ class KloeEmCaloEndcapBuilder(gegede.builder.Builder):
         self.nSlabs = nSlabs
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
-
+        
         KLOEEndcapECALRmin = self.EndcapSize[0]
         KLOEEndcapECALRmax = self.EndcapSize[1]
         KLOEEndcapECALDepth = self.EndcapSize[2]
-
+        
         ECAL_end_shape = geom.shapes.Tubs('ECAL_end_shape',
-                                          rmin=Q("0m"), ### need to be zero, or GENIE will give weird result, simply use non-zero value for daughter volume
-                                          rmax=KLOEEndcapECALRmax,
-                                          dz=KLOEEndcapECALDepth / 2.0)
+                                     rmin=Q('0m'),
+                                     rmax=KLOEEndcapECALRmax,
+                                     dz=KLOEEndcapECALDepth / 2.0)
 
         ECAL_end_lv = geom.structure.Volume('ECAL_end_lv', material='Air', shape=ECAL_end_shape)
         self.add_volume(ECAL_end_lv)
 #	print(self.name)
 #       ECAL_position = geom.structure.Position('ECAL_position', Position[0], Position[1], Position[2])
 #       ECAL_place = geom.structure.Placement('ECAL_place', volume = ECAL_lv, pos=ECAL_position)
-
+        
         for i in range(self.nSlabs): #nSlabs
-
+            
             xposSlab=Q('0cm')
             yposSlab=Q('0cm')
-
-            zposSlabActive =( -KLOEEndcapECALDepth * 0.5 +
+            
+            zposSlabActive =( -KLOEEndcapECALDepth * 0.5 + 
                              (i + 0.5) * self.ActiveSlabThickness +
                               i * self.PasSlabThickness )
-
-            zposSlabPassive = (zposSlabActive +
+                              
+            zposSlabPassive = (zposSlabActive + 
                                0.5 * self.ActiveSlabThickness +
                                0.5 * self.PasSlabThickness)
             #print("BhalfPassive= "+ str(BhalfPassive))
-
+            
             ##########creating and appending active slabs to the ECAL endcap##########
 
             endECALActiveSlab = geom.shapes.Tubs(
@@ -78,7 +78,7 @@ class KloeEmCaloEndcapBuilder(gegede.builder.Builder):
                     pos=endECALActiveSlabPos)
 
             ECAL_end_lv.placements.append( endECALActiveSlabPlace.name )
-
+            
             ##########creating and appending passive slabs to the ECAL endcap##########
 
             endECALPassiveSlab = geom.shapes.Tubs(
@@ -99,6 +99,7 @@ class KloeEmCaloEndcapBuilder(gegede.builder.Builder):
             endECALPassiveSlabPlace = geom.structure.Placement(
                     'endecalpassiveslabpla' + '_' + str(i),
                     volume=endECALPassiveSlab_lv,
-                    pos=endECALPassiveSlabPos)
+                    pos=endECALPassiveSlabPos) 
 
             ECAL_end_lv.placements.append( endECALPassiveSlabPlace.name )
+

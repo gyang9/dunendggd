@@ -36,7 +36,7 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
                                                     dz=self.BarrelDZ,
                                                     sphi=Q('7.5deg'))
         endcap_shape = geom.shapes.Tubs("kloe_calo_endcap_shape",
-                                        rmin=Q('0m'), ### need to be zero, or GENIE will give weird result, simply use non-zero value for daughter volume
+                                        rmin=Q('0m'),
                                         rmax=rmax_ec,
                                         dz=dz_ec)
 
