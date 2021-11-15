@@ -13,7 +13,7 @@ class ECALBarrelBuilder(gegede.builder.Builder):
     def configure(self, modEcalMat=None, modSTubeEndsToLead=None, modInnerDimension=None, **kwds):
         self.defMat    = modEcalMat          
         self.sTubeEndsToLead  = modSTubeEndsToLead  
-	self.sttDimension = modInnerDimension
+        self.sttDimension = modInnerDimension
         self.ECALBarModBldr = self.get_builder('ECALBarrelMod')
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^

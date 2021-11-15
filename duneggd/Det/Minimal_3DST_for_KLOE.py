@@ -12,7 +12,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         self.tpcDim = tpcDim
         self.tpcTopDim = tpcTopDim
         self.tpcBotDim = tpcBotDim
-        
+
         self.cubeDim = cubeDim
         self.nCubeX = nCubeX
         self.nCubeY = nCubeY
@@ -30,7 +30,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
 
         self.magInDim = magInDim
         self.magOutDim = magOutDim
-        
+
         self.ScinMat = ScinMat
         self.tpcPos = tpcPos
         self.tpcTopPos = tpcTopPos
@@ -83,8 +83,8 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         full3dstBox = geom.shapes.Tubs('fullDetBox', rmin=self.fullDetDim[0], rmax=self.fullDetDim[1], dz=0.5*self.fullDetDim[2], sphi=self.fullDetDim[3], dphi=self.fullDetDim[4])
 
 
-        #full3dstBox = geom.shapes.Box('fullDetBox', 
-        #        dx = 0.5*self.fullDetDim[0], 
+        #full3dstBox = geom.shapes.Box('fullDetBox',
+        #        dx = 0.5*self.fullDetDim[0],
         #        dy = 0.5*self.fullDetDim[1],
         #        dz = 0.5*self.fullDetDim[2])
 
@@ -110,9 +110,9 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
     def getA3dst(self, full3dst_lv, a3dstPos, geom):
 
         print ('location of 3DST')
-        print (a3dstPos[0])
-        print (a3dstPos[1])
-        print (a3dstPos[2])
+        print((a3dstPos[0]))
+        print((a3dstPos[1]))
+        print((a3dstPos[2]))
 
         nCubeX = self.nCubeX
         nCubeY = self.nCubeY
@@ -121,7 +121,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         a3dstBox = geom.shapes.Box( '3dst',                 dx=0.5*self.cubeDim[0]*nCubeX,
                               dy=0.5*self.cubeDim[1]*nCubeY, dz=0.5*self.cubeDim[2]*nCubeZ)
         a3dst_lv = geom.structure.Volume('vol3DST', material='Air', shape=a3dstBox)
-        
+
         a3dstPlane = geom.shapes.Box( '3dstplane',                 dx=0.5*self.cubeDim[0]*nCubeX,
                               dy=0.5*self.cubeDim[1]*nCubeY, dz=0.5*self.cubeDim[2])
         a3dstPlane_lv = geom.structure.Volume('vol3DSTPlane', material='Air', shape=a3dstPlane)
@@ -161,8 +161,8 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
 
         for k in range(nCubeZ):
 
-            print ("loop the cube layer  ")
-            print (k)
+            print("loop the cube layer  ")
+            print(k)
             xpos3dstPlane=Q('0m')
             ypos3dstPlane=Q('0m')
             zpos3dstPlane=-0.5*self.cubeDim[2]*nCubeZ + (k+0.5)*self.cubeDim[2]
@@ -171,7 +171,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
                                                xpos3dstPlane,
                                                ypos3dstPlane,
                                                zpos3dstPlane)
-            
+
             place3dst = geom.structure.Placement( 'f3dst'+'_'+str(i)+'_'+str(j)+'_'+str(k),
                                                    volume = a3dstPlane_lv,pos = f3dstPos) #,rot = "r90aboutX" )
             a3dst_lv.placements.append( place3dst.name )
@@ -185,10 +185,10 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
 
     def getTPC(self, full3dst_lv, tpcPos, geom):
 
-        print ('location of TPC')
-        print (self.tpcPos[0])
-        print (self.tpcPos[1])
-        print (self.tpcPos[2])
+        print('location of TPC')
+        print(self.tpcPos[0])
+        print(self.tpcPos[1])
+        print(self.tpcPos[2])
 
         tpcBox = geom.shapes.Box('tpc', dx=0.5*self.tpcDim[0], dy=0.5*self.tpcDim[1], dz=0.5*self.tpcDim[2])
 
@@ -218,10 +218,10 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
 
     def getEcal(self, full3dst_lv, ecalPos, geom):
 
-        print ('location of ECAL')
-        print (ecalPos[0])
-        print (ecalPos[1])
-        print (ecalPos[2])
+        print('location of ECAL')
+        print(ecalPos[0])
+        print(ecalPos[1])
+        print(ecalPos[2])
 
         ecalMod = geom.shapes.Box( 'ecalBox',
                                   dx = 0.5*self.ecalModDim[0],
@@ -235,7 +235,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
                                     dz = 0.5*self.stripxDim[2])
         ecalStripx_lv = geom.structure.Volume('volECALStripx', material=self.ecalScinMat, shape=ecalStripx)
         ecalStripx_lv.params.append(("SensDet", 'volecalStripx'))
-         
+
 
         ecalStripy = geom.shapes.Box( 'ecalStripy',
                                     dx = 0.5*self.stripyDim[0],
@@ -243,7 +243,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
                                     dz = 0.5*self.stripyDim[2])
         ecalStripy_lv = geom.structure.Volume('volECALStripy', material=self.ecalScinMat, shape=ecalStripy)
         ecalStripy_lv.params.append(("SensDet", 'volecalStripy'))
- 
+
 
         ecalRadiator = geom.shapes.Box( 'ecalRadiator',
                                      dx = 0.5*self.radiatorDim[0],
@@ -251,7 +251,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
                                      dz = 0.5*self.radiatorDim[2])
         radiator_lv = geom.structure.Volume('volRadiatorPlate', material=self.radiatorMat, shape=ecalRadiator)
         radiator_lv.params.append(("SensDet", 'volradiator'))
- 
+
 
         nScins = self.nScinLayer
         nBars  = self.nScinBar
@@ -307,7 +307,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
                                     dz = 0.5*self.stripxDimTop[2])
         ecalStripxTop_lv = geom.structure.Volume('volECALStripxTop', material=self.ecalScinMat, shape=ecalStripxTop)
         ecalStripxTop_lv.params.append(("SensDet", 'volecalStripxTop'))
- 
+
 
         ecalStripyTop = geom.shapes.Box( 'ecalStripyTop',
                                     dx = 0.5*self.stripyDimTop[0],
@@ -323,7 +323,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
                                      dz = 0.5*self.radiatorDimTop[2])
         radiatorTop_lv = geom.structure.Volume('volRadiatorPlateTop', material=self.radiatorMat, shape=ecalRadiatorTop)
         radiatorTop_lv.params.append(("SensDet", 'volradiatorTop'))
- 
+
 
         nScins = self.nScinLayer
         nBars  = self.nScinBar
@@ -368,10 +368,10 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
 
     def getMagnet(self, full3dst_lv, magPos, geom):
 
-        print ('magnet location')
-        print (magPos[0])
-        print (magPos[1])
-        print (magPos[2])
+        print('magnet location')
+        print(magPos[0])
+        print(magPos[1])
+        print(magPos[2])
 
         magOut = geom.shapes.Box( 'MagOut', dx = 0.5*self.magOutDim[0], dy = 0.5*self.magOutDim[1], dz = 0.5*self.magOutDim[2])
         magIn = geom.shapes.Box ('MagInner', dx = 0.5*self.magInDim[0], dy = 0.5*self.magInDim[1], dz = 0.5*self.magInDim[2])
@@ -379,7 +379,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         magBox = geom.shapes.Boolean( 'Magnet', type='subtraction', first=magOut, second=magIn )
         mag_lv = geom.structure.Volume( 'volMagnet', material = self.magMat, shape = magBox)
         mag_lv.params.append(("SensDet", 'volmag'))
- 
+
 
         #########################################
 
@@ -390,11 +390,11 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
 
     def getRPC(self, full3dst_lv, rpcPos, geom):
 
-        print ('rpc location')
-        print (rpcPos[0])
-        print (rpcPos[1])
-        print (rpcPos[2])
-       
+        print('rpc location')
+        print(rpcPos[0])
+        print(rpcPos[1])
+        print(rpcPos[2])
+
         rpcModDim = self.rpcModDim
         rpcModBox = geom.shapes.Box('rpcModBox', dx=0.5*self.rpcModDim[0], dy=0.5*self.rpcModDim[1], dz=0.5*rpcModDim[2])
         rpcMod_lv = geom.structure.Volume('volRPC', material=self.rpcModMat, shape=rpcModBox)
@@ -402,7 +402,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         resisplate = geom.shapes.Box( 'ResistivePlate',dx=0.5*self.resistplateDim[0], dy=0.5*self.resistplateDim[1], dz=0.5*self.resistplateDim[2])
         resistplate_lv = geom.structure.Volume('volResistivePlate', material=self.resistplateMat, shape=resisplate)
         resistplate_lv.params.append(("SensDet", 'volresistplate'))
- 
+
 
         rpcGas = geom.shapes.Box( 'RPCGas', dx=0.5*self.resistplateDim[0], dy=0.5*self.resistplateDim[1],dz=0.5*self.resistplateDim[2])
         rpcGas_lv = geom.structure.Volume('volRPCGas', material=self.gasMat, shape=rpcGas)
@@ -412,7 +412,7 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
         nLayers = self.nRPCLayer
 
         for i in range(nLayers):
-            
+
             xpos = '0cm'
             ypos = '0cm'
             zpos = -0.5*self.rpcModDim[2]+i*self.resistplateDim[2]+i*self.gas_gap+0.5*self.resistplateDim[2]
@@ -440,10 +440,10 @@ class Minimal_3DST_Builder(gegede.builder.Builder):
 
     def getCylinder(self, full3dst_lv, cylinderPos, geom):
 
-        print ('Cylinder location')
-        print (self.cylinderPos[0])
-        print (self.cylinderPos[1])
-        print (self.cylinderPos[2])
+        print('Cylinder location')
+        print(self.cylinderPos[0])
+        print(self.cylinderPos[1])
+        print(self.cylinderPos[2])
 
         cylinderShape = geom.shapes.Tubs('cylinderShape', rmin=0.5*self.cylinderDim[0], rmax=self.cylinderDim[1], dz=0.5*self.cylinderDim[2], sphi=self.cylinderDim[3], dphi=self.cylinderDim[4])
 

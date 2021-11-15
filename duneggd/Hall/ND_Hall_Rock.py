@@ -26,43 +26,44 @@ class RockBuilder(gegede.builder.Builder):
                 dy = 0.5*self.rockBoxMainDim[1],
                 dz = 0.5*self.rockBoxMainDim[2])
 
-        rockBoxUpstream = geom.shapes.Box( 'RockBoxUpstream',
-                dx = 0.5*self.rockBoxUpstreamDim[0],
-                dy = 0.5*self.rockBoxUpstreamDim[1],
-                dz = 0.5*self.rockBoxUpstreamDim[2])
+        #rockBoxUpstream = geom.shapes.Box( 'RockBoxUpstream',
+        #        dx = 0.5*self.rockBoxUpstreamDim[0],
+        #        dy = 0.5*self.rockBoxUpstreamDim[1],
+        #        dz = 0.5*self.rockBoxUpstreamDim[2])
 
-        rockBoxUpstreamPosition = geom.structure.Position( 'rockBoxUpstreamPosition',
-                self.rockBoxUpstreamPos[0],
-                self.rockBoxUpstreamPos[1],
-                self.rockBoxUpstreamPos[2])
+        #rockBoxUpstreamPosition = geom.structure.Position( 'rockBoxUpstreamPosition',
+        #        self.rockBoxUpstreamPos[0],
+        #        self.rockBoxUpstreamPos[1],
+        #        self.rockBoxUpstreamPos[2])
 
-        rockBoxSubt = geom.shapes.Box( 'RockBoxSubt',
-                dx = 0.5*self.rockBoxSubtDim[0],
-                dy = 0.5*self.rockBoxSubtDim[1],
-                dz = 0.5*self.rockBoxSubtDim[2])
+        #rockBoxSubt = geom.shapes.Box( 'RockBoxSubt',
+        #        dx = 0.5*self.rockBoxSubtDim[0],
+        #        dy = 0.5*self.rockBoxSubtDim[1],
+        #        dz = 0.5*self.rockBoxSubtDim[2])
 
-        rockBoxSubtPosition = geom.structure.Position( 'rockBoxSubtPosition',
-                self.rockBoxSubtPos[0],
-                self.rockBoxSubtPos[1],
-                self.rockBoxSubtPos[2])
+        #rockBoxSubtPosition = geom.structure.Position( 'rockBoxSubtPosition',
+        #        self.rockBoxSubtPos[0],
+        #        self.rockBoxSubtPos[1],
+        #        self.rockBoxSubtPos[2])
 
-        rockTub = geom.shapes.Tubs( 'rockTub',
-                rmin = self.rockTubDim[0],
-                rmax = self.rockTubDim[1],
-                dz = 0.5*self.rockTubDim[2],
-                sphi = self.rockTubDim[3],
-                dphi = self.rockTubDim[4])
+        #rockTub = geom.shapes.Tubs( 'rockTub',
+        #        rmin = self.rockTubDim[0],
+        #        rmax = self.rockTubDim[1],
+        #        dz = 0.5*self.rockTubDim[2],
+        #        sphi = self.rockTubDim[3],
+        #        dphi = self.rockTubDim[4])
         
-        rockTubPosition = geom.structure.Position( 'rockTubPosition',
-                self.rockTubPos[0],
-                self.rockTubPos[1],
-                self.rockTubPos[2])
+        #rockTubPosition = geom.structure.Position( 'rockTubPosition',
+        #        self.rockTubPos[0],
+        #        self.rockTubPos[1],
+        #        self.rockTubPos[2])
 
-        rockBoxTemp1 = geom.shapes.Boolean( 'rockBoxTemp1', type='union', first=rockBoxMain, second=rockBoxUpstream, pos=rockBoxUpstreamPosition)
-        rockBoxTemp2 = geom.shapes.Boolean( 'rockBoxTemp2', type='subtraction', first=rockBoxTemp1, second=rockBoxSubt, pos=rockBoxSubtPosition)
-        rockBox = geom.shapes.Boolean( 'rockBox', type='union', first=rockBoxTemp2, second=rockTub, rot='r90aboutX', pos=rockTubPosition)
+        #rockBoxTemp1 = geom.shapes.Boolean( 'rockBoxTemp1', type='union', first=rockBoxMain, second=rockBoxUpstream, pos=rockBoxUpstreamPosition)
+        #rockBoxTemp2 = geom.shapes.Boolean( 'rockBoxTemp2', type='subtraction', first=rockBoxTemp1, second=rockBoxSubt, pos=rockBoxSubtPosition)
+        #rockBoxTemp2 = geom.shapes.Boolean( 'rockBoxTemp2', type='subtraction', first=rockBoxMain, second=rockBoxSubt, pos=rockBoxSubtPosition)
+        #rockBox = geom.shapes.Boolean( 'rockBox', type='union', first=rockBoxTemp2, second=rockTub, rot='r90aboutX', pos=rockTubPosition)
 
-        rockBox_lv = geom.structure.Volume( 'rockBox_lv', material=self.mat, shape=rockBox)
+        rockBox_lv = geom.structure.Volume( 'rockBox_lv', material=self.mat, shape=rockBoxMain)
         self.add_volume( rockBox_lv )
 
         for i,sb in enumerate(self.get_builders()):
@@ -70,7 +71,7 @@ class RockBuilder(gegede.builder.Builder):
             Rot = [Q("0deg"),Q("0deg"),Q("0deg")]
             if self.Positions!=None :
                 Pos=self.Positions[i]
-            if self.Positions!=None:
+            if self.Rotations!=None:
                 Rot=self.Rotations[i]
             sb_lv = sb.get_volume()
             sb_pos = geom.structure.Position( sb_lv.name+'_pos', Pos[0], Pos[1], Pos[2] )
