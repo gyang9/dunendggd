@@ -6,7 +6,7 @@ from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
 
-class KloeEmCaloBarrelModBuilder(gegede.builder.Builder):
+class SandECalBarrelModBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self,
 		  trapezoidDim=None,

@@ -305,11 +305,11 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Air_Volume.cfg \
            duneggd/Config/ND_Hall_Rock.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
-           duneggd/Config/KLOE_STTFULL.cfg \
-           duneggd/Config/SANDINNERVOLOPT1.cfg \
-           duneggd/Config/KLOEEMCALO.cfg \
-           duneggd/Config/STT.cfg \
-           duneggd/Config/GRAIN.cfg \
+           duneggd/Config/SAND_MAGNET.cfg \
+           duneggd/Config/SAND_INNERVOLOPT1.cfg \
+           duneggd/Config/SAND_ECAL.cfg \
+           duneggd/Config/SAND_STT.cfg \
+           duneggd/Config/SAND_GRAIN.cfg \
            duneggd/Config/ND_CraneRailStruct1.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
@@ -328,11 +328,11 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_Hall_Air_Volume.cfg \
            duneggd/Config/ND_Hall_Rock.cfg \
            duneggd/Config/ND_ElevatorStruct.cfg \
-           duneggd/Config/KLOE_STTFULL.cfg \
-           duneggd/Config/SANDINNERVOLOPT2.cfg \
-           duneggd/Config/KLOEEMCALO.cfg \
-           duneggd/Config/STT.cfg \
-           duneggd/Config/GRAIN.cfg \
+           duneggd/Config/SAND_MAGNET.cfg \
+           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_ECAL.cfg \
+           duneggd/Config/SAND_STT.cfg \
+           duneggd/Config/SAND_GRAIN.cfg \
            duneggd/Config/ND_CraneRailStruct1.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \

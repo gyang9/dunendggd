@@ -10,7 +10,7 @@ import math
 from gegede import Quantity as Q
 import time
 
-class STTFULLBuilder(gegede.builder.Builder):
+class STTBuilder(gegede.builder.Builder):
     def configure( self, halfDimension=None, Material=None, nBarrelModules=None, configuration=None, liqArThickness=None, **kwds):
         self.simpleStraw      	    = False
         self.sqrt3                  = 1.7320508

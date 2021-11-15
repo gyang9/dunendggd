@@ -4,7 +4,7 @@ from duneggd.LocalTools import localtools as ltools
 from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
-class KLOEBuilder(gegede.builder.Builder):
+class SANDBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self,

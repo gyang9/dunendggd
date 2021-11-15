@@ -6,7 +6,7 @@ from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
 
-class KloeEmCaloBuilder(gegede.builder.Builder):
+class SandECalBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, **kwds):
         self.NCaloModBarrel = 24
@@ -84,11 +84,11 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
         # each covering 15 degrees. The modules are 4.3m long, 23cm thick,
         # trapezoids with bases of 52 and 59 cm.
 
-        if self.get_builder("KLOEEMCALOBARRELMOD") == None:
-            print("KLOEEMCALOBARRELMOD builder not found")
+        if self.get_builder("SANDECALBARRELMOD") == None:
+            print("SANDECALBARRELMOD builder not found")
             return
 
-        emcalo_module_builder = self.get_builder("KLOEEMCALOBARRELMOD")
+        emcalo_module_builder = self.get_builder("SANDECALBARRELMOD")
         emcalo_module_lv = emcalo_module_builder.get_volume()
 
         for j in range(self.NCaloModBarrel):
@@ -137,11 +137,11 @@ class KloeEmCaloBuilder(gegede.builder.Builder):
         # just model as a disk with a hole
         # segmentation is the same as for the barrel modules
 
-        if self.get_builder("KLOEEMCALOENDCAP") == None:
-            print("KLOEEMCALOENDCAP builder not found")
+        if self.get_builder("SANDECALENDCAP") == None:
+            print("SANDECALENDCAP builder not found")
             return
 
-        emcalo_endcap_builder = self.get_builder("KLOEEMCALOENDCAP")
+        emcalo_endcap_builder = self.get_builder("SANDECALENDCAP")
         emcalo_endcap_lv = emcalo_endcap_builder.get_volume()
 
         for side in ['L', 'R']:

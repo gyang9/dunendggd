@@ -6,7 +6,7 @@ from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
 
-class KloeEmCaloEndcapBuilder(gegede.builder.Builder):
+class SandECalEndcapBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self, 
 		  EndcapSize=None, 
