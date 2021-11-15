@@ -28,29 +28,29 @@ class IronDipoleBuilder(gegede.builder.Builder):
         self.ecalDownBldr = self.get_builder('ECALDownstream')        
         self.ecalUpBldr = self.get_builder('ECALUpstream')
         self.ecalBarBldr=None
-        if(self.builders.has_key('ECALBarrel')):        
+        if('ECALBarrel' in self.builders):        
             self.ecalBarBldr  = self.get_builder('ECALBarrel')
 
         self.ecalTopBldr=None
-        if(self.builders.has_key('ECALTop')):        
+        if('ECALTop' in self.builders):        
             self.ecalTopBldr  = self.get_builder('ECALTop')
             self.ecalTopPos=ecalTopPos
             self.ecalTopRot=ecalTopRot
 
         self.ecalBotBldr=None
-        if(self.builders.has_key('ECALBot')):        
+        if('ECALBot' in self.builders):        
             self.ecalBotBldr  = self.get_builder('ECALBot')
             self.ecalBotPos=ecalBotPos
             self.ecalBotRot=ecalBotRot
 
         self.ecalRightBldr=None
-        if(self.builders.has_key('ECALRight')):        
+        if('ECALRight' in self.builders):        
             self.ecalRightBldr  = self.get_builder('ECALRight')
             self.ecalRightPos=ecalRightPos
             self.ecalRightRot=ecalRightRot
 
         self.ecalLeftBldr=None
-        if(self.builders.has_key('ECALLeft')):        
+        if('ECALLeft' in self.builders):        
             self.ecalLeftBldr  = self.get_builder('ECALLeft')
             self.ecalLeftPos=ecalLeftPos
             self.ecalLeftRot=ecalLeftRot
@@ -78,10 +78,10 @@ class IronDipoleBuilder(gegede.builder.Builder):
         self.ecalUpRot  = ecalUpRot
         self.ecalBarRot   = ecalBarRot
         
-	self.magPos       = list(magPos) #MAK: inherited this code... why list(...) here?
+        self.magPos       = list(magPos) #MAK: inherited this code... why list(...) here?
         self.ecalDnPos    = list(ecalDnPos)
         self.ecalUpPos    = list(ecalUpPos)
-	self.ecalBaPos    = list(ecalBaPos)
+        self.ecalBaPos    = list(ecalBaPos)
         
         self.STTPos=STTPos 
         self.buildSTT=buildSTT
@@ -101,8 +101,8 @@ class IronDipoleBuilder(gegede.builder.Builder):
         ecalDownDim    = list(self.ecalDownBldr.ecalModDim)
         # dimensions of the outside of the magnet yoke
         # includes gaps between yoke segments
-	magBoxOutDim   = list(self.MagnetBldr.MagnetSystemOuterDimension)
-        print "IronDipoleBuilder::construct():  magBoxOutDim = ",magBoxOutDim
+        magBoxOutDim   = list(self.MagnetBldr.MagnetSystemOuterDimension)
+        print("IronDipoleBuilder::construct():  magBoxOutDim = ",magBoxOutDim)
 
 #	ecalBarPos  = list(self.ecalBaPos)
 
@@ -129,7 +129,7 @@ class IronDipoleBuilder(gegede.builder.Builder):
         innerDet_shape = geom.shapes.Box('innerDet', dx=0.5*innerDet_dim[0],
                                          dy=0.5*innerDet_dim[1],dz=0.5*innerDet_dim[2])
         innerDet_lv= geom.structure.Volume('innerDet_volume',material='Air',shape=innerDet_shape)
-        print "Setting IronDipole inner detector field to ",self.innerDetBField
+        print("Setting IronDipole inner detector field to ",self.innerDetBField)
         innerDet_lv.params.append(("BField",self.innerDetBField))
         ######### ecal and trackers inside inner detector ######
         self.build_ecal(innerDet_lv,geom)
@@ -149,14 +149,15 @@ class IronDipoleBuilder(gegede.builder.Builder):
         innerDet_pla=geom.structure.Placement("innerDet_pla",
                                               volume=innerDet_lv,
                                               pos=innerDet_pos)
-        print "appending ",innerDet_pla.name, " to ", main_lv.name
+        print("appending ",innerDet_pla.name, " to ", main_lv.name)
 
         main_lv.placements.append(innerDet_pla.name)
 
 
 
     def build_magnet(self,det_lv,geom):
-	magnet_lv = self.MagnetBldr.get_volume('volMagnet')
+
+        magnet_lv = self.MagnetBldr.get_volume('volMagnet')
         magnet_in_det = geom.structure.Position('magnet_in_det', self.magPos[0], self.magPos[1], self.magPos[2])
         pMagnet_in_det = geom.structure.Placement('placeMagnet_in_det',
                                                   volume = magnet_lv,
@@ -255,9 +256,9 @@ class IronDipoleBuilder(gegede.builder.Builder):
             
         
     def build_stt(self,det_lv,geom):
-        print "IronDipoleBuilder::build_stt(...) called"
-	stt_lv = self.STTBldr.get_volume('volSTT')
-        print "IronDipoleBuilder::build_stt(...) STT placed at ", self.STTPos
+        print("IronDipoleBuilder::build_stt(...) called")
+        stt_lv = self.STTBldr.get_volume('volSTT')
+        print("IronDipoleBuilder::build_stt(...) STT placed at ", self.STTPos)
         stt_pos = geom.structure.Position('STT_pos', 
                                           self.STTPos[0], self.STTPos[1], self.STTPos[2])
         stt_pla = geom.structure.Placement('STT_pla',
@@ -269,9 +270,9 @@ class IronDipoleBuilder(gegede.builder.Builder):
 
     def build_a3dst(self,det_lv,geom):
         
-        print "IronDipoleBuilder::build_a3dst(...) called"
-	a3dst_lv = self.A3DSTBldr.get_volume('volA3DST')
-        print "IronDipoleBuilder::build_a3dst(...) A3DST placed at ", self.A3DSTPos
+        print("IronDipoleBuilder::build_a3dst(...) called")
+        a3dst_lv = self.A3DSTBldr.get_volume('volA3DST')
+        print("IronDipoleBuilder::build_a3dst(...) A3DST placed at ", self.A3DSTPos)
         a3dst_pos = geom.structure.Position('a3DST_pos', 
                                             self.A3DSTPos[0], self.A3DSTPos[1], self.A3DSTPos[2])
         a3dst_pla = geom.structure.Placement('a3DST_pla',
@@ -282,9 +283,9 @@ class IronDipoleBuilder(gegede.builder.Builder):
 
 
     def build_gartpc(self,det_lv,geom):
-        print "IronDipoleBuilder::build_gartpc(...) called"
-	gartpc_lv = self.GArTPCBldr.get_volume('volGArTPC')
-        print "IronDipoleBuilder::build_gartpc(...) GArTPC placed at ", self.GArTPCPos
+        print("IronDipoleBuilder::build_gartpc(...) called")
+        gartpc_lv = self.GArTPCBldr.get_volume('volGArTPC')
+        print("IronDipoleBuilder::build_gartpc(...) GArTPC placed at ", self.GArTPCPos)
         gartpc_pos = geom.structure.Position('GArTPC_pos', 
                                              self.GArTPCPos[0], self.GArTPCPos[1], self.GArTPCPos[2])
         gartpc_rot = geom.structure.Rotation('GArTPC_rot', 

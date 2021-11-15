@@ -48,7 +48,7 @@ class KLOEBuilder(gegede.builder.Builder):
         self.EndcapAZEnd=Q("2.99m")
         self.EndcapARmax=Q("3.07m")
         self.EndcapARmin=Q("0.96m")
-        
+
         # part B is a TUBS, 2.15<|x|<2.58m, rmin=2.78m, rmax=3.30m
         self.EndcapBZStart=Q("2.15m")
         self.EndcapBZEnd=Q("2.58m")
@@ -68,12 +68,11 @@ class KLOEBuilder(gegede.builder.Builder):
         self.EndcapDRmin=Q("0.51m")
 
 
-
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
         main_lv, main_hDim = ltools.main_lv( self, geom, "Box")
-        print( "KLOEBuilder::construct()")
-        print( "main_lv = "+ main_lv.name)
+        print("KLOEBuilder::construct()")
+        print("main_lv = "+ main_lv.name)
         self.add_volume( main_lv )
         self.build_yoke(main_lv, geom)
         self.build_solenoid(main_lv, geom)
@@ -129,8 +128,8 @@ class KLOEBuilder(gegede.builder.Builder):
         self.build_inner_volume(MagIntVol_volume, geom)
 
         print("printing main_lv: " + str(main_lv))
-            
-            
+
+
 #        TranspV = [0,0,1]
 #        begingap = ltools.getBeginGap( self )
 
@@ -161,23 +160,23 @@ class KLOEBuilder(gegede.builder.Builder):
 #            sb_pla = geom.structure.Placement(pla_name,volume=sb_lv, pos=sb_pos)
 #            print( "Appending ",sb_pla.name," to main_lv=",main_lv.name)
 #            main_lv.placements.append(sb_pla.name)
-    
+
     def build_yoke(self,main_lv,geom):
-        
+
         #build barrel
-        barrel_shape=geom.shapes.Tubs('KLOEYokeBarrel', 
-                                      rmin=self.BarrelRmin, 
-                                      rmax=self.BarrelRmax, 
+        barrel_shape=geom.shapes.Tubs('KLOEYokeBarrel',
+                                      rmin=self.BarrelRmin,
+                                      rmax=self.BarrelRmax,
                                       dz=self.BarrelHalfLength)
-        barrel_lv=geom.structure.Volume('KLOEYokeBarrel_volume', 
-                                        material=self.BarrelMaterial, 
+        barrel_lv=geom.structure.Volume('KLOEYokeBarrel_volume',
+                                        material=self.BarrelMaterial,
                                         shape=barrel_shape)
         ## set magnitude of BarrelBField based on conserved B.dA
         BarrelBField=self.CentralBField*self.SolenoidCoilShellRmin**2/(self.BarrelRmax**2 - self.BarrelRmin**2)
-        
+
 #        BField="(0.0 T, 0.0 T, %f T)"%(-BarrelBField/Q("1.0T"))
         BField="(%f T, 0.0 T, 0.0 T)"%(-BarrelBField/Q("1.0T"))
-        print( "Setting KLOE Barrel Bfield to "+str(BField))
+        print("Setting KLOE Barrel Bfield to "+str(BField))
         barrel_lv.params.append(("BField",BField))
 
 
@@ -187,9 +186,9 @@ class KLOEBuilder(gegede.builder.Builder):
         barrel_pla=geom.structure.Placement("KLOEYokeBarrel_pla",
                                             volume=barrel_lv,
                                             pos=barrel_pos)
-        print( "appending "+barrel_pla.name)
+        print("appending "+barrel_pla.name)
         main_lv.placements.append(barrel_pla.name)
-        
+
         # build endcap
         partv=['A','B','C','D']
 
@@ -202,12 +201,12 @@ class KLOEBuilder(gegede.builder.Builder):
             for side in ['L','R']:
                 name='KLOEYokeEndcap'+part+side
                 hl=(zend-zstart)/2.0
-                ec_shape=geom.shapes.Tubs(name, 
-                                          rmin=rmin, 
-                                          rmax=rmax, 
+                ec_shape=geom.shapes.Tubs(name,
+                                          rmin=rmin,
+                                          rmax=rmax,
                                           dz=hl)
-                ec_lv=geom.structure.Volume(name+'_volume', 
-                                            material=self.BarrelMaterial, 
+                ec_lv=geom.structure.Volume(name+'_volume',
+                                            material=self.BarrelMaterial,
                                             shape=ec_shape)
                 pos = [Q('0m'),Q('0m'),Q('0m')]
                 pos[2]=(zstart+zend)/2.0
@@ -218,13 +217,13 @@ class KLOEBuilder(gegede.builder.Builder):
                 ec_pla=geom.structure.Placement(name+"_pla",
                                                 volume=ec_lv,
                                                 pos=ec_pos)
-                print( "appending "+ec_pla.name)
+                print("appending "+ec_pla.name)
                 main_lv.placements.append(ec_pla.name)
 
-        
+
 
     def build_solenoid(self,main_lv,geom):
-        # K.D. Smith, et al., 
+        # K.D. Smith, et al.,
         # IEEE Transactions on Applied Superconductivity, v7, n2, June 1997
         # the solenoid has the following major parts
         # cryostat endcaps
@@ -239,7 +238,7 @@ class KLOEBuilder(gegede.builder.Builder):
         #self.SolenoidRmax=Q("2.85m") # cryostat outer wall
         #self.SolenoidRcen=Q("2.60m") # location of the coil's center
 
-        SolenoidHL=Q("2.15m") # halflength of solenoid to outer edge of cryostat        
+        SolenoidHL=Q("2.15m") # halflength of solenoid to outer edge of cryostat
         # cryostat endcaps
         # rmin=2.43m, rmax=2.88m, thickness=40mm, xcenter=2.15m-40mm/2
         SolenoidECRmin=Q("2.43m")
@@ -250,12 +249,12 @@ class KLOEBuilder(gegede.builder.Builder):
 
         for side in ['L','R']:
             name='KLOESolenoidCryostatEndcap'+side
-            ec_shape=geom.shapes.Tubs(name, 
-                                      rmin=SolenoidECRmin, 
-                                      rmax=SolenoidECRmax, 
+            ec_shape=geom.shapes.Tubs(name,
+                                      rmin=SolenoidECRmin,
+                                      rmax=SolenoidECRmax,
                                       dz=SolenoidECDz/2.0)
-            ec_lv=geom.structure.Volume(name+'_volume', 
-                                        material=SolenoidECMaterial, 
+            ec_lv=geom.structure.Volume(name+'_volume',
+                                        material=SolenoidECMaterial,
                                         shape=ec_shape)
             pos = [Q('0m'),Q('0m'),Q('0m')]
             pos[2]=SolenoidECZloc
@@ -265,8 +264,8 @@ class KLOEBuilder(gegede.builder.Builder):
                                            pos[0],pos[1], pos[2])
             ec_pla=geom.structure.Placement(name+"_pla",
                                             volume=ec_lv,
-                                            pos=ec_pos)        
-            print( "appending "+ec_pla.name)
+                                            pos=ec_pos)
+            print("appending "+ec_pla.name)
             main_lv.placements.append(ec_pla.name)
 
         # cryostat inner and outer walls
@@ -276,19 +275,19 @@ class KLOEBuilder(gegede.builder.Builder):
         SolenoidCryostatDz=Q("12mm")+Q("3mm") # include radiation screen in wall
         for wall in ['Inner','Outer']:
             name='KLOESolenoidCryostat'+wall+'Wall'
-            
+
             rmax=SolenoidCryostatRmax
             rmin=rmax-SolenoidCryostatDz
             if wall=='Inner':
                 rmin=SolenoidCryostatRmin
                 rmax=rmin+SolenoidCryostatDz
             hl=SolenoidCryostatHL
-            shape=geom.shapes.Tubs(name, 
-                                      rmin=rmin, 
-                                      rmax=rmax, 
+            shape=geom.shapes.Tubs(name,
+                                      rmin=rmin,
+                                      rmax=rmax,
                                       dz=hl)
-            lv=geom.structure.Volume(name+'_volume', 
-                                        material=SolenoidECMaterial, 
+            lv=geom.structure.Volume(name+'_volume',
+                                        material=SolenoidECMaterial,
                                         shape=shape)
             pos = [Q('0m'),Q('0m'),Q('0m')]
 
@@ -296,66 +295,66 @@ class KLOEBuilder(gegede.builder.Builder):
                                            pos[0],pos[1], pos[2])
             pla=geom.structure.Placement(name+"_pla",
                                             volume=lv,
-                                            pos=pos)        
-            print( "appending "+pla.name)
+                                            pos=pos)
+            print("appending "+pla.name)
             main_lv.placements.append(pla.name)
-            
+
 
         # coil shell
-        
+
         SolenoidCoilShellRmin=self.SolenoidCoilShellRmin
         SolenoidCoilShellDz=Q("10mm")+Q("1mm") # 1mm Al layer between two coil layers included here
         name='KLOESolenoidCoilShell'
 
-        rmin=SolenoidCoilShellRmin        
+        rmin=SolenoidCoilShellRmin
         rmax=rmin+SolenoidCoilShellDz
 
         hl=SolenoidCryostatHL-Q("1cm") # make it a little shorter than the cryostat, 1cm is a wild guess
-        shape=geom.shapes.Tubs(name, 
-                               rmin=rmin, 
-                               rmax=rmax, 
+        shape=geom.shapes.Tubs(name,
+                               rmin=rmin,
+                               rmax=rmax,
                                dz=hl)
-        lv=geom.structure.Volume(name+'_volume', 
-                                material=SolenoidECMaterial, 
+        lv=geom.structure.Volume(name+'_volume',
+                                material=SolenoidECMaterial,
                                  shape=shape)
         pos = [Q('0m'),Q('0m'),Q('0m')]
-        
+
         pos=geom.structure.Position(name+"_pos",
                                     pos[0],pos[1], pos[2])
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
-                                     pos=pos)        
-        print( "appending "+pla.name)
+                                     pos=pos)
+        print("appending "+pla.name)
         main_lv.placements.append(pla.name)
-        
-        
+
+
         #the coil itself
         SolenoidCoilRmin=SolenoidCoilShellRmin+SolenoidCoilShellDz
         SolenoidCoilDz=Q("10mm") # 1mm Al layer between two coil layers included here
         SolenoidCoilMaterial='Copper' # of course it's some mix, maybe not even including copper. This is a placeholder.
         name='KLOESolenoidCoil'
 
-        rmin=SolenoidCoilRmin        
+        rmin=SolenoidCoilRmin
         rmax=rmin+SolenoidCoilDz
 
         hl=SolenoidCryostatHL-Q("1cm") # make it a little shorter than the cryostat, 1cm is a wild guess
-        shape=geom.shapes.Tubs(name, 
-                               rmin=rmin, 
-                               rmax=rmax, 
+        shape=geom.shapes.Tubs(name,
+                               rmin=rmin,
+                               rmax=rmax,
                                dz=hl)
-        lv=geom.structure.Volume(name+'_volume', 
-                                material=SolenoidCoilMaterial, 
+        lv=geom.structure.Volume(name+'_volume',
+                                material=SolenoidCoilMaterial,
                                  shape=shape)
         pos = [Q('0m'),Q('0m'),Q('0m')]
-        
+
         pos=geom.structure.Position(name+"_pos",
                                     pos[0],pos[1], pos[2])
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
-                                     pos=pos)        
-        print( "appending "+pla.name)
+                                     pos=pos)
+        print("appending "+pla.name)
         main_lv.placements.append(pla.name)
-        
+
     def build_ecal(self, main_lv, geom):
         
         if "KLOEEMCALO" not in self.builders:
@@ -421,12 +420,12 @@ class KLOEBuilder(gegede.builder.Builder):
                 print("Working on ", a3dst_lv.name)
                 pos_name = self.name + a3dst_lv.name + '_pos'
                 pla_name = self.name + a3dst_lv.name + '_pla'
-                print("Position name", pos_name)
-                print("Placement name", pla_name)
+                print(("Position name", pos_name))
+                print(("Placement name", pla_name))
                 sb_pos = geom.structure.Position(pos_name, pos[0], pos[1], pos[2])
                 sb_pla = geom.structure.Placement(pla_name,volume=a3dst_lv,
 					          pos=sb_pos)
-                print("Appending ", sb_pla.name, " to main_lv=", main_lv.name)
+                print(("Appending ", sb_pla.name, " to main_lv=", main_lv.name))
                 main_lv.placements.append(sb_pla.name)
 
     def build_sttfull(self, main_lv, geom):
@@ -491,7 +490,7 @@ class KLOEBuilder(gegede.builder.Builder):
         threeDSTwithSTT_pla = geom.structure.Placement('threeDSTwithSTT_pla',
                                                   volume=threeDSTwithSTT_lv)
         main_lv.placements.append(threeDSTwithSTT_pla.name)
-        
+
 
 
     def build_tracker(self,main_lv,geom):
@@ -501,22 +500,22 @@ class KLOEBuilder(gegede.builder.Builder):
         if ("KLOEGAR" not in self.builders) and ("KLOESTT" not in self.builders):
             print("KLOEGAR and KLOESTT have not been requested.")
             print("Therefore we will not build the tracking region.")
-            return 
+            return
 
-        
+
         # this is where we will use subbuilders
         name="KLOETrackingRegion"
         KLOETrackingRegionRmin=Q("0m")
         KLOETrackingRegionRmax=Q("2.0m")
         KLOETrackingRegionHL=Q("1.69m")
 
-        # build tracking region logical volume        
-        shape=geom.shapes.Tubs(name, 
-                               rmin=KLOETrackingRegionRmin, 
+        # build tracking region logical volume
+        shape=geom.shapes.Tubs(name,
+                               rmin=KLOETrackingRegionRmin,
                                rmax=KLOETrackingRegionRmax,
                                dz=KLOETrackingRegionHL)
-        lv=geom.structure.Volume(name+'_volume', 
-                                 material='Air', 
+        lv=geom.structure.Volume(name+'_volume',
+                                 material='Air',
                                  shape=shape)
 
 
@@ -544,7 +543,7 @@ class KLOEBuilder(gegede.builder.Builder):
                                                  volume=stt_lv,pos=stt_pos,
                                                  rot=stt_rot)
                 lv.placements.append(stt_pla.name)
-        
+
         # or, build the GArTPC
         if "KLOEGAR" not in self.builders:
             print("we have a KLOEGAR builder key")
@@ -563,7 +562,7 @@ class KLOEBuilder(gegede.builder.Builder):
                                                  volume=gar_lv,pos=gar_pos,
                                                  rot=gar_rot)
                 lv.placements.append(gar_pla.name)
-        
+
 
 
         # now place the tracking volume
@@ -578,8 +577,6 @@ class KLOEBuilder(gegede.builder.Builder):
         main_lv.placements.append(pla.name)
 
 
-            
+
     #def build_muon_system(self,main_lv,geom):
     #    pass
-
-
