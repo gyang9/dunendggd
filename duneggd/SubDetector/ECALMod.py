@@ -71,7 +71,7 @@ class ECALModBuilder(gegede.builder.Builder):
         n2 = 0
         for i in range(self.nSBPlanes):
             zpos = -0.5*self.ecalModDim[2]+ (i+0.5)*SBPlaneDim[2]+(i+1)*self.leadThickness +self.zXtra
-            print("placing ecal SBPlane {} at zpos={} cm".format(i,zpos/Q("1cm")))
+            print("placing ecal SBPlane %i at zpos=%f cm"%(i,zpos/Q("1cm")))
 	    rotPlane = 'identity'
 	    #if(self.altPlaneOrient): rotPlane = 'r90aboutZ'
 

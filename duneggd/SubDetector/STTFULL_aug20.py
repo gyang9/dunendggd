@@ -21,8 +21,8 @@ class STTFULLBuilder(gegede.builder.Builder):
         
         self.kloeVesselRadius       = Q('2m')
         self.kloeVesselHalfDx       = Q('1.69m')
-        self.extRadialgap           = Q("5cm")
-        self.extLateralgap          = Q("5cm")
+        self.extRadialgap           = Q("0cm")
+        self.extLateralgap          = Q("0cm")
         self.kloeTrkRegRadius       = self.kloeVesselRadius - self.extRadialgap
 	self.kloeTrkRegHalfDx       = self.kloeVesselHalfDx - self.extLateralgap
         self.GapForST               = Q("7.5cm")
@@ -133,7 +133,7 @@ class STTFULLBuilder(gegede.builder.Builder):
 
         ############################## the main tube    #######################################
         #        main_lv, main_hDim = ltools.main_lv( self, geom, "Tubs")
-        stt_shape=geom.shapes.PolyhedraRegular("shape_stt",numsides=24, rmin=Q('0cm'), rmax=self.kloeTrkRegRadius , dz=self.kloeTrkRegHalfDx)
+        stt_shape=geom.shapes.PolyhedraRegular("shape_stt",numsides=24, rmin=Q('0cm'), rmax=self.kloeVesselRadius , dz=self.kloeVesselHalfDx)
         main_lv = geom.structure.Volume('STTtracker',   material=self.Material, shape=stt_shape)
         print( "KLOESTTFULL::construct()")
         print( "  main_lv = "+ main_lv.name)
