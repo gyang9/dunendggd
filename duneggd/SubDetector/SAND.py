@@ -4,7 +4,7 @@ from duneggd.LocalTools import localtools as ltools
 from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
-class KLOEBuilder(gegede.builder.Builder):
+class SANDBuilder(gegede.builder.Builder):
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self,
@@ -16,8 +16,8 @@ class KLOEBuilder(gegede.builder.Builder):
                   BuildGAR=False,
                   Build3DST=False,
                   BuildSTTFULL=False,
+                  BuildSTTLAR=False,
                   Build3DSTwithSTT=False,
-                  STTRotations=None,
                   **kwds):
         del BField
         self.halfDimension = halfDimension
@@ -26,6 +26,7 @@ class KLOEBuilder(gegede.builder.Builder):
         self.BuildGAR      = BuildGAR
         self.Build3DST     = Build3DST
         self.BuildSTTFULL  = BuildSTTFULL
+        self.BuildSTTLAR   = BuildSTTLAR
         self.Build3DSTwithSTT = Build3DSTwithSTT
         # The overall logical volume
         self.LVHalfLength=Q("3.1m")
@@ -66,7 +67,6 @@ class KLOEBuilder(gegede.builder.Builder):
         self.EndcapDRmax=Q("1.73m")
         self.EndcapDRmin=Q("0.51m")
 
-        self.STTRotations=STTRotations
 
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def construct(self, geom):
@@ -76,17 +76,56 @@ class KLOEBuilder(gegede.builder.Builder):
         self.add_volume( main_lv )
         self.build_yoke(main_lv, geom)
         self.build_solenoid(main_lv, geom)
-        self.build_ecal(main_lv,geom)
-        #self.build_muon_system(main_lv,geom)
 
+	# Magnetized internal volume
+        MagIntVolRmax=Q("2.43m")
+        MagIntVolRmin=Q("2.0m")
+        MagIntVolHLmin=Q("1.96m")
+        MagIntVolHLmax=Q("2.15m")
+
+        vol1_shape = geom.shapes.Tubs("MagIntVol_vol1_shape", rmin=MagIntVolRmin, rmax=MagIntVolRmax, dz=MagIntVolHLmax)
+        vol2_shape = geom.shapes.Tubs("MagIntVol_vol2_shape", rmin=Q('0.0m'), rmax=MagIntVolRmin, dz=MagIntVolHLmin)
+        
+        pos = geom.structure.Position("MagIntVol_boolean_shape_pos", Q('0m'), Q('0m'), Q('0m'))
+        
+        MagIntVol_shape = geom.shapes.Boolean("MagIntVol_shape", type='union',
+				   first=vol1_shape, 
+				   second=vol2_shape, 
+				   rot='noRotate', 
+				   pos=pos)
+        
+        MagIntVol_volume = geom.structure.Volume('MagIntVol_volume',
+						 material='Air',
+						 shape=MagIntVol_shape)
+
+
+        pos = [Q('0m'),Q('0m'),Q('0m')]
+
+        BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
+        print( "Setting internal Bfield to "+str(BField))
+        MagIntVol_volume.params.append(("BField",BField))
+
+        MagIntVol_pos=geom.structure.Position("MagIntVol_pos", pos[0],pos[1], pos[2])
+        MagIntVol_pla=geom.structure.Placement("MagIntVol_pla", volume=MagIntVol_volume, pos=MagIntVol_pos)
+        
+        main_lv.placements.append(MagIntVol_pla.name)
+
+	# EM Calorimeter
+        self.build_ecal(MagIntVol_volume,geom)
+
+	# Internal regiorn volumes
         if(self.BuildGAR is True) or (self.BuildSTT is True):
-            self.build_tracker(main_lv, geom)
+            self.build_tracker(MagIntVol_volume, geom)
         if(self.BuildSTTFULL is True):
-            self.build_sttfull(main_lv,geom)
+            self.build_sttfull(MagIntVol_volume,geom)
+        if(self.BuildSTTLAR is True):
+            self.build_sttLAr(MagIntVol_volume,geom)
         if(self.Build3DST is True):
-            self.build_3DST(main_lv, geom)
+            self.build_3DST(MagIntVol_volume, geom)
         if(self.Build3DSTwithSTT is True):
-            self.build_3DSTwithSTT(main_lv, geom)
+            self.build_3DSTwithSTT(MagIntVol_volume, geom)
+        
+        self.build_inner_volume(MagIntVol_volume, geom)
 
         print("printing main_lv: " + str(main_lv))
 
@@ -317,19 +356,23 @@ class KLOEBuilder(gegede.builder.Builder):
         main_lv.placements.append(pla.name)
 
     def build_ecal(self, main_lv, geom):
+        
+        if "SANDECAL" not in self.builders:
+            print("SANDECAL builder not found")
+            return            
 
-        if (("KLOEEMCALO" in self.builders) is False):
-            print("KLOEEMCALO builder not found")
-            return
-
-        emcalo_builder=self.get_builder("KLOEEMCALO")
+        emcalo_builder=self.get_builder("SANDECAL")
         emcalo_lv=emcalo_builder.get_volume()
-
+        
+        #BField="(%f T, 0.0 T, 0.0 T)"%(-self.CentralBField/Q("1.0T"))
+        #print( "Setting KLOE EM Bfield to "+str(BField))
+        #emcalo_lv.params.append(("BField",BField))
+        
         emcalo_position = geom.structure.Position(
                 'emcalo_position', Q('0m'), Q('0m'), Q('0m'))
 
         emcalo_rotation = geom.structure.Rotation(
-                'emcalo_rotation', Q('0deg'), Q('0deg'), Q('7.5deg'))
+                'emcalo_rotation', Q('0deg'), Q('0deg'), Q('0deg'))
 
         emcalo_placement = geom.structure.Placement('emcalo_place',
                                                   volume=emcalo_lv,
@@ -337,9 +380,30 @@ class KLOEBuilder(gegede.builder.Builder):
                                                   rot=emcalo_rotation)
         main_lv.placements.append(emcalo_placement.name)
 
-    def build_3DST(self, main_lv, geom):
+    def build_inner_volume(self, main_lv, geom):
+        
+        if "SANDINNERVOLUME" not in self.builders:
+            print("SANDINNERVOLUME builder not found")
+            return        
+        
+        inner_volume_builder=self.get_builder("SANDINNERVOLUME")
+        inner_volume_lv=inner_volume_builder.get_volume()
+        
+        inner_volume_position = geom.structure.Position(
+                'inner_volume_position', Q('0m'), Q('0m'), Q('0m'))
 
-        if (("3DST" in self.builders) is False):
+        inner_volume_rotation = geom.structure.Rotation(
+                'inner_volume_rotation', Q('0deg'), Q('0deg'), Q('0deg'))
+
+        inner_volume_placement = geom.structure.Placement('inner_volume_place',
+                                                  volume=inner_volume_lv,
+                                                  pos=inner_volume_position,
+                                                  rot=inner_volume_rotation)
+        main_lv.placements.append(inner_volume_placement.name)
+
+        
+    def build_3DST(self, main_lv, geom):
+        if "3DST" not in self.builders:
             print("3DST have not been requested.")
             print("Therefore we will not build 3DST.")
             return
@@ -348,7 +412,12 @@ class KLOEBuilder(gegede.builder.Builder):
             if (a3dst_builder != None):
                 pos = [Q('0m'), Q('0m'), Q('0m')]
                 a3dst_lv = a3dst_builder.get_volume()
-                print(("Working on ", a3dst_lv.name))
+        
+                #BField="(%f T, 0.0 T, 0.0 T)"%(-self.CentralBField/Q("1.0T"))
+                #print( "Setting 3DST Bfield to "+str(BField))
+                #a3dst_lv.params.append(("BField",BField))
+                
+                print("Working on ", a3dst_lv.name)
                 pos_name = self.name + a3dst_lv.name + '_pos'
                 pla_name = self.name + a3dst_lv.name + '_pla'
                 print(("Position name", pos_name))
@@ -360,7 +429,7 @@ class KLOEBuilder(gegede.builder.Builder):
                 main_lv.placements.append(sb_pla.name)
 
     def build_sttfull(self, main_lv, geom):
-        if (("STTFULL" in self.builders) is False):
+        if "STTFULL" not in self.builders:
             print("STTFULL have not been requested.")
             print("Therefore we will not build  STTFULL")
             return
@@ -368,19 +437,56 @@ class KLOEBuilder(gegede.builder.Builder):
             stt_builder = self.get_builder("STTFULL")
             if (stt_builder != None):
                 stt_lv = stt_builder.get_volume()
-                #                stt_rot= geom.structure.Rotation("rot_stttracker", self.STTRotations[0], self.STTRotations[1], self.STTRotations[2])
-                stt_rot= geom.structure.Rotation("rot_stttracker", Q('0deg'), Q('0deg'), Q('7.5deg'))
-                stt_pla = geom.structure.Placement("KLOESTTFULL_pla",
-                                                   volume=stt_lv, rot=stt_rot)
+        
+                #BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
+                #print( "Setting STT Bfield to "+str(BField))
+                #stt_lv.params.append(("BField",BField))
+
+                stt_pos_name = self.name + stt_lv.name + '_pos'
+                stt_rot_name = self.name + stt_lv.name + '_rot'
+                stt_pla_name = self.name + stt_lv.name + '_pla'
+
+                stt_pos = geom.structure.Position(stt_pos_name, Q('0m'), Q('0m'), Q('0m'))
+                stt_rot = geom.structure.Rotation(stt_rot_name, Q('0deg'), Q('180deg'), Q('0deg'))
+                stt_pla = geom.structure.Placement(stt_pla_name,volume=stt_lv, pos = stt_pos, rot = stt_rot)
+
+                main_lv.placements.append(stt_pla.name)
+
+    def build_sttLAr(self, main_lv, geom):
+        if "STTLAR" not in self.builders:
+            print("STTLAR have not been requested.")
+            print("Therefore we will not build  STTLAR")
+            return
+        else:
+            stt_builder = self.get_builder("STTLAR")
+            if (stt_builder != None):
+                stt_lv = stt_builder.get_volume()
+
+                #BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
+                #print( "Setting STT Bfield to "+str(BField))
+                #stt_lv.params.append(("BField",BField))
+
+                stt_pos_name = self.name + stt_lv.name + '_pos'
+                stt_rot_name = self.name + stt_lv.name + '_rot'
+                stt_pla_name = self.name + stt_lv.name + '_pla'
+
+                stt_pos = geom.structure.Position(stt_pos_name, Q('0m'), Q('0m'), Q('0m'))
+                stt_rot = geom.structure.Rotation(stt_rot_name, Q('0deg'), Q('180deg'), Q('0deg'))
+                stt_pla = geom.structure.Placement(stt_pla_name,volume=stt_lv, pos = stt_pos, rot = stt_rot)
+
                 main_lv.placements.append(stt_pla.name)
 
     def build_3DSTwithSTT(self,main_lv, geom):
-
-        if ("3DST_STT" in self.builders)==False:
+        if "3DST_STT" not in self.builders:
             print("3DST_STT doesnot exist, return")
             return
         threeDSTwithSTT_builder=self.get_builder("3DST_STT")
         threeDSTwithSTT_lv=threeDSTwithSTT_builder.get_volume()
+        
+        #BField="(%f T, 0.0 T, 0.0 T)"%(-self.CentralBField/Q("1.0T"))
+        #print( "Setting 3DST+STT Bfield to "+str(BField))
+        #threeDSTwithSTT_lv.params.append(("BField",BField))
+                
         threeDSTwithSTT_pla = geom.structure.Placement('threeDSTwithSTT_pla',
                                                   volume=threeDSTwithSTT_lv)
         main_lv.placements.append(threeDSTwithSTT_pla.name)
@@ -391,7 +497,7 @@ class KLOEBuilder(gegede.builder.Builder):
         # only build the tracker if we are
         # also building the STT or GArTPC
         # 3DST works differently
-        if ("KLOEGAR" in self.builders)==False and ("KLOESTT" in self.builders)==False :
+        if ("KLOEGAR" not in self.builders) and ("KLOESTT" not in self.builders):
             print("KLOEGAR and KLOESTT have not been requested.")
             print("Therefore we will not build the tracking region.")
             return
@@ -414,17 +520,17 @@ class KLOEBuilder(gegede.builder.Builder):
 
 
 #        BField="(0.0 T, 0.0 T, %f T)"%(self.CentralBField/Q("1.0T"))
-        BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
-        print("Setting KLOE Central Tracker Bfield to "+str(BField))
-        lv.params.append(("BField",BField))
-
-
+        #BField="(%f T, 0.0 T, 0.0 T)"%(self.CentralBField/Q("1.0T"))
+        #print( "Setting KLOE Central Tracker Bfield to "+str(BField))
+        #lv.params.append(("BField",BField))
+        
+        
         # now build the STT inside
-        if "KLOESTT" in self.builders:
+        if "KLOESTT" not in self.builders:
             print("we have a KLOESTT builder key")
             stt_builder=self.get_builder("KLOESTT")
-            print("self.BuildSTT==",self.BuildSTT)
-            print("stt_builder: ",stt_builder)
+            print("self.BuildSTT=={}".format(self.BuildSTT))
+            print("stt_builder: {}".format(stt_builder))
             if (stt_builder!=None):
                 rot = [Q("0deg"),Q("90deg"),Q("0deg")]
                 loc = [Q('0m'),Q('0m'),Q('0m')]
@@ -439,11 +545,11 @@ class KLOEBuilder(gegede.builder.Builder):
                 lv.placements.append(stt_pla.name)
 
         # or, build the GArTPC
-        if "KLOEGAR" in self.builders:
+        if "KLOEGAR" not in self.builders:
             print("we have a KLOEGAR builder key")
             gar_builder=self.get_builder("KLOEGAR")
-            print("self.BuildGAR==",self.BuildGAR)
-            print("gar_builder: ",gar_builder)
+            print("self.BuildGAR=={}".format(self.BuildGAR))
+            print("gar_builder: {}".format(gar_builder))
             if (gar_builder!=None) and (self.BuildGAR==True):
                 rot = [Q("0deg"),Q("0deg"),Q("0deg")]
                 loc = [Q('0m'),Q('0m'),Q('0m')]
@@ -466,7 +572,7 @@ class KLOEBuilder(gegede.builder.Builder):
         pla=geom.structure.Placement(name+"_pla",
                                      volume=lv,
                                      pos=pos)
-        print("appending "+pla.name)
+        print( "appending "+pla.name)
 
         main_lv.placements.append(pla.name)
 

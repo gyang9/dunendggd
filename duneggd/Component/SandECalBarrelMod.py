@@ -6,7 +6,7 @@ from duneggd.LocalTools import materialdefinition as materials
 from gegede import Quantity as Q
 
 
-class KloeEmCaloBarrelModBuilder(gegede.builder.Builder):
+class SandECalBarrelModBuilder(gegede.builder.Builder):
     #^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
     def configure(self,
 		  trapezoidDim=None,
@@ -34,7 +34,6 @@ class KloeEmCaloBarrelModBuilder(gegede.builder.Builder):
 
         ECAL_lv = geom.structure.Volume('ECAL_lv', material='Air', shape=ECAL_shape)
         self.add_volume(ECAL_lv)
-        #print(self.name)
 #       ECAL_position = geom.structure.Position('ECAL_position', Position[0], Position[1], Position[2])
 #       ECAL_place = geom.structure.Placement('ECAL_place', volume = ECAL_lv, pos=ECAL_position)
 
@@ -71,8 +70,8 @@ class KloeEmCaloBarrelModBuilder(gegede.builder.Builder):
             aECALActiveSlab_lv = geom.structure.Volume('volECALActiveSlab'+'_'+str(i),
 						       material=self.ScintMat,
 						       shape=aECALActiveSlab)
-            aECALActiveSlab_lv.params.append(("SensDet","ECAL"))
-
+            aECALActiveSlab_lv.params.append(("SensDet","EMCalSci"))
+            
             aECALActiveSlabPos = geom.structure.Position('ecalactiveslabpos'+'_'+str(i),
 							 xposSlab,
 							 yposSlab,

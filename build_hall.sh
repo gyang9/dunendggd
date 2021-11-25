@@ -286,6 +286,64 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            -w World -o nd_hall_kloe_sttonly.gdml
 fi
 
+# KLOE filled with STT and LAr target
+if [ $option = "all" -o $option = "kloe_sttlar" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume_Only_KLOE.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/KLOE_STTLAR.cfg \
+           duneggd/Config/STTLAR.cfg \
+           duneggd/Config/KLOEEMCALO.cfg \
+           -w World -o nd_hall_kloe_sttLAr.gdml
+fi
+
+# SAND OPT 1
+if [ $option = "sand_opt1" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/ND_ElevatorStruct.cfg \
+           duneggd/Config/SAND_MAGNET.cfg \
+           duneggd/Config/SAND_INNERVOLOPT1.cfg \
+           duneggd/Config/SAND_ECAL.cfg \
+           duneggd/Config/SAND_STT.cfg \
+           duneggd/Config/SAND_GRAIN.cfg \
+           duneggd/Config/ND_CraneRailStruct1.cfg \
+           duneggd/Config/ND_CraneRailStruct2.cfg \
+           duneggd/Config/ND_HallwayStruct.cfg \
+           duneggd/Config/ND_CryoStruct.cfg \
+           duneggd/Config/ND-GAr/ND-GAr-SPYv3_noTPC.cfg \
+           duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
+           -w World -o SAND_opt1.gdml
+fi
+
+# SAND OPT 2
+if [ $option = "all" -o $option = "sand_opt2" ];
+then
+gegede-cli duneggd/Config/WORLDggd.cfg \
+           duneggd/Config/ND_Hall_Air_Volume.cfg \
+           duneggd/Config/ND_Hall_Rock.cfg \
+           duneggd/Config/ND_ElevatorStruct.cfg \
+           duneggd/Config/SAND_MAGNET.cfg \
+           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_ECAL.cfg \
+           duneggd/Config/SAND_STT.cfg \
+           duneggd/Config/SAND_GRAIN.cfg \
+           duneggd/Config/ND_CraneRailStruct1.cfg \
+           duneggd/Config/ND_CraneRailStruct2.cfg \
+           duneggd/Config/ND_HallwayStruct.cfg \
+           duneggd/Config/ND_CryoStruct.cfg \
+           duneggd/Config/ND-GAr/ND-GAr-SPYv3_noTPC.cfg \
+           duneggd/Config/ND-GAr/ND-GAr-SPYv3.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
+           duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
+           -w World -o SAND_opt2.gdml
+fi
+
 # KLOE anti-fiducial
 if [ $option = "all" -o $option = "kloe_antifid" ];
 then
