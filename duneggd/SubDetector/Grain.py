@@ -351,22 +351,22 @@ class GrainBuilder(gegede.builder.Builder):
         
         # build the inner volume of LAr
         
-        GRIAN_LAr_shape = geom.shapes.EllipticalTube("GRIAN_LAr_shape", 
+        GRAIN_LAr_shape = geom.shapes.EllipticalTube("GRAIN_LAr_shape", 
                                                       dx = self.InternalVesselX - self.AluminumThickness, 
                                                       dy = self.InternalVesselY - self.AluminumThickness, 
                                                       dz = self.InternalVesselZ - self.EndcapThickness)
 
-        GRIAN_LAr_lv = geom.structure.Volume("GRIAN_LAr_lv", 
+        GRAIN_LAr_lv = geom.structure.Volume("GRAIN_LAr_lv", 
                                               material = "LAr", 
-                                              shape = GRIAN_LAr_shape)
+                                              shape = GRAIN_LAr_shape)
                                               
-        GRIAN_LAr_lv.params.append(("SensDet", 'LArHit'))
+        GRAIN_LAr_lv.params.append(("SensDet", 'LArHit'))
                                                                     
         
-        GRIAN_LAr_pla = geom.structure.Placement("GRIAN_LAr_pla",
-                                                  volume = GRIAN_LAr_lv)
+        GRAIN_LAr_pla = geom.structure.Placement("GRAIN_LAr_pla",
+                                                  volume = GRAIN_LAr_lv)
                                                
-        GRAIN_inner_vessel_lv.placements.append(GRIAN_LAr_pla.name)
+        GRAIN_inner_vessel_lv.placements.append(GRAIN_LAr_pla.name)
         
         """
         # build external vessel endcaps
