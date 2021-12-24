@@ -11,11 +11,16 @@ from gegede import Quantity as Q
 import time
 
 class STTBuilder(gegede.builder.Builder):
-    def configure( self, halfDimension=None, Material=None, nBarrelModules=None, configuration=None, liqArThickness=None, **kwds):
+    def configure( self, halfDimension=None, Material=None, nBarrelModules=None, configuration=None, liqArThickness=None, TestMode=False, **kwds):
         self.simpleStraw      	    = False
         self.sqrt3                  = 1.7320508
         #        self.start_time=time.time()
         #        print("start_time:",self.start_time)
+        self.TestMode = TestMode
+        if TestMode:
+            print()
+            print(" !!!!!!! Warning !!!!!! it's test mode, it's quick but miss components ")
+            print()
         self.halfDimension, self.Material = ( halfDimension, Material )
 
         self.kloeVesselRadius       = self.halfDimension['rmax']
@@ -25,10 +30,12 @@ class STTBuilder(gegede.builder.Builder):
         self.liqArThickness         = liqArThickness
         self.configuration          = configuration
 
+        print(" ----> self.configuration : ",configuration)
+        print()
         self.strawRadius            = Q('2.5mm')
         self.strawWireWThickness    = Q('20um')
         self.strawWireGThickness    = Q('20nm')
-        self.coatThickness          = Q("100nm")
+        self.coatThickness          = Q("70nm")
         self.mylarThickness         = Q("12um")
 
         #self.kloeVesselRadius       = Q('2m')
@@ -405,7 +412,8 @@ class STTBuilder(gegede.builder.Builder):
     def construct_foils(self,geom, name, halfheight):
         main_shape = geom.shapes.Box(name, dx=self.totfoilThickness/2.0, dy=halfheight, dz= self.kloeTrkRegHalfDx - self.FrameThickness )
         main_lv = geom.structure.Volume(name, material="Air35C", shape=main_shape )
-
+        if self.TestMode:
+            return main_lv
         batchFoil_shape=geom.shapes.Box("shape_"+name+"_batch", dx=self.batchFoilThickness/2.0, dy=halfheight, dz= self.kloeTrkRegHalfDx - self.FrameThickness )
         batchFoil_lv=geom.structure.Volume(name+"_batch", material="Air35C", shape=batchFoil_shape )
         foil_shape = geom.shapes.Box("shape_"+name+"_1f", dx=self.foilThickness/2.0, dy=halfheight, dz= self.kloeTrkRegHalfDx - self.FrameThickness )
@@ -430,6 +438,8 @@ class STTBuilder(gegede.builder.Builder):
             main_shape = geom.shapes.Box("shape_"+name, dx=self.planeXXThickness*3./2., dy=halfheight, dz=self.kloeTrkRegHalfDx -self.FrameThickness)
         main_lv = geom.structure.Volume(name, material="Air35C", shape=main_shape )
 
+        if self.TestMode:
+            return main_lv
         hh_lv=self.construct_XXST(geom, "hh", name+"_hh", self.kloeTrkRegHalfDx - self.FrameThickness, halfheight, gasMaterial)
         vv_lv=self.construct_XXST(geom, "vv", name+"_vv", halfheight, self.kloeTrkRegHalfDx - self.FrameThickness, gasMaterial)
         if not downstreamMost:
@@ -451,7 +461,8 @@ class STTBuilder(gegede.builder.Builder):
 
         main_shape = geom.shapes.Box("shape_"+name, dx=self.planeXXThickness/2.0, dy=halfCrosslength , dz=halflength)
         main_lv = geom.structure.Volume(name, material="Air35C", shape=main_shape )
-
+        if self.TestMode:
+            return main_lv
 
         if tubeDirection=="hh":
             if gasMaterial=="stGas_Ar19":
