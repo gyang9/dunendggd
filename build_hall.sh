@@ -96,8 +96,11 @@ gegede-cli duneggd/Config/WORLDggd.cfg \
            duneggd/Config/ND_CraneRailStruct2.cfg \
            duneggd/Config/ND_HallwayStruct.cfg \
            duneggd/Config/ND_CryoStruct.cfg \
-           duneggd/Config/KLOE_with_3DST.cfg \
-           duneggd/Config/KLOEEMCALO.cfg \
+           duneggd/Config/SAND_MAGNET.cfg \
+           duneggd/Config/SAND_INNERVOLOPT2.cfg \
+           duneggd/Config/SAND_ECAL.cfg \
+           duneggd/Config/SAND_STT.cfg \
+           duneggd/Config/SAND_GRAIN.cfg \
            duneggd/Config/TMS.cfg \
            duneggd/Config/ArgonCube/ArgonCubeCryostat.cfg \
            duneggd/Config/ArgonCube/ArgonCubeDetector.cfg \
