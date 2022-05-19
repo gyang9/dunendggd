@@ -71,7 +71,7 @@ class STTBuilder(gegede.builder.Builder):
         self.upstream_trkModThickness        = self.planeXXThickness * 3 + self.gap*1
         self.downstream_C3H6ModThickness = self.planeXXThickness * 3 + self.totfoilThickness + self.slabThickness
         # the gap between the trkMod and CMod is 4.67 instead of 4.67*2
-
+        
 
         print("trkModThickness  ", self.trkModThickness)
         print("totfoilThickness:",self.totfoilThickness)
@@ -179,9 +179,9 @@ class STTBuilder(gegede.builder.Builder):
         self.SymStop2upstream = self.kloeTrkRegRadius + 27 * self.C3H6ModThickness + 3.5 * self.cModThickness
         self.SymStopFirstModId=63
         self.STTUpperLength = 27 * self.C3H6ModThickness + 3.5 * self.cModThickness + 2 * self.trkModThickness
-        self.gapWithGrain= self.kloeTrkRegRadius - self.STTUpperLength
+        self.realDistance2ECAL= self.kloeTrkRegRadius - self.STTUpperLength
         print(" STTUpperLength:", self.STTUpperLength)
-        print("  self.gapWithGrain:", self.gapWithGrain)
+        print("  self.realDistance2ECAL:", self.realDistance2ECAL)
 
     def construct_option2(self,geom):
 
@@ -193,9 +193,9 @@ class STTBuilder(gegede.builder.Builder):
         self.SymStop2upstream = self.kloeTrkRegRadius + 25 * self.C3H6ModThickness + 2.5 * self.cModThickness
         self.SymStopFirstModId=58
         self.STTUpperLength = 25 * self.C3H6ModThickness + 3.5 * self.cModThickness + 2 * self.trkModThickness
-        self.gapWithGrain= self.kloeTrkRegRadius - self.STTUpperLength
+        self.realDistance2ECAL= self.kloeTrkRegRadius - self.STTUpperLength
         print(" STTUpperLength:", self.STTUpperLength)
-        print("  self.gapWithGrain:", self.gapWithGrain)
+        print("  self.realDistance2ECAL:", self.realDistance2ECAL)
 
     def build_STTSegment(self, geom):
 
@@ -216,11 +216,14 @@ class STTBuilder(gegede.builder.Builder):
         return main_lv
 
     def build_modules(self, geom, main_lv):
-
-        left2upstream=self.liqArThickness
+        ### do not use self.liqArThickness, it is not exact value
+        ### do not use self.liqArThickness, it is not exact value
+        left2upstream=self.realDistance2ECAL  
         for imod in range(0, self.firstSymModId):
             name="STT_"+str(imod).zfill(2)+"_"+self.mod_list[imod]
             self.construct_one_module(main_lv, geom, name, self.Material, self.mod_list[imod], left2upstream)
+            #print("name:  %s  left2upstream:  %f"%(name,left2upstream));
+            print("name:", name,"  left2upstream:",left2upstream);
             left2upstream +=  self.modthicknesses[self.mod_list[imod]]
 
 
@@ -232,12 +235,15 @@ class STTBuilder(gegede.builder.Builder):
             #            print("left2center:",left2center)
             #            j=80-i
             name="STT_"+str(i).zfill(2)+"_"+self.mod_list[i]
+            
+            print("name:", name, " l1:",Q("2m")-left2center," l2:", Q("2m")+left2center-ModThickness,"  ModThickness:",ModThickness);
             self.construct_2sym_modules(main_lv,geom, name, self.Material, self.mod_list[i], left2center)
 
 
         imod=self.centralModId
         left2upstream=self.kloeTrkRegRadius- self.cModThickness/2
         name="STT_"+str(imod).zfill(2)+"_"+self.mod_list[imod]
+        print(" name: ",name,"  left2upstream", left2upstream);
         self.construct_one_module(main_lv, geom, name, self.Material, self.mod_list[imod], left2upstream)
 
 
@@ -245,6 +251,8 @@ class STTBuilder(gegede.builder.Builder):
         for i in range(self.SymStopFirstModId, len(self.mod_list)):
             name="STT_"+str(i).zfill(2)+"_"+self.mod_list[i]
             self.construct_one_module(main_lv, geom, name, self.Material, self.mod_list[i], left2upstream)
+            #print("name:  %s  left2upstream:  %f"%(name,left2upstream));
+            print("name:", name,"  left2upstream:",left2upstream);
             left2upstream += self.modthicknesses[self.mod_list[i]]
 
 
@@ -276,7 +284,7 @@ class STTBuilder(gegede.builder.Builder):
         halfheight -=self.halfUpModGap
         #        halfheight -=self.FrameThickness
         fullheight=(halfheight + self.halfUpModGap)*2
-        #        print("%s  %f"%(name,fullheight.magnitude ))
+        #print("%s  %f"%(name,fullheight.magnitude ))
         #        print("%s %f %f"%(name, (self.kloeTrkRegRadius-left2upstream)/Q("1mm"), (self.kloeTrkRegRadius-left2upstream-ModThickness)/Q("1mm")) )
 
         halfDimension = {'dx': ModThickness/2.0, 'dy':halfheight, 'dz': self.kloeTrkRegHalfDx}
@@ -297,7 +305,7 @@ class STTBuilder(gegede.builder.Builder):
         #	halfheight -=self.FrameThickness
 
         fullheight=(halfheight + self.halfUpModGap)*2
-        #        print("%s  %f"%(name,fullheight.magnitude ))
+        #print("2%s  %f"%(name,fullheight.magnitude ))
         #        print("%s %f %f"%(name, left2c.magnitude, (left2c-ModThickness).magnitude))
         halfDimension = {'dx': ModThickness/2.0, 'dy':halfheight, 'dz': self.kloeTrkRegHalfDx}
         construct_mod = self.modBuilder[mod_type]
@@ -315,7 +323,7 @@ class STTBuilder(gegede.builder.Builder):
 
 
     def construct_TrackingModule(self,geom, name, Material, halfDimension, upstreamMost=False):
-
+        
         main_shape = geom.shapes.Box("shape_"+name, dx=halfDimension['dx'], dy=halfDimension['dy'], dz=halfDimension['dz'] )
         main_lv = geom.structure.Volume(name, material="carbonComposite", shape=main_shape)
         hh_lv=self.construct_XXST(geom, "hh", name+"_hh", self.kloeTrkRegHalfDx - self.FrameThickness, halfDimension['dy']-self.FrameThickness, "stGas_Ar19")
