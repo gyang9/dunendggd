@@ -9,7 +9,7 @@ void checkOverlaps(TString filename)
 
 	
 	cout<<"======================== Checking Overlaps ============================="<<endl;
-	geo->CheckOverlaps(1e-5);
+	geo->CheckOverlaps(1e-5,"s");
 	geo->PrintOverlaps();
 	cout<<"========================       Done!       =============================\n\n\n"<<endl;
 
