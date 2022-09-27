@@ -2,7 +2,7 @@
 
 This is a tool to build proposal geometries for DUNE near detector.
 
-dunendggd is based on the sophisticated package called [GeGeDe](https://github.com/brettviren/gegede)
+dunendggd is based on [GeGeDe](https://github.com/brettviren/gegede) and started out as [gyang9/dunendggd](https://github.com/gyang9/dunendggd).
 
 # Setup
 This package could be installed as user, on unix environment:
